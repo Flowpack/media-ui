@@ -1,0 +1,5 @@
+Flowpack.Media.Ui.MediaController {
+    index = afx`
+        <div id="media-ui-module-container"/>
+    `
+}

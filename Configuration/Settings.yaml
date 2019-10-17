@@ -1,0 +1,20 @@
+Neos:
+  Neos:
+    modules:
+      management:
+        submodules:
+          mediaui:
+            controller: \Flowpack\Media\Ui\Controller\MediaController
+            label: 'Flowpack.Media.Ui:Main:module.label'
+            description: 'Flowpack.Media.Ui:Main:module.description'
+            icon: 'fas fa-image'
+            privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
+#            additionalResources:
+#              styleSheets:
+#                - 'resource://Flowpack.Media.Ui/Public/Styles/Main.css'
+
+    userInterface:
+      translation:
+        autoInclude:
+          Flowpack.Media.Ui:
+            - 'Main'

@@ -1,0 +1,10 @@
+privilegeTargets:
+  'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+    'Flowpack.Media.Ui:ManageAssets':
+      matcher: 'method(Flowpack\Media\Ui\Controller\MediaController->(.*)Action())'
+
+roles:
+  'Neos.Neos:AbstractEditor':
+    privileges:
+      - privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
+        permission: GRANT

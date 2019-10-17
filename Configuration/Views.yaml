@@ -1,0 +1,7 @@
+-
+  requestFilter: 'isPackage("Flowpack.Media.Ui") && isController("Media")'
+  viewObjectName: 'Neos\Fusion\View\FusionView'
+  options:
+    fusionPathPatterns:
+      - 'resource://Neos.Fusion/Private/Fusion'
+      - 'resource://Flowpack.Media.Ui/Private/Fusion'
