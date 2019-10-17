@@ -1,0 +1,15 @@
+{
+    "name": "flowpack/media-ui",
+    "description": "This module allows managing media assets including pictures, videos, audio and documents.",
+    "type": "neos-package",
+    "require": {
+        "neos/media": "^5.0",
+        "neos/neos": "^5.0"
+    },
+    "license": "GPL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "Flowpack\\Media\\Ui\\": "Classes"
+        }
+    }
+}
