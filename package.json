@@ -1,0 +1,37 @@
+{
+  "name": "neos-media-ui",
+  "version": "1.0.0",
+  "license": "GNU GPLv3",
+  "private": true,
+  "scripts": {
+    "lint": "tsc --noEmit && eslint '*/**/*.{js,jsx,ts,tsx}'",
+    "test": "exit 0",
+    "dev": "node dev-server",
+    "watch": "parcel watch Resources/Private/JavaScript/index.tsx --out-dir Resources/Public/JavaScript -o main.bundle.js",
+    "build": "parcel build Resources/Private/JavaScript/index.tsx --out-dir Resources/Public/JavaScript -o main.bundle.js"
+  },
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-jss": "^10.0.4",
+    "react-modal": "^3.11.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.21",
+    "@types/react-dom": "^16.9.5",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "^2.20.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.18.3",
+    "express": "^4.17.1",
+    "parcel-bundler": "^1.12.4",
+    "prettier": "^1.19.1",
+    "typescript": "^3.8.2"
+  },
+  "optionalDependencies": {
+    "fsevents": "*"
+  }
+}

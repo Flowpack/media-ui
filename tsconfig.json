@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "lib": ["es5", "es2015", "dom"],
+    "skipLibCheck": true,
+    "jsx": "react",
+    "typeRoots": ["./typings"]
+  },
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}
