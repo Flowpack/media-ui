@@ -56,6 +56,8 @@ class MediaController extends AbstractModuleController
 
     public function indexAction()
     {
-
+        $this->view->assignMultiple([
+            'csrfToken' => $this->securityContext->getCsrfProtectionToken(),
+        ]);
     }
 }

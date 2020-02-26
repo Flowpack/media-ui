@@ -1,5 +1,5 @@
 - name: 'Media API'
-  uriPattern: 'neos/media/<GraphQLSubroutes>'
+  uriPattern: 'neos/graphql/<GraphQLSubroutes>'
   subRoutes:
     'GraphQLSubroutes':
       package: 't3n.GraphQL'

@@ -1,0 +1,11 @@
+t3n:
+  GraphQL:
+    endpoints:
+      'media-assets':
+        logRequests: false
+        schemas:
+          root:
+            typeDefs: 'resource://Flowpack.Media.Ui/Private/GraphQL/schema.root.graphql'
+            resolverPathPattern: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\{Type}Resolver'
+            resolvers:
+              Query: 'Flowpack\Media\Ui\GraphQL\Resolver\QueryResolver'

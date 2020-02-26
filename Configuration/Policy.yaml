@@ -1,10 +1,21 @@
 privilegeTargets:
   'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
     'Flowpack.Media.Ui:ManageAssets':
-      matcher: 'method(Flowpack\Media\Ui\Controller\MediaController->(.*)Action())'
+      matcher: 'method(public Flowpack\Media\Ui\Controller\MediaController->(.*)Action())'
+    'Flowpack.Media.Ui:Queries':
+      matcher: 'method(public Flowpack\Media\Ui\GraphQL\Resolver\(.*)Resolver->.*()) || method(t3n\GraphQL\Controller\GraphQLController->queryAction())'
 
 roles:
+  'Neos.Flow:Everybody':
+    privileges:
+      - privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
+        permission: GRANT
+      - privilegeTarget: 'Flowpack.Media.Ui:Queries'
+        permission: GRANT
+
   'Neos.Neos:AbstractEditor':
     privileges:
       - privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
+        permission: GRANT
+      - privilegeTarget: 'Flowpack.Media.Ui:Queries'
         permission: GRANT

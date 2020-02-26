@@ -1,17 +1,25 @@
 type Query {
   asset(identifier: ID!): Asset
   assets: [Asset]
+  tags: [Tag]
 }
 
 type Asset {
     identifier: ID!
     title: String!
+    label: String!
     caption: String!
     mediaType: String!
     fileExtension: String!
+    filename: String!
+    copyrightNotice: String!
+    tags: [Tag]
+}
+
+type Tag {
+    label: String!
 }
 
 schema {
   query: Query
-  asset: Asset
 }
