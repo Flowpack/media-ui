@@ -1,0 +1,17 @@
+type Query {
+  asset(identifier: ID!): Asset
+  assets: [Asset]
+}
+
+type Asset {
+    identifier: ID!
+    title: String!
+    caption: String!
+    mediaType: String!
+    fileExtension: String!
+}
+
+schema {
+  query: Query
+  asset: Asset
+}

@@ -4,7 +4,8 @@
     "type": "neos-package",
     "require": {
         "neos/media": "^5.0",
-        "neos/neos": "^5.0"
+        "neos/neos": "^5.0",
+        "t3n/graphql": "^2.1"
     },
     "license": "GPL-3.0-or-later",
     "autoload": {

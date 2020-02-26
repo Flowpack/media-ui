@@ -18,3 +18,20 @@ Neos:
         autoInclude:
           Flowpack.Media.Ui:
             - 'Main'
+
+  Flow:
+    mvc:
+      routes:
+        'Flowpack.Media.Ui':
+          position: 'start'
+
+t3n:
+  GraphQL:
+    endpoints:
+      'media-assets':
+        schemas:
+          root:
+            typeDefs: 'resource://Flowpack.Media.Ui/Private/GraphQL/schema.root.graphql'
+            resolverPathPattern: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\{Type}Resolver'
+            resolvers:
+              Query: 'Flowpack\Media\Ui\GraphQL\Resolver\QueryResolver'
