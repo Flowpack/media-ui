@@ -12,6 +12,7 @@ interface ProviderProps {
         graphql: string;
     };
     notify: Function;
+    translate: Function;
 }
 
 interface ProviderValues {
@@ -20,6 +21,7 @@ interface ProviderValues {
     assets: Array<Asset>;
     tags: Array<Tag>;
     notify: Function;
+    translate: Function;
     tagFilter: Tag;
     setTagFilter: Function;
 }

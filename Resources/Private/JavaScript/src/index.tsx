@@ -24,6 +24,10 @@ window.onload = async (): Promise<void> => {
         window.NeosCMS.Notification[type](message);
     };
 
+    const translate = (id, value = null, packageKey = 'Flowpack.Media.Ui', source = 'Main', args = []) => {
+        return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
+    };
+
     render(
         <IntlProvider>
             <ApolloProvider client={client}>
