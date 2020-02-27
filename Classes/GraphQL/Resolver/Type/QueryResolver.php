@@ -33,6 +33,10 @@ class QueryResolver implements ResolverInterface
      */
     public function assets($_, array $variables): array
     {
+        if (array_key_exists('tag', $variables) && !empty($variables['tag'])) {
+            $tag = $this->tagRepository->findOneByLabel($variables['tag']);
+            return $tag ? $this->assetRepository->findByTag($tag)->toArray() : [];
+        }
         return $this->assetRepository->findAll()->toArray();
     }
 

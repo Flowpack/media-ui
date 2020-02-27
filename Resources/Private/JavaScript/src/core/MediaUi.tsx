@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import Asset from '../interfaces/Asset';
@@ -20,14 +20,25 @@ interface ProviderValues {
     assets: Array<Asset>;
     tags: Array<Tag>;
     notify: Function;
+    tagFilter: Tag;
+    setTagFilter: Function;
+}
+
+interface AssetQueryResult {
+    assets: [Asset];
+    tags: [Tag];
+}
+
+interface AssetQueryVariables {
+    tag: string;
 }
 
 export const MediaUiContext = createContext(undefined);
 export const useMediaUi = (): ProviderValues => useContext(MediaUiContext);
 
 const ASSETS = gql`
-    {
-        assets {
+    query ASSETS($tag: String) {
+        assets(tag: $tag) {
             identifier
             title
             label
@@ -45,7 +56,10 @@ const ASSETS = gql`
 `;
 
 export function MediaUiProvider({ children, csrf, endpoints, notify }: ProviderProps) {
-    const { loading, error, data } = useQuery(ASSETS);
+    const [tagFilter, setTagFilter] = useState<Tag>();
+    const { loading, error, data } = useQuery<AssetQueryResult>(ASSETS, {
+        variables: { tag: tagFilter ? tagFilter.label : '' }
+    });
 
     const assets = data && data.assets ? data.assets : [];
     const tags = data && data.tags ? data.tags : [];
@@ -56,7 +70,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify }: ProviderP
 
     return (
         <>
-            <MediaUiContext.Provider value={{ csrf, endpoints, assets, tags, notify }}>
+            <MediaUiContext.Provider value={{ csrf, endpoints, assets, tags, notify, tagFilter, setTagFilter }}>
                 {error ? <p>{error.message}</p> : loading ? <p>Loading...</p> : children}
             </MediaUiContext.Provider>
         </>

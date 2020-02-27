@@ -1,6 +1,6 @@
 type Query {
   asset(identifier: ID!): Asset
-  assets: [Asset]
+  assets(tag: String): [Asset]
   tags: [Tag]
 }
 
