@@ -4,3 +4,13 @@ Neos:
       routes:
         'Flowpack.Media.Ui':
           position: 'start'
+
+    security:
+      authentication:
+        providers:
+          'Neos.Neos:Backend':
+            requestPatterns:
+              'Flowpack.Media.Ui:Controllers':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 't3n\GraphQL\Controller\.*'

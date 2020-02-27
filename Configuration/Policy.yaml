@@ -6,13 +6,6 @@ privilegeTargets:
       matcher: 'method(public Flowpack\Media\Ui\GraphQL\Resolver\(.*)Resolver->.*()) || method(t3n\GraphQL\Controller\GraphQLController->queryAction())'
 
 roles:
-  'Neos.Flow:Everybody':
-    privileges:
-      - privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
-        permission: GRANT
-      - privilegeTarget: 'Flowpack.Media.Ui:Queries'
-        permission: GRANT
-
   'Neos.Neos:AbstractEditor':
     privileges:
       - privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
