@@ -29,13 +29,12 @@ window.onload = async (): Promise<void> => {
     };
 
     render(
-        <IntlProvider>
+        <IntlProvider translate={translate}>
             <ApolloProvider client={client}>
                 <MediaUiProvider
                     csrf={root.dataset.csrfToken}
                     endpoints={JSON.parse(root.dataset.endpoints)}
                     notify={notify}
-                    translate={translate}
                     dummyImage={root.dataset.dummyImage}
                 >
                     <App />

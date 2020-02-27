@@ -12,7 +12,6 @@ interface ProviderProps {
         graphql: string;
     };
     notify: Function;
-    translate: Function;
     dummyImage: string;
 }
 
@@ -22,7 +21,6 @@ interface ProviderValues {
     assets: Array<Asset>;
     tags: Array<Tag>;
     notify: Function;
-    translate: Function;
     tagFilter: Tag;
     setTagFilter: Function;
     dummyImage: string;
@@ -60,10 +58,10 @@ const ASSETS = gql`
     }
 `;
 
-export function MediaUiProvider({ children, csrf, endpoints, notify, translate, dummyImage }: ProviderProps) {
+export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage }: ProviderProps) {
     const [tagFilter, setTagFilter] = useState<Tag>();
     const { loading, error, data } = useQuery<AssetQueryResult, AssetQueryVariables>(ASSETS, {
-        variables: { tag: tagFilter ? tagFilter.label : '' }
+        variables: { tag: tagFilter && tagFilter.label ? tagFilter.label : '' }
     });
 
     const assets = data && data.assets ? data.assets : [];
@@ -75,7 +73,9 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, translate, 
 
     return (
         <>
-            <MediaUiContext.Provider value={{ csrf, endpoints, assets, tags, notify, translate, tagFilter, setTagFilter, dummyImage }}>
+            <MediaUiContext.Provider
+                value={{ csrf, endpoints, assets, tags, notify, tagFilter, setTagFilter, dummyImage }}
+            >
                 {error ? <p>{error.message}</p> : loading ? <p>Loading...</p> : children}
             </MediaUiContext.Provider>
         </>

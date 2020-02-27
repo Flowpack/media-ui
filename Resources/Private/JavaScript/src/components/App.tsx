@@ -13,7 +13,7 @@ const useAppStyles = createUseStyles({
 });
 
 export default function App() {
-    const classes = useAppStyles()
+    const classes = useAppStyles();
 
     return (
         <div className={classes.container}>

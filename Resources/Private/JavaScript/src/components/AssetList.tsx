@@ -1,6 +1,7 @@
 import { useMediaUi } from '../core/MediaUi';
 import * as React from 'react';
 import { createUseStyles } from 'react-jss';
+import { useIntl } from '../core/Intl';
 
 const useListStyles = createUseStyles({
     list: {
@@ -12,7 +13,7 @@ const useListStyles = createUseStyles({
             margin: '0',
             display: 'flex',
             flexDirection: 'column',
-            '& caption': {
+            '& figcaption': {
                 padding: '.3rem'
             },
             '& img': {
@@ -27,10 +28,11 @@ const useListStyles = createUseStyles({
 export default function AssetList() {
     const classes = useListStyles();
     const { assets, dummyImage } = useMediaUi();
+    const { translate } = useIntl();
 
     return (
         <section>
-            <h1>Asset list</h1>
+            <h1>{translate('assetList.header', 'Asset list')}</h1>
             <div className={classes.list}>
                 {assets.map(asset => {
                     const { identifier, title, label } = asset;
@@ -42,7 +44,7 @@ export default function AssetList() {
                                     alt={asset.caption ? asset.caption : asset.label}
                                 />
                             </picture>
-                            <caption>{title ? title : label}</caption>
+                            <figcaption>{title ? title : label}</figcaption>
                         </figure>
                     );
                 })}

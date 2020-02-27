@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useMediaUi } from '../core/MediaUi';
 import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
+import { useIntl } from '../core/Intl';
 
 const useTagListStyles = createUseStyles({
     container: {
@@ -19,7 +20,8 @@ const useTagListStyles = createUseStyles({
 
 export default function TagList() {
     const classes = useTagListStyles();
-    const { tags, tagFilter, setTagFilter, translate } = useMediaUi();
+    const { tags, tagFilter, setTagFilter } = useMediaUi();
+    const { translate } = useIntl();
 
     const [selectedTag, setSelectedTag] = useState(tagFilter);
 
@@ -32,7 +34,9 @@ export default function TagList() {
             <strong>{translate('tagList.header', 'Tags')}</strong>
             <ul className={classes.tagList}>
                 <li>
-                    <a onClick={() => setSelectedTag(null)}>{translate('tagList.showAll', 'All')}</a>
+                    <a className={!selectedTag ? classes.tagSelected : null} onClick={() => setSelectedTag(null)}>
+                        {translate('tagList.showAll', 'All')}
+                    </a>
                 </li>
                 {tags &&
                     tags.map(tag => (

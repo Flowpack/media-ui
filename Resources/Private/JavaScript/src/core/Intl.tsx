@@ -1,24 +1,18 @@
-import * as React from 'react'
-import { createContext, useContext, useState } from 'react'
+import * as React from 'react';
+import { createContext, useContext } from 'react';
 
 interface ProviderProps {
-  children: React.ReactElement
+    children: React.ReactElement;
+    translate: Function;
 }
 
-export const IntlContext = createContext({})
-export const useIntl = () => useContext(IntlContext)
+interface ProviderValues {
+    translate: Function;
+}
 
-export function IntlProvider({ children }: ProviderProps) {
-  const [locale, setLocale] = useState('en')
-  const [messages, setMessages] = useState({})
+export const IntlContext = createContext(null);
+export const useIntl = (): ProviderValues => useContext(IntlContext);
 
-  const formatMessage = id => {
-    return messages[locale] && messages[locale][id]
-  }
-
-  return (
-    <IntlContext.Provider key={locale} value={{ locale, formatMessage, setLocale }}>
-      {children}
-    </IntlContext.Provider>
-  )
+export function IntlProvider({ children, translate }: ProviderProps) {
+    return <IntlContext.Provider value={{ translate }}>{children}</IntlContext.Provider>;
 }
