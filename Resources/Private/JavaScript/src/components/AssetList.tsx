@@ -13,13 +13,16 @@ const useListStyles = createUseStyles({
             margin: '0',
             display: 'flex',
             flexDirection: 'column',
+            '& picture': {
+                borderBottom: '1px solid gray'
+            },
             '& figcaption': {
-                padding: '.3rem'
+                padding: '.5rem .8rem'
             },
             '& img': {
+                height: '250px',
                 width: '100%',
-                height: 'auto',
-                objectFit: 'cover'
+                objectFit: 'contain'
             }
         }
     }
@@ -27,24 +30,24 @@ const useListStyles = createUseStyles({
 
 export default function AssetList() {
     const classes = useListStyles();
-    const { assets, dummyImage } = useMediaUi();
+    const { assetProxies, dummyImage } = useMediaUi();
     const { translate } = useIntl();
 
     return (
         <section>
             <h1>{translate('assetList.header', 'Asset list')}</h1>
             <div className={classes.list}>
-                {assets.map(asset => {
-                    const { identifier, title, label } = asset;
+                {assetProxies.map(asset => {
+                    const { identifier, label } = asset;
                     return (
                         <figure key={identifier}>
                             <picture>
                                 <img
-                                    src={asset.thumbnail ? asset.thumbnail : dummyImage}
-                                    alt={asset.caption ? asset.caption : asset.label}
+                                    src={asset.thumbnailUri || dummyImage}
+                                    alt={asset.label}
                                 />
                             </picture>
-                            <figcaption>{title ? title : label}</figcaption>
+                            <figcaption>{label}</figcaption>
                         </figure>
                     );
                 })}

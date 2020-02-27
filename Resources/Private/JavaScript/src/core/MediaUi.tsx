@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import Asset from '../interfaces/Asset';
 import Tag from '../interfaces/Tag';
+import AssetProxy from '../interfaces/AssetProxy';
 
 interface ProviderProps {
     children: React.ReactElement;
@@ -18,7 +19,7 @@ interface ProviderProps {
 interface ProviderValues {
     csrf: string;
     endpoints: any;
-    assets: Array<Asset>;
+    assetProxies: Array<AssetProxy>;
     tags: Array<Tag>;
     notify: Function;
     tagFilter: Tag;
@@ -26,31 +27,29 @@ interface ProviderValues {
     dummyImage: string;
 }
 
-interface AssetQueryResult {
-    assets: [Asset];
+interface AssetProxiesQueryResult {
+    assetProxies: [AssetProxy];
     tags: [Tag];
 }
 
-interface AssetQueryVariables {
+interface AssetProxiesQueryVariables {
+    assetSource: string;
     tag: string;
+    limit: number;
+    offset: number;
 }
 
 export const MediaUiContext = createContext(undefined);
 export const useMediaUi = (): ProviderValues => useContext(MediaUiContext);
 
-const ASSETS = gql`
-    query ASSETS($tag: String) {
-        assets(tag: $tag) {
+const ASSET_PROXIES = gql`
+    query ASSET_PROXIES($assetSource: String, $tag: String, $limit: Int, $offset: Int) {
+        assetProxies(assetSource: $assetSource, tag: $tag, limit: $limit, offset: $offset) {
             identifier
-            title
             label
-            caption
             mediaType
-            fileExtension
-            thumbnail
-            tags {
-                label
-            }
+            thumbnailUri
+            previewUri
         }
         tags {
             label
@@ -60,12 +59,17 @@ const ASSETS = gql`
 
 export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage }: ProviderProps) {
     const [tagFilter, setTagFilter] = useState<Tag>();
-    const { loading, error, data } = useQuery<AssetQueryResult, AssetQueryVariables>(ASSETS, {
-        variables: { tag: tagFilter && tagFilter.label ? tagFilter.label : '' }
+    const { loading, error, data } = useQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(ASSET_PROXIES, {
+        variables: {
+            assetSource: 'Neos',
+            tag: tagFilter && tagFilter.label ? tagFilter.label : '',
+            limit: 20,
+            offset: 0
+        }
     });
 
-    const assets = data && data.assets ? data.assets : [];
-    const tags = data && data.tags ? data.tags : [];
+    const assetProxies = data?.assetProxies || [];
+    const tags = data?.tags || [];
 
     if (error) {
         console.error(error);
@@ -74,7 +78,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     return (
         <>
             <MediaUiContext.Provider
-                value={{ csrf, endpoints, assets, tags, notify, tagFilter, setTagFilter, dummyImage }}
+                value={{ csrf, endpoints, assetProxies, tags, notify, tagFilter, setTagFilter, dummyImage }}
             >
                 {error ? <p>{error.message}</p> : loading ? <p>Loading...</p> : children}
             </MediaUiContext.Provider>

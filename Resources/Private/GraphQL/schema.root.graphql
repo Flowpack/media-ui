@@ -1,7 +1,28 @@
 type Query {
   asset(identifier: ID!): Asset
   assets(tag: String): [Asset]
+  assetProxies(assetSource: AssetSource, tag: String, limit: Int, offset: Int): [AssetProxy]
+  assetSources: [AssetSource]
   tags: [Tag]
+}
+
+type AssetSource {
+    identifier: ID!
+    label: String!
+    readOnly: Boolean
+}
+
+type AssetProxy {
+    identifier: ID!
+    label: String!
+    filename: String!
+    lastModified: String!
+    fileSize: Int
+    mediaType: String!
+    widthInPixels: Int
+    heightInPixels: Int
+    thumbnailUri: String
+    previewUri: String
 }
 
 type Asset {
