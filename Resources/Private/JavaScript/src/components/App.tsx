@@ -7,7 +7,7 @@ import SideBarRight from './SideBarRight';
 const useAppStyles = createUseStyles({
     container: {
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
+        gridTemplateColumns: '250px 1fr 250px',
         gridGap: '1rem'
     }
 });

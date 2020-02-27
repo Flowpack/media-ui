@@ -1,36 +1,24 @@
 import * as React from 'react';
-import { useMediaUi } from '../core/MediaUi';
-import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
+import TagList from './TagList';
 
-const useTagListStyles = createUseStyles({
-    tagSelected: {
-        fontWeight: 'bold'
+const useLeftSideBarStyles = createUseStyles({
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        border: '1px solid gray'
     }
 });
 
 export default function SideBarLeft() {
-    const tagListClasses = useTagListStyles();
-    const { tags, tagFilter, setTagFilter } = useMediaUi();
-
-    const [selectedTag, setSelectedTag] = useState(tagFilter);
-
-    useEffect(() => {
-        setTagFilter(selectedTag);
-    }, [selectedTag]);
+    const classes = useLeftSideBarStyles();
+    const components = [TagList];
 
     return (
-        <div>
-            <ul>
-                {tags &&
-                    tags.map(tag => (
-                        <li key={tag.label}>
-                            <a className={selectedTag && selectedTag.label == tag.label ? tagListClasses.tagSelected : null} onClick={() => setSelectedTag(tag)}>
-                                {tag.label}
-                            </a>
-                        </li>
-                    ))}
-            </ul>
+        <div className={classes.container}>
+            {components.map((Component, index) => (
+                <Component key={index} />
+            ))}
         </div>
     );
 }

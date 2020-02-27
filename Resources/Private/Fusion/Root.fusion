@@ -7,6 +7,10 @@ Flowpack.Media.Ui.MediaController {
 
         data-csrf-token = ${csrfToken}
 
+        data-dummy-image = Neos.Fusion:ResourceUri {
+            path = 'resource://Neos.Neos/Public/Images/dummy-image.svg'
+        }
+
         renderer = afx`
             <div id="media-ui-app" {...props}>
                 Loading media ui...

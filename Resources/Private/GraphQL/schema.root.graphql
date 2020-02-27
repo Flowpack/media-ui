@@ -6,13 +6,14 @@ type Query {
 
 type Asset {
     identifier: ID!
-    title: String!
+    title: String
     label: String!
-    caption: String!
+    caption: String
     mediaType: String!
     fileExtension: String!
     filename: String!
-    copyrightNotice: String!
+    copyrightNotice: String
+    thumbnail: String
     tags: [Tag]
 }
 

@@ -35,6 +35,8 @@ window.onload = async (): Promise<void> => {
                     csrf={root.dataset.csrfToken}
                     endpoints={JSON.parse(root.dataset.endpoints)}
                     notify={notify}
+                    translate={translate}
+                    dummyImage={root.dataset.dummyImage}
                 >
                     <App />
                 </MediaUiProvider>

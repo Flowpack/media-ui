@@ -7,4 +7,5 @@ export default interface Asset {
     fileExtension: string;
     filename: string;
     copyrightNotice: string;
+    thumbnail: string;
 }
