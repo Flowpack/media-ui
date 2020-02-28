@@ -1,17 +1,20 @@
 import * as React from 'react';
 import { createUseStyles } from 'react-jss';
 import TagList from './TagList';
+import { MediaUITheme, useMediaUITheme } from './App';
 
-const useLeftSideBarStyles = createUseStyles({
+const useLeftSideBarStyles = createUseStyles((theme: MediaUITheme) => ({
     container: {
+        gridArea: props => props.gridPosition,
         display: 'flex',
         flexDirection: 'column',
-        border: '1px solid gray'
+        border: `1px solid ${theme.borderColor}`
     }
-});
+}));
 
-export default function SideBarLeft() {
-    const classes = useLeftSideBarStyles();
+export default function SideBarLeft({ gridPosition }) {
+    const theme = useMediaUITheme();
+    const classes = useLeftSideBarStyles({ gridPosition, theme });
     const components = [TagList];
 
     return (
