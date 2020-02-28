@@ -1,9 +1,10 @@
 type Query {
   asset(identifier: ID!): Asset
   assets(tag: String): [Asset]
-  assetProxies(assetSource: AssetSource, tag: String, limit: Int, offset: Int): [AssetProxy]
+  assetProxies(assetSource: AssetSource!, tag: String, assetCollection: String, limit: Int, offset: Int): [AssetProxy]
   assetSources: [AssetSource]
   assetCollections: [AssetCollection]
+  assetCount(assetSource: AssetSource!, tag: String, assetCollection: String): Int
   tags: [Tag]
 }
 

@@ -7,7 +7,7 @@ interface ProviderProps {
 }
 
 interface ProviderValues {
-    translate: Function;
+    translate: (id: string, fallback: string, args?: any[], packageKey?: string, source?: string) => string;
 }
 
 export const IntlContext = createContext(null);

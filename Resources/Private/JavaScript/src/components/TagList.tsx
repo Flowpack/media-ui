@@ -3,14 +3,19 @@ import { useMediaUi } from '../core/MediaUi';
 import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useIntl } from '../core/Intl';
+import { useMediaUITheme } from './App';
 
 const useTagListStyles = createUseStyles({
     container: {
-        padding: '1rem'
+        '.neos &': {
+            padding: '0 1rem 1rem 1rem'
+        }
     },
     tagList: {
         '& li': {
-            margin: '.3rem 0'
+            margin: '.5rem 0',
+            cursor: 'pointer',
+            userSelect: 'none'
         }
     },
     tagSelected: {
@@ -19,7 +24,8 @@ const useTagListStyles = createUseStyles({
 });
 
 export default function TagList() {
-    const classes = useTagListStyles();
+    const theme = useMediaUITheme();
+    const classes = useTagListStyles({ theme });
     const { tags, tagFilter, setTagFilter } = useMediaUi();
     const { translate } = useIntl();
 
@@ -30,7 +36,7 @@ export default function TagList() {
     }, [selectedTag]);
 
     return (
-        <div className={classes.container}>
+        <nav className={classes.container}>
             <strong>{translate('tagList.header', 'Tags')}</strong>
             <ul className={classes.tagList}>
                 <li>
@@ -50,6 +56,6 @@ export default function TagList() {
                         </li>
                     ))}
             </ul>
-        </div>
+        </nav>
     );
 }

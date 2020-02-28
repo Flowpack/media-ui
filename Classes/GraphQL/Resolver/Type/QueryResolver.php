@@ -5,7 +5,9 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
+use Neos\Flow\Persistence\QueryInterface;
 use Neos\Media\Domain\Model\Asset;
+use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetRepository;
@@ -50,6 +52,20 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
+     * Returns total count of asset proxies in the given asset source
+     *
+     * @param $_m
+     * @param array $variables
+     * @return int
+     */
+    public function assetCount($_m, array $variables): int
+    {
+        $query = $this->createAssetProxyQuery($variables['assetSource'], $variables['tag'],
+            $variables['assetCollection']);
+        return $query->count();
+    }
+
+    /**
      * @param $_
      * @param array $variables
      * @return array<Asset>
@@ -59,39 +75,48 @@ class QueryResolver implements ResolverInterface
         $limit = array_key_exists('limit', $variables) ? $variables['limit'] : 20;
         $offset = array_key_exists('offset', $variables) ? $variables['offset'] : 0;
 
-        if (array_key_exists('assetSource', $variables)) {
-            $assetSourceLabel = strtolower($variables['assetSource']);
-        } else {
-            $assetSourceLabel = 'neos';
-        }
+        $query = $this->createAssetProxyQuery($variables['assetSource'], $variables['tag'],
+            $variables['assetCollection']);
 
-        if (array_key_exists($assetSourceLabel, $this->assetSources)) {
+        $query->setLimit($limit);
+        $query->setOffset($offset < $query->count() ? $offset : 0);
+
+        return $query->execute()->toArray();
+    }
+
+    /**
+     * @param string $assetSourceName
+     * @param string|null $tag
+     * @param null $assetCollection
+     * @return AssetProxyQueryInterface|null
+     */
+    protected function createAssetProxyQuery(
+        string $assetSourceName = 'neos',
+        string $tag = null,
+        $assetCollection = null
+    ): ?AssetProxyQueryInterface {
+        $assetSourceName = strtolower($assetSourceName);
+
+        if (array_key_exists($assetSourceName, $this->assetSources)) {
             /** @var AssetSourceInterface $activeAssetSource */
-            $activeAssetSource = $this->assetSources[$assetSourceLabel];
+            $activeAssetSource = $this->assetSources[$assetSourceName];
         } else {
-            return [];
+            return null;
         }
 
         $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
 
-        $query = null;
-
-        if (array_key_exists('tag', $variables) && !empty($variables['tag'])) {
+        if ($tag) {
             /** @noinspection PhpUndefinedMethodInspection */
-            $tag = $this->tagRepository->findOneByLabel($variables['tag']);
+            $tag = $this->tagRepository->findOneByLabel($tag);
             if ($tag) {
-                $query = $assetProxyRepository->findByTag($tag)->getQuery();
+                return $assetProxyRepository->findByTag($tag)->getQuery();
             }
         }
 
-        if (!$query) {
-            $query = $assetProxyRepository->findAll()->getQuery();
-        }
+        // TODO: Implement asset collection filter
 
-        $query->setLimit($limit);
-        $query->setOffset($offset);
-
-        return $query->execute()->toArray();
+        return $assetProxyRepository->findAll()->getQuery();
     }
 
     /**

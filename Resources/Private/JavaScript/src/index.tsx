@@ -24,7 +24,7 @@ window.onload = async (): Promise<void> => {
         window.NeosCMS.Notification[type](message);
     };
 
-    const translate = (id, value = null, packageKey = 'Flowpack.Media.Ui', source = 'Main', args = []) => {
+    const translate = (id, value = null, args = [], packageKey = 'Flowpack.Media.Ui', source = 'Main') => {
         return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
     };
 
