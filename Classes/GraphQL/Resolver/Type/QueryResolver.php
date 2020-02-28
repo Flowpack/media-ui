@@ -78,8 +78,8 @@ class QueryResolver implements ResolverInterface
         $query = $this->createAssetProxyQuery($variables['assetSource'], $variables['tag'],
             $variables['assetCollection']);
 
-        $query->setLimit($limit);
         $query->setOffset($offset < $query->count() ? $offset : 0);
+        $query->setLimit($limit);
 
         return $query->execute()->toArray();
     }
