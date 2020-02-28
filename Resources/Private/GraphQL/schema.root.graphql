@@ -3,6 +3,7 @@ type Query {
   assets(tag: String): [Asset]
   assetProxies(assetSource: AssetSource, tag: String, limit: Int, offset: Int): [AssetProxy]
   assetSources: [AssetSource]
+  assetCollections: [AssetCollection]
   tags: [Tag]
 }
 
@@ -40,6 +41,12 @@ type Asset {
 
 type Tag {
     label: String!
+}
+
+type AssetCollection {
+    title: String!
+    assets: [Asset]
+    tags: [Tag]
 }
 
 schema {
