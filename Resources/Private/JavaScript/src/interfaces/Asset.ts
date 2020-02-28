@@ -1,11 +1,11 @@
 export default interface Asset {
-    title: string;
+    readonly identifier: string;
+    title?: string;
     label: string;
-    identifier: string;
-    caption: string;
+    caption?: string;
     mediaType: string;
     fileExtension: string;
     filename: string;
-    copyrightNotice: string;
+    copyrightNotice?: string;
     thumbnail: string;
 }
