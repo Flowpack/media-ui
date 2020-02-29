@@ -1,39 +1,10 @@
 import * as React from 'react';
+import { createUseStyles } from 'react-jss';
 import AssetList from './AssetList';
-import { createTheming, createUseStyles } from 'react-jss';
 import SideBarLeft from './SideBarLeft';
 import SideBarRight from './SideBarRight';
 import Pagination from './Pagination';
-
-const ThemeContext = React.createContext({} as MediaUITheme);
-const theming = createTheming(ThemeContext);
-const { ThemeProvider, useTheme } = theming;
-
-export const useMediaUITheme = useTheme;
-
-export interface MediaUITheme {
-    primaryColor: string;
-    alternatingBackgroundColor: string;
-    borderColor: string;
-    inactiveColor: string;
-    generatedColor: string;
-    newColor: string;
-    modifiedColor: string;
-    warningColor: string;
-    deletedColor: string;
-}
-
-const mediaUITheme: MediaUITheme = {
-    primaryColor: '#00b5ff',
-    alternatingBackgroundColor: '#3f3f3f',
-    borderColor: '#3f3f3f',
-    inactiveColor: '#9e9e9e',
-    generatedColor: '#2e8b57',
-    newColor: '#00a338',
-    modifiedColor: '#adff2f',
-    warningColor: '#ff4500',
-    deletedColor: '#ff8700'
-};
+import MediaUiThemeProvider, { useMediaUiTheme } from '../core/MediaUiThemeProvider';
 import LoadingIndicator from './LoadingIndicator';
 
 const useAppStyles = createUseStyles({
@@ -49,10 +20,11 @@ const useAppStyles = createUseStyles({
 });
 
 export default function App() {
-    const classes = useAppStyles();
+    const theme = useMediaUiTheme();
+    const classes = useAppStyles({ theme });
 
     return (
-        <ThemeProvider theme={mediaUITheme}>
+        <MediaUiThemeProvider>
             <div className={classes.container}>
                 <LoadingIndicator />
                 <SideBarLeft gridPosition="left" />
@@ -60,6 +32,6 @@ export default function App() {
                 <Pagination gridPosition="bottom" />
                 <SideBarRight gridPosition="right" />
             </div>
-        </ThemeProvider>
+        </MediaUiThemeProvider>
     );
 }

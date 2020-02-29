@@ -3,7 +3,7 @@ import { useMediaUi } from '../core/MediaUi';
 import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useIntl } from '../core/Intl';
-import { useMediaUITheme } from './App';
+import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
 
 const useTagListStyles = createUseStyles({
     container: {
@@ -24,7 +24,7 @@ const useTagListStyles = createUseStyles({
 });
 
 export default function TagList() {
-    const theme = useMediaUITheme();
+    const theme = useMediaUiTheme();
     const classes = useTagListStyles({ theme });
     const { tags, tagFilter, setTagFilter } = useMediaUi();
     const { translate } = useIntl();

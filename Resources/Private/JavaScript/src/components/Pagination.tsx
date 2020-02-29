@@ -2,9 +2,9 @@ import * as React from 'react';
 import { ASSETS_PER_PAGE, useMediaUi } from '../core/MediaUi';
 import { useIntl } from '../core/Intl';
 import { createUseStyles } from 'react-jss';
-import { MediaUITheme, useMediaUITheme } from './App';
+import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
 
-const usePaginationStyles = createUseStyles((theme: MediaUITheme) => ({
+const usePaginationStyles = createUseStyles({
     container: {
         gridArea: props => props.gridPosition,
         display: 'flex'
@@ -24,11 +24,11 @@ const usePaginationStyles = createUseStyles((theme: MediaUITheme) => ({
             }
         }
     }
-}));
+});
 
-export default function Pagination({ gridPosition }) {
-    const theme = useMediaUITheme();
-    const classes = usePaginationStyles({ gridPosition, theme });
+export default function Pagination(props: GridComponentProps) {
+    const theme = useMediaUiTheme();
+    const classes = usePaginationStyles({ ...props, theme });
     const { assetCount, currentPage, setCurrentPage } = useMediaUi();
     const { translate } = useIntl();
 

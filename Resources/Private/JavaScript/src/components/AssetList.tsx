@@ -1,10 +1,9 @@
-import { useMediaUi } from '../core/MediaUi';
 import * as React from 'react';
 import { createUseStyles } from 'react-jss';
-import { useIntl } from '../core/Intl';
-import { MediaUITheme, useMediaUITheme } from './App';
+import { useMediaUi } from '../core/MediaUi';
+import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
 
-const useListStyles = createUseStyles((theme: MediaUITheme) => ({
+const useListStyles = createUseStyles({
     container: {
         gridArea: props => props.gridPosition
     },
@@ -13,12 +12,12 @@ const useListStyles = createUseStyles((theme: MediaUITheme) => ({
         gridTemplateColumns: 'repeat( auto-fit, minmax(200px, 1fr) )',
         gridGap: '1rem',
         '& figure': {
-            border: '1px solid gray',
+            border: ({ theme }) => `1px solid ${theme.borderColor}`,
             margin: '0',
             display: 'flex',
             flexDirection: 'column',
             '& picture': {
-                borderBottom: `1px solid ${theme.borderColor}`
+                borderBottom: ({ theme }) =>`1px solid ${theme.borderColor}`
             },
             '& figcaption': {
                 padding: '.5rem .8rem'
@@ -30,17 +29,15 @@ const useListStyles = createUseStyles((theme: MediaUITheme) => ({
             }
         }
     }
-}));
+});
 
-export default function AssetList({ gridPosition }) {
-    const theme = useMediaUITheme();
-    const classes = useListStyles({ gridPosition, theme });
+export default function AssetList(props: GridComponentProps) {
+    const theme = useMediaUiTheme();
+    const classes = useListStyles({ ...props, theme });
     const { assetProxies, dummyImage } = useMediaUi();
-    const { translate } = useIntl();
 
     return (
         <section className={classes.container}>
-            <h1>{translate('assetList.header', 'Asset list')}</h1>
             <div className={classes.list}>
                 {assetProxies.map(asset => {
                     const { identifier, label } = asset;

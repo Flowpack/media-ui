@@ -1,0 +1,3 @@
+interface GridComponentProps {
+    gridPosition: string;
+}

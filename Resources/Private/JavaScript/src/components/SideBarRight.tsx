@@ -1,19 +1,20 @@
 import * as React from 'react';
-import { createUseStyles, useTheme } from 'react-jss';
-import { MediaUITheme, useMediaUITheme } from './App';
+import { createUseStyles } from 'react-jss';
+import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
+import MediaUiTheme from '../interfaces/MediaUiTheme';
 
-const useRightSideBarStyles = createUseStyles((theme: MediaUITheme) => ({
+const useStyles = createUseStyles({
     container: {
         gridArea: props => props.gridPosition,
         display: 'flex',
         flexDirection: 'column',
-        border: `1px solid ${theme.borderColor}`
+        border: ({ theme }) => `1px solid ${theme.borderColor}`
     }
-}));
+});
 
-export default function SideBarRight({ gridPosition }) {
-    const theme = useMediaUITheme();
-    const classes = useRightSideBarStyles({ gridPosition, theme });
+export default function SideBarRight(props: GridComponentProps) {
+    const theme = useMediaUiTheme();
+    const classes = useStyles({ ...props, theme });
 
     return <div className={classes.container}>Right sidebar</div>;
 }
