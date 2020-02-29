@@ -109,6 +109,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     const assetCollections = data?.assetCollections || [];
     const assetCount = data?.assetCount || 0;
     const tags = data?.tags || [];
+    const isLoading = loading;
 
     if (currentPage * ASSETS_PER_PAGE > assetCount) {
         setCurrentPage(0);
@@ -124,6 +125,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
                 value={{
                     csrf,
                     endpoints,
+                    isLoading,
                     assetProxies,
                     tags,
                     assetCollections,

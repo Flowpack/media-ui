@@ -34,6 +34,7 @@ const mediaUITheme: MediaUITheme = {
     warningColor: '#ff4500',
     deletedColor: '#ff8700'
 };
+import LoadingIndicator from './LoadingIndicator';
 
 const useAppStyles = createUseStyles({
     container: {
@@ -53,6 +54,7 @@ export default function App() {
     return (
         <ThemeProvider theme={mediaUITheme}>
             <div className={classes.container}>
+                <LoadingIndicator />
                 <SideBarLeft gridPosition="left" />
                 <AssetList gridPosition="main" />
                 <Pagination gridPosition="bottom" />
