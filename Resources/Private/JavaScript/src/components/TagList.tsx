@@ -14,8 +14,10 @@ const useTagListStyles = createUseStyles({
     tagList: {
         '& li': {
             margin: '.5rem 0',
-            cursor: 'pointer',
-            userSelect: 'none'
+            '& a': {
+                display: 'block',
+                userSelect: 'none'
+            }
         }
     },
     tagSelected: {
@@ -26,7 +28,7 @@ const useTagListStyles = createUseStyles({
 export default function TagList() {
     const theme = useMediaUiTheme();
     const classes = useTagListStyles({ theme });
-    const { tags, tagFilter, setTagFilter } = useMediaUi();
+    const { tags, tagFilter, setTagFilter, assetSourceFilter } = useMediaUi();
     const { translate } = useIntl();
 
     const [selectedTag, setSelectedTag] = useState(tagFilter);
@@ -36,26 +38,35 @@ export default function TagList() {
     }, [selectedTag]);
 
     return (
-        <nav className={classes.container}>
-            <strong>{translate('tagList.header', 'Tags')}</strong>
-            <ul className={classes.tagList}>
-                <li>
-                    <a className={!selectedTag ? classes.tagSelected : null} onClick={() => setSelectedTag(null)}>
-                        {translate('tagList.showAll', 'All')}
-                    </a>
-                </li>
-                {tags &&
-                    tags.map(tag => (
-                        <li key={tag.label}>
+        <>
+            {assetSourceFilter.supportsTagging && (
+                <nav className={classes.container}>
+                    <strong>{translate('tagList.header', 'Tags')}</strong>
+                    <ul className={classes.tagList}>
+                        <li>
                             <a
-                                className={selectedTag && selectedTag.label == tag.label ? classes.tagSelected : null}
-                                onClick={() => setSelectedTag(tag)}
+                                className={!selectedTag ? classes.tagSelected : null}
+                                onClick={() => setSelectedTag(null)}
                             >
-                                {tag.label}
+                                {translate('tagList.showAll', 'All')}
                             </a>
                         </li>
-                    ))}
-            </ul>
-        </nav>
+                        {tags &&
+                            tags.map(tag => (
+                                <li key={tag.label}>
+                                    <a
+                                        className={
+                                            selectedTag && selectedTag.label == tag.label ? classes.tagSelected : null
+                                        }
+                                        onClick={() => setSelectedTag(tag)}
+                                    >
+                                        {tag.label}
+                                    </a>
+                                </li>
+                            ))}
+                    </ul>
+                </nav>
+            )}
+        </>
     );
 }

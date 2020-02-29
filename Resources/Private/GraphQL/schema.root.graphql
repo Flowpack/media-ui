@@ -1,30 +1,39 @@
 type Query {
   asset(identifier: ID!): Asset
-  assets(tag: String): [Asset]
-  assetProxies(assetSource: AssetSource!, tag: String, assetCollection: String, limit: Int, offset: Int): [AssetProxy]
-  assetSources: [AssetSource]
-  assetCollections: [AssetCollection]
-  assetCount(assetSource: AssetSource!, tag: String, assetCollection: String): Int
-  tags: [Tag]
+  assets(tag: String): [Asset!]!
+  assetProxies(assetSource: AssetSource!, tag: String, assetCollection: String, limit: Int, offset: Int): [AssetProxy!]!
+  assetSources: [AssetSource!]!
+  assetCollections: [AssetCollection!]!
+  assetCount(assetSource: AssetSource!, tag: String, assetCollection: String): Int!
+  tags: [Tag!]!
 }
 
+# The default local asset source is `neos`. Other externals ones can be available through plugins.
 type AssetSource {
     identifier: ID!
     label: String!
-    readOnly: Boolean
+    readOnly: Boolean!
+    supportsTagging: Boolean!
+    supportsCollections: Boolean!
 }
 
+# The main type that should be queries to fetch assets.
+# The proxy reflects local and external asset data.
+# Local and already imported assets have the `localAssetIdentifier` set and `localAssetData` available.
 type AssetProxy {
     identifier: ID!
     label: String!
     filename: String!
-    lastModified: String!
-    fileSize: Int
+    lastModified: String! # TODO: introduce custom scalar for Date types
+    fileSize: Int!
     mediaType: String!
     widthInPixels: Int
     heightInPixels: Int
-    thumbnailUri: String
-    previewUri: String
+    thumbnailUri: String # Provides an image uri for thumbnails views
+    previewUri: String # Provides a full size image uri for details views
+    assetSource: AssetSource!
+    localAssetIdentifier: String
+    localAssetData: Asset
 }
 
 type Asset {
@@ -38,6 +47,7 @@ type Asset {
     copyrightNotice: String
     thumbnail: String
     tags: [Tag]
+    # TODO: implement `variants: [AssetVariant]`
 }
 
 type Tag {

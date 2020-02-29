@@ -8,5 +8,6 @@ export default interface MediaUiTheme {
     modifiedColor: string;
     warningColor: string;
     deletedColor: string;
+    moduleBackgroundColor: string;
     loadingIndicatorZIndex: number;
 }

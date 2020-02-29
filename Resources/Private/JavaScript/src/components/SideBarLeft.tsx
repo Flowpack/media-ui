@@ -3,6 +3,7 @@ import { createUseStyles } from 'react-jss';
 import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
 import TagList from './TagList';
 import AssetCollectionList from './AssetCollectionList';
+import AssetSourceList from './AssetSourceList';
 
 const useStyles = createUseStyles({
     container: {
@@ -16,7 +17,7 @@ const useStyles = createUseStyles({
 export default function SideBarLeft(props: GridComponentProps) {
     const theme = useMediaUiTheme();
     const classes = useStyles({ ...props, theme });
-    const components = [AssetCollectionList, TagList];
+    const components = [AssetSourceList, AssetCollectionList, TagList];
 
     return (
         <div className={classes.container}>

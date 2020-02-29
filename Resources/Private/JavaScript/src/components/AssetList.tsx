@@ -2,44 +2,46 @@ import * as React from 'react';
 import { createUseStyles } from 'react-jss';
 import { useMediaUi } from '../core/MediaUi';
 import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
+import { useIntl } from '../core/Intl';
 
 const useListStyles = createUseStyles({
-    container: {
-        gridArea: props => props.gridPosition
-    },
-    list: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat( auto-fit, minmax(200px, 1fr) )',
-        gridGap: '1rem',
-        '& figure': {
-            border: ({ theme }) => `1px solid ${theme.borderColor}`,
-            margin: '0',
-            display: 'flex',
-            flexDirection: 'column',
-            '& picture': {
-                borderBottom: ({ theme }) =>`1px solid ${theme.borderColor}`
-            },
-            '& figcaption': {
-                padding: '.5rem .8rem'
-            },
-            '& img': {
-                height: '250px',
-                width: '100%',
-                objectFit: 'contain'
+    assetList: ({ gridPosition, theme }) => ({
+        '.neos &': {
+            gridArea: gridPosition,
+            display: 'grid',
+            gridTemplateColumns: 'repeat( auto-fit, minmax(200px, 1fr) )',
+            gridGap: '1rem',
+            '& figure': {
+                border: `1px solid ${theme.borderColor}`,
+                margin: '0',
+                display: 'flex',
+                flexDirection: 'column',
+                '& picture': {
+                    borderBottom: `1px solid ${theme.borderColor}`
+                },
+                '& figcaption': {
+                    padding: '.5rem .8rem'
+                },
+                '& img': {
+                    height: '250px',
+                    width: '100%',
+                    objectFit: 'contain'
+                }
             }
         }
-    }
+    })
 });
 
 export default function AssetList(props: GridComponentProps) {
     const theme = useMediaUiTheme();
     const classes = useListStyles({ ...props, theme });
     const { assetProxies, dummyImage } = useMediaUi();
+    const { translate } = useIntl();
 
     return (
-        <section className={classes.container}>
-            <div className={classes.list}>
-                {assetProxies.map(asset => {
+        <section className={classes.assetList}>
+            {assetProxies.length ? (
+                assetProxies.map(asset => {
                     const { identifier, label } = asset;
                     return (
                         <figure key={identifier}>
@@ -49,8 +51,10 @@ export default function AssetList(props: GridComponentProps) {
                             <figcaption>{label}</figcaption>
                         </figure>
                     );
-                })}
-            </div>
+                })
+            ) : (
+                <div>{translate('assetList', 'No assets found')}</div>
+            )}
         </section>
     );
 }

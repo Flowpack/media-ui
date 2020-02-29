@@ -29,8 +29,8 @@ export default function App() {
                 <LoadingIndicator />
                 <SideBarLeft gridPosition="left" />
                 <AssetList gridPosition="main" />
-                <Pagination gridPosition="bottom" />
                 <SideBarRight gridPosition="right" />
+                <Pagination />
             </div>
         </MediaUiThemeProvider>
     );

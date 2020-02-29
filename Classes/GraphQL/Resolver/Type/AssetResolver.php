@@ -56,6 +56,7 @@ class AssetResolver implements ResolverInterface
     {
         try {
             if ($asset->getAssetProxy()) {
+                // TODO: This is currently broken for local assets. See https://github.com/neos/neos-development-collection/pull/2924
                 return (string)$asset->getAssetProxy()->getThumbnailUri();
             } else {
                 $this->systemLogger->warning('Could not create thumbnail as asset has not AssetProxy', [$asset->getLabel()]);

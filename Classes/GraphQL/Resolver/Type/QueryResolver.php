@@ -6,13 +6,20 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\QueryInterface;
+use Neos\Flow\Persistence\QueryResultInterface;
 use Neos\Media\Domain\Model\Asset;
+use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
+use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
+use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
+use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
 use Neos\Media\Domain\Model\Tag;
+use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Service\AssetSourceService;
+use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
 
 /**
@@ -44,6 +51,18 @@ class QueryResolver implements ResolverInterface
     protected $assetSources;
 
     /**
+     * @Flow\Inject
+     * @var AssetCollectionRepository
+     */
+    protected $assetCollectionRepository;
+
+    /**
+     * @Flow\Inject
+     * @var LoggerInterface
+     */
+    protected $systemLogger;
+
+    /**
      * @return void
      */
     public function initializeObject(): void
@@ -54,23 +73,29 @@ class QueryResolver implements ResolverInterface
     /**
      * Returns total count of asset proxies in the given asset source
      *
-     * @param $_m
+     * @param $_
      * @param array $variables
      * @return int
      */
-    public function assetCount($_m, array $variables): int
+    public function assetCount($_, array $variables): int
     {
         $query = $this->createAssetProxyQuery($variables['assetSource'], $variables['tag'],
             $variables['assetCollection']);
-        return $query->count();
+
+        try {
+            return $query->count();
+        } catch (\Exception $e) {
+            // TODO: Handle that not every asset source implements the count method => Introduce countable interface?
+        }
+        return 0;
     }
 
     /**
      * @param $_
      * @param array $variables
-     * @return array<Asset>
+     * @return AssetProxyQueryResultInterface
      */
-    public function assetProxies($_, array $variables): array
+    public function assetProxies($_, array $variables): AssetProxyQueryResultInterface
     {
         $limit = array_key_exists('limit', $variables) ? $variables['limit'] : 20;
         $offset = array_key_exists('offset', $variables) ? $variables['offset'] : 0;
@@ -78,25 +103,29 @@ class QueryResolver implements ResolverInterface
         $query = $this->createAssetProxyQuery($variables['assetSource'], $variables['tag'],
             $variables['assetCollection']);
 
-        $query->setOffset($offset < $query->count() ? $offset : 0);
+        try {
+            $offset = $offset < $query->count() ? $offset : 0;
+        } catch (\Exception $e) {
+            // TODO: Handle that not every asset source implements the count method => Introduce countable interface?
+        }
+
+        $query->setOffset($offset);
         $query->setLimit($limit);
 
-        return $query->execute()->toArray();
+        return $query->execute();
     }
 
     /**
      * @param string $assetSourceName
      * @param string|null $tag
-     * @param null $assetCollection
+     * @param string|null $assetCollection
      * @return AssetProxyQueryInterface|null
      */
     protected function createAssetProxyQuery(
         string $assetSourceName = 'neos',
         string $tag = null,
-        $assetCollection = null
+        string $assetCollection = null
     ): ?AssetProxyQueryInterface {
-        $assetSourceName = strtolower($assetSourceName);
-
         if (array_key_exists($assetSourceName, $this->assetSources)) {
             /** @var AssetSourceInterface $activeAssetSource */
             $activeAssetSource = $this->assetSources[$assetSourceName];
@@ -106,15 +135,27 @@ class QueryResolver implements ResolverInterface
 
         $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
 
-        if ($tag) {
+        if ($assetCollection && $assetProxyRepository instanceof SupportsCollectionsInterface) {
+            /** @var AssetCollection $assetCollection */
+            /** @noinspection PhpUndefinedMethodInspection */
+            $assetCollection = $this->assetCollectionRepository->findOneByTitle($assetCollection);
+            if ($assetCollection) {
+                $assetProxyRepository->filterByCollection($assetCollection);
+            }
+        }
+
+        // TODO: Implement sorting via `SupportsSortingInterface`
+
+        // TODO: Implement filtering by type
+
+        if ($tag && $assetProxyRepository instanceof SupportsTaggingInterface) {
+            /** @var Tag $tag */
             /** @noinspection PhpUndefinedMethodInspection */
             $tag = $this->tagRepository->findOneByLabel($tag);
             if ($tag) {
                 return $assetProxyRepository->findByTag($tag)->getQuery();
             }
         }
-
-        // TODO: Implement asset collection filter
 
         return $assetProxyRepository->findAll()->getQuery();
     }
@@ -132,6 +173,9 @@ class QueryResolver implements ResolverInterface
             $tag = $this->tagRepository->findOneByLabel($variables['tag']);
             return $tag ? $this->assetRepository->findByTag($tag)->toArray() : [];
         }
+
+        // TODO: Remove this method (and the schema) and only allow access to assets via AssetProxies or add more filter methods
+
         return $this->assetRepository->findAll()->toArray();
     }
 
@@ -150,9 +194,19 @@ class QueryResolver implements ResolverInterface
      * @param array $variables
      * @return array<AssetSourceInterface>
      */
-    public function assetSource($_, array $variables): array
+    public function assetSources($_, array $variables): array
     {
         return $this->assetSources;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return QueryResultInterface
+     */
+    public function assetCollections($_, array $variables): QueryResultInterface
+    {
+        return $this->assetCollectionRepository->findAll();
     }
 
     /**

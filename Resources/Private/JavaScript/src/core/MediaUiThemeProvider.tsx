@@ -16,6 +16,7 @@ const mediaUiTheme: MediaUiTheme = {
     modifiedColor: '#adff2f',
     warningColor: '#ff4500',
     deletedColor: '#ff8700',
+    moduleBackgroundColor: '#222222',
     loadingIndicatorZIndex: 10022
 };
 
