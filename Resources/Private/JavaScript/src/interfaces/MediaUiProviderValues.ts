@@ -12,14 +12,16 @@ export default interface MediaUiProviderValues {
     assetProxies: AssetProxy[];
     tags: Tag[];
     tagFilter: Tag;
-    setTagFilter: Function;
+    setTagFilter: (tag: Tag) => void;
     assetSources;
     assetSourceFilter: AssetSource;
-    setAssetSourceFilter: Function;
+    setAssetSourceFilter: (assetSource: AssetSource) => void;
     assetCollections: AssetCollection[];
     assetCollectionFilter: AssetCollection;
-    setAssetCollectionFilter: Function;
+    setAssetCollectionFilter: (assetCollection: AssetCollection) => void;
     currentPage: number;
-    setCurrentPage: Function;
+    setCurrentPage: (currentPage: number) => void;
+    selectedAsset: AssetProxy;
+    setSelectedAsset: (assetProxy: AssetProxy) => void;
     dummyImage: string;
 }

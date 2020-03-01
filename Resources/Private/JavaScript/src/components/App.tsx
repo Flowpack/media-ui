@@ -6,6 +6,8 @@ import SideBarRight from './SideBarRight';
 import Pagination from './Pagination';
 import MediaUiThemeProvider, { useMediaUiTheme } from '../core/MediaUiThemeProvider';
 import LoadingIndicator from './LoadingIndicator';
+import AssetPreview from './AssetPreview';
+import { useMediaUi } from '../core/MediaUi';
 
 const useAppStyles = createUseStyles({
     container: {
@@ -22,13 +24,15 @@ const useAppStyles = createUseStyles({
 export default function App() {
     const theme = useMediaUiTheme();
     const classes = useAppStyles({ theme });
+    const { selectedAsset } = useMediaUi();
 
     return (
         <MediaUiThemeProvider>
             <div className={classes.container}>
                 <LoadingIndicator />
                 <SideBarLeft gridPosition="left" />
-                <AssetList gridPosition="main" />
+                {!selectedAsset && <AssetList gridPosition="main" />}
+                {selectedAsset && <AssetPreview gridPosition="main" />}
                 <SideBarRight gridPosition="right" />
                 <Pagination />
             </div>

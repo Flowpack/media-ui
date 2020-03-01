@@ -17,6 +17,7 @@ const useListStyles = createUseStyles({
                 display: 'flex',
                 flexDirection: 'column',
                 '& picture': {
+                    cursor: 'pointer',
                     borderBottom: `1px solid ${theme.borderColor}`
                 },
                 '& figcaption': {
@@ -35,7 +36,7 @@ const useListStyles = createUseStyles({
 export default function AssetList(props: GridComponentProps) {
     const theme = useMediaUiTheme();
     const classes = useListStyles({ ...props, theme });
-    const { assetProxies, dummyImage } = useMediaUi();
+    const { assetProxies, dummyImage, setSelectedAsset } = useMediaUi();
     const { translate } = useIntl();
 
     return (
@@ -45,7 +46,7 @@ export default function AssetList(props: GridComponentProps) {
                     const { identifier, label } = asset;
                     return (
                         <figure key={identifier}>
-                            <picture>
+                            <picture onClick={() => setSelectedAsset(asset)}>
                                 <img src={asset.thumbnailUri || dummyImage} alt={asset.label} />
                             </picture>
                             <figcaption>{label}</figcaption>

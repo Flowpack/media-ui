@@ -85,6 +85,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
     const [assetSourceFilter, setAssetSourceFilter] = useState<AssetSource>(NEOS_ASSET_SOURCE);
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedAsset, setSelectedAsset] = useState<AssetProxy>();
 
     const { loading, error, data } = useQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(ASSET_PROXIES, {
         variables: {
@@ -132,6 +133,8 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
                     setAssetSourceFilter,
                     currentPage,
                     setCurrentPage,
+                    selectedAsset,
+                    setSelectedAsset,
                     dummyImage
                 }}
             >
