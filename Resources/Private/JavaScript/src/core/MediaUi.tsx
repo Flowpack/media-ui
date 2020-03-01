@@ -84,7 +84,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     const [tagFilter, setTagFilter] = useState<Tag>();
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
     const [assetSourceFilter, setAssetSourceFilter] = useState<AssetSource>(NEOS_ASSET_SOURCE);
-    const [currentPage, setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const { loading, error, data } = useQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(ASSET_PROXIES, {
         variables: {
@@ -92,7 +92,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
             assetCollection: assetCollectionFilter?.title || '',
             tag: tagFilter?.label || '',
             limit: ASSETS_PER_PAGE,
-            offset: currentPage * ASSETS_PER_PAGE
+            offset: (currentPage - 1) * ASSETS_PER_PAGE
         }
     });
 
@@ -103,8 +103,8 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     const tags = data?.tags || [];
     const isLoading = loading;
 
-    if (currentPage * ASSETS_PER_PAGE > assetCount) {
-        setCurrentPage(0);
+    if ((currentPage - 1) * ASSETS_PER_PAGE > assetCount) {
+        setCurrentPage(1);
     }
 
     if (error) {
