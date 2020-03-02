@@ -7,11 +7,11 @@ import AssetSourceList from './AssetSourceList';
 import SearchBox from './SearchBox';
 
 const useStyles = createUseStyles({
-    container: {
+    leftSideBar: {
         gridArea: props => props.gridPosition,
-        display: 'flex',
-        flexDirection: 'column',
-        border: ({ theme }) => `1px solid ${theme.borderColor}`
+        display: 'grid',
+        gridAutoRows: 'min-content',
+        gridGap: '2rem'
     }
 });
 
@@ -21,7 +21,7 @@ export default function SideBarLeft(props: GridComponentProps) {
     const components = [SearchBox, AssetSourceList, AssetCollectionList, TagList];
 
     return (
-        <div className={classes.container}>
+        <div className={classes.leftSideBar}>
             {components.map((Component, index) => (
                 <Component key={index} />
             ))}

@@ -30,11 +30,19 @@ export default function App() {
         <MediaUiThemeProvider>
             <div className={classes.container}>
                 <LoadingIndicator />
-                <SideBarLeft gridPosition="left" />
-                {!selectedAsset && <AssetList gridPosition="main" />}
-                {selectedAsset && <AssetPreview gridPosition="main" />}
-                <SideBarRight gridPosition="right" />
-                <Pagination />
+                {!selectedAsset && (
+                    <>
+                        <SideBarLeft gridPosition="left" />
+                        <AssetList gridPosition="main" />
+                        <SideBarRight gridPosition="right" />
+                        <Pagination />
+                    </>
+                )}
+                {selectedAsset && (
+                    <>
+                        <AssetPreview gridPosition="main" />
+                    </>
+                )}
             </div>
         </MediaUiThemeProvider>
     );
