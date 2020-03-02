@@ -95,6 +95,8 @@ export default function Pagination() {
         });
     }, [numberOfPages, currentPage]);
 
+    // TODO: Replace left and right chevrons with proper Icon components from Neos.UI
+
     return (
         <>
             {numberOfPages > 0 && (

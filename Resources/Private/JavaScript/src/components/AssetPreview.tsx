@@ -10,7 +10,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 }));
 
 export default function AssetPreview(props: GridComponentProps) {
-    const classes = useStyles({ props });
+    const classes = useStyles({ ...props });
     const { selectedAsset, setSelectedAsset } = useMediaUi();
 
     return (

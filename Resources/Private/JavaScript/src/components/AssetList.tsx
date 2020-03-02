@@ -46,7 +46,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 }));
 
 export default function AssetList(props: GridComponentProps) {
-    const classes = useStyles({ props });
+    const classes = useStyles({ ...props });
     const { assetProxies, dummyImage, setSelectedAsset } = useMediaUi();
     const { translate } = useIntl();
 
