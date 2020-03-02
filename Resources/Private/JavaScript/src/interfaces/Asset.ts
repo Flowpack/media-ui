@@ -1,3 +1,6 @@
+import Tag from './Tag';
+import AssetCollection from './AssetCollection';
+
 export default interface Asset {
     readonly identifier: string;
     title?: string;
@@ -8,4 +11,6 @@ export default interface Asset {
     filename: string;
     copyrightNotice?: string;
     thumbnail: string;
+    tags: Tag[];
+    assetCollections: AssetCollection[];
 }

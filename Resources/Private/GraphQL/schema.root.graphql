@@ -1,10 +1,11 @@
 type Query {
   asset(identifier: ID!): Asset
   assets(tag: String): [Asset!]!
-  assetProxies(assetSource: AssetSource!, tag: String, assetCollection: String, limit: Int, offset: Int): [AssetProxy!]!
+  assetProxies(assetSource: AssetSource!, tag: String, assetCollection: String, assetType: String, limit: Int, offset: Int): [AssetProxy!]!
   assetSources: [AssetSource!]!
   assetCollections: [AssetCollection!]!
-  assetCount(assetSource: AssetSource!, tag: String, assetCollection: String): Int!
+  assetTypes: [AssetType!]!
+  assetCount(assetSource: AssetSource!, tag: String, assetCollection: String, assetType: String): Int!
   tags: [Tag!]!
 }
 
@@ -47,8 +48,13 @@ type Asset {
     filename: String!
     copyrightNotice: String
     thumbnail: String
-    tags: [Tag]
+    tags: [Tag!]!
+    assetCollections: [AssetCollection!]!
     # TODO: implement `variants: [AssetVariant]`
+}
+
+type AssetType {
+    label: String!
 }
 
 type Tag {

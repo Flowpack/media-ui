@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useIntl } from '../core/Intl';
-import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
-import MediaUiTheme from '../interfaces/MediaUiTheme';
+import { createUseMediaUiStyles } from '../../core/MediaUiThemeProvider';
+import MediaUiTheme from '../../interfaces/MediaUiTheme';
+import { useIntl } from '../../core/Intl';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     searchBox: {

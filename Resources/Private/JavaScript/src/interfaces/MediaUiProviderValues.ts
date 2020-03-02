@@ -2,6 +2,7 @@ import AssetProxy from './AssetProxy';
 import AssetCollection from './AssetCollection';
 import Tag from './Tag';
 import AssetSource from './AssetSource';
+import AssetType from './AssetType';
 
 export default interface MediaUiProviderValues {
     csrf: string;
@@ -23,5 +24,8 @@ export default interface MediaUiProviderValues {
     setCurrentPage: (currentPage: number) => void;
     selectedAsset: AssetProxy;
     setSelectedAsset: (assetProxy: AssetProxy) => void;
+    assetTypes: AssetType[];
+    assetTypeFilter: AssetType;
+    setAssetTypeFilter: (assetType: AssetType) => void;
     dummyImage: string;
 }

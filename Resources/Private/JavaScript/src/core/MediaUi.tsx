@@ -8,19 +8,22 @@ import Tag from '../interfaces/Tag';
 import AssetCollection from '../interfaces/AssetCollection';
 import MediaUiProviderProps from '../interfaces/MediaUiProviderProps';
 import AssetProxy from '../interfaces/AssetProxy';
+import AssetType from '../interfaces/AssetType';
 
 interface AssetProxiesQueryResult {
     assetProxies: AssetProxy[];
     assetCollections: AssetCollection[];
     assetSources: AssetSource[];
+    assetTypes: AssetType[];
     assetCount: number;
     tags: Tag[];
 }
 
 interface AssetProxiesQueryVariables {
     assetSource: string;
-    tag: string;
     assetCollection: string;
+    assetType: string;
+    tag: string;
     limit: number;
     offset: number;
 }
@@ -39,10 +42,18 @@ export const NEOS_ASSET_SOURCE: AssetSource = {
 
 // TODO: Split this big query into individual reusable pieces including the matching interfaces
 const ASSET_PROXIES = gql`
-    query ASSET_PROXIES($assetSource: String, $tag: String, $assetCollection: String, $limit: Int, $offset: Int) {
+    query ASSET_PROXIES(
+        $assetSource: String
+        $assetCollection: String
+        $assetType: String
+        $tag: String
+        $limit: Int
+        $offset: Int
+    ) {
         assetProxies(
             assetSource: $assetSource
             assetCollection: $assetCollection
+            assetType: $assetType
             tag: $tag
             limit: $limit
             offset: $offset
@@ -59,10 +70,17 @@ const ASSET_PROXIES = gql`
             previewUri
             localAssetIdentifier
             localAssetData {
+                identifier
                 label
                 title
                 caption
                 copyrightNotice
+                tags {
+                    label
+                }
+                assetCollections {
+                    title
+                }
             }
         }
         assetCollections {
@@ -78,7 +96,10 @@ const ASSET_PROXIES = gql`
             supportsTagging
             supportsCollections
         }
-        assetCount(assetSource: $assetSource, assetCollection: $assetCollection, tag: $tag)
+        assetCount(assetSource: $assetSource, assetCollection: $assetCollection, assetType: $assetType, tag: $tag)
+        assetTypes {
+            label
+        }
         tags {
             label
         }
@@ -91,11 +112,13 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     const [assetSourceFilter, setAssetSourceFilter] = useState<AssetSource>(NEOS_ASSET_SOURCE);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedAsset, setSelectedAsset] = useState<AssetProxy>();
+    const [assetTypeFilter, setAssetTypeFilter] = useState<AssetType>();
 
     const { loading, error, data } = useQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(ASSET_PROXIES, {
         variables: {
             assetSource: assetSourceFilter?.identifier,
             assetCollection: assetCollectionFilter?.title || '',
+            assetType: assetTypeFilter?.label || '',
             tag: tagFilter?.label || '',
             limit: ASSETS_PER_PAGE,
             offset: (currentPage - 1) * ASSETS_PER_PAGE
@@ -106,6 +129,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     const assetCollections = data?.assetCollections || [];
     const assetSources = data?.assetSources || [];
     const assetCount = data?.assetCount || 0;
+    const assetTypes = data?.assetTypes || [];
     const tags = data?.tags || [];
     const isLoading = loading;
 
@@ -136,6 +160,9 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
                     assetSources,
                     assetSourceFilter,
                     setAssetSourceFilter,
+                    assetTypes,
+                    assetTypeFilter,
+                    setAssetTypeFilter,
                     currentPage,
                     setCurrentPage,
                     selectedAsset,

@@ -1,4 +1,5 @@
 import FileTypeIcon from './FileTypeIcon';
+import Asset from './Asset';
 
 export default interface AssetProxy {
     readonly identifier: string;
@@ -12,4 +13,6 @@ export default interface AssetProxy {
     heightInPixels?: number;
     thumbnailUri?: string;
     previewUri?: string;
+    localAssetIdentifier?: string;
+    localAssetData?: Asset;
 }

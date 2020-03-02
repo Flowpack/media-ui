@@ -8,12 +8,14 @@ import LoadingIndicator from './LoadingIndicator';
 import AssetPreview from './AssetPreview';
 import { useMediaUi } from '../core/MediaUi';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
+import FilterList from './Filter/FilterList';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: {
         display: 'grid',
         gridTemplateColumns: '250px 1fr 250px',
         gridTemplateAreas: `
+            "left top right"
             "left main right"
             "left bottom right"
         `,
@@ -29,11 +31,11 @@ export default function App() {
         <MediaUiThemeProvider>
             <div className={classes.container}>
                 <LoadingIndicator />
+                <SideBarLeft gridPosition="left" />
                 {!selectedAsset && (
                     <>
-                        <SideBarLeft gridPosition="left" />
+                        <FilterList gridPosition="top" />
                         <AssetList gridPosition="main" />
-                        <SideBarRight gridPosition="right" />
                         <Pagination />
                     </>
                 )}
@@ -42,6 +44,7 @@ export default function App() {
                         <AssetPreview gridPosition="main" />
                     </>
                 )}
+                <SideBarRight gridPosition="right" />
             </div>
         </MediaUiThemeProvider>
     );
