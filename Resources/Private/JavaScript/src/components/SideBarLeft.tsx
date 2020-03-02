@@ -4,6 +4,7 @@ import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
 import TagList from './TagList';
 import AssetCollectionList from './AssetCollectionList';
 import AssetSourceList from './AssetSourceList';
+import SearchBox from './SearchBox';
 
 const useStyles = createUseStyles({
     container: {
@@ -17,7 +18,7 @@ const useStyles = createUseStyles({
 export default function SideBarLeft(props: GridComponentProps) {
     const theme = useMediaUiTheme();
     const classes = useStyles({ ...props, theme });
-    const components = [AssetSourceList, AssetCollectionList, TagList];
+    const components = [SearchBox, AssetSourceList, AssetCollectionList, TagList];
 
     return (
         <div className={classes.container}>
