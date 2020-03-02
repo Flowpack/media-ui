@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createTheming } from 'react-jss';
+import { createTheming, createUseStyles } from 'react-jss';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
 
 const ThemeContext = React.createContext({} as MediaUiTheme);
@@ -24,6 +24,7 @@ const mediaUiTheme: MediaUiTheme = {
 };
 
 export const useMediaUiTheme = useTheme;
+export const createUseMediaUiStyles = styles => createUseStyles(styles, { theming } as object);
 
 export default function MediaUiThemeProvider({ children }: { children: React.ReactElement }) {
     return <ThemeProvider theme={mediaUiTheme}>{children}</ThemeProvider>;

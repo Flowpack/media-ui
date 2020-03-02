@@ -1,24 +1,27 @@
 import * as React from 'react';
 import { useIntl } from '../core/Intl';
-import { createUseStyles } from 'react-jss';
-import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
+import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
+import MediaUiTheme from '../interfaces/MediaUiTheme';
 
-const useStyles = createUseStyles({
-    searchBox: ({ theme }) => ({
+const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+    searchBox: {
         '.neos & input': {
             width: '100%'
         }
-    })
-});
+    }
+}));
 
 export default function SearchBox() {
-    const theme = useMediaUiTheme();
-    const classes = useStyles({ theme });
+    const classes = useStyles();
     const { translate } = useIntl();
 
     return (
         <div className={classes.searchBox}>
-            <input type="search" onSubmit={() => console.log(this.value)} placeholder={translate('searchBox.placeholder', 'Search')} />
+            <input
+                type="search"
+                onSubmit={() => console.log(this.value)}
+                placeholder={translate('searchBox.placeholder', 'Search')}
+            />
         </div>
     );
 }

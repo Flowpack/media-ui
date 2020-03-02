@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { useMediaUi } from '../core/MediaUi';
-import { createUseStyles } from 'react-jss';
 import { useIntl } from '../core/Intl';
-import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
+import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
 
-const useStyles = createUseStyles((theme: MediaUiTheme) => ({
+const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: {
         '.neos &': {
             padding: '0 1rem 1rem 1rem'
@@ -24,8 +23,7 @@ const useStyles = createUseStyles((theme: MediaUiTheme) => ({
 }));
 
 export default function AssetSourceList() {
-    const theme = useMediaUiTheme();
-    const classes = useStyles({ theme });
+    const classes = useStyles();
     const { assetSources, assetSourceFilter, setAssetSourceFilter } = useMediaUi();
     const { translate } = useIntl();
 

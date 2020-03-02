@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { ASSETS_PER_PAGE, useMediaUi } from '../core/MediaUi';
 import { useIntl } from '../core/Intl';
-import { createUseStyles } from 'react-jss';
-import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
+import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import { useEffect, useState } from 'react';
+import MediaUiTheme from '../interfaces/MediaUiTheme';
 
-const useStyles = createUseStyles({
-    pagination: ({ theme }) => ({
+const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+    pagination: {
         display: 'flex',
         position: 'fixed',
         bottom: 0,
@@ -15,16 +15,16 @@ const useStyles = createUseStyles({
         borderTop: `1px solid ${theme.borderColor}`,
         backgroundColor: theme.moduleBackgroundColor,
         zIndex: theme.paginationZIndex
-    }),
-    selected: ({ theme }) => ({
+    },
+    selected: {
         border: `1px solid ${theme.borderColor}`,
         borderTop: 0,
         borderBottom: 0,
         '.neos & a': {
             color: theme.primaryColor
         }
-    }),
-    list: ({ theme }) => ({
+    },
+    list: {
         '.neos &': {
             display: 'flex',
             margin: '0 -.5rem',
@@ -46,12 +46,11 @@ const useStyles = createUseStyles({
                 }
             }
         }
-    })
-});
+    }
+}));
 
 export default function Pagination() {
-    const theme = useMediaUiTheme();
-    const classes = useStyles({ theme });
+    const classes = useStyles();
     const { assetCount, currentPage, setCurrentPage } = useMediaUi();
     const { translate } = useIntl();
 

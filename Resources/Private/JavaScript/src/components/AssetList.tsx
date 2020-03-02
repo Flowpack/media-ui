@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { createUseStyles } from 'react-jss';
 import { useMediaUi } from '../core/MediaUi';
-import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
+import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import { useIntl } from '../core/Intl';
+import MediaUiTheme from '../interfaces/MediaUiTheme';
 
-const useListStyles = createUseStyles({
-    assetList: ({ gridPosition, theme }) => ({
+const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+    assetList: {
         '.neos &': {
-            gridArea: gridPosition,
+            gridArea: props => props.gridPosition,
             display: 'grid',
             gridTemplateColumns: 'repeat( auto-fit, minmax(200px, 1fr) )',
             gridGap: '1rem',
@@ -42,12 +42,11 @@ const useListStyles = createUseStyles({
                 }
             }
         }
-    })
-});
+    }
+}));
 
 export default function AssetList(props: GridComponentProps) {
-    const theme = useMediaUiTheme();
-    const classes = useListStyles({ ...props, theme });
+    const classes = useStyles({ props });
     const { assetProxies, dummyImage, setSelectedAsset } = useMediaUi();
     const { translate } = useIntl();
 

@@ -1,17 +1,16 @@
 import * as React from 'react';
-import { createUseStyles } from 'react-jss';
-import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
+import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import { useMediaUi } from '../core/MediaUi';
+import MediaUiTheme from '../interfaces/MediaUiTheme';
 
-const useStyles = createUseStyles({
-    preview: ({ gridPosition, theme }) => ({
-        gridArea: gridPosition
-    })
-});
+const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+    preview: {
+        gridArea: props => props.gridPosition
+    }
+}));
 
 export default function AssetPreview(props: GridComponentProps) {
-    const theme = useMediaUiTheme();
-    const classes = useStyles({ ...props, theme });
+    const classes = useStyles({ props });
     const { selectedAsset, setSelectedAsset } = useMediaUi();
 
     return (

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useMediaUi } from '../core/MediaUi';
-import { createUseStyles } from 'react-jss';
-import { useMediaUiTheme } from '../core/MediaUiThemeProvider';
+import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
+import MediaUiTheme from '../interfaces/MediaUiTheme';
 
-const useStyles = createUseStyles({
+const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     '@keyframes cssloadWidth': {
         '0%, 100%': {
             transitionTimingFunction: 'cubic-bezier(1, 0, .65, .85)'
@@ -21,7 +21,7 @@ const useStyles = createUseStyles({
         height: '2px',
         position: 'fixed',
         width: '100vw',
-        zIndex: ({ theme }) => theme.loadingIndicatorZIndex
+        zIndex: theme.loadingIndicatorZIndex
     },
     indicator: {
         height: '2px',
@@ -31,14 +31,13 @@ const useStyles = createUseStyles({
     bar: {
         height: '100%',
         position: 'relative',
-        backgroundColor: ({ theme }) => theme.deletedColor,
+        backgroundColor: theme.deletedColor,
         animation: '$cssloadWidth 2s cubic-bezier(.45, 0, 1, 1) infinite'
     }
-});
+}));
 
 export default function LoadingIndicator() {
-    const theme = useMediaUiTheme();
-    const classes = useStyles({ theme });
+    const classes = useStyles();
     const { isLoading } = useMediaUi();
 
     return (
