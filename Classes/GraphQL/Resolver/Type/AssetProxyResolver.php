@@ -4,11 +4,16 @@ declare(strict_types=1);
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
+use Neos\Media\Domain\Service\FileTypeIconService;
 use t3n\GraphQL\ResolverInterface;
 
+/**
+ * @Flow\Scope("singleton")
+ */
 class AssetProxyResolver implements ResolverInterface
 {
     /**
@@ -16,6 +21,18 @@ class AssetProxyResolver implements ResolverInterface
      * @var AssetRepository
      */
     protected $assetRepository;
+
+    /**
+     * @Flow\Inject
+     * @var FileTypeIconService
+     */
+    protected $fileTypeIconService;
+
+    /**
+     * @Flow\Inject
+     * @var ResourceManager
+     */
+    protected $resourceManager;
 
     /**
      * @param AssetProxyInterface $assetProxy
@@ -28,5 +45,12 @@ class AssetProxyResolver implements ResolverInterface
             return $this->assetRepository->findByIdentifier($localAssetIdentifier);
         }
         return null;
+    }
+
+    public function fileTypeIcon(AssetProxyInterface $assetProxy)
+    {
+        $icon = $this->fileTypeIconService->getIcon($assetProxy->getFilename());
+        $icon['src'] = $this->resourceManager->getPublicPackageResourceUriByPath($icon['src']);
+        return $icon;
     }
 }

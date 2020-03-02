@@ -13,7 +13,8 @@ const useStyles = createUseStyles({
         left: 0,
         right: 0,
         borderTop: `1px solid ${theme.borderColor}`,
-        backgroundColor: theme.moduleBackgroundColor
+        backgroundColor: theme.moduleBackgroundColor,
+        zIndex: theme.paginationZIndex
     }),
     selected: ({ theme }) => ({
         border: `1px solid ${theme.borderColor}`,

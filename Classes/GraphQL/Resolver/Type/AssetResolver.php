@@ -10,6 +10,9 @@ use Neos\Media\Domain\Service\ThumbnailService;
 use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
 
+/**
+ * @Flow\Scope("singleton")
+ */
 class AssetResolver implements ResolverInterface
 {
     /**

@@ -16,8 +16,11 @@ const mediaUiTheme: MediaUiTheme = {
     modifiedColor: '#adff2f',
     warningColor: '#ff4500',
     deletedColor: '#ff8700',
+    assetBackgroundColor: '#141414',
+    captionBackgroundColor: '#323232',
     moduleBackgroundColor: '#222222',
-    loadingIndicatorZIndex: 10022
+    loadingIndicatorZIndex: 10022,
+    paginationZIndex: 10022
 };
 
 export const useMediaUiTheme = useTheme;

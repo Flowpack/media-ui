@@ -9,5 +9,8 @@ export default interface MediaUiTheme {
     warningColor: string;
     deletedColor: string;
     moduleBackgroundColor: string;
+    assetBackgroundColor: string;
+    captionBackgroundColor: string;
+    paginationZIndex: number;
     loadingIndicatorZIndex: number;
 }

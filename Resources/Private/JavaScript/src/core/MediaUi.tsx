@@ -50,6 +50,11 @@ const ASSET_PROXIES = gql`
             identifier
             label
             mediaType
+            filename
+            fileTypeIcon {
+                src
+                alt
+            }
             thumbnailUri
             previewUri
             localAssetIdentifier

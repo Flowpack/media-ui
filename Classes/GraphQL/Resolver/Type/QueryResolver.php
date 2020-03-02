@@ -5,7 +5,6 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
-use Neos\Flow\Persistence\QueryInterface;
 use Neos\Flow\Persistence\QueryResultInterface;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;

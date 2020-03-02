@@ -27,6 +27,7 @@ type AssetProxy {
     lastModified: String! # TODO: introduce custom scalar for Date types
     fileSize: Int!
     mediaType: String!
+    fileTypeIcon: FileTypeIcon!
     widthInPixels: Int
     heightInPixels: Int
     thumbnailUri: String # Provides an image uri for thumbnails views
@@ -58,6 +59,11 @@ type AssetCollection {
     title: String!
     assets: [Asset]
     tags: [Tag]
+}
+
+type FileTypeIcon {
+    src: String!
+    alt: String
 }
 
 schema {

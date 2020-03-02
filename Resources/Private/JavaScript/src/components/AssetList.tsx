@@ -12,16 +12,28 @@ const useListStyles = createUseStyles({
             gridTemplateColumns: 'repeat( auto-fit, minmax(200px, 1fr) )',
             gridGap: '1rem',
             '& figure': {
-                border: `1px solid ${theme.borderColor}`,
                 margin: '0',
                 display: 'flex',
                 flexDirection: 'column',
                 '& picture': {
                     cursor: 'pointer',
-                    borderBottom: `1px solid ${theme.borderColor}`
+                    backgroundColor: theme.assetBackgroundColor,
+                    '&:hover': {
+                        outline: `4px solid ${theme.primaryColor}`,
+                        zIndex: 2
+                    }
                 },
                 '& figcaption': {
-                    padding: '.5rem .8rem'
+                    backgroundColor: theme.captionBackgroundColor,
+                    padding: '.8rem .8rem',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    '& img': {
+                        width: '1.3rem',
+                        height: 'auto',
+                        marginRight: '.5rem'
+                    }
                 },
                 '& img': {
                     height: '250px',
@@ -49,7 +61,9 @@ export default function AssetList(props: GridComponentProps) {
                             <picture onClick={() => setSelectedAsset(asset)}>
                                 <img src={asset.thumbnailUri || dummyImage} alt={asset.label} />
                             </picture>
-                            <figcaption>{label}</figcaption>
+                            <figcaption>
+                                <img src={asset.fileTypeIcon.src} alt={asset.fileTypeIcon.alt} /> {label}
+                            </figcaption>
                         </figure>
                     );
                 })

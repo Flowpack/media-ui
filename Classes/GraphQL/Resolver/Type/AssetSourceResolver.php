@@ -3,11 +3,15 @@ declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
+use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
 use t3n\GraphQL\ResolverInterface;
 
+/**
+ * @Flow\Scope("singleton")
+ */
 class AssetSourceResolver implements ResolverInterface
 {
     /**
