@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useIntl } from '../core/Intl';
 import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
+import { useQuery } from '@apollo/react-hooks';
+import { ASSET_SOURCE_FILTER } from '../queries/AssetSourceFilterQuery';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: {
@@ -27,8 +29,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function TagList() {
     const classes = useStyles();
-    const { tags, tagFilter, setTagFilter, assetSourceFilter } = useMediaUi();
     const { translate } = useIntl();
+    const { tags, tagFilter, setTagFilter, assetSources } = useMediaUi();
+
+    const assetSourceFilterQuery = useQuery(ASSET_SOURCE_FILTER);
+    const { assetSourceFilter } = assetSourceFilterQuery.data;
+    const selectedAssetSource = assetSources.find(assetSource => assetSource.identifier === assetSourceFilter);
 
     const [selectedTag, setSelectedTag] = useState(tagFilter);
 
@@ -38,7 +44,7 @@ export default function TagList() {
 
     return (
         <>
-            {assetSourceFilter.supportsTagging && (
+            {selectedAssetSource?.supportsTagging && (
                 <nav className={classes.container}>
                     <strong>{translate('tagList.header', 'Tags')}</strong>
                     <ul className={classes.tagList}>

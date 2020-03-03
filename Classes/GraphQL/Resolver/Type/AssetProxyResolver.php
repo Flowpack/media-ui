@@ -47,7 +47,11 @@ class AssetProxyResolver implements ResolverInterface
         return null;
     }
 
-    public function fileTypeIcon(AssetProxyInterface $assetProxy)
+    /**
+     * @param AssetProxyInterface $assetProxy
+     * @return array
+     */
+    public function fileTypeIcon(AssetProxyInterface $assetProxy): array
     {
         $icon = $this->fileTypeIconService->getIcon($assetProxy->getFilename());
         $icon['src'] = $this->resourceManager->getPublicPackageResourceUriByPath($icon['src']);

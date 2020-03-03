@@ -3,9 +3,12 @@ import { render } from 'react-dom';
 import Modal from 'react-modal';
 import { ApolloProvider } from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import { MediaUiProvider } from './core/MediaUi';
 import { IntlProvider } from './core/Intl';
 import App from './components/App';
+import { resolvers, typeDefs } from './core/Resolvers';
+import { restoreLocalState } from './core/PersistentStateManager';
 
 window.onload = async (): Promise<void> => {
     while (!window.NeosCMS || !window.NeosCMS.I18n.initialized) {
@@ -15,9 +18,15 @@ window.onload = async (): Promise<void> => {
     const root = document.getElementById('media-ui-app');
     Modal.setAppElement(root);
 
+    const cache = new InMemoryCache();
+    restoreLocalState(cache);
+
     const client = new ApolloClient({
+        cache,
         uri: JSON.parse(root.dataset.endpoints).graphql,
-        credentials: 'same-origin'
+        credentials: 'same-origin',
+        typeDefs,
+        resolvers
     });
 
     const notify = (type, message) => {

@@ -1,11 +1,11 @@
 type Query {
   asset(identifier: ID!): Asset
   assets(tag: String): [Asset!]!
-  assetProxies(assetSource: AssetSource!, tag: String, assetCollection: String, assetType: String, limit: Int, offset: Int): [AssetProxy!]!
+  assetProxies(assetSource: String, tag: String, assetCollection: String, assetType: String, limit: Int, offset: Int): [AssetProxy!]!
   assetSources: [AssetSource!]!
   assetCollections: [AssetCollection!]!
   assetTypes: [AssetType!]!
-  assetCount(assetSource: AssetSource!, tag: String, assetCollection: String, assetType: String): Int!
+  assetCount(assetSource: String, tag: String, assetCollection: String, assetType: String): Int!
   tags: [Tag!]!
 }
 
@@ -24,10 +24,10 @@ type AssetSource {
 type AssetProxy {
     identifier: ID!
     label: String!
-    filename: String!
+    filename: String
     lastModified: String! # TODO: introduce custom scalar for Date types
     fileSize: Int!
-    mediaType: String!
+    mediaType: String
     fileTypeIcon: FileTypeIcon!
     widthInPixels: Int
     heightInPixels: Int

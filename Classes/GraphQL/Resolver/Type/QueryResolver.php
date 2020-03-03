@@ -9,6 +9,7 @@ use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
+use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetTypeFilter;
 use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
@@ -103,15 +104,15 @@ class QueryResolver implements ResolverInterface
      *
      * @param $_
      * @param array $variables
-     * @return array<AssetProxyInterface>
+     * @return AssetProxyQueryResultInterface
      */
-    public function assetProxies($_, array $variables): array
+    public function assetProxies($_, array $variables): AssetProxyQueryResultInterface
     {
         $limit = array_key_exists('limit', $variables) ? $variables['limit'] : 20;
         $offset = array_key_exists('offset', $variables) ? $variables['offset'] : 0;
 
         $query = $this->createAssetProxyQuery(
-            $variables['assetSource'],
+            $variables['assetSource'] ?: 'neos',
             $variables['tag'],
             $variables['assetCollection'],
             $variables['assetType']
@@ -119,7 +120,7 @@ class QueryResolver implements ResolverInterface
 
         if (!$query) {
             // TODO: Add logging
-            return [];
+            return null;
         }
 
         try {
@@ -131,7 +132,8 @@ class QueryResolver implements ResolverInterface
         $query->setOffset($offset);
         $query->setLimit($limit);
 
-        return $query->execute()->toArray();
+        // TODO: It's not possible to use `toArray` here as not all asset sources implement it
+        return $query->execute();
     }
 
     /**

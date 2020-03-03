@@ -14,9 +14,7 @@ export default interface MediaUiProviderValues {
     tags: Tag[];
     tagFilter: Tag;
     setTagFilter: (tag: Tag) => void;
-    assetSources;
-    assetSourceFilter: AssetSource;
-    setAssetSourceFilter: (assetSource: AssetSource) => void;
+    assetSources: AssetSource[];
     assetCollections: AssetCollection[];
     assetCollectionFilter: AssetCollection;
     setAssetCollectionFilter: (assetCollection: AssetCollection) => void;
