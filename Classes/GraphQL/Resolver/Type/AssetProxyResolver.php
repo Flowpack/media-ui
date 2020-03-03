@@ -7,6 +7,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
+use Neos\Media\Domain\Model\AssetSource\AssetProxy\SupportsIptcMetadataInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Service\FileTypeIconService;
 use t3n\GraphQL\ResolverInterface;
@@ -35,6 +36,8 @@ class AssetProxyResolver implements ResolverInterface
     protected $resourceManager;
 
     /**
+     * Returns the locally stored assetdata for the given assetproxy if it exists. Remote assets have no local asset data.
+     *
      * @param AssetProxyInterface $assetProxy
      * @return Asset|object|null
      */
@@ -48,6 +51,9 @@ class AssetProxyResolver implements ResolverInterface
     }
 
     /**
+     *
+     * Returns a matching icon uri for the given assetproxy
+     *
      * @param AssetProxyInterface $assetProxy
      * @return array
      */
@@ -56,5 +62,22 @@ class AssetProxyResolver implements ResolverInterface
         $icon = $this->fileTypeIconService->getIcon($assetProxy->getFilename());
         $icon['src'] = $this->resourceManager->getPublicPackageResourceUriByPath($icon['src']);
         return $icon;
+    }
+
+    /**
+     * Returns the iptc properties for assetproxies that implement the interface
+     *
+     * @param AssetProxyInterface $assetProxy
+     * @return array
+     */
+    public function iptcMetadata(AssetProxyInterface $assetProxy): array
+    {
+        if ($assetProxy instanceof SupportsIptcMetadataInterface) {
+            $properties = $assetProxy->getIptcProperties();
+            return array_map(function ($key) use ($properties) {
+                return ['key' => $key, 'value' => $properties[$key]];
+            }, array_keys($properties));
+        }
+        return [];
     }
 }

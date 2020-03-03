@@ -34,8 +34,14 @@ type AssetProxy {
     thumbnailUri: String # Provides an image uri for thumbnails views
     previewUri: String # Provides a full size image uri for details views
     assetSource: AssetSource!
+    iptcMetadata: [IptcMetadata!]!
     localAssetIdentifier: String
     localAssetData: Asset
+}
+
+type IptcMetadata {
+    key: String!
+    value: String
 }
 
 type Asset {

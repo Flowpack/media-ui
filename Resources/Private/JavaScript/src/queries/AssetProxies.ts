@@ -29,6 +29,10 @@ export const ASSET_PROXIES = gql`
             }
             thumbnailUri
             previewUri
+            iptcMetadata {
+                key
+                value
+            }
             localAssetIdentifier
             localAssetData {
                 identifier
