@@ -60,7 +60,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
 
     const isLoading: boolean = loading;
 
-    if ((currentPage - 1) * ASSETS_PER_PAGE > assetCount) {
+    if (!isLoading && (currentPage - 1) * ASSETS_PER_PAGE > assetCount) {
         setCurrentPage(1);
     }
 
@@ -95,7 +95,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
                     dummyImage
                 }}
             >
-                {error ? <p>{error.message}</p> : !assetProxies && loading ? <p>Loading...</p> : children}
+                {error ? <p>{error.message}</p> : !assetProxies && isLoading ? <p>Loading...</p> : children}
             </MediaUiContext.Provider>
         </>
     );
