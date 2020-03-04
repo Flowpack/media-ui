@@ -26,7 +26,7 @@ export default function TypeFilter() {
     return (
         <div className={classes.typeFilter}>
             <label>{translate('filter.type.label', 'Filter by type')}</label>
-            <select onChange={e => handleSelect(e)} value={assetTypeFilter?.label} defaultValue="All">
+            <select onChange={e => handleSelect(e)} value={assetTypeFilter?.label}>
                 {assetTypes.map(assetType => (
                     <option key={assetType.label} value={assetType.label}>
                         {translate(`assetType.${assetType.label}`, assetType.label)}

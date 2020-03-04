@@ -1,12 +1,16 @@
 type Query {
   asset(identifier: ID!): Asset
   assets(tag: String): [Asset!]!
-  assetProxies(assetSource: String, tag: String, assetCollection: String, assetType: String, limit: Int, offset: Int): [AssetProxy!]!
+  assetProxies(assetSource: String, tag: String, assetCollection: String, assetType: String, searchTerm: String, limit: Int, offset: Int): [AssetProxy!]!
   assetSources: [AssetSource!]!
   assetCollections: [AssetCollection!]!
   assetTypes: [AssetType!]!
-  assetCount(assetSource: String, tag: String, assetCollection: String, assetType: String): Int!
+  assetCount(assetSource: String, tag: String, assetCollection: String, assetType: String, searchTerm: String): Int!
   tags: [Tag!]!
+}
+
+type Mutation {
+    pong: String!
 }
 
 # The default local asset source is `neos`. Other externals ones can be available through plugins.

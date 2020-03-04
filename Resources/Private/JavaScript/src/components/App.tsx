@@ -1,5 +1,5 @@
 import * as React from 'react';
-import AssetList from './AssetList';
+import { useQuery } from '@apollo/react-hooks';
 import SideBarLeft from './SideBarLeft';
 import SideBarRight from './SideBarRight';
 import Pagination from './Pagination';
@@ -8,7 +8,9 @@ import LoadingIndicator from './LoadingIndicator';
 import AssetPreview from './AssetPreview';
 import { useMediaUi } from '../core/MediaUi';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
-import FilterList from './Filter/FilterList';
+import { VIEW_MODE_SELECTION } from '../queries/ViewModeSelectionQuery';
+import { TopBar, VIEW_MODES } from './TopBar';
+import { ThumbnailView, ListView } from './Main';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: {
@@ -27,6 +29,9 @@ export default function App() {
     const classes = useStyles();
     const { selectedAsset } = useMediaUi();
 
+    const viewModeSelectionQuery = useQuery(VIEW_MODE_SELECTION);
+    const { viewModeSelection } = viewModeSelectionQuery.data;
+
     return (
         <MediaUiThemeProvider>
             <div className={classes.container}>
@@ -34,8 +39,12 @@ export default function App() {
                 <SideBarLeft gridPosition="left" />
                 {!selectedAsset && (
                     <>
-                        <FilterList gridPosition="top" />
-                        <AssetList gridPosition="main" />
+                        <TopBar gridPosition="top" />
+                        {viewModeSelection === VIEW_MODES.List ? (
+                            <ListView gridPosition="main" />
+                        ) : (
+                            <ThumbnailView gridPosition="main" />
+                        )}
                         <Pagination />
                     </>
                 )}

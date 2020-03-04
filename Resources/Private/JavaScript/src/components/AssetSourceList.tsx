@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useMediaUi } from '../core/MediaUi';
 import { useIntl } from '../core/Intl';
 import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
-import { ASSET_SOURCE_FILTER, SET_ASSET_SOURCE_FILTER } from '../queries/AssetSourceFilterQuery';
+import { useAssetSourceFilter } from '../hooks/AssetSourceFilter';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: {
@@ -28,10 +27,7 @@ export default function AssetSourceList() {
     const classes = useStyles();
     const { assetSources } = useMediaUi();
     const { translate } = useIntl();
-
-    const assetSourceFilterQuery = useQuery(ASSET_SOURCE_FILTER);
-    const { assetSourceFilter } = assetSourceFilterQuery.data;
-    const [setAssetSourceFilter] = useMutation(SET_ASSET_SOURCE_FILTER);
+    const [assetSourceFilter, setAssetSourceFilter] = useAssetSourceFilter();
 
     return (
         <>
@@ -46,11 +42,7 @@ export default function AssetSourceList() {
                                         className={
                                             assetSourceFilter === assetSource.identifier ? classes.itemSelected : null
                                         }
-                                        onClick={() =>
-                                            setAssetSourceFilter({
-                                                variables: { assetSourceFilter: assetSource.identifier }
-                                            })
-                                        }
+                                        onClick={() => setAssetSourceFilter(assetSource)}
                                     >
                                         {assetSource.identifier === 'neos' ? 'Local' : assetSource.label}
                                     </a>

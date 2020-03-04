@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { createContext, useContext, useState } from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/react-hooks';
 import MediaUiProviderValues from '../interfaces/MediaUiProviderValues';
 import AssetSource from '../interfaces/AssetSource';
 import Tag from '../interfaces/Tag';
@@ -38,34 +38,49 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedAsset, setSelectedAsset] = useState<AssetProxy>();
     const [assetTypeFilter, setAssetTypeFilter] = useState<AssetType>();
+    const [uiState, setUiState] = useState<AssetProxiesQueryResult>({
+        assetProxies: [],
+        assetCollections: [],
+        assetSources: [],
+        assetCount: 0,
+        assetTypes: [],
+        tags: []
+    });
+    const [isLoading, setIsLoading] = useState(false);
 
     // Main query to fetch all initial data from api
-    const { loading, error, data } = useQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(ASSET_PROXIES, {
-        notifyOnNetworkStatusChange: false,
-        variables: {
-            assetCollection: assetCollectionFilter?.title,
-            assetType: assetTypeFilter?.label,
-            tag: tagFilter?.label,
-            limit: ASSETS_PER_PAGE,
-            offset: (currentPage - 1) * ASSETS_PER_PAGE
+    const [query, { loading, error, data }] = useLazyQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(
+        ASSET_PROXIES,
+        {
+            notifyOnNetworkStatusChange: false
         }
-    });
+    );
 
-    const assetProxies: AssetProxy[] = data?.assetProxies || [];
-    const assetCollections: AssetCollection[] = data?.assetCollections || [];
-    const assetSources: AssetSource[] = data?.assetSources || [];
-    const assetCount: number = data?.assetCount || 0;
-    const assetTypes: AssetType[] = data?.assetTypes || [];
-    const tags: Tag[] = data?.tags || [];
-
-    const isLoading: boolean = loading;
-
-    if (!isLoading && (currentPage - 1) * ASSETS_PER_PAGE > assetCount) {
-        setCurrentPage(1);
-    }
+    useEffect(() => {
+        if (!loading && !isLoading) {
+            query({
+                variables: {
+                    assetCollection: assetCollectionFilter?.title,
+                    assetType: assetTypeFilter?.label,
+                    tag: tagFilter?.label,
+                    limit: ASSETS_PER_PAGE,
+                    offset: (currentPage - 1) * ASSETS_PER_PAGE
+                }
+            });
+            setIsLoading(true);
+        }
+        if (data && !loading && isLoading) {
+            setUiState({ ...data });
+            if ((currentPage - 1) * ASSETS_PER_PAGE > data.assetCount) {
+                setCurrentPage(1);
+            }
+            setIsLoading(false);
+        }
+    }, [query, data, loading, assetCollectionFilter, assetTypeFilter, tagFilter, currentPage]);
 
     if (error) {
         console.error(error);
+        return <p>{error.message}</p>;
     }
 
     return (
@@ -75,27 +90,22 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
                     csrf,
                     endpoints,
                     isLoading,
-                    assetProxies,
-                    tags,
-                    assetCollections,
                     notify,
-                    assetCount,
                     tagFilter,
                     setTagFilter,
                     assetCollectionFilter,
                     setAssetCollectionFilter,
-                    assetSources,
-                    assetTypes,
                     assetTypeFilter,
                     setAssetTypeFilter,
                     currentPage,
                     setCurrentPage,
                     selectedAsset,
                     setSelectedAsset,
-                    dummyImage
+                    dummyImage,
+                    ...uiState
                 }}
             >
-                {error ? <p>{error.message}</p> : !assetProxies && isLoading ? <p>Loading...</p> : children}
+                {children}
             </MediaUiContext.Provider>
         </>
     );

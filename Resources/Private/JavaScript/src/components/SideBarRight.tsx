@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
-import IptcMetadataInspector from './Inspector/IptcMetadataInspector';
-import AssetInspector from './Inspector/AssetInspector';
+import { AssetInspector, IptcMetadataInspector } from './Inspector';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     sidebarRight: {

@@ -80,4 +80,14 @@ class AssetProxyResolver implements ResolverInterface
         }
         return [];
     }
+
+    /**
+     * @param AssetProxyInterface $assetProxy
+     * @return string
+     */
+    public function lastModified(AssetProxyInterface $assetProxy): string
+    {
+        // TODO: Remove this method when a DateTime scalar for graphql was introduced
+        return $assetProxy->getLastModified()->format(DATE_W3C);
+    }
 }

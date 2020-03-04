@@ -8,6 +8,7 @@ const { ThemeProvider, useTheme } = theming;
 
 const mediaUiTheme: MediaUiTheme = {
     primaryColor: '#00b5ff',
+    mainBackgroundColor: '#323232',
     alternatingBackgroundColor: '#3f3f3f',
     borderColor: '#3f3f3f',
     inactiveColor: '#9e9e9e',
@@ -23,7 +24,6 @@ const mediaUiTheme: MediaUiTheme = {
     paginationZIndex: 10022
 };
 
-export const useMediaUiTheme = useTheme;
 export const createUseMediaUiStyles = styles => createUseStyles(styles, { theming } as object);
 
 export default function MediaUiThemeProvider({ children }: { children: React.ReactElement }) {

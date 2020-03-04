@@ -79,12 +79,7 @@ class QueryResolver implements ResolverInterface
      */
     public function assetCount($_, array $variables): int
     {
-        $query = $this->createAssetProxyQuery(
-            isset($variables['assetSource']) ? $variables['assetSource'] : 'neos',
-            isset($variables['tag']) ? $variables['tag'] : 'null',
-            isset($variables['assetCollection']) ? $variables['assetCollection'] : null,
-            isset($variables['assetType']) ? $variables['assetType'] : null
-        );
+        $query = $this->createAssetProxyQuery($variables);
 
         if (!$query) {
             // TODO: Add logging
@@ -111,12 +106,7 @@ class QueryResolver implements ResolverInterface
         $limit = array_key_exists('limit', $variables) ? $variables['limit'] : 20;
         $offset = array_key_exists('offset', $variables) ? $variables['offset'] : 0;
 
-        $query = $this->createAssetProxyQuery(
-            isset($variables['assetSource']) ? $variables['assetSource'] : 'neos',
-            isset($variables['tag']) ? $variables['tag'] : 'null',
-            isset($variables['assetCollection']) ? $variables['assetCollection'] : null,
-            isset($variables['assetType']) ? $variables['assetType'] : null
-        );
+        $query = $this->createAssetProxyQuery($variables);
 
         if (!$query) {
             // TODO: Add logging
@@ -139,18 +129,16 @@ class QueryResolver implements ResolverInterface
     /**
      * Helper to create a asset proxy query for other methods
      *
-     * @param string $assetSourceName
-     * @param string|null $tag
-     * @param string|null $assetCollection
-     * @param string|null $assetType
+     * @param array $variables
      * @return AssetProxyQueryInterface|null
      */
-    protected function createAssetProxyQuery(
-        string $assetSourceName = 'neos',
-        string $tag = null,
-        string $assetCollection = null,
-        string $assetType = null
-    ): ?AssetProxyQueryInterface {
+    protected function createAssetProxyQuery(array $variables = []): ?AssetProxyQueryInterface {
+        $assetSourceName = $variables['assetSource'] ?? 'neos';
+        $tag = $variables['tag'] ?? null;
+        $assetCollection = $variables['assetCollection'] ?? null;
+        $assetType = $variables['assetType'] ?? null;
+        $searchTerm = $variables['searchTerm'] ?? null;
+
         if (array_key_exists($assetSourceName, $this->assetSources)) {
             /** @var AssetSourceInterface $activeAssetSource */
             $activeAssetSource = $this->assetSources[$assetSourceName];
@@ -160,7 +148,7 @@ class QueryResolver implements ResolverInterface
 
         $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
 
-        if ($assetType) {
+        if (is_string($assetType) && !empty($assetType)) {
             // TODO: Catch possible errors with wrong types
             $assetProxyRepository->filterByType(new AssetTypeFilter($assetType));
         }
@@ -176,8 +164,6 @@ class QueryResolver implements ResolverInterface
 
         // TODO: Implement sorting via `SupportsSortingInterface`
 
-        // TODO: Implement filtering by type
-
         if ($tag && $assetProxyRepository instanceof SupportsTaggingInterface) {
             /** @var Tag $tag */
             /** @noinspection PhpUndefinedMethodInspection */
@@ -185,6 +171,10 @@ class QueryResolver implements ResolverInterface
             if ($tag) {
                 return $assetProxyRepository->findByTag($tag)->getQuery();
             }
+        }
+
+        if (is_string($searchTerm) && !empty($searchTerm)) {
+            return $assetProxyRepository->findBySearchTerm($searchTerm)->getQuery();
         }
 
         return $assetProxyRepository->findAll()->getQuery();

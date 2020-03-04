@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { useMediaUi } from '../core/MediaUi';
-import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
-import { useIntl } from '../core/Intl';
-import MediaUiTheme from '../interfaces/MediaUiTheme';
+import { useMediaUi } from '../../core/MediaUi';
+import { createUseMediaUiStyles } from '../../core/MediaUiThemeProvider';
+import { useIntl } from '../../core/Intl';
+import MediaUiTheme from '../../interfaces/MediaUiTheme';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    assetList: {
+    thumbnailView: {
         '.neos &': {
             gridArea: props => props.gridPosition,
             display: 'grid',
@@ -45,13 +45,13 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-export default function AssetList(props: GridComponentProps) {
+export default function ThumbnailView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
     const { assetProxies, dummyImage, setSelectedAsset } = useMediaUi();
     const { translate } = useIntl();
 
     return (
-        <section className={classes.assetList}>
+        <section className={classes.thumbnailView}>
             {assetProxies.length ? (
                 assetProxies.map(asset => {
                     const { identifier, label } = asset;

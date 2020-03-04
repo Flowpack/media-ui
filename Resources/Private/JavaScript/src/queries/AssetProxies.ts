@@ -23,10 +23,12 @@ export const ASSET_PROXIES = gql`
             label
             mediaType
             filename
+            fileSize
             fileTypeIcon {
                 src
                 alt
             }
+            lastModified
             thumbnailUri
             previewUri
             iptcMetadata {

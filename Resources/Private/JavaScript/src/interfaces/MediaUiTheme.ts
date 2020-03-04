@@ -1,5 +1,6 @@
 export default interface MediaUiTheme {
     primaryColor: string;
+    mainBackgroundColor: string;
     alternatingBackgroundColor: string;
     borderColor: string;
     inactiveColor: string;
