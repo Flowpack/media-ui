@@ -10,7 +10,7 @@ export function restoreLocalState(cache: ApolloCache<NormalizedCacheObject>) {
     };
 
     console.debug(data, 'Restored data from localstorage');
-    cache.writeData({ data });
+    cache.writeData({ data: { ...data } });
 }
 
 export function resetLocalState(cache: ApolloCache<NormalizedCacheObject>) {
@@ -19,11 +19,11 @@ export function resetLocalState(cache: ApolloCache<NormalizedCacheObject>) {
     };
 
     console.debug(data, 'Reset data in localstorage');
-    cache.writeData({ data });
+    cache.writeData({ data: { ...data } });
 }
 
 export function updateLocalState(data: object, cache: ApolloCache<NormalizedCacheObject>) {
     console.debug(data, 'Updated locate state');
     Object.keys(data).forEach(key => localStorage.setItem(`${STORAGE_PREFIX}.${key}`, data[key]));
-    cache.writeData({ data });
+    cache.writeData({ data: { ...data } });
 }
