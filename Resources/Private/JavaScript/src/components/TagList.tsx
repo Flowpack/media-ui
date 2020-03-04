@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useMediaUi } from '../core/MediaUi';
-import { useEffect, useState } from 'react';
 import { useIntl } from '../core/Intl';
 import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
@@ -36,12 +35,6 @@ export default function TagList() {
     const { assetSourceFilter } = assetSourceFilterQuery.data;
     const selectedAssetSource = assetSources.find(assetSource => assetSource.identifier === assetSourceFilter);
 
-    const [selectedTag, setSelectedTag] = useState(tagFilter);
-
-    useEffect(() => {
-        setTagFilter(selectedTag);
-    }, [selectedTag]);
-
     return (
         <>
             {selectedAssetSource?.supportsTagging && (
@@ -49,10 +42,7 @@ export default function TagList() {
                     <strong>{translate('tagList.header', 'Tags')}</strong>
                     <ul className={classes.tagList}>
                         <li>
-                            <a
-                                className={!selectedTag ? classes.tagSelected : null}
-                                onClick={() => setSelectedTag(null)}
-                            >
+                            <a className={!tagFilter ? classes.tagSelected : null} onClick={() => setTagFilter(null)}>
                                 {translate('tagList.showAll', 'All')}
                             </a>
                         </li>
@@ -60,10 +50,8 @@ export default function TagList() {
                             tags.map(tag => (
                                 <li key={tag.label}>
                                     <a
-                                        className={
-                                            selectedTag && selectedTag.label == tag.label ? classes.tagSelected : null
-                                        }
-                                        onClick={() => setSelectedTag(tag)}
+                                        className={tagFilter?.label == tag.label ? classes.tagSelected : null}
+                                        onClick={() => setTagFilter(tag)}
                                     >
                                         {tag.label}
                                     </a>
