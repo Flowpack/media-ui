@@ -41,7 +41,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
 
     // Main query to fetch all initial data from api
     const { loading, error, data } = useQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(ASSET_PROXIES, {
-        notifyOnNetworkStatusChange: true,
+        notifyOnNetworkStatusChange: false,
         variables: {
             assetCollection: assetCollectionFilter?.title,
             assetType: assetTypeFilter?.label,
