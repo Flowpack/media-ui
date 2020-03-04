@@ -43,9 +43,9 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     const { loading, error, data } = useQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(ASSET_PROXIES, {
         notifyOnNetworkStatusChange: true,
         variables: {
-            assetCollection: assetCollectionFilter?.title || '',
-            assetType: assetTypeFilter?.label || '',
-            tag: tagFilter?.label || '',
+            assetCollection: assetCollectionFilter?.title,
+            assetType: assetTypeFilter?.label,
+            tag: tagFilter?.label,
             limit: ASSETS_PER_PAGE,
             offset: (currentPage - 1) * ASSETS_PER_PAGE
         }

@@ -80,10 +80,10 @@ class QueryResolver implements ResolverInterface
     public function assetCount($_, array $variables): int
     {
         $query = $this->createAssetProxyQuery(
-            $variables['assetSource'],
-            $variables['tag'],
-            $variables['assetCollection'],
-            $variables['assetType']
+            isset($variables['assetSource']) ? $variables['assetSource'] : 'neos',
+            isset($variables['tag']) ? $variables['tag'] : 'null',
+            isset($variables['assetCollection']) ? $variables['assetCollection'] : null,
+            isset($variables['assetType']) ? $variables['assetType'] : null
         );
 
         if (!$query) {
@@ -112,10 +112,10 @@ class QueryResolver implements ResolverInterface
         $offset = array_key_exists('offset', $variables) ? $variables['offset'] : 0;
 
         $query = $this->createAssetProxyQuery(
-            $variables['assetSource'] ?: 'neos',
-            $variables['tag'],
-            $variables['assetCollection'],
-            $variables['assetType']
+            isset($variables['assetSource']) ? $variables['assetSource'] : 'neos',
+            isset($variables['tag']) ? $variables['tag'] : 'null',
+            isset($variables['assetCollection']) ? $variables['assetCollection'] : null,
+            isset($variables['assetType']) ? $variables['assetType'] : null
         );
 
         if (!$query) {
