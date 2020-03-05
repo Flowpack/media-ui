@@ -2,21 +2,43 @@ import * as React from 'react';
 import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import { useMediaUi } from '../core/MediaUi';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
+import { useIntl } from '../core/Intl';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     preview: {
-        gridArea: props => props.gridPosition
+        gridArea: props => props.gridPosition,
+        position: 'relative',
+        '& figure': {
+            textAlign: 'center',
+            '& picture': {
+                display: 'inline-block'
+            }
+        }
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        padding: '.5rem',
+        cursor: 'pointer'
     }
 }));
 
 export default function AssetPreview(props: GridComponentProps) {
     const classes = useStyles({ ...props });
     const { selectedAsset, setSelectedAsset } = useMediaUi();
+    const { translate } = useIntl();
 
     return (
         <section className={classes.preview}>
-            Asset Preview for {selectedAsset.label}
-            <a onClick={() => setSelectedAsset(null)}>Close preview</a>
+            {translate('preview.header', `Preview for ${selectedAsset.label}`, [selectedAsset.label])}
+            <a
+                className={classes.closeButton}
+                onClick={() => setSelectedAsset(null)}
+                title={translate('prevew.close', 'Close preview')}
+            >
+                <i className="fas fa-times-circle" />
+            </a>
             <figure>
                 <picture>
                     <img src={selectedAsset.previewUri} alt={selectedAsset.label} />
