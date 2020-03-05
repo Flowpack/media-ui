@@ -20,6 +20,7 @@ interface AssetProxiesQueryResult {
 }
 
 interface AssetProxiesQueryVariables {
+    searchTerm: string;
     assetCollection: string;
     assetType: string;
     tag: string;
@@ -33,6 +34,7 @@ export const useMediaUi = (): MediaUiProviderValues => useContext(MediaUiContext
 export const ASSETS_PER_PAGE = 20;
 
 export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage }: MediaUiProviderProps) {
+    const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState<Tag>();
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
     const [currentPage, setCurrentPage] = useState(1);
@@ -60,6 +62,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
         if (!loading && !isLoading) {
             query({
                 variables: {
+                    searchTerm: searchTerm,
                     assetCollection: assetCollectionFilter?.title,
                     assetType: assetTypeFilter?.label,
                     tag: tagFilter?.label,
@@ -76,7 +79,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
             }
             setIsLoading(false);
         }
-    }, [query, data, loading, assetCollectionFilter, assetTypeFilter, tagFilter, currentPage]);
+    }, [query, data, loading, searchTerm, assetCollectionFilter, assetTypeFilter, tagFilter, currentPage]);
 
     if (error) {
         console.error(error);
@@ -91,6 +94,8 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
                     endpoints,
                     isLoading,
                     notify,
+                    searchTerm,
+                    setSearchTerm,
                     tagFilter,
                     setTagFilter,
                     assetCollectionFilter,

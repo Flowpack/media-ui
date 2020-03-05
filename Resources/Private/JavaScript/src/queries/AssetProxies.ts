@@ -3,6 +3,7 @@ import { gql } from 'apollo-boost';
 // TODO: Split this big query into individual reusable pieces including the matching interfaces
 export const ASSET_PROXIES = gql`
     query ASSET_PROXIES(
+        $searchTerm: String
         $assetSource: String
         $assetCollection: String
         $assetType: String
@@ -12,6 +13,7 @@ export const ASSET_PROXIES = gql`
     ) {
         assetSourceFilter @client(always: true) @export(as: "assetSource")
         assetProxies(
+            searchTerm: $searchTerm
             assetSource: $assetSource
             assetCollection: $assetCollection
             assetType: $assetType
@@ -63,7 +65,13 @@ export const ASSET_PROXIES = gql`
             supportsTagging
             supportsCollections
         }
-        assetCount(assetSource: $assetSource, assetCollection: $assetCollection, assetType: $assetType, tag: $tag)
+        assetCount(
+            searchTerm: $searchTerm
+            assetSource: $assetSource
+            assetCollection: $assetCollection
+            assetType: $assetType
+            tag: $tag
+        )
         assetTypes {
             label
         }

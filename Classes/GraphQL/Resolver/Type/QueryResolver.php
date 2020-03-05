@@ -87,7 +87,7 @@ class QueryResolver implements ResolverInterface
         }
 
         try {
-            return $query->count();
+            return $query->execute()->count();
         } catch (\Exception $e) {
             // TODO: Handle that not every asset source implements the count method => Introduce countable interface?
         }
@@ -114,7 +114,8 @@ class QueryResolver implements ResolverInterface
         }
 
         try {
-            $offset = $offset < $query->count() ? $offset : 0;
+            // TODO: Check if it's an issue to execute the query a second time just to get the correct number of results?
+            $offset = $offset < $query->execute()->count() ? $offset : 0;
         } catch (\Exception $e) {
             // TODO: Handle that not every asset source implements the count method => Introduce countable interface?
         }

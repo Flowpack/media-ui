@@ -35,7 +35,7 @@ export default function AssetPreview(props: GridComponentProps) {
             <a
                 className={classes.closeButton}
                 onClick={() => setSelectedAsset(null)}
-                title={translate('prevew.close', 'Close preview')}
+                title={translate('preview.close', 'Close preview')}
             >
                 <i className="fas fa-times-circle" />
             </a>

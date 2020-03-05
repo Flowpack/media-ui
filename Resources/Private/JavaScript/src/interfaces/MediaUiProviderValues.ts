@@ -11,6 +11,8 @@ export default interface MediaUiProviderValues {
     isLoading: boolean;
     assetCount: number;
     assetProxies: AssetProxy[];
+    searchTerm: string;
+    setSearchTerm: (searchTerm: string) => void;
     tags: Tag[];
     tagFilter: Tag;
     setTagFilter: (tag: Tag) => void;
