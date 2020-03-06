@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Icon from '@neos-project/react-ui-components/lib-esm/Icon';
 import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { useAssetSourceFilter } from '../../hooks';
@@ -42,7 +43,13 @@ export default function AssetSourceList() {
                                         }
                                         onClick={() => setAssetSourceFilter(assetSource)}
                                     >
-                                        {assetSource.identifier === 'neos' ? 'Local' : assetSource.label}
+                                        {assetSource.identifier === 'neos' ? (
+                                            <>
+                                                <Icon icon="neos" /> {translate('assetsource.local', 'Local')}
+                                            </>
+                                        ) : (
+                                            assetSource.label
+                                        )}
                                     </a>
                                 </li>
                             ))}
