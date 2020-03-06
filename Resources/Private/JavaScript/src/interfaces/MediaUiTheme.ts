@@ -5,8 +5,6 @@ export default interface MediaUiTheme {
     borderColor: string;
     inactiveColor: string;
     generatedColor: string;
-    newColor: string;
-    modifiedColor: string;
     warningColor: string;
     deletedColor: string;
     moduleBackgroundColor: string;

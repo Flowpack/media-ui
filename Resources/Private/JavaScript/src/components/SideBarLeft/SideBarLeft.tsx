@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
+import { createUseMediaUiStyles } from '../../core/MediaUiThemeProvider';
 import TagList from './TagList';
 import AssetCollectionList from './AssetCollectionList';
 import AssetSourceList from './AssetSourceList';
-import MediaUiTheme from '../interfaces/MediaUiTheme';
+import MediaUiTheme from '../../interfaces/MediaUiTheme';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     leftSideBar: {

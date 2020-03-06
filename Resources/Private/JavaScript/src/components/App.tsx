@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import SideBarLeft from './SideBarLeft';
+import { SideBarLeft } from './SideBarLeft';
 import SideBarRight from './SideBarRight';
 import Pagination from './Pagination';
 import MediaUiThemeProvider, { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';

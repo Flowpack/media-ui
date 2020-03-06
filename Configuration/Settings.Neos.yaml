@@ -12,8 +12,8 @@ Neos:
             additionalResources:
               javaScripts:
                 - 'resource://Flowpack.Media.Ui/Public/JavaScript/main.bundle.js'
-#              styleSheets:
-#                - 'resource://Flowpack.Media.Ui/Public/Styles/Main.css'
+              styleSheets:
+                - 'resource://Flowpack.Media.Ui/Public/JavaScript/main.bundle.css'
 
     userInterface:
       translation:
