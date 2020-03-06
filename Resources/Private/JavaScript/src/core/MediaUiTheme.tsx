@@ -4,19 +4,19 @@ import { MediaUiTheme } from '../interfaces';
 
 const ThemeContext = React.createContext({} as MediaUiTheme);
 const theming = createTheming(ThemeContext);
-const { ThemeProvider, useTheme } = theming;
+const { ThemeProvider } = theming;
 
 // Theme config from Neos.Ui package
 // TODO: Make css variables available in backend modules or include them differently
 const config = {
     spacing: {
-        goldenUnit: '40px',
-        full: '16px',
-        half: '8px',
-        quarter: '4px'
+        goldenUnit: '2.5rem',
+        full: '1rem',
+        half: '.5rem',
+        quarter: '.25rem'
     },
     size: {
-        sidebarWidth: '320px'
+        sidebarWidth: '20rem'
     },
     transition: {
         fast: '.1s',

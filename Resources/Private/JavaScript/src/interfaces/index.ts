@@ -1,5 +1,6 @@
 import Asset from './Asset';
 import AssetCollection from './AssetCollection';
+import { AssetCollectionTreeNodeProps, TagTreeNodeProps } from './TreeNode';
 import AssetProxy from './AssetProxy';
 import AssetSource from './AssetSource';
 import AssetType from './AssetType';
@@ -15,6 +16,8 @@ import Tag from './Tag';
 export {
     Asset,
     AssetCollection,
+    AssetCollectionTreeNodeProps,
+    TagTreeNodeProps,
     AssetProxy,
     AssetSource,
     AssetType,

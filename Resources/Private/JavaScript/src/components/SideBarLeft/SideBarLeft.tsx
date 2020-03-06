@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createUseMediaUiStyles } from '../../core';
-import AssetCollectionList from './AssetCollectionList';
+import { AssetCollectionTree } from './Tree';
 import AssetSourceList from './AssetSourceList';
 import { MediaUiTheme, GridComponentProps } from '../../interfaces';
 
@@ -15,7 +15,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function SideBarLeft(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const components = [AssetSourceList, AssetCollectionList];
+    const components = [AssetSourceList, AssetCollectionTree];
 
     return (
         <div className={classes.leftSideBar}>

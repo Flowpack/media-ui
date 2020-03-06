@@ -1,5 +1,5 @@
-import AssetCollectionList from './AssetCollectionList';
 import AssetSourceList from './AssetSourceList';
 import SideBarLeft from './SideBarLeft';
+import { AssetCollectionTree } from './Tree';
 
-export { AssetCollectionList, AssetSourceList, SideBarLeft };
+export { AssetSourceList, SideBarLeft, AssetCollectionTree };
