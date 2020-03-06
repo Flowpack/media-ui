@@ -59,3 +59,8 @@ The following command will recompile and reload the media module when changes to
 Run the following command to verify the TypeScript files:
 
     yarn lint
+
+### Development helpers
+
+* [Extension](https://github.com/apollographql/apollo-client-devtools) for debugging GraphQL schema and queries in the browser
+* [Plugin](https://plugins.jetbrains.com/plugin/8097-js-graphql) for code completion and helpers in PHPStorm
