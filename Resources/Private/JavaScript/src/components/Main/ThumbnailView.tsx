@@ -9,7 +9,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '.neos &': {
             gridArea: props => props.gridPosition,
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, 200px)',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
             gridGap: '1rem',
             '& figure': {
                 margin: '0',

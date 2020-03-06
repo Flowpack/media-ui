@@ -3,6 +3,7 @@ import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
 import { useMediaUi } from '../core/MediaUi';
 import MediaUiTheme from '../interfaces/MediaUiTheme';
 import { useIntl } from '../core/Intl';
+import Icon from '@neos-project/react-ui-components/lib-esm/Icon';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     preview: {
@@ -37,7 +38,7 @@ export default function AssetPreview(props: GridComponentProps) {
                 onClick={() => setSelectedAsset(null)}
                 title={translate('preview.close', 'Close preview')}
             >
-                <i className="fas fa-times-circle" />
+                <Icon icon="times-circle" />
             </a>
             <figure>
                 <picture>

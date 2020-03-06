@@ -9,6 +9,9 @@ import { IntlProvider } from './core/Intl';
 import App from './components/App';
 import { resolvers, typeDefs } from './core/Resolvers';
 import { restoreLocalState } from './core/PersistentStateManager';
+import loadIconLibrary from './lib/FontAwesome';
+
+loadIconLibrary();
 
 window.onload = async (): Promise<void> => {
     while (!window.NeosCMS || !window.NeosCMS.I18n.initialized) {
