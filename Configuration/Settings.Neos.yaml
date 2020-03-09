@@ -11,9 +11,9 @@ Neos:
             privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
             additionalResources:
               javaScripts:
-                - 'resource://Flowpack.Media.Ui/Public/JavaScript/main.bundle.js'
+                - 'resource://Flowpack.Media.Ui/Public/Assets/main.bundle.js'
               styleSheets:
-                - 'resource://Flowpack.Media.Ui/Public/JavaScript/main.bundle.css'
+                - 'resource://Flowpack.Media.Ui/Public/Assets/extra-neos-wrapper.css'
 
     userInterface:
       translation:
