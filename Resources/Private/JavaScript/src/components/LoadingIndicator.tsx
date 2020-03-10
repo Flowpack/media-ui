@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { useMediaUi } from '../core/MediaUi';
-import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
-import MediaUiTheme from '../interfaces/MediaUiTheme';
+import { useMediaUi, createUseMediaUiStyles } from '../core';
+import { MediaUiTheme } from '../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     '@keyframes cssloadWidth': {

@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/react-hooks';
-import MediaUiProviderValues from '../interfaces/MediaUiProviderValues';
-import AssetSource from '../interfaces/AssetSource';
-import Tag from '../interfaces/Tag';
-import AssetCollection from '../interfaces/AssetCollection';
-import MediaUiProviderProps from '../interfaces/MediaUiProviderProps';
-import AssetProxy from '../interfaces/AssetProxy';
-import AssetType from '../interfaces/AssetType';
+import {
+    AssetSource,
+    AssetCollection,
+    AssetProxy,
+    AssetType,
+    Tag,
+    MediaUiProviderValues,
+    MediaUiProviderProps
+} from '../interfaces';
 import { ASSET_PROXIES } from '../queries/AssetProxies';
 
 interface AssetProxiesQueryResult {

@@ -3,14 +3,13 @@ import { useQuery } from '@apollo/react-hooks';
 import { SideBarLeft } from './SideBarLeft';
 import SideBarRight from './SideBarRight';
 import Pagination from './Pagination';
-import MediaUiThemeProvider, { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
+import { useMediaUi, createUseMediaUiStyles, MediaUiThemeProvider } from '../core';
 import LoadingIndicator from './LoadingIndicator';
-import AssetPreview from './AssetPreview';
-import { useMediaUi } from '../core/MediaUi';
-import MediaUiTheme from '../interfaces/MediaUiTheme';
+import { MediaUiTheme } from '../interfaces';
 import { VIEW_MODE_SELECTION } from '../queries/ViewModeSelectionQuery';
 import { TopBar, VIEW_MODES } from './TopBar';
 import { ThumbnailView, ListView } from './Main';
+import AssetPreview from './AssetPreview';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: {

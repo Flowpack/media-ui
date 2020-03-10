@@ -1,9 +1,6 @@
 import * as React from 'react';
-import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
-import { useMediaUi } from '../core/MediaUi';
-import MediaUiTheme from '../interfaces/MediaUiTheme';
-import { useIntl } from '../core/Intl';
-import Icon from '@neos-project/react-ui-components/lib-esm/Icon';
+import Lightbox from 'react-image-lightbox';
+import { useMediaUi, useMediaUiTheme } from '../core';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     preview: {

@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { ASSETS_PER_PAGE, useMediaUi } from '../core/MediaUi';
-import { useIntl } from '../core/Intl';
-import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
+import { ASSETS_PER_PAGE, createUseMediaUiStyles, useMediaUi, useIntl } from '../core';
 import { useEffect, useState } from 'react';
-import MediaUiTheme from '../interfaces/MediaUiTheme';
+import { MediaUiTheme } from '../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {

@@ -1,6 +1,6 @@
 import React = require('react');
-import { createUseMediaUiStyles } from '../../core/MediaUiThemeProvider';
-import MediaUiTheme from '../../interfaces/MediaUiTheme';
+import { createUseMediaUiStyles } from '../../core';
+import { MediaUiTheme, GridComponentProps } from '../../interfaces';
 import TypeFilter from './TypeFilter';
 import SearchBox from './SearchBox';
 import ViewModeSelector from './ViewModeSelector';

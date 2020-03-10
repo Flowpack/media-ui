@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { useMediaUi } from '../../core/MediaUi';
-import { useIntl } from '../../core/Intl';
-import { createUseMediaUiStyles } from '../../core/MediaUiThemeProvider';
-import MediaUiTheme from '../../interfaces/MediaUiTheme';
-import { useAssetSourceFilter } from '../../hooks/AssetSourceFilter';
+import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
+import { MediaUiTheme } from '../../interfaces';
+import { useAssetSourceFilter } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: {

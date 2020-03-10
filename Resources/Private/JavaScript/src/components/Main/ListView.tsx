@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { useMediaUi } from '../../core/MediaUi';
-import { createUseMediaUiStyles } from '../../core/MediaUiThemeProvider';
-import { useIntl } from '../../core/Intl';
-import MediaUiTheme from '../../interfaces/MediaUiTheme';
+import { useMediaUi, createUseMediaUiStyles, useIntl } from '../../core';
+import { MediaUiTheme, GridComponentProps } from '../../interfaces';
 import { humanFileSize } from '../../helper/FileSize';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

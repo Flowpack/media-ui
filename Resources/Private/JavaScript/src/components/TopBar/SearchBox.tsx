@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { createUseMediaUiStyles } from '../../core/MediaUiThemeProvider';
-import MediaUiTheme from '../../interfaces/MediaUiTheme';
-import { useIntl } from '../../core/Intl';
-import { useMediaUi } from '../../core/MediaUi';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
+import { MediaUiTheme } from '../../interfaces';
 import { useRef } from 'react';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

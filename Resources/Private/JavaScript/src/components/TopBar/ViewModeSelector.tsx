@@ -1,9 +1,8 @@
 import React = require('react');
-import { createUseMediaUiStyles } from '../../core/MediaUiThemeProvider';
-import MediaUiTheme from '../../interfaces/MediaUiTheme';
-import { useIntl } from '../../core/Intl';
-import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from '../../queries/ViewModeSelectionQuery';
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import { createUseMediaUiStyles, useIntl } from '../../core';
+import { MediaUiTheme } from '../../interfaces';
+import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from '../../queries/ViewModeSelectionQuery';
 
 export enum VIEW_MODES {
     Thumbnails = 'thumbnails',

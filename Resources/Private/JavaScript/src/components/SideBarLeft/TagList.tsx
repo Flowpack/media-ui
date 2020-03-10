@@ -2,11 +2,9 @@ import * as React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Tree from '@neos-project/react-ui-components/lib-esm/Tree';
-import { useMediaUi } from '../../core/MediaUi';
-import { useIntl } from '../../core/Intl';
-import { createUseMediaUiStyles } from '../../core/MediaUiThemeProvider';
-import { useAssetSourceFilter } from '../../hooks/AssetSourceFilter';
-import MediaUiTheme from '../../interfaces/MediaUiTheme';
+import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
+import { useAssetSourceFilter } from '../../hooks';
+import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: {

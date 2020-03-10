@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { createUseMediaUiStyles } from '../core/MediaUiThemeProvider';
-import MediaUiTheme from '../interfaces/MediaUiTheme';
+import { createUseMediaUiStyles } from '../core';
+import { MediaUiTheme, GridComponentProps } from '../interfaces';
 import { AssetInspector, IptcMetadataInspector } from './Inspector';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

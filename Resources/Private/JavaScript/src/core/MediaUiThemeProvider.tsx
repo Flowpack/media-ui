@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { createTheming, createUseStyles } from 'react-jss';
-import MediaUiTheme from '../interfaces/MediaUiTheme';
+import { MediaUiTheme } from '../interfaces';
 
 const ThemeContext = React.createContext({} as MediaUiTheme);
 const theming = createTheming(ThemeContext);
-const { ThemeProvider } = theming;
+const { ThemeProvider, useTheme } = theming;
 
 // Theme config from Neos.Ui package
 // TODO: Make css variables available in backend modules or include them differently

@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { ASSET_SOURCE_FILTER, SET_ASSET_SOURCE_FILTER } from '../queries/AssetSourceFilterQuery';
-import AssetSource from '../interfaces/AssetSource';
+import { AssetSource } from '../interfaces';
 import { ExecutionResult } from 'graphql';
 
-export const useAssetSourceFilter = (): [string, (assetSource: AssetSource) => Promise<ExecutionResult<any>>] => {
+const useAssetSourceFilter = (): [string, (assetSource: AssetSource) => Promise<ExecutionResult<any>>] => {
     const assetSourceFilterQuery = useQuery(ASSET_SOURCE_FILTER);
     const { assetSourceFilter } = assetSourceFilterQuery.data;
     const [mutateAssetSourceFilter] = useMutation(SET_ASSET_SOURCE_FILTER);
@@ -13,3 +13,5 @@ export const useAssetSourceFilter = (): [string, (assetSource: AssetSource) => P
         });
     return [assetSourceFilter, setAssetSourceFilter];
 };
+
+export default useAssetSourceFilter;
