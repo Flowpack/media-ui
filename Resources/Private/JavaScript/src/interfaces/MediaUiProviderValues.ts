@@ -24,6 +24,8 @@ export default interface MediaUiProviderValues {
     setCurrentPage: (currentPage: number) => void;
     selectedAsset: AssetProxy;
     setSelectedAsset: (assetProxy: AssetProxy) => void;
+    selectedAssetForPreview: AssetProxy;
+    setSelectedAssetForPreview: (assetProxy: AssetProxy) => void;
     assetTypes: AssetType[];
     assetTypeFilter: AssetType;
     setAssetTypeFilter: (assetType: AssetType) => void;

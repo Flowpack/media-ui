@@ -14,6 +14,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 margin: '0',
                 display: 'flex',
                 flexDirection: 'column',
+                position: 'relative',
                 '& picture': {
                     cursor: 'pointer',
                     backgroundColor: theme.assetBackgroundColor,
@@ -21,6 +22,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                         outline: `4px solid ${theme.primaryColor}`,
                         zIndex: 2
                     }
+                },
+                '&:hover $toolBar': {
+                    display: 'block'
                 },
                 '& figcaption': {
                     backgroundColor: theme.captionBackgroundColor,
@@ -41,12 +45,24 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 }
             }
         }
+    },
+    toolBar: {
+        display: 'none',
+        position: 'absolute',
+        top: '5px',
+        right: '5px',
+        zIndex: 3,
+        '.neos & button': {
+            alignContent: 'center',
+            justifyContent: 'center',
+            display: 'flex'
+        }
     }
 }));
 
 export default function ThumbnailView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const { assetProxies, dummyImage, setSelectedAsset } = useMediaUi();
+    const { assetProxies, dummyImage, setSelectedAsset, setSelectedAssetForPreview } = useMediaUi();
     const { translate } = useIntl();
 
     return (
@@ -62,6 +78,16 @@ export default function ThumbnailView(props: GridComponentProps) {
                             <figcaption>
                                 <img src={asset.fileTypeIcon.src} alt={asset.fileTypeIcon.alt} /> {label}
                             </figcaption>
+                            <div className={classes.toolBar}>
+                                <IconButton
+                                    className={classes.previewButton}
+                                    icon="expand-alt"
+                                    size="small"
+                                    style="clean"
+                                    hoverStyle="brand"
+                                    onClick={() => setSelectedAssetForPreview(asset)}
+                                />
+                            </div>
                         </figure>
                     );
                 })

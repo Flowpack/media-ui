@@ -75,12 +75,15 @@ const mediaUiTheme: MediaUiTheme = {
     assetBackgroundColor: config.colors.contrastDarkest,
     captionBackgroundColor: config.colors.contrastNeutral,
     moduleBackgroundColor: config.colors.contrastDarker,
-    loadingIndicatorZIndex: 10022,
-    paginationZIndex: 10022
+    loadingIndicatorZIndex: 10024,
+    paginationZIndex: 10022,
+    lightboxZIndex: 10023
 };
+
+export const useMediaUiTheme = useTheme;
 
 export const createUseMediaUiStyles = styles => createUseStyles(styles, { theming } as object);
 
-export default function MediaUiThemeProvider({ children }: { children: React.ReactElement }) {
+export function MediaUiThemeProvider({ children }: { children: React.ReactElement }) {
     return <ThemeProvider theme={mediaUiTheme}>{children}</ThemeProvider>;
 }

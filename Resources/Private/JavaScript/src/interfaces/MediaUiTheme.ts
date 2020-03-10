@@ -12,4 +12,5 @@ export default interface MediaUiTheme {
     captionBackgroundColor: string;
     paginationZIndex: number;
     loadingIndicatorZIndex: number;
+    lightboxZIndex: number;
 }

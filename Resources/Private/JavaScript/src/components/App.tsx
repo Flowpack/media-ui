@@ -26,7 +26,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function App() {
     const classes = useStyles();
-    const { selectedAsset } = useMediaUi();
+    const { selectedAssetForPreview } = useMediaUi();
 
     const viewModeSelectionQuery = useQuery(VIEW_MODE_SELECTION);
     const { viewModeSelection } = viewModeSelectionQuery.data;
@@ -36,23 +36,16 @@ export default function App() {
             <div className={classes.container}>
                 <LoadingIndicator />
                 <SideBarLeft gridPosition="left" />
-                {!selectedAsset && (
-                    <>
-                        <TopBar gridPosition="top" />
-                        {viewModeSelection === VIEW_MODES.List ? (
-                            <ListView gridPosition="main" />
-                        ) : (
-                            <ThumbnailView gridPosition="main" />
-                        )}
-                        <Pagination />
-                    </>
+                <TopBar gridPosition="top" />
+                {viewModeSelection === VIEW_MODES.List ? (
+                    <ListView gridPosition="main" />
+                ) : (
+                    <ThumbnailView gridPosition="main" />
                 )}
-                {selectedAsset && (
-                    <>
-                        <AssetPreview gridPosition="main" />
-                    </>
-                )}
+                <Pagination />
                 <SideBarRight gridPosition="right" />
+
+                {selectedAssetForPreview && <AssetPreview />}
             </div>
         </MediaUiThemeProvider>
     );

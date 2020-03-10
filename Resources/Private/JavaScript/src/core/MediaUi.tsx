@@ -41,6 +41,7 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedAsset, setSelectedAsset] = useState<AssetProxy>();
+    const [selectedAssetForPreview, setSelectedAssetForPreview] = useState<AssetProxy>();
     const [assetTypeFilter, setAssetTypeFilter] = useState<AssetType>();
     // TODO: Use useReducer for state (like here https://github.com/sandstorm/NeosAcl/blob/master/Resources/Private/react-acl-editor/src/state/index.ts)
     const [uiState, setUiState] = useState<AssetProxiesQueryResult>({
@@ -109,6 +110,8 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
                     setCurrentPage,
                     selectedAsset,
                     setSelectedAsset,
+                    selectedAssetForPreview,
+                    setSelectedAssetForPreview,
                     dummyImage,
                     ...uiState
                 }}
