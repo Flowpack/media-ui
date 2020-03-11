@@ -7,8 +7,9 @@ import { useMediaUi, createUseMediaUiStyles, MediaUiThemeProvider } from '../cor
 import LoadingIndicator from './LoadingIndicator';
 import { MediaUiTheme } from '../interfaces';
 import { VIEW_MODE_SELECTION } from '../queries/ViewModeSelectionQuery';
-import { TopBar, VIEW_MODES } from './TopBar';
+import { TopBar } from './TopBar';
 import { ThumbnailView, ListView } from './Main';
+import { VIEW_MODES } from '../hooks';
 import AssetPreview from './AssetPreview';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

@@ -7,7 +7,7 @@ export enum VIEW_MODES {
     List = 'list'
 }
 
-export const useViewModeSelection = (): [string, (viewMode: VIEW_MODES) => Promise<ExecutionResult<any>>] => {
+export default function useViewModeSelection(): [string, (viewMode: VIEW_MODES) => Promise<ExecutionResult<any>>] {
     const viewModeSelectionQuery = useQuery(VIEW_MODE_SELECTION);
     const { viewModeSelection } = viewModeSelectionQuery.data;
     const [mutateViewModeSelection] = useMutation(SET_VIEW_MODE_SELECTION);
@@ -16,4 +16,4 @@ export const useViewModeSelection = (): [string, (viewMode: VIEW_MODES) => Promi
             variables: { viewModeSelection: viewMode }
         });
     return [viewModeSelection, setViewModeSelection];
-};
+}

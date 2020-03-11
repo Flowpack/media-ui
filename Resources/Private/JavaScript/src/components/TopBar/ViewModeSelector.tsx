@@ -1,13 +1,9 @@
 import React = require('react');
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMemo } from 'react';
+import SelectBox from '@neos-project/react-ui-components/lib-esm/SelectBox';
 import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
-import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from '../../queries/ViewModeSelectionQuery';
-
-export enum VIEW_MODES {
-    Thumbnails = 'thumbnails',
-    List = 'list'
-}
+import { VIEW_MODES, useViewModeSelection } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     viewModeSelector: {
@@ -22,28 +18,31 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 export default function ViewModeSelector() {
     const classes = useStyles();
     const { translate } = useIntl();
+    const [viewModeSelection, setViewModeSelection] = useViewModeSelection();
 
-    const viewModeSelectionQuery = useQuery(VIEW_MODE_SELECTION);
-    const { viewModeSelection } = viewModeSelectionQuery.data;
-    const [setViewModeSelection] = useMutation(SET_VIEW_MODE_SELECTION);
+    const viewModeOptions = useMemo(() => {
+        return [
+            {
+                value: VIEW_MODES.Thumbnails,
+                label: translate(`viewModeSelector.viewMode.${VIEW_MODES.Thumbnails}`, 'Thumbnails'),
+                icon: 'th'
+            },
+            {
+                value: VIEW_MODES.List,
+                label: translate(`viewModeSelector.viewMode.${VIEW_MODES.List}`, 'List'),
+                icon: 'th-list'
+            }
+        ];
+    }, []);
 
     return (
         <div className={classes.viewModeSelector}>
-            <label>{translate('viewModeSelector.label', 'View mode')}</label>
-            <select
-                onChange={event =>
-                    setViewModeSelection({
-                        variables: { viewModeSelection: event.target.value }
-                    })
-                }
+            <SelectBox
+                options={viewModeOptions}
+                onValueChange={value => setViewModeSelection(value)}
                 value={viewModeSelection}
-            >
-                {Object.values(VIEW_MODES).map(viewMode => (
-                    <option key={viewMode} value={viewMode}>
-                        {translate(`viewModeSelector.viewMode.${viewMode}`, viewMode)}
-                    </option>
-                ))}
-            </select>
+                optionValueField="value"
+            />
         </div>
     );
 }
