@@ -27,6 +27,7 @@
     "lodash.isequal": "^4.5.0",
     "lodash.omit": "^4.3.0",
     "lodash.throttle": "^4.0.8",
+    "media-type": "^0.3.1",
     "plow-js": "^2.2.0",
     "raf": "^3.4.1",
     "react": "^16.12.0",

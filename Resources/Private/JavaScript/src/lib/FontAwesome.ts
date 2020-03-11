@@ -10,7 +10,11 @@ import {
     faFolderOpen,
     faFolder,
     faTh,
-    faThList
+    faThList,
+    faFileVideo,
+    faFileAudio,
+    faFile,
+    faFileImage
 } from '@fortawesome/free-solid-svg-icons';
 import { faNeos } from '@fortawesome/free-brands-svg-icons';
 
@@ -18,5 +22,19 @@ config.familyPrefix = 'fa' as IconPrefix;
 config.replacementClass = 'svg-inline--fa';
 
 export default function loadIconLibrary() {
-    library.add(faTimesCircle, faTag, faTags, faExpandAlt, faFolderOpen, faFolder, faNeos, faTh, faThList);
+    library.add(
+        faTimesCircle,
+        faTag,
+        faTags,
+        faExpandAlt,
+        faFolderOpen,
+        faFolder,
+        faNeos,
+        faTh,
+        faThList,
+        faFileVideo,
+        faFileAudio,
+        faFile,
+        faFileImage
+    );
 }

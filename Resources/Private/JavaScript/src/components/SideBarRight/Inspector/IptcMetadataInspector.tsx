@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../../core';
+import { MediaUiTheme } from '../../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iptcData: {

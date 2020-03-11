@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { createUseMediaUiStyles } from '../core';
-import { MediaUiTheme, GridComponentProps } from '../interfaces';
+import { createUseMediaUiStyles } from '../../core';
+import { MediaUiTheme, GridComponentProps } from '../../interfaces';
 import { AssetInspector, IptcMetadataInspector } from './Inspector';
+import CurrentSelection from './CurrentSelection';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     sidebarRight: {
@@ -14,7 +15,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 export default function SideBarRight(props: GridComponentProps) {
     const classes = useStyles({ ...props });
 
-    const components = [AssetInspector, IptcMetadataInspector];
+    const components = [CurrentSelection, AssetInspector, IptcMetadataInspector];
 
     return (
         <div className={classes.sidebarRight}>

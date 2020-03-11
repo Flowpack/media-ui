@@ -64,6 +64,15 @@ const config = {
 
 // TODO: Directly use css variables or use above config as theme
 const mediaUiTheme: MediaUiTheme = {
+    spacing: {
+        ...config.spacing
+    },
+    fontSize: {
+        ...config.fontSize
+    },
+    colors: {
+        ...config.colors
+    },
     primaryColor: config.colors.primaryBlue,
     mainBackgroundColor: config.colors.contrastNeutral,
     alternatingBackgroundColor: config.colors.contrastDark,

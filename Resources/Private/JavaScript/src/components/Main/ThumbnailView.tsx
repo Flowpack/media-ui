@@ -57,12 +57,16 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             justifyContent: 'center',
             display: 'flex'
         }
+    },
+    selected: {
+        outline: `4px solid ${theme.primaryColor}`,
+        zIndex: 2
     }
 }));
 
 export default function ThumbnailView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const { assetProxies, dummyImage, setSelectedAsset, setSelectedAssetForPreview } = useMediaUi();
+    const { assetProxies, dummyImage, selectedAsset, setSelectedAsset, setSelectedAssetForPreview } = useMediaUi();
     const { translate } = useIntl();
 
     return (
@@ -71,7 +75,7 @@ export default function ThumbnailView(props: GridComponentProps) {
                 assetProxies.map(asset => {
                     const { identifier, label } = asset;
                     return (
-                        <figure key={identifier}>
+                        <figure key={identifier} className={selectedAsset === asset ? classes.selected : null}>
                             <picture onClick={() => setSelectedAsset(asset)}>
                                 <img src={asset.thumbnailUri || dummyImage} alt={asset.label} />
                             </picture>
