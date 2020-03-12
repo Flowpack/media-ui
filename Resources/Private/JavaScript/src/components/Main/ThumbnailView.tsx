@@ -15,13 +15,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
+                '&:hover': {
+                    outline: `4px solid ${theme.primaryColor}`
+                },
                 '& picture': {
                     cursor: 'pointer',
-                    backgroundColor: theme.assetBackgroundColor,
-                    '&:hover': {
-                        outline: `4px solid ${theme.primaryColor}`,
-                        zIndex: 2
-                    }
+                    backgroundColor: theme.assetBackgroundColor
                 },
                 '&:hover $toolBar': {
                     display: 'block'
@@ -51,7 +50,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         position: 'absolute',
         top: '5px',
         right: '5px',
-        zIndex: 3,
         '.neos & button': {
             alignContent: 'center',
             justifyContent: 'center',
@@ -59,8 +57,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         }
     },
     selected: {
-        outline: `4px solid ${theme.primaryColor}`,
-        zIndex: 2
+        outline: `4px solid ${theme.primaryColor}`
     }
 }));
 
