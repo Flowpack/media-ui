@@ -7,9 +7,16 @@ import SelectBox from '@neos-project/react-ui-components/lib-esm/SelectBox';
 import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+    currentSelection: {
+        '.neos &': {
+            marginBottom: theme.spacing.full
+        }
+    },
     headline: {
-        fontWeight: 'bold',
-        lineHeight: theme.spacing.goldenUnit
+        '.neos &': {
+            fontWeight: 'bold',
+            lineHeight: theme.spacing.goldenUnit
+        }
     }
 }));
 
@@ -31,7 +38,7 @@ export default function CurrentSelection() {
     return (
         <>
             {selectedAsset && (
-                <div>
+                <div className={classes.currentSelection}>
                     <Headline type="h2" className={classes.headline}>
                         {translate('currentSelection.headline', 'Selected asset')}
                     </Headline>
