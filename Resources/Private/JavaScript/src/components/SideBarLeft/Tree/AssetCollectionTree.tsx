@@ -7,17 +7,32 @@ import { useAssetSourceFilter } from '../../../hooks';
 import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
+import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
+import Icon from '@neos-project/react-ui-components/lib-esm/Icon';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: {
         '.neos &': {
-            padding: '0 1rem 1rem 1rem'
+            border: `1px solid ${theme.colors.contrastDark}`
         }
     },
-    tree: {
+    iconWrap: {
+        width: theme.spacing.goldenUnit,
+        display: 'inline-flex',
+        justifyContent: 'center'
+    },
+    headline: {
         '.neos &': {
-            marginTop: '1rem'
+            fontWeight: 'bold',
+            lineHeight: theme.spacing.goldenUnit,
+            paddingLeft: theme.spacing.half
         }
+    },
+    toolbar: {
+        borderTop: `1px solid ${theme.colors.contrastDark}`
+    },
+    tree: {
+        borderTop: `1px solid ${theme.colors.contrastDark}`
     }
 }));
 
@@ -31,17 +46,50 @@ const AssetCollectionTree = () => {
         assetSources,
         tagFilter,
         setTagFilter,
-        tags
+        tags,
+        notify
     } = useMediaUi();
     const [assetSourceFilter] = useAssetSourceFilter();
 
     const selectedAssetSource = assetSources.find(assetSource => assetSource.identifier === assetSourceFilter);
 
+    const onClickAdd = () => {
+        notify('info', 'This feature has not been implemented yet');
+    };
+
     return (
         <>
             {selectedAssetSource?.supportsCollections && (
                 <nav className={classes.container}>
-                    <strong>{translate('assetCollectionList.header', 'Collections')}</strong>
+                    <div>
+                        <span className={classes.iconWrap}>
+                            <Icon icon="folder" />
+                        </span>
+                        <span className={classes.headline}>
+                            {translate('assetCollectionList.header', 'Collections')}
+                        </span>
+                    </div>
+
+                    <div className={classes.toolbar}>
+                        <IconButton
+                            icon="plus"
+                            size="regular"
+                            style="transparent"
+                            hoverStyle="brand"
+                            disabled={!assetCollectionFilter && !tagFilter}
+                            title={translate('assetCollectionTree.toolbar.create', 'Create new')}
+                            onClick={() => onClickAdd()}
+                        />
+                        <IconButton
+                            icon="trash-alt"
+                            size="regular"
+                            style="transparent"
+                            hoverStyle="brand"
+                            disabled={!assetCollectionFilter && !tagFilter}
+                            title={translate('assetCollectionTree.toolbar.delete', 'Delete')}
+                            onClick={() => onClickAdd()}
+                        />
+                    </div>
 
                     <Tree className={classes.tree}>
                         <AssetCollectionTreeNode

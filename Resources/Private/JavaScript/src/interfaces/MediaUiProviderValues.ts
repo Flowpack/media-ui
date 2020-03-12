@@ -7,7 +7,7 @@ import AssetType from './AssetType';
 export default interface MediaUiProviderValues {
     csrf: string;
     endpoints: any;
-    notify: Function;
+    notify: (type: string, message: string) => void;
     isLoading: boolean;
     assetCount: number;
     assetProxies: AssetProxy[];
