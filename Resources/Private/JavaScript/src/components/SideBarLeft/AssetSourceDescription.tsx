@@ -1,0 +1,47 @@
+import * as React from 'react';
+import Icon from '@neos-project/react-ui-components/lib-esm/Icon';
+import ToggablePanel from '@neos-project/react-ui-components/lib-esm/ToggablePanel';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
+import { useAssetSourceFilter } from '../../hooks';
+import { MediaUiTheme } from '../../interfaces';
+
+const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+    assetSourceDescription: {
+        border: `1px solid ${theme.borderColor}`,
+        '& .ReactCollapse--collapse': {
+            transition: `height ${theme.transition.slow}`
+        }
+    },
+    panelHeader: {
+        '.neos &': {
+            '& button': {
+                position: 'absolute'
+            }
+        }
+    }
+}));
+
+export default function AssetSourceDescription() {
+    const classes = useStyles();
+    const { assetSources } = useMediaUi();
+    const [assetSourceFilter] = useAssetSourceFilter();
+    const { translate } = useIntl();
+
+    const selectedAssetSource = assetSources.find(assetSource => assetSource.identifier === assetSourceFilter);
+
+    return (
+        <>
+            {selectedAssetSource?.description && (
+                <ToggablePanel closesToBottom={true} className={classes.assetSourceDescription}>
+                    <ToggablePanel.Header className={classes.panelHeader}>
+                        <Icon icon="info-circle" padded="right" />
+                        {translate('assetSourceDescription.header', 'Media source description')}
+                    </ToggablePanel.Header>
+                    <ToggablePanel.Contents>
+                        <p>{selectedAssetSource.description}</p>
+                    </ToggablePanel.Contents>
+                </ToggablePanel>
+            )}
+        </>
+    );
+}

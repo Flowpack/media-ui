@@ -17,7 +17,8 @@ import {
     faFileImage,
     faPhotoVideo,
     faPlus,
-    faTrashAlt
+    faTrashAlt,
+    faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { faNeos } from '@fortawesome/free-brands-svg-icons';
 
@@ -41,6 +42,7 @@ export default function loadIconLibrary() {
         faFileImage,
         faPhotoVideo,
         faPlus,
-        faTrashAlt
+        faTrashAlt,
+        faInfoCircle
     );
 }

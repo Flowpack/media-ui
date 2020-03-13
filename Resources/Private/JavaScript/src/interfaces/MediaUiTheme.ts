@@ -29,6 +29,11 @@ export default interface MediaUiTheme {
         errorHover: string;
         uncheckedCheckboxTick: string;
     };
+    transition: {
+        fast: string;
+        default: string;
+        slow: string;
+    };
     primaryColor: string;
     mainBackgroundColor: string;
     alternatingBackgroundColor: string;

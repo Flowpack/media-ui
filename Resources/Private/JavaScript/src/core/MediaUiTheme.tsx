@@ -73,6 +73,9 @@ const mediaUiTheme: MediaUiTheme = {
     colors: {
         ...config.colors
     },
+    transition: {
+        ...config.transition
+    },
     primaryColor: config.colors.primaryBlue,
     mainBackgroundColor: config.colors.contrastNeutral,
     alternatingBackgroundColor: config.colors.contrastDark,
