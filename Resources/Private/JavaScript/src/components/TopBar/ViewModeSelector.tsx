@@ -1,4 +1,4 @@
-import React = require('react');
+import * as React from 'react';
 import { useMemo } from 'react';
 import SelectBox from '@neos-project/react-ui-components/lib-esm/SelectBox';
 import { createUseMediaUiStyles, useIntl } from '../../core';

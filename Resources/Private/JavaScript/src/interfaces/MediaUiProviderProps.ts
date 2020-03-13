@@ -6,6 +6,6 @@ export default interface MediaUiProviderProps {
     endpoints: {
         graphql: string;
     };
-    notify: Function;
+    notify: (type: string, message: string) => void;
     dummyImage: string;
 }

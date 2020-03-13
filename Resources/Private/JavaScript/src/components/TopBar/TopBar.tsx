@@ -1,4 +1,4 @@
-import React = require('react');
+import * as React from 'react';
 import { createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme, GridComponentProps } from '../../interfaces';
 import TypeFilter from './TypeFilter';
