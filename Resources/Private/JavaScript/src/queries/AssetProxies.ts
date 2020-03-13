@@ -61,6 +61,8 @@ export const ASSET_PROXIES = gql`
         assetSources {
             label
             identifier
+            description
+            iconUri
             readOnly
             supportsTagging
             supportsCollections

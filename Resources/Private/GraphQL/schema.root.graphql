@@ -17,6 +17,8 @@ type Mutation {
 type AssetSource {
     identifier: ID!
     label: String!
+    description: String
+    iconUri: String
     readOnly: Boolean!
     supportsTagging: Boolean!
     supportsCollections: Boolean!

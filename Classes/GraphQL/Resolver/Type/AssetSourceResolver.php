@@ -18,7 +18,7 @@ class AssetSourceResolver implements ResolverInterface
      * @param AssetSourceInterface $assetSource
      * @return bool
      */
-    public function supportsTagging(AssetSourceInterface $assetSource)
+    public function supportsTagging(AssetSourceInterface $assetSource): bool
     {
         return $assetSource->getAssetProxyRepository() instanceof SupportsTaggingInterface;
     }
@@ -27,8 +27,31 @@ class AssetSourceResolver implements ResolverInterface
      * @param AssetSourceInterface $assetSource
      * @return bool
      */
-    public function supportsCollections(AssetSourceInterface $assetSource)
+    public function supportsCollections(AssetSourceInterface $assetSource): bool
     {
         return $assetSource->getAssetProxyRepository() instanceof SupportsCollectionsInterface;
+    }
+
+    /**
+     * @param AssetSourceInterface $assetSource
+     * @return string
+     */
+    public function description(AssetSourceInterface $assetSource): string
+    {
+        // TODO: Use getter when new describable interface has been implemented
+        return 'Description for Asset Source ' .  $assetSource->getLabel();
+    }
+
+    /**
+     * @param AssetSourceInterface $assetSource
+     * @return string
+     */
+    public function iconUri(AssetSourceInterface $assetSource): string
+    {
+        // TODO: Use getter when new describable interface has been implemented
+        if ($assetSource->getIdentifier() === 'neos') {
+            return 'neos';
+        }
+        return 'box';
     }
 }

@@ -8,10 +8,10 @@ import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
-import Icon from '@neos-project/react-ui-components/lib-esm/Icon';
+import IconLabel from '../../IconLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    container: {
+    assetCollectionTree: {
         '.neos &': {
             border: `1px solid ${theme.colors.contrastDark}`
         }
@@ -60,15 +60,8 @@ const AssetCollectionTree = () => {
     return (
         <>
             {selectedAssetSource?.supportsCollections && (
-                <nav className={classes.container}>
-                    <div>
-                        <span className={classes.iconWrap}>
-                            <Icon icon="folder" />
-                        </span>
-                        <span className={classes.headline}>
-                            {translate('assetCollectionList.header', 'Collections')}
-                        </span>
-                    </div>
+                <nav className={classes.assetCollectionTree}>
+                    <IconLabel icon="folder" label={translate('assetCollectionList.header', 'Collections')} />
 
                     <div className={classes.toolbar}>
                         <IconButton
