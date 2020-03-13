@@ -15,6 +15,7 @@ import {
     faFileAudio,
     faFile,
     faFileImage,
+    faPhotoVideo,
     faPlus,
     faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
@@ -38,6 +39,7 @@ export default function loadIconLibrary() {
         faFileAudio,
         faFile,
         faFileImage,
+        faPhotoVideo,
         faPlus,
         faTrashAlt
     );

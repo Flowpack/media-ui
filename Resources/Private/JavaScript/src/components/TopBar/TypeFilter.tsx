@@ -1,15 +1,11 @@
-import React = require('react');
+import * as React from 'react';
+import { useMemo } from 'react';
+import SelectBox from '@neos-project/react-ui-components/lib-esm/SelectBox';
 import { createUseMediaUiStyles, useMediaUi, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    typeFilter: {
-        display: 'flex',
-        alignItems: 'baseline',
-        '.neos & label': {
-            marginRight: '.5rem'
-        }
-    }
+    typeFilter: {}
 }));
 
 export default function TypeFilter() {
@@ -17,20 +13,28 @@ export default function TypeFilter() {
     const { assetTypes, assetTypeFilter, setAssetTypeFilter } = useMediaUi();
     const { translate } = useIntl();
 
-    const handleSelect = ({ target }) => {
-        setAssetTypeFilter(assetTypes.find(assetType => assetType.label === target.value));
+    const handleSelect = (value) => {
+        setAssetTypeFilter(assetTypes.find(assetType => assetType.label === value));
     };
+
+    const typeOptions = useMemo(() => {
+        return assetTypes.map(({ label }) => {
+            return {
+                value: label === 'All' ? '' : label,
+                label: translate(`assetType.${label.toLowerCase()}`, label),
+                icon: label === 'Document' ? 'file' : label === 'All' ? 'photo-video' : `file-${label.toLowerCase()}`
+            };
+        });
+    }, [assetTypes]);
 
     return (
         <div className={classes.typeFilter}>
-            <label>{translate('filter.type.label', 'Filter by type')}</label>
-            <select onChange={e => handleSelect(e)} value={assetTypeFilter?.label}>
-                {assetTypes.map(assetType => (
-                    <option key={assetType.label} value={assetType.label}>
-                        {translate(`assetType.${assetType.label}`, assetType.label)}
-                    </option>
-                ))}
-            </select>
+            <SelectBox
+                options={typeOptions}
+                onValueChange={value => handleSelect(value)}
+                value={assetTypeFilter?.label || ''}
+                optionValueField="value"
+            />
         </div>
     );
 }
