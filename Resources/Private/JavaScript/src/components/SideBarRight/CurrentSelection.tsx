@@ -44,6 +44,7 @@ export default function CurrentSelection() {
                     </Headline>
                     <SelectBox
                         options={[{ value: selectedAsset.filename, label: selectedAsset.label, icon: assetIcon }]}
+                        onValueChange={() => null}
                         value={selectedAsset.filename}
                     />
                 </div>
