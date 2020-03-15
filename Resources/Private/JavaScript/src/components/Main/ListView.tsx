@@ -9,9 +9,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '.neos &': {
             '& table': {
                 width: '100%',
-                '& tr': {
+                '& tbody tr': {
                     cursor: 'pointer',
-                    backgroundColor: theme.alternatingBackgroundColor,
+                    backgroundColor: theme.mainBackgroundColor,
                     '&:nth-of-type(2n)': {
                         backgroundColor: theme.alternatingBackgroundColor
                     },
@@ -19,7 +19,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                         backgroundColor: theme.primaryColor
                     }
                 },
-                '& td': {
+                '& td, & th': {
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
