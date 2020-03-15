@@ -31,6 +31,8 @@ export const ASSET_PROXIES = gql`
                 alt
             }
             lastModified
+            widthInPixels
+            heightInPixels
             thumbnailUri
             previewUri
             iptcMetadata {

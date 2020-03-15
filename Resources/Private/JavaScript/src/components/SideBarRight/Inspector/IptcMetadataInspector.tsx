@@ -1,6 +1,8 @@
 import * as React from 'react';
+import Headline from '@neos-project/react-ui-components/lib-esm/Headline';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
+import { PropertyList, PropertyListItem } from './PropertyList';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iptcData: {
@@ -19,6 +21,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 color: theme.inactiveColor
             }
         }
+    },
+    headline: {
+        '.neos &': {
+            fontWeight: 'bold',
+            lineHeight: theme.spacing.goldenUnit
+        }
     }
 }));
 
@@ -31,15 +39,18 @@ export default function IptcMetadataInspector() {
         <>
             {selectedAsset?.iptcMetadata.length ? (
                 <div className={classes.iptcData}>
-                    <label>{translate('inspector.iptcMetadata', 'IPTC Metadata')}</label>
-                    <dl>
+                    <Headline type="h2" className={classes.headline}>
+                        {translate('inspector.iptcMetadata', 'IPTC Metadata')}
+                    </Headline>
+                    <PropertyList>
                         {selectedAsset.iptcMetadata.map(iptcMetadata => (
-                            <React.Fragment key={iptcMetadata.key}>
-                                <dt>{iptcMetadata.key}</dt>
-                                <dd>{iptcMetadata.value}</dd>
-                            </React.Fragment>
+                            <PropertyListItem
+                                key={iptcMetadata.key}
+                                label={iptcMetadata.key}
+                                value={iptcMetadata.value}
+                            />
                         ))}
-                    </dl>
+                    </PropertyList>
                 </div>
             ) : null}
         </>
