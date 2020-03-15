@@ -8,6 +8,7 @@ export const ASSET_PROXIES = gql`
         $assetCollection: String
         $assetType: String
         $tag: String
+        $localOnly: Boolean
         $limit: Int
         $offset: Int
     ) {
@@ -18,6 +19,7 @@ export const ASSET_PROXIES = gql`
             assetCollection: $assetCollection
             assetType: $assetType
             tag: $tag
+            localOnly: $localOnly
             limit: $limit
             offset: $offset
         ) {
@@ -73,6 +75,7 @@ export const ASSET_PROXIES = gql`
             assetCollection: $assetCollection
             assetType: $assetType
             tag: $tag
+            localOnly: $localOnly
         )
         assetTypes {
             label

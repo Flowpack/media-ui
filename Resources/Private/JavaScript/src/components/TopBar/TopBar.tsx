@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme, GridComponentProps } from '../../interfaces';
-import TypeFilter from './TypeFilter';
-import SearchBox from './SearchBox';
-import ViewModeSelector from './ViewModeSelector';
+import { ImportedFilter, ViewModeSelector, SearchBox, TypeFilter } from '.';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     topBar: {
@@ -17,7 +15,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 export default function TopBar(props: GridComponentProps) {
     const classes = useStyles({ ...props });
 
-    const components = [SearchBox, TypeFilter, ViewModeSelector];
+    const components = [SearchBox, TypeFilter, ViewModeSelector, ImportedFilter];
 
     return (
         <div className={classes.topBar}>

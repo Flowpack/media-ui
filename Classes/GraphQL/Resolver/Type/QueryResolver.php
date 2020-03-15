@@ -139,6 +139,7 @@ class QueryResolver implements ResolverInterface
         $assetCollection = $variables['assetCollection'] ?? null;
         $assetType = $variables['assetType'] ?? null;
         $searchTerm = $variables['searchTerm'] ?? null;
+        $localOnly = $variables['localOnly'] ?? false;
 
         if (array_key_exists($assetSourceName, $this->assetSources)) {
             /** @var AssetSourceInterface $activeAssetSource */

@@ -1,11 +1,11 @@
 type Query {
   asset(identifier: ID!): Asset
   assets(tag: String): [Asset!]!
-  assetProxies(assetSource: String, tag: String, assetCollection: String, assetType: String, searchTerm: String, limit: Int, offset: Int): [AssetProxy!]!
+  assetProxies(assetSource: String, tag: String, assetCollection: String, assetType: String, searchTerm: String, localOnly: Boolean, limit: Int, offset: Int): [AssetProxy!]!
   assetSources: [AssetSource!]!
   assetCollections: [AssetCollection!]!
   assetTypes: [AssetType!]!
-  assetCount(assetSource: String, tag: String, assetCollection: String, assetType: String, searchTerm: String): Int!
+  assetCount(assetSource: String, tag: String, assetCollection: String, assetType: String, searchTerm: String, localOnly: Boolean): Int!
   tags: [Tag!]!
 }
 

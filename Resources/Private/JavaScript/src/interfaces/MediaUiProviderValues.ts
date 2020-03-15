@@ -29,5 +29,7 @@ export default interface MediaUiProviderValues {
     assetTypes: AssetType[];
     assetTypeFilter: AssetType;
     setAssetTypeFilter: (assetType: AssetType) => void;
+    filterImported: boolean;
+    setFilterImported: (filterImported: boolean) => void;
     dummyImage: string;
 }
