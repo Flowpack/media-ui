@@ -9,6 +9,7 @@ import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
 import IconLabel from '../../IconLabel';
+import { dndTypes } from '../../../constants';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
