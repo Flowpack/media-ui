@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useMediaUi, createUseMediaUiStyles, useIntl } from '../../core';
-import { MediaUiTheme, GridComponentProps } from '../../interfaces';
+import { MediaUiTheme, GridComponentProps, AssetProxy } from '../../interfaces';
 import { humanFileSize } from '../../helper/FileSize';
+import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
@@ -9,6 +10,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             '& table': {
                 width: '100%',
                 '& tr': {
+                    cursor: 'pointer',
                     backgroundColor: theme.alternatingBackgroundColor,
                     '&:nth-of-type(2n)': {
                         backgroundColor: theme.alternatingBackgroundColor
@@ -17,18 +19,27 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                         backgroundColor: theme.primaryColor
                     }
                 },
+                '& td': {
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    userSelect: 'none'
+                },
                 '& td:first-child': {
                     padding: '0 !important' // Hack to solve issue with backend default css
+                },
+                '& td:last-child': {
+                    paddingRight: '0 !important' // Hack to solve issue with backend default css
                 }
             }
         }
     },
     previewColumn: {
-        width: '40px',
+        width: theme.spacing.goldenUnit,
         '& picture': {
             display: 'block',
             width: '100%',
-            height: '40px',
+            height: theme.spacing.goldenUnit,
             '& img': {
                 display: 'block',
                 width: '100%',
@@ -37,13 +48,31 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             }
         }
     },
-    actionsColumn: {}
+    labelColumn: {
+        userSelect: 'text'
+    },
+    actionsColumn: {
+        textAlign: 'right'
+    },
+    tagsColumn: {
+        '& span': {
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            display: 'block',
+            maxWidth: '200px'
+        }
+    }
 }));
 
 export default function ListView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const { assetProxies, dummyImage, setSelectedAsset } = useMediaUi();
+    const { assetProxies, dummyImage, setSelectedAsset, notify } = useMediaUi();
     const { translate } = useIntl();
+
+    const handleDeleteAction = (asset: AssetProxy) => {
+        notify('info', 'This action has not been implemented yet');
+    };
 
     return (
         <section className={classes.listView}>
@@ -62,9 +91,9 @@ export default function ListView(props: GridComponentProps) {
                     </thead>
                     <tbody>
                         {assetProxies.map(asset => (
-                            <tr key={asset.identifier}>
+                            <tr key={asset.identifier} onClick={() => setSelectedAsset(asset)}>
                                 <td className={classes.previewColumn}>
-                                    <picture onClick={() => setSelectedAsset(asset)}>
+                                    <picture>
                                         <img
                                             src={asset.thumbnailUri || dummyImage}
                                             alt={asset.label}
@@ -73,12 +102,27 @@ export default function ListView(props: GridComponentProps) {
                                         />
                                     </picture>
                                 </td>
-                                <td>{asset.label}</td>
+                                <td className={classes.labelColumn}>{asset.label}</td>
                                 <td>{new Date(asset.lastModified).toLocaleString()}</td>
                                 <td>{humanFileSize(asset.fileSize)}</td>
                                 <td>{asset.mediaType}</td>
-                                <td>{asset.localAssetData?.tags?.map(tag => tag).join(', ') || ''}</td>
-                                <td className={classes.actionsColumn}>...</td>
+                                <td
+                                    className={classes.tagsColumn}
+                                    title={asset.localAssetData?.tags?.map(({ label }) => label).join(', ') || ''}
+                                >
+                                    <span>
+                                        {asset.localAssetData?.tags?.map(({ label }) => label).join(', ') || ''}
+                                    </span>
+                                </td>
+                                <td className={classes.actionsColumn}>
+                                    <IconButton
+                                        icon="trash"
+                                        size="regular"
+                                        style="transparent"
+                                        hoverStyle="error"
+                                        onClick={() => handleDeleteAction(asset)}
+                                    />
+                                </td>
                             </tr>
                         ))}
                     </tbody>
