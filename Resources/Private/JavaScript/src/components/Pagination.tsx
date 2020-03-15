@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ASSETS_PER_PAGE, createUseMediaUiStyles, useMediaUi, useIntl } from '../core';
 import { useEffect, useState } from 'react';
 import { MediaUiTheme } from '../interfaces';
+import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
@@ -102,12 +103,14 @@ export default function Pagination() {
                     <ol className={classes.list}>
                         {currentPage > 1 && (
                             <li>
-                                <a
-                                    onClick={() => handlePageClick(currentPage - 1)}
+                                <IconButton
+                                    icon="angle-left"
+                                    size="regular"
+                                    style="transparent"
+                                    hoverStyle="brand"
                                     title={translate('pagination.previousPageTitle', `Go to previous page`)}
-                                >
-                                    &lsaquo;
-                                </a>
+                                    onClick={() => handlePageClick(currentPage - 1)}
+                                />
                             </li>
                         )}
                         {displayRange.start > 1 && (
@@ -144,12 +147,14 @@ export default function Pagination() {
                         )}
                         {currentPage < numberOfPages && (
                             <li>
-                                <a
-                                    onClick={() => handlePageClick(currentPage + 1)}
+                                <IconButton
+                                    icon="angle-right"
+                                    size="regular"
+                                    style="transparent"
+                                    hoverStyle="brand"
                                     title={translate('pagination.nextPageTitle', `Go to next page`)}
-                                >
-                                    &rsaquo;
-                                </a>
+                                    onClick={() => handlePageClick(currentPage + 1)}
+                                />
                             </li>
                         )}
                     </ol>
