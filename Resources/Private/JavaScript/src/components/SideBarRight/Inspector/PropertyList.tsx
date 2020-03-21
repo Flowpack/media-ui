@@ -23,7 +23,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 }));
 
 interface PropertyListProps {
-    children: PropertyListItem[];
+    children: React.ReactElement[];
 }
 
 interface PropertyListItemProps {
