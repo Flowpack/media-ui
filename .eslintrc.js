@@ -32,6 +32,7 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": "off",
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/ban-ts-ignore': 'off',
     'prettier/prettier': ['error', {
       semi: true,
       singleQuote: true,

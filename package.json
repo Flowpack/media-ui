@@ -40,7 +40,8 @@
     "react-image-lightbox": "^5.1.1",
     "react-jss": "^10.0.4",
     "react-keydown": "^1.9.12",
-    "react-modal": "^3.11.1"
+    "react-modal": "^3.11.1",
+    "react-redux": "^5.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

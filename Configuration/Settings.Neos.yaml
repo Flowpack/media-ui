@@ -20,3 +20,14 @@ Neos:
         autoInclude:
           Flowpack.Media.Ui:
             - 'Main'
+
+      inspector:
+        dataTypes:
+          Neos\Media\Domain\Model\Asset:
+            editor: Flowpack.Media.Ui/Inspector/Editors/AssetEditor
+
+    Ui:
+      resources:
+        javascript:
+          Flowpack.Media.Ui:AssetEditor:
+            resource: resource://Flowpack.Media.Ui/Public/AssetEditor/Plugin.js
