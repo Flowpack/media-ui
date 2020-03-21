@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { createContext, useContext } from 'react';
+import { I18nRegistry } from '../interfaces';
 
-interface ProviderProps {
+interface ProviderProps extends I18nRegistry {
     children: React.ReactElement;
-    translate: Function;
 }
 
-interface ProviderValues {
+interface ProviderValues extends I18nRegistry {
     translate: (id: string, fallback: string, args?: any[], packageKey?: string, source?: string) => string;
 }
 
