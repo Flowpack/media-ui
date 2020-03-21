@@ -5,8 +5,6 @@ import AssetSource from './AssetSource';
 import AssetType from './AssetType';
 
 export default interface MediaUiProviderValues {
-    csrf: string;
-    endpoints: any;
     notify: (type: string, message: string) => void;
     isLoading: boolean;
     assetCount: number;

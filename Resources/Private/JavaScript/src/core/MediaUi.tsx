@@ -35,7 +35,7 @@ export const useMediaUi = (): MediaUiProviderValues => useContext(MediaUiContext
 
 export const ASSETS_PER_PAGE = 20;
 
-export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage }: MediaUiProviderProps) {
+export function MediaUiProvider({ children, notify, dummyImage }: MediaUiProviderProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState<Tag>();
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
@@ -94,8 +94,6 @@ export function MediaUiProvider({ children, csrf, endpoints, notify, dummyImage 
         <>
             <MediaUiContext.Provider
                 value={{
-                    csrf,
-                    endpoints,
                     isLoading,
                     notify,
                     searchTerm,
