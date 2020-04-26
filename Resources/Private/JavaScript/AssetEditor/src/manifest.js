@@ -16,7 +16,7 @@ manifest('Flowpack.Media.Ui:AssetEditor', {}, (globalRegistry, { frontendConfigu
         }
     });
 
-    // secondaryEditorsRegistry.set('Flowpack.Media.Ui/Secondary/Editors/AssetSelectionScreen', {
-    //     component: AssetSelectionScreen
-    // });
+    secondaryEditorsRegistry.set('Flowpack.Media.Ui/Secondary/Editors/AssetSelectionScreen', {
+        component: AssetSelectionScreen
+    });
 });

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useMediaUi, createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme, GridComponentProps, AssetProxy } from '../../interfaces';
 import { humanFileSize } from '../../helper/FileSize';
-import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
+import { IconButton } from '@neos-project/react-ui-components';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {

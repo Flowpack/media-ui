@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ASSETS_PER_PAGE, createUseMediaUiStyles, useMediaUi, useIntl } from '../core';
 import { useEffect, useState } from 'react';
 import { MediaUiTheme } from '../interfaces';
-import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
+import { IconButton } from '@neos-project/react-ui-components';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {

@@ -1,16 +1,21 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import Modal from 'react-modal';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import { ApolloProvider } from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { IntlProvider, MediaUiProvider } from './core';
+
+import { IntlProvider, MediaUiProvider, PersistentStateManager } from './core';
 import App from './components/App';
-import { resolvers, typeDefs } from './core/Resolvers';
-import { restoreLocalState } from './core/PersistentStateManager';
 import loadIconLibrary from './lib/FontAwesome';
+import { resolvers, typeDefs } from './core/Resolvers';
 
 loadIconLibrary();
+
+const withDragDropContext = DragDropContext(HTML5Backend);
+const AppWithDnd = withDragDropContext(App);
 
 window.onload = async (): Promise<void> => {
     while (!window.NeosCMS || !window.NeosCMS.I18n.initialized) {
@@ -21,7 +26,7 @@ window.onload = async (): Promise<void> => {
     Modal.setAppElement(root);
 
     const cache = new InMemoryCache();
-    restoreLocalState(cache);
+    PersistentStateManager.restoreLocalState(cache);
 
     const client = new ApolloClient({
         cache,
@@ -43,7 +48,7 @@ window.onload = async (): Promise<void> => {
         <IntlProvider translate={translate}>
             <ApolloProvider client={client}>
                 <MediaUiProvider notify={notify} dummyImage={root.dataset.dummyImage}>
-                    <App />
+                    <AppWithDnd />
                 </MediaUiProvider>
             </ApolloProvider>
         </IntlProvider>,

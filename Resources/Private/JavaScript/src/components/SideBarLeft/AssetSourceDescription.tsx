@@ -1,6 +1,5 @@
 import * as React from 'react';
-import Icon from '@neos-project/react-ui-components/lib-esm/Icon';
-import ToggablePanel from '@neos-project/react-ui-components/lib-esm/ToggablePanel';
+import { Icon, ToggablePanel } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { useAssetSourceFilter } from '../../hooks';
 import { MediaUiTheme } from '../../interfaces';

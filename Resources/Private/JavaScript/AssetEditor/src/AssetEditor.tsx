@@ -65,20 +65,23 @@ export default class AssetEditor extends React.PureComponent<AssetEditorProps> {
         }
     };
 
-    handleOpenCodeEditor = () => {
+    handleOpenSelectionScreen = () => {
+        console.log('yo');
         const { secondaryEditorsRegistry } = this.props;
-        // const { component: AssetSelectionScreen } = secondaryEditorsRegistry.get(
-        //     'Flowpack.Media.Ui/Secondary/Editors/AssetSelectionScreen'
-        // );
-        //
-        // this.props.renderSecondaryInspector('ASSET_SELECT', () => (
-        //     <AssetSelectionScreen handleAssetSelected={this.handleAssetSelected} value={this.props.value} />
-        // ));
+        const { component: AssetSelectionScreen } = secondaryEditorsRegistry.get(
+            'Flowpack.Media.Ui/Secondary/Editors/AssetSelectionScreen'
+        );
+
+        this.props.renderSecondaryInspector('ASSET_SELECT', () => (
+            <AssetSelectionScreen handleAssetSelected={this.handleAssetSelected} value={this.props.value} />
+        ));
     };
 
     render() {
         const { label } = this.props;
         const disabled = $get('options.disabled', this.props);
+
+        console.log(disabled, 'disabled');
 
         return (
             <div>
@@ -86,7 +89,7 @@ export default class AssetEditor extends React.PureComponent<AssetEditorProps> {
                 <Button
                     style="lighter"
                     disabled={disabled}
-                    onClick={() => (disabled ? null : this.handleOpenCodeEditor)}
+                    onClick={() => (disabled ? null : this.handleOpenSelectionScreen())}
                 >
                     <Icon icon="pencil" padded="right" label="Edit" />
                     {label}

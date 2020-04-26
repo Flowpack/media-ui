@@ -18,13 +18,5 @@
   },
   "neos": {
     "buildTargetDirectory": "../../../Public/AssetEditor"
-  },
-  "alias": {
-    "@neos-project/react-ui-components/lib-esm": "@neos-project/react-ui-components",
-    "@media-ui": "../src"
-  },
-  "resolve": {
-    "modules": ["../src"],
-    "extensions": ["tsx", "ts", ".js"]
   }
 }

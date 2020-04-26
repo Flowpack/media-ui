@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Tree from '@neos-project/react-ui-components/lib-esm/Tree';
+import { Tree } from '@neos-project/react-ui-components';
 import { TagTreeNodeProps } from '../../../interfaces';
 import { dndTypes } from '../../../constants';
 

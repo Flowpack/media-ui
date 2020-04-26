@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme, GridComponentProps } from '../../interfaces';
-import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
+import { IconButton } from '@neos-project/react-ui-components';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnailView: {

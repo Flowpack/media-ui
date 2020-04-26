@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useMemo } from 'react';
-import SelectBox from '@neos-project/react-ui-components/lib-esm/SelectBox';
+import { SelectBox } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { VIEW_MODES, useViewModeSelection } from '../../hooks';

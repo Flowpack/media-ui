@@ -2,8 +2,7 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import mediaType from 'media-type';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
-import Headline from '@neos-project/react-ui-components/lib-esm/Headline';
-import SelectBox from '@neos-project/react-ui-components/lib-esm/SelectBox';
+import { Headline, SelectBox } from '@neos-project/react-ui-components';
 import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
