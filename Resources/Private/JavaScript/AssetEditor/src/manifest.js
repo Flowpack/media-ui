@@ -9,11 +9,7 @@ manifest('Flowpack.Media.Ui:AssetEditor', {}, (globalRegistry, { frontendConfigu
     const assetEditorConfig = frontendConfiguration['Flowpack.Media.Ui:AssetEditor'];
 
     editorsRegistry.set('Flowpack.Media.Ui/Inspector/Editors/AssetEditor', {
-        component: class extends AssetEditor {
-            getConfig() {
-                return assetEditorConfig;
-            }
-        }
+        component: AssetEditor
     });
 
     secondaryEditorsRegistry.set('Flowpack.Media.Ui/Secondary/Editors/AssetSelectionScreen', {

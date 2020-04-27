@@ -11,6 +11,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         bottom: 0,
         left: 0,
         right: 0,
+        justifyContent: 'center',
         borderTop: `1px solid ${theme.borderColor}`,
         backgroundColor: theme.moduleBackgroundColor,
         zIndex: theme.paginationZIndex
@@ -19,29 +20,27 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         border: `1px solid ${theme.borderColor}`,
         borderTop: 0,
         borderBottom: 0,
-        '.neos & a': {
+        '& a': {
             color: theme.primaryColor
         }
     },
     list: {
-        '.neos &': {
-            display: 'flex',
-            margin: '0 -.5rem',
-            justifyContent: 'center',
-            textAlign: 'center',
-            '& > li': {
+        display: 'flex',
+        margin: '0 -.5rem',
+        justifyContent: 'center',
+        textAlign: 'center',
+        '& > li': {
+            width: '2.4rem',
+            userSelect: 'none',
+            lineHeight: '2.4rem',
+            '& a': {
+                display: 'block',
+                height: '2.4rem',
                 width: '2.4rem',
-                userSelect: 'none',
-                lineHeight: '2.4rem',
-                '& a': {
-                    display: 'block',
-                    height: '2.4rem',
-                    width: '2.4rem',
-                    cursor: 'pointer',
-                    '&:hover': {
-                        backgroundColor: theme.primaryColor,
-                        color: 'white'
-                    }
+                cursor: 'pointer',
+                '&:hover': {
+                    backgroundColor: theme.primaryColor,
+                    color: 'white'
                 }
             }
         }

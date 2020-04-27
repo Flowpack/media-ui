@@ -66,7 +66,6 @@ export default class AssetEditor extends React.PureComponent<AssetEditorProps> {
     };
 
     handleOpenSelectionScreen = () => {
-        console.log('yo');
         const { secondaryEditorsRegistry } = this.props;
         const { component: AssetSelectionScreen } = secondaryEditorsRegistry.get(
             'Flowpack.Media.Ui/Secondary/Editors/AssetSelectionScreen'
@@ -80,8 +79,6 @@ export default class AssetEditor extends React.PureComponent<AssetEditorProps> {
     render() {
         const { label } = this.props;
         const disabled = $get('options.disabled', this.props);
-
-        console.log(disabled, 'disabled');
 
         return (
             <div>

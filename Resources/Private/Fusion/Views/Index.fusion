@@ -1,0 +1,18 @@
+Flowpack.Media.Ui.MediaController {
+    index = Neos.Fusion:Component {
+        data-endpoints = Neos.Fusion:DataStructure {
+            graphql = '/neos/graphql/media-assets'
+            @process.stringify = ${Json.stringify(value)}
+        }
+
+        data-dummy-image = Neos.Fusion:ResourceUri {
+            path = 'resource://Neos.Neos/Public/Images/dummy-image.svg'
+        }
+
+        renderer = afx`
+            <div id="media-ui-app" {...props}>
+                Loading media ui...
+            </div>
+        `
+    }
+}

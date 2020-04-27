@@ -10,11 +10,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         justifyContent: 'center'
     },
     headline: {
-        '.neos &': {
-            fontWeight: 'bold',
-            lineHeight: theme.spacing.goldenUnit,
-            paddingLeft: theme.spacing.half
-        }
+        fontWeight: 'bold',
+        lineHeight: theme.spacing.goldenUnit,
+        paddingLeft: theme.spacing.half
     }
 }));
 

@@ -9,7 +9,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     viewModeSelector: {
         display: 'flex',
         alignItems: 'baseline',
-        '.neos & label': {
+        '& label': {
             marginRight: '.5rem'
         }
     }

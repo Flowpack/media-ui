@@ -6,22 +6,18 @@ import IconLabel from '../IconLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceList: {
-        '.neos &': {
-            border: `1px solid ${theme.colors.contrastDark}`
-        }
+        border: `1px solid ${theme.colors.contrastDark}`
     },
     item: {
-        '.neos & a': {
+        '& a': {
             fontWeight: 'normal',
             cursor: 'pointer',
             userSelect: 'none'
         }
     },
     itemSelected: {
-        '.neos.neos-module &': {
-            fontWeight: 'bold',
-            color: theme.colors.primaryBlue
-        }
+        fontWeight: 'bold',
+        color: theme.colors.primaryBlue
     }
 }));
 

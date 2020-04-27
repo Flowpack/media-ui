@@ -12,10 +12,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         }
     },
     panelHeader: {
-        '.neos &': {
-            '& button': {
-                position: 'absolute'
-            }
+        '& button': {
+            position: 'absolute'
         }
     }
 }));

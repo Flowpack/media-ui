@@ -4,20 +4,18 @@ import { MediaUiTheme } from '../../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     propertyList: {
-        '.neos &': {
-            '& dt': {
-                backgroundColor: theme.alternatingBackgroundColor,
-                fontWeight: 'bold',
-                color: 'white',
-                padding: '8px 8px 0'
-            },
-            '& dd': {
-                backgroundColor: theme.alternatingBackgroundColor,
-                marginBottom: '1px',
-                padding: '8px',
-                lineHeight: '1.3',
-                color: theme.inactiveColor
-            }
+        '& dt': {
+            backgroundColor: theme.alternatingBackgroundColor,
+            fontWeight: 'bold',
+            color: 'white',
+            padding: '8px 8px 0'
+        },
+        '& dd': {
+            backgroundColor: theme.alternatingBackgroundColor,
+            marginBottom: '1px',
+            padding: '8px',
+            lineHeight: '1.3',
+            color: theme.inactiveColor
         }
     }
 }));

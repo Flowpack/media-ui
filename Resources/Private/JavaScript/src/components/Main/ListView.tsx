@@ -6,31 +6,29 @@ import { IconButton } from '@neos-project/react-ui-components';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
-        '.neos &': {
-            '& table': {
-                width: '100%',
-                '& tbody tr': {
-                    cursor: 'pointer',
-                    backgroundColor: theme.mainBackgroundColor,
-                    '&:nth-of-type(2n)': {
-                        backgroundColor: theme.alternatingBackgroundColor
-                    },
-                    '&:hover': {
-                        backgroundColor: theme.primaryColor
-                    }
+        '& table': {
+            width: '100%',
+            '& tbody tr': {
+                cursor: 'pointer',
+                backgroundColor: theme.mainBackgroundColor,
+                '&:nth-of-type(2n)': {
+                    backgroundColor: theme.alternatingBackgroundColor
                 },
-                '& td, & th': {
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    userSelect: 'none'
-                },
-                '& td:first-child': {
-                    padding: '0 !important' // Hack to solve issue with backend default css
-                },
-                '& td:last-child': {
-                    paddingRight: '0 !important' // Hack to solve issue with backend default css
+                '&:hover': {
+                    backgroundColor: theme.primaryColor
                 }
+            },
+            '& td, & th': {
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                userSelect: 'none'
+            },
+            '& td:first-child': {
+                padding: '0 !important' // Hack to solve issue with backend default css
+            },
+            '& td:last-child': {
+                paddingRight: '0 !important' // Hack to solve issue with backend default css
             }
         }
     },

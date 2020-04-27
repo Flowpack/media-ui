@@ -69,8 +69,12 @@ export default class AssetSelectionScreen extends React.PureComponent<AssetSelec
         return apolloClient;
     }
 
+    translate = (id?: string, fallback?: string, params?: {}, packageKey = 'Flowpack.Media.Ui', sourceName = 'Main') => {
+        return this.props.i18nRegistry.translate(id, fallback, packageKey, sourceName);
+    };
+
     render() {
-        const { i18nRegistry, flashMessages } = this.props;
+        const { flashMessages } = this.props;
         const client = this.getApolloClient();
         const { dummyImage } = this.getConfig();
 
@@ -79,8 +83,8 @@ export default class AssetSelectionScreen extends React.PureComponent<AssetSelec
         };
 
         return (
-            <div>
-                <IntlProvider translate={i18nRegistry.translate}>
+            <div style={{ transform: 'translateZ(0)', height: '100%' }}>
+                <IntlProvider translate={this.translate}>
                     <ApolloProvider client={client}>
                         <MediaUiProvider notify={notify} dummyImage={dummyImage}>
                             <App />

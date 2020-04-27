@@ -9,17 +9,22 @@ Neos:
             description: 'Flowpack.Media.Ui:Main:module.description'
             icon: 'fas fa-image'
             privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
+            mainStylesheet: 'Minimal'
             additionalResources:
               javaScripts:
                 - 'resource://Flowpack.Media.Ui/Public/Assets/main.bundle.js'
               styleSheets:
-                - 'resource://Flowpack.Media.Ui/Public/Assets/extra-neos-wrapper.css'
+                - 'resource://Flowpack.Media.Ui/Public/Assets/main.bundle.css'
 
     userInterface:
       translation:
         autoInclude:
           Flowpack.Media.Ui:
             - 'Main'
+
+    fusion:
+      autoInclude:
+        Flowpack.Media.Ui: true
 
       inspector:
         dataTypes:

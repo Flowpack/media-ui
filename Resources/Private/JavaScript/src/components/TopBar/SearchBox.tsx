@@ -1,11 +1,14 @@
 import * as React from 'react';
+import { useState } from 'react';
+
+import { TextInput } from '@neos-project/react-ui-components';
+
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
-import { useRef } from 'react';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     searchBox: {
-        '.neos & input': {
+        '& input': {
             width: '100%'
         }
     }
@@ -14,19 +17,16 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 export default function SearchBox() {
     const classes = useStyles();
     const { searchTerm, setSearchTerm } = useMediaUi();
+    const [searchValue, setSearchValue] = useState(searchTerm);
     const { translate } = useIntl();
-    const searchInput = useRef(null);
-
-    const submitSearch = () => {
-        setSearchTerm(searchInput.current.value);
-    };
 
     return (
         <div className={classes.searchBox}>
-            <input
+            <TextInput
+                value={searchValue}
                 type="search"
-                ref={searchInput}
-                onKeyPress={e => e.key === 'Enter' && submitSearch()}
+                onChange={value => setSearchValue(value)}
+                onEnterKey={() => setSearchTerm(searchValue)}
                 placeholder={translate('searchBox.placeholder', 'Search')}
             />
         </div>
