@@ -6,7 +6,10 @@ import { IconButton } from '@neos-project/react-ui-components';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
+        gridArea: props => props.gridPosition,
+        overflow: 'scroll',
         '& table': {
+            borderSpacing: '0 1px',
             width: '100%',
             '& tbody tr': {
                 cursor: 'pointer',
@@ -18,13 +21,19 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                     backgroundColor: theme.primaryColor
                 }
             },
+            '& th': {
+                textAlign: 'left',
+                lineHeight: theme.spacing.goldenUnit
+            },
             '& td, & th': {
+                padding: `0 ${theme.spacing.half}`,
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
                 userSelect: 'none'
             },
             '& td:first-child': {
+                minWidth: theme.spacing.goldenUnit,
                 padding: '0 !important' // Hack to solve issue with backend default css
             },
             '& td:last-child': {
@@ -42,7 +51,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 display: 'block',
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover'
+                objectFit: 'contain'
             }
         }
     },

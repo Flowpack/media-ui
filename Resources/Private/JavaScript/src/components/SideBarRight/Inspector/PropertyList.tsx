@@ -12,7 +12,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         },
         '& dd': {
             backgroundColor: theme.alternatingBackgroundColor,
-            marginBottom: '1px',
+            margin: '0 0 1px',
             padding: '8px',
             lineHeight: '1.3',
             color: theme.inactiveColor

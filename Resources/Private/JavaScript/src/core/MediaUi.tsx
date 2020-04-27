@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/react-hooks';
+
 import {
     AssetSource,
     AssetCollection,
@@ -35,7 +36,13 @@ export const useMediaUi = (): MediaUiProviderValues => useContext(MediaUiContext
 
 export const ASSETS_PER_PAGE = 20;
 
-export function MediaUiProvider({ children, notify, dummyImage }: MediaUiProviderProps) {
+export function MediaUiProvider({
+    children,
+    notify,
+    dummyImage,
+    selectionMode = false,
+    containerRef
+}: MediaUiProviderProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState<Tag>();
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
@@ -53,6 +60,7 @@ export function MediaUiProvider({ children, notify, dummyImage }: MediaUiProvide
         tags: []
     });
     const [isLoading, setIsLoading] = useState(false);
+    // const containerRef = createRef();
 
     // Main query to fetch all initial data from api
     const [query, { loading, error, data }] = useLazyQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(
@@ -111,6 +119,8 @@ export function MediaUiProvider({ children, notify, dummyImage }: MediaUiProvide
                     selectedAssetForPreview,
                     setSelectedAssetForPreview,
                     dummyImage,
+                    selectionMode,
+                    containerRef,
                     ...uiState
                 }}
             >

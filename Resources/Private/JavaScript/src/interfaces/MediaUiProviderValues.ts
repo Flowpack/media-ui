@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import AssetProxy from './AssetProxy';
 import AssetCollection from './AssetCollection';
 import Tag from './Tag';
@@ -28,4 +30,6 @@ export default interface MediaUiProviderValues {
     assetTypeFilter: AssetType;
     setAssetTypeFilter: (assetType: AssetType) => void;
     dummyImage: string;
+    selectionMode: boolean;
+    containerRef: React.ElementRef<any>;
 }

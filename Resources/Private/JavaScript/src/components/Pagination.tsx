@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { ASSETS_PER_PAGE, createUseMediaUiStyles, useMediaUi, useIntl } from '../core';
 import { useEffect, useState } from 'react';
-import { MediaUiTheme } from '../interfaces';
+
 import { IconButton } from '@neos-project/react-ui-components';
+
+import { ASSETS_PER_PAGE, createUseMediaUiStyles, useMediaUi, useIntl } from '../core';
+import { MediaUiTheme } from '../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
@@ -28,6 +30,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         display: 'flex',
         margin: '0 -.5rem',
         justifyContent: 'center',
+        listStyleType: 'none',
         textAlign: 'center',
         '& > li': {
             width: '2.4rem',

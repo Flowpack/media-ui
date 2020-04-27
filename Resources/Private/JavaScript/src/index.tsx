@@ -11,6 +11,7 @@ import { IntlProvider, MediaUiProvider, PersistentStateManager } from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
+import { createRef } from 'react';
 
 loadIconLibrary();
 
@@ -36,6 +37,8 @@ window.onload = async (): Promise<void> => {
         resolvers
     });
 
+    const containerRef = createRef();
+
     const notify = (type, message) => {
         window.NeosCMS.Notification[type](message);
     };
@@ -47,7 +50,7 @@ window.onload = async (): Promise<void> => {
     render(
         <IntlProvider translate={translate}>
             <ApolloProvider client={client}>
-                <MediaUiProvider notify={notify} dummyImage={root.dataset.dummyImage}>
+                <MediaUiProvider notify={notify} dummyImage={root.dataset.dummyImage} containerRef={containerRef}>
                     <AppWithDnd />
                 </MediaUiProvider>
             </ApolloProvider>

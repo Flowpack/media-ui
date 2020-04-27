@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { createRef } from 'react';
 import { connect } from 'react-redux';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
@@ -69,7 +70,13 @@ export default class AssetSelectionScreen extends React.PureComponent<AssetSelec
         return apolloClient;
     }
 
-    translate = (id?: string, fallback?: string, params?: {}, packageKey = 'Flowpack.Media.Ui', sourceName = 'Main') => {
+    translate = (
+        id?: string,
+        fallback?: string,
+        params?: {},
+        packageKey = 'Flowpack.Media.Ui',
+        sourceName = 'Main'
+    ) => {
         return this.props.i18nRegistry.translate(id, fallback, packageKey, sourceName);
     };
 
@@ -77,16 +84,17 @@ export default class AssetSelectionScreen extends React.PureComponent<AssetSelec
         const { flashMessages } = this.props;
         const client = this.getApolloClient();
         const { dummyImage } = this.getConfig();
+        const containerRef = createRef();
 
         const notify = (type: string, message: string) => {
             flashMessages.add('', message, type);
         };
 
         return (
-            <div style={{ transform: 'translateZ(0)', height: '100%' }}>
+            <div style={{ transform: 'translateZ(0)', height: '100%', padding: '1rem' }}>
                 <IntlProvider translate={this.translate}>
                     <ApolloProvider client={client}>
-                        <MediaUiProvider notify={notify} dummyImage={dummyImage}>
+                        <MediaUiProvider notify={notify} dummyImage={dummyImage} selectionMode={true} containerRef={containerRef}>
                             <App />
                         </MediaUiProvider>
                     </ApolloProvider>

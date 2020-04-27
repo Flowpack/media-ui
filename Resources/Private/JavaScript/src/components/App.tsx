@@ -13,28 +13,35 @@ import { VIEW_MODES } from '../hooks';
 import AssetPreview from './AssetPreview';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    container: {
+    container: selectionMode => ({
         display: 'grid',
-        gridTemplateColumns: '250px 1fr 250px',
-        gridTemplateAreas: `
+        // TODO: Find a way to not calculate height to allow scrolling in main grid area
+        height: `calc(100vh - 40px * 4 - 21px)`,
+        gridTemplateRows: 'auto 1fr',
+        gridTemplateColumns: selectionMode ? '250px 1fr' : '250px 1fr 250px',
+        gridTemplateAreas: selectionMode
+            ? `
+            "left top"
+            "left main"
+        `
+            : `
             "left top right"
             "left main right"
-            "left bottom right"
         `,
         gridGap: '1rem'
-    }
+    })
 }));
 
 export default function App() {
-    const classes = useStyles();
-    const { selectedAssetForPreview } = useMediaUi();
+    const { selectedAssetForPreview, selectionMode, containerRef } = useMediaUi();
+    const classes = useStyles({ selectionMode });
 
     const viewModeSelectionQuery = useQuery(VIEW_MODE_SELECTION);
     const { viewModeSelection } = viewModeSelectionQuery.data;
 
     return (
         <MediaUiThemeProvider>
-            <div className={classes.container}>
+            <div className={classes.container} ref={containerRef}>
                 <LoadingIndicator />
                 <SideBarLeft gridPosition="left" />
                 <TopBar gridPosition="top" />
@@ -44,7 +51,7 @@ export default function App() {
                     <ThumbnailView gridPosition="main" />
                 )}
                 <Pagination />
-                <SideBarRight gridPosition="right" />
+                {!selectionMode && <SideBarRight gridPosition="right" />}
 
                 {selectedAssetForPreview && <AssetPreview />}
             </div>

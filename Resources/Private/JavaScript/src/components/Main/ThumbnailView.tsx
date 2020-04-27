@@ -8,6 +8,7 @@ import { MediaUiTheme, GridComponentProps } from '../../interfaces';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnailView: {
         gridArea: props => props.gridPosition,
+        overflow: 'scroll',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
         gridGap: '1rem',
