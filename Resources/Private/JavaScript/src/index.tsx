@@ -1,17 +1,22 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import Modal from 'react-modal';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import { ApolloProvider } from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { MediaUiProvider } from './core/MediaUi';
-import { IntlProvider } from './core/Intl';
+
+import { IntlProvider, MediaUiProvider, PersistentStateManager } from './core';
 import App from './components/App';
-import { resolvers, typeDefs } from './core/Resolvers';
-import { restoreLocalState } from './core/PersistentStateManager';
 import loadIconLibrary from './lib/FontAwesome';
+import { resolvers, typeDefs } from './core/Resolvers';
+import { createRef } from 'react';
 
 loadIconLibrary();
+
+const withDragDropContext = DragDropContext(HTML5Backend);
+const AppWithDnd = withDragDropContext(App);
 
 window.onload = async (): Promise<void> => {
     while (!window.NeosCMS || !window.NeosCMS.I18n.initialized) {
@@ -22,7 +27,7 @@ window.onload = async (): Promise<void> => {
     Modal.setAppElement(root);
 
     const cache = new InMemoryCache();
-    restoreLocalState(cache);
+    PersistentStateManager.restoreLocalState(cache);
 
     const client = new ApolloClient({
         cache,
@@ -31,6 +36,8 @@ window.onload = async (): Promise<void> => {
         typeDefs,
         resolvers
     });
+
+    const containerRef = createRef();
 
     const notify = (type, message) => {
         window.NeosCMS.Notification[type](message);
@@ -43,13 +50,8 @@ window.onload = async (): Promise<void> => {
     render(
         <IntlProvider translate={translate}>
             <ApolloProvider client={client}>
-                <MediaUiProvider
-                    csrf={root.dataset.csrfToken}
-                    endpoints={JSON.parse(root.dataset.endpoints)}
-                    notify={notify}
-                    dummyImage={root.dataset.dummyImage}
-                >
-                    <App />
+                <MediaUiProvider notify={notify} dummyImage={root.dataset.dummyImage} containerRef={containerRef}>
+                    <AppWithDnd />
                 </MediaUiProvider>
             </ApolloProvider>
         </IntlProvider>,

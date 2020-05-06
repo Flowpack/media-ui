@@ -1,4 +1,7 @@
 import * as React from 'react';
+
+import { Label, TextInput, TextArea } from '@neos-project/react-ui-components';
+
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
 import { PropertyList, PropertyListItem } from '.';
@@ -6,17 +9,15 @@ import { humanFileSize } from '../../../helper/FileSize';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
-        '.neos &': {
-            display: 'grid',
-            gridAutoRows: 'auto',
-            gridGap: '1rem',
-            '& ul': {
-                backgroundColor: theme.alternatingBackgroundColor,
-                padding: '1rem'
-            },
-            '& input, & textarea': {
-                width: '100%'
-            }
+        display: 'grid',
+        gridAutoRows: 'auto',
+        gridGap: '1rem',
+        '& ul': {
+            backgroundColor: theme.alternatingBackgroundColor,
+            padding: '1rem'
+        },
+        '& input, & textarea': {
+            width: '100%'
         }
     },
     propertyGroup: {}
@@ -34,16 +35,21 @@ export default function AssetInspector() {
                     {selectedAsset.localAssetData && (
                         <>
                             <div className={classes.propertyGroup}>
-                                <label>{translate('inspector.title', 'Title')}</label>
-                                <input type="text" readOnly={true} value={selectedAsset.localAssetData.title} />
+                                <Label>{translate('inspector.title', 'Title')}</Label>
+                                <TextInput type="text" disabled={true} value={selectedAsset.localAssetData.title} />
                             </div>
                             <div className={classes.propertyGroup}>
-                                <label>{translate('inspector.caption', 'Caption')}</label>
-                                <textarea readOnly={true} rows={3} value={selectedAsset.localAssetData.caption} />
+                                <Label>{translate('inspector.caption', 'Caption')}</Label>
+                                <TextArea
+                                    disabled={true}
+                                    minRows={3}
+                                    expandedRows={6}
+                                    value={selectedAsset.localAssetData.caption}
+                                />
                             </div>
                             {selectedAsset.localAssetData.tags.length ? (
                                 <div className={classes.propertyGroup}>
-                                    <label>{translate('inspector.tags', 'Tags')}</label>
+                                    <Label>{translate('inspector.tags', 'Tags')}</Label>
                                     <ul>
                                         {selectedAsset.localAssetData.tags.map(tag => (
                                             <li key={tag.label}>{tag.label}</li>
@@ -53,7 +59,7 @@ export default function AssetInspector() {
                             ) : null}
                             {selectedAsset.localAssetData.assetCollections.length ? (
                                 <div className={classes.propertyGroup}>
-                                    <label>{translate('inspector.assetCollections', 'Collections')}</label>
+                                    <Label>{translate('inspector.assetCollections', 'Collections')}</Label>
                                     <ul>
                                         {selectedAsset.localAssetData.assetCollections.map(assetCollection => (
                                             <li key={assetCollection.title}>{assetCollection.title}</li>

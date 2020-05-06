@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from '@neos-project/react-ui-components/lib-esm/Icon';
+import { Icon } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles } from '../core';
 import { MediaUiTheme } from '../interfaces';
 
@@ -10,11 +10,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         justifyContent: 'center'
     },
     headline: {
-        '.neos &': {
-            fontWeight: 'bold',
-            lineHeight: theme.spacing.goldenUnit,
-            paddingLeft: theme.spacing.half
-        }
+        fontWeight: 'bold',
+        lineHeight: theme.spacing.goldenUnit,
+        paddingLeft: theme.spacing.half
     }
 }));
 

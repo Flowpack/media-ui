@@ -54,10 +54,10 @@ class MediaController extends AbstractModuleController
      */
     protected $securityContext;
 
-    public function indexAction()
+    /**
+     * Renders the media ui application
+     */
+    public function indexAction(): void
     {
-        $this->view->assignMultiple([
-            'csrfToken' => $this->securityContext->getCsrfProtectionToken(),
-        ]);
     }
 }

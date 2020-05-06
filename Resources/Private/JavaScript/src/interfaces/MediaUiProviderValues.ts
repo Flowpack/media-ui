@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 import AssetProxy from './AssetProxy';
 import AssetCollection from './AssetCollection';
 import Tag from './Tag';
@@ -5,8 +7,6 @@ import AssetSource from './AssetSource';
 import AssetType from './AssetType';
 
 export default interface MediaUiProviderValues {
-    csrf: string;
-    endpoints: any;
     notify: (type: string, message: string) => void;
     isLoading: boolean;
     assetCount: number;
@@ -30,4 +30,6 @@ export default interface MediaUiProviderValues {
     assetTypeFilter: AssetType;
     setAssetTypeFilter: (assetType: AssetType) => void;
     dummyImage: string;
+    selectionMode: boolean;
+    containerRef: React.ElementRef<any>;
 }

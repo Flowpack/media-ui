@@ -1,22 +1,19 @@
 import * as React from 'react';
 import { useMemo } from 'react';
-import mediaType from 'media-type';
+import { fromString as getMediaTypeFromString } from 'media-type';
+
+import { Headline, SelectBox } from '@neos-project/react-ui-components';
+
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
-import Headline from '@neos-project/react-ui-components/lib-esm/Headline';
-import SelectBox from '@neos-project/react-ui-components/lib-esm/SelectBox';
 import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     currentSelection: {
-        '.neos &': {
-            marginBottom: theme.spacing.full
-        }
+        marginBottom: theme.spacing.full
     },
     headline: {
-        '.neos &': {
-            fontWeight: 'bold',
-            lineHeight: theme.spacing.goldenUnit
-        }
+        fontWeight: 'bold',
+        lineHeight: theme.spacing.goldenUnit
     }
 }));
 
@@ -27,7 +24,7 @@ export default function CurrentSelection() {
 
     const assetIcon = useMemo(() => {
         if (selectedAsset?.mediaType) {
-            const mainMediaType = mediaType.fromString(selectedAsset.mediaType);
+            const mainMediaType = getMediaTypeFromString(selectedAsset.mediaType);
             if (mainMediaType.type === 'audio') return 'file-audio';
             if (mainMediaType.type === 'video') return 'file-video';
             if (mainMediaType.type === 'image') return 'file-image';

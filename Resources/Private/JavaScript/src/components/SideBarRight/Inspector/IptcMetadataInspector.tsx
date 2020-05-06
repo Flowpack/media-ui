@@ -1,12 +1,12 @@
 import * as React from 'react';
-import Headline from '@neos-project/react-ui-components/lib-esm/Headline';
+import { Headline } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
 import { PropertyList, PropertyListItem } from './PropertyList';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iptcData: {
-        '.neos & dl': {
+        '& dl': {
             '& dt': {
                 backgroundColor: theme.alternatingBackgroundColor,
                 fontWeight: 'bold',
@@ -23,10 +23,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         }
     },
     headline: {
-        '.neos &': {
-            fontWeight: 'bold',
-            lineHeight: theme.spacing.goldenUnit
-        }
+        fontWeight: 'bold',
+        lineHeight: theme.spacing.goldenUnit
     }
 }));
 

@@ -1,21 +1,15 @@
 import * as React from 'react';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-import Tree from '@neos-project/react-ui-components/lib-esm/Tree';
+import { Tree, IconButton } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, useMediaUi, useIntl } from '../../../core';
 import { useAssetSourceFilter } from '../../../hooks';
 import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
-import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
 import IconLabel from '../../IconLabel';
-import { dndTypes } from '../../../constants';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
-        '.neos &': {
-            border: `1px solid ${theme.colors.contrastDark}`
-        }
+        border: `1px solid ${theme.colors.contrastDark}`
     },
     iconWrap: {
         width: theme.spacing.goldenUnit,
@@ -23,11 +17,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         justifyContent: 'center'
     },
     headline: {
-        '.neos &': {
-            fontWeight: 'bold',
-            lineHeight: theme.spacing.goldenUnit,
-            paddingLeft: theme.spacing.half
-        }
+        fontWeight: 'bold',
+        lineHeight: theme.spacing.goldenUnit,
+        paddingLeft: theme.spacing.half
     },
     toolbar: {
         borderTop: `1px solid ${theme.colors.contrastDark}`
@@ -145,5 +137,4 @@ const AssetCollectionTree = () => {
     );
 };
 
-const withDragDropContext = DragDropContext(HTML5Backend);
-export default withDragDropContext(AssetCollectionTree);
+export default AssetCollectionTree;

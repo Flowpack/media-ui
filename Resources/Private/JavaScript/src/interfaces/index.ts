@@ -12,6 +12,7 @@ import MediaUiProviderValues from './MediaUiProviderValues';
 import MediaUiTheme from './MediaUiTheme';
 import PersistentState from './PersistentState';
 import Tag from './Tag';
+import I18nRegistry from './I18nRegistry';
 
 export {
     Asset,
@@ -28,5 +29,6 @@ export {
     MediaUiProviderValues,
     MediaUiTheme,
     PersistentState,
-    Tag
+    Tag,
+    I18nRegistry
 };

@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { ASSETS_PER_PAGE, createUseMediaUiStyles, useMediaUi, useIntl } from '../core';
 import { useEffect, useState } from 'react';
+
+import { IconButton } from '@neos-project/react-ui-components';
+
+import { ASSETS_PER_PAGE, createUseMediaUiStyles, useMediaUi, useIntl } from '../core';
 import { MediaUiTheme } from '../interfaces';
-import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
@@ -11,6 +13,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         bottom: 0,
         left: 0,
         right: 0,
+        justifyContent: 'center',
         borderTop: `1px solid ${theme.borderColor}`,
         backgroundColor: theme.moduleBackgroundColor,
         zIndex: theme.paginationZIndex
@@ -19,29 +22,28 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         border: `1px solid ${theme.borderColor}`,
         borderTop: 0,
         borderBottom: 0,
-        '.neos & a': {
+        '& a': {
             color: theme.primaryColor
         }
     },
     list: {
-        '.neos &': {
-            display: 'flex',
-            margin: '0 -.5rem',
-            justifyContent: 'center',
-            textAlign: 'center',
-            '& > li': {
+        display: 'flex',
+        margin: '0 -.5rem',
+        justifyContent: 'center',
+        listStyleType: 'none',
+        textAlign: 'center',
+        '& > li': {
+            width: '2.4rem',
+            userSelect: 'none',
+            lineHeight: '2.4rem',
+            '& a': {
+                display: 'block',
+                height: '2.4rem',
                 width: '2.4rem',
-                userSelect: 'none',
-                lineHeight: '2.4rem',
-                '& a': {
-                    display: 'block',
-                    height: '2.4rem',
-                    width: '2.4rem',
-                    cursor: 'pointer',
-                    '&:hover': {
-                        backgroundColor: theme.primaryColor,
-                        color: 'white'
-                    }
+                cursor: 'pointer',
+                '&:hover': {
+                    backgroundColor: theme.primaryColor,
+                    color: 'white'
                 }
             }
         }

@@ -2,35 +2,42 @@ import * as React from 'react';
 import { useMediaUi, createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme, GridComponentProps, AssetProxy } from '../../interfaces';
 import { humanFileSize } from '../../helper/FileSize';
-import IconButton from '@neos-project/react-ui-components/lib-esm/IconButton';
+import { IconButton } from '@neos-project/react-ui-components';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
-        '.neos &': {
-            '& table': {
-                width: '100%',
-                '& tbody tr': {
-                    cursor: 'pointer',
-                    backgroundColor: theme.mainBackgroundColor,
-                    '&:nth-of-type(2n)': {
-                        backgroundColor: theme.alternatingBackgroundColor
-                    },
-                    '&:hover': {
-                        backgroundColor: theme.primaryColor
-                    }
+        gridArea: props => props.gridPosition,
+        overflow: 'scroll',
+        '& table': {
+            borderSpacing: '0 1px',
+            width: '100%',
+            '& tbody tr': {
+                cursor: 'pointer',
+                backgroundColor: theme.mainBackgroundColor,
+                '&:nth-of-type(2n)': {
+                    backgroundColor: theme.alternatingBackgroundColor
                 },
-                '& td, & th': {
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    userSelect: 'none'
-                },
-                '& td:first-child': {
-                    padding: '0 !important' // Hack to solve issue with backend default css
-                },
-                '& td:last-child': {
-                    paddingRight: '0 !important' // Hack to solve issue with backend default css
+                '&:hover': {
+                    backgroundColor: theme.primaryColor
                 }
+            },
+            '& th': {
+                textAlign: 'left',
+                lineHeight: theme.spacing.goldenUnit
+            },
+            '& td, & th': {
+                padding: `0 ${theme.spacing.half}`,
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                userSelect: 'none'
+            },
+            '& td:first-child': {
+                minWidth: theme.spacing.goldenUnit,
+                padding: '0 !important' // Hack to solve issue with backend default css
+            },
+            '& td:last-child': {
+                paddingRight: '0 !important' // Hack to solve issue with backend default css
             }
         }
     },
@@ -44,7 +51,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 display: 'block',
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover'
+                objectFit: 'contain'
             }
         }
     },

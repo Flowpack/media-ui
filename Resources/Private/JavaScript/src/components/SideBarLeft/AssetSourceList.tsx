@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Icon from '@neos-project/react-ui-components/lib-esm/Icon';
 import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { useAssetSourceFilter } from '../../hooks';
@@ -7,22 +6,18 @@ import IconLabel from '../IconLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceList: {
-        '.neos &': {
-            border: `1px solid ${theme.colors.contrastDark}`
-        }
+        border: `1px solid ${theme.colors.contrastDark}`
     },
     item: {
-        '.neos & a': {
+        '& a': {
             fontWeight: 'normal',
             cursor: 'pointer',
             userSelect: 'none'
         }
     },
     itemSelected: {
-        '.neos.neos-module &': {
-            fontWeight: 'bold',
-            color: theme.colors.primaryBlue
-        }
+        fontWeight: 'bold',
+        color: theme.colors.primaryBlue
     }
 }));
 
