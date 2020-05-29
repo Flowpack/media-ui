@@ -24,7 +24,7 @@ export default function AssetSourceDescription() {
     const [assetSourceFilter] = useAssetSourceFilter();
     const { translate } = useIntl();
 
-    const selectedAssetSource = assetSources.find(assetSource => assetSource.identifier === assetSourceFilter);
+    const selectedAssetSource = assetSources.find(assetSource => assetSource.id === assetSourceFilter);
 
     return (
         <>

@@ -71,9 +71,9 @@ export default function ThumbnailView(props: GridComponentProps) {
         <section className={classes.thumbnailView}>
             {assetProxies.length ? (
                 assetProxies.map(asset => {
-                    const { identifier, label } = asset;
+                    const { id, label } = asset;
                     return (
-                        <figure key={identifier} className={selectedAsset === asset ? classes.selected : null}>
+                        <figure key={id} className={selectedAsset === asset ? classes.selected : null}>
                             <picture onClick={() => setSelectedAsset(asset)}>
                                 <img src={asset.thumbnailUri || dummyImage} alt={asset.label} />
                             </picture>

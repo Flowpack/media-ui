@@ -12,11 +12,12 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-import { I18nRegistry } from '../../src/interfaces';
+import { I18nRegistry, Notify } from '../../src/interfaces';
 import { IntlProvider, MediaUiProvider } from '../../src/core';
 import App from '../../src/components/App';
 import { restoreLocalState } from '../../src/core/PersistentStateManager';
 import { resolvers, typeDefs } from '../../src/core/Resolvers';
+import { NotifyProvider } from '../../src/core';
 
 let apolloClient = null;
 
@@ -26,7 +27,7 @@ interface AssetSelectionScreenProps {
     neos: object;
     type: 'assets' | 'images';
     flashMessages: {
-        add: (id: string, message: string, severity?: string, timeout?: number) => void;
+        add: (title: string, message: string, severity?: string, timeout?: number) => void;
     };
 }
 
@@ -86,18 +87,24 @@ export default class AssetSelectionScreen extends React.PureComponent<AssetSelec
         const { dummyImage } = this.getConfig();
         const containerRef = createRef();
 
-        const notify = (type: string, message: string) => {
-            flashMessages.add('', message, type);
+        const Notification: Notify = {
+            info: title => flashMessages.add(title, '', 'error'),
+            ok: title => flashMessages.add(title, '', 'error'),
+            notice: title => flashMessages.add(title, '', 'error'),
+            warning: (title, message = '') => flashMessages.add(title, message, 'error'),
+            error: (title, message = '') => flashMessages.add(title, message, 'error')
         };
 
         return (
             <div style={{ transform: 'translateZ(0)', height: '100%', padding: '1rem' }}>
                 <IntlProvider translate={this.translate}>
-                    <ApolloProvider client={client}>
-                        <MediaUiProvider notify={notify} dummyImage={dummyImage} selectionMode={true} containerRef={containerRef}>
-                            <App />
-                        </MediaUiProvider>
-                    </ApolloProvider>
+                    <NotifyProvider notificationApi={Notification}>
+                        <ApolloProvider client={client}>
+                            <MediaUiProvider dummyImage={dummyImage} selectionMode={true} containerRef={containerRef}>
+                                <App />
+                            </MediaUiProvider>
+                        </ApolloProvider>
+                    </NotifyProvider>
                 </IntlProvider>
             </div>
         );

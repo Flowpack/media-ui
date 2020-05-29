@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useMemo } from 'react';
+
 import { SelectBox } from '@neos-project/react-ui-components';
+
 import { createUseMediaUiStyles, useMediaUi, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 
@@ -13,7 +15,7 @@ export default function TypeFilter() {
     const { assetTypes, assetTypeFilter, setAssetTypeFilter } = useMediaUi();
     const { translate } = useIntl();
 
-    const handleSelect = (value) => {
+    const handleSelect = value => {
         setAssetTypeFilter(assetTypes.find(assetType => assetType.label === value));
     };
 

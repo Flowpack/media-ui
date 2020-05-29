@@ -8,7 +8,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     sidebarRight: {
         gridArea: props => props.gridPosition,
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        overflowY: 'auto'
     }
 }));
 

@@ -1,21 +1,21 @@
 type Query {
   asset(identifier: ID!): Asset
   assets(tag: String): [Asset!]!
-  assetProxies(assetSource: String, tag: String, assetCollection: String, assetType: String, searchTerm: String, limit: Int, offset: Int): [AssetProxy!]!
+  assetProxies(assetSource: AssetSourceId, tag: String, assetCollection: String, assetType: String, searchTerm: String, limit: Int, offset: Int): [AssetProxy!]!
   assetSources: [AssetSource!]!
   assetCollections: [AssetCollection!]!
   assetTypes: [AssetType!]!
-  assetCount(assetSource: String, tag: String, assetCollection: String, assetType: String, searchTerm: String): Int!
+  assetCount(assetSource: AssetSourceId, tag: String, assetCollection: String, assetType: String, searchTerm: String): Int!
   tags: [Tag!]!
 }
 
 type Mutation {
-    pong: String!
+    updateAsset(id: AssetId!, assetSource: AssetSourceId!, title: String, caption: String): AssetProxy
 }
 
 # The default local asset source is `neos`. Other externals ones can be available through plugins.
 type AssetSource {
-    identifier: ID!
+    id: AssetSourceId!
     label: String!
     description: String
     iconUri: String
@@ -28,10 +28,14 @@ type AssetSource {
 # The proxy reflects local and external asset data.
 # Local and already imported assets have the `localAssetIdentifier` set and `localAssetData` available.
 type AssetProxy {
-    identifier: ID!
+    id: AssetId!
+    assetSource: AssetSource!
+
     label: String!
-    filename: String
-    lastModified: String! # TODO: introduce custom scalar for Date types
+    caption: String
+    filename: Filename!
+
+    lastModified: DateTime
     fileSize: Int!
     mediaType: String
     fileTypeIcon: FileTypeIcon!
@@ -39,9 +43,8 @@ type AssetProxy {
     heightInPixels: Int
     thumbnailUri: String # Provides an image uri for thumbnails views
     previewUri: String # Provides a full size image uri for details views
-    assetSource: AssetSource!
     iptcMetadata: [IptcMetadata!]!
-    localAssetIdentifier: String
+    imported: Boolean!
     localAssetData: Asset
 }
 
@@ -84,6 +87,78 @@ type FileTypeIcon {
     alt: String
 }
 
+"""
+Ratio mode of an image
+"""
+enum RatioMode{
+    """
+    Inset ratio mode: If an image is attempted to get scaled with the size of both edges stated, using this mode will scale it to the lower of both edges.
+    Consider an image of 320/480 being scaled to 50/50: because aspect ratio wouldn't get hurt, the target image size will become 33/50.
+    """
+    INSET
+    """
+    Outbound ratio mode: If an image is attempted to get scaled with the size of both edges stated, using this mode will scale the image and crop it.
+    Consider an image of 320/480 being scaled to 50/50: the image will be scaled to height 50, then centered and cropped so the width will also be 50.
+    """
+    OUTBOUND
+}
+
+"""
+Unique identifier (UUID) of an Asset
+"""
+scalar AssetId
+
+"""
+Unique identifier of an Asset source (e.g. "neos")
+"""
+scalar AssetSourceId
+
+"""
+Unique identifier of an Asset collection (e.g. "neos")
+"""
+scalar AssetCollectionId
+
+"""
+IANA media type of an Asset (e.g. "image/jpeg")
+"""
+scalar MediaType
+
+"""
+A File extension (e.g. "pdf")
+"""
+scalar FileExtension
+
+"""
+Base file name including extension (e.g. "some-file.pdf")
+"""
+scalar Filename
+
+"""
+Size of a file in bytes
+"""
+scalar FileSize
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the date-time format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar
+"""
+scalar DateTime
+
+"""
+Name of an IPTC metadata property (e.g. "Creator", see https://www.iptc.org/)
+"""
+scalar IptcPropertyName
+
+"""
+The title of an Asset collection
+"""
+scalar AssetCollectionTitle
+
+"""
+An absolute or relative URL
+"""
+scalar Url
+
 schema {
   query: Query
+  mutation: Mutation
 }

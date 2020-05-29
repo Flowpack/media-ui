@@ -1,4 +1,5 @@
 import { gql } from 'apollo-boost';
+
 import { updateLocalState } from './PersistentStateManager';
 
 export const typeDefs = gql`

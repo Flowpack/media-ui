@@ -33,12 +33,12 @@ export default function AssetSourceList() {
                 <nav className={classes.assetSourceList}>
                     <IconLabel icon="box" label={translate('assetSourceList.header', 'Media sources')} />
                     {assetSources?.map(assetSource => (
-                        <IconLabel key={assetSource.identifier} icon={assetSource.iconUri} className={classes.item}>
+                        <IconLabel key={assetSource.id} icon={assetSource.iconUri} className={classes.item}>
                             <a
-                                className={assetSourceFilter === assetSource.identifier ? classes.itemSelected : null}
+                                className={assetSourceFilter === assetSource.id ? classes.itemSelected : null}
                                 onClick={() => setAssetSourceFilter(assetSource)}
                             >
-                                {assetSource.identifier === 'neos'
+                                {assetSource.id === 'neos'
                                     ? translate('assetsource.local', 'Local')
                                     : assetSource.label}
                             </a>

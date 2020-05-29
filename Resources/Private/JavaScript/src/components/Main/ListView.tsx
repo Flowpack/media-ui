@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useMediaUi, createUseMediaUiStyles, useIntl } from '../../core';
+import { useMediaUi, createUseMediaUiStyles, useIntl, useNotify } from '../../core';
 import { MediaUiTheme, GridComponentProps, AssetProxy } from '../../interfaces';
 import { humanFileSize } from '../../helper/FileSize';
 import { IconButton } from '@neos-project/react-ui-components';
@@ -74,11 +74,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function ListView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const { assetProxies, dummyImage, setSelectedAsset, notify } = useMediaUi();
+    const { assetProxies, dummyImage, setSelectedAsset } = useMediaUi();
+    const Notify = useNotify();
     const { translate } = useIntl();
 
     const handleDeleteAction = (asset: AssetProxy) => {
-        notify('info', 'This action has not been implemented yet');
+        Notify.info('This action has not been implemented yet');
     };
 
     return (
@@ -98,7 +99,7 @@ export default function ListView(props: GridComponentProps) {
                     </thead>
                     <tbody>
                         {assetProxies.map(asset => (
-                            <tr key={asset.identifier} onClick={() => setSelectedAsset(asset)}>
+                            <tr key={asset.id} onClick={() => setSelectedAsset(asset)}>
                                 <td className={classes.previewColumn}>
                                     <picture>
                                         <img

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Tree, IconButton } from '@neos-project/react-ui-components';
-import { createUseMediaUiStyles, useMediaUi, useIntl } from '../../../core';
+import { createUseMediaUiStyles, useMediaUi, useIntl, useNotify } from '../../../core';
 import { useAssetSourceFilter } from '../../../hooks';
 import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
@@ -32,6 +32,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 const AssetCollectionTree = () => {
     const classes = useStyles();
     const { translate } = useIntl();
+    const Notify = useNotify();
     const {
         assetCollections,
         assetCollectionFilter,
@@ -39,15 +40,14 @@ const AssetCollectionTree = () => {
         assetSources,
         tagFilter,
         setTagFilter,
-        tags,
-        notify
+        tags
     } = useMediaUi();
     const [assetSourceFilter] = useAssetSourceFilter();
 
-    const selectedAssetSource = assetSources.find(assetSource => assetSource.identifier === assetSourceFilter);
+    const selectedAssetSource = assetSources.find(assetSource => assetSource.id === assetSourceFilter);
 
     const onClickAdd = () => {
-        notify('info', 'This feature has not been implemented yet');
+        Notify.info('This feature has not been implemented yet');
     };
 
     return (

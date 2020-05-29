@@ -36,6 +36,45 @@ class AssetProxyResolver implements ResolverInterface
     protected $resourceManager;
 
     /**
+     * @param AssetProxyInterface $assetProxy
+     * @return string|null
+     */
+    public function id(AssetProxyInterface $assetProxy): ?string
+    {
+        return $assetProxy->getIdentifier();
+    }
+
+    /**
+     * Returns the title of the associated local asset data or the label of the proxy as fallback
+     *
+     * @param AssetProxyInterface $assetProxy
+     * @return string|null
+     */
+    public function label(AssetProxyInterface $assetProxy): ?string
+    {
+        $localAssetData = $this->localAssetData($assetProxy);
+        if ($localAssetData && $localAssetData->getTitle()) {
+            return $localAssetData->getTitle();
+        }
+        return $assetProxy->getLabel();
+    }
+
+    /**
+     * Returns the caption of the associated local asset data
+     *
+     * @param AssetProxyInterface $assetProxy
+     * @return string|null
+     */
+    public function caption(AssetProxyInterface $assetProxy): ?string
+    {
+        $localAssetData = $this->localAssetData($assetProxy);
+        if ($localAssetData) {
+            return $localAssetData->getCaption();
+        }
+        return null;
+    }
+
+    /**
      * Returns the locally stored assetdata for the given assetproxy if it exists. Remote assets have no local asset data.
      *
      * @param AssetProxyInterface $assetProxy
@@ -51,6 +90,15 @@ class AssetProxyResolver implements ResolverInterface
     }
 
     /**
+     * @param AssetProxyInterface $assetProxy
+     * @return bool
+     */
+    public function imported(AssetProxyInterface $assetProxy): bool
+    {
+        return (bool)$assetProxy->getLocalAssetIdentifier();
+    }
+
+    /**
      *
      * Returns a matching icon uri for the given assetproxy
      *
@@ -59,7 +107,7 @@ class AssetProxyResolver implements ResolverInterface
      */
     public function fileTypeIcon(AssetProxyInterface $assetProxy): array
     {
-        $icon = $this->fileTypeIconService->getIcon($assetProxy->getFilename());
+        $icon = $this->fileTypeIconService::getIcon($assetProxy->getFilename());
         $icon['src'] = $this->resourceManager->getPublicPackageResourceUriByPath($icon['src']);
         return $icon;
     }
@@ -74,7 +122,7 @@ class AssetProxyResolver implements ResolverInterface
     {
         if ($assetProxy instanceof SupportsIptcMetadataInterface) {
             $properties = $assetProxy->getIptcProperties();
-            return array_map(function ($key) use ($properties) {
+            return array_map(static function ($key) use ($properties) {
                 return ['key' => $key, 'value' => $properties[$key]];
             }, array_keys($properties));
         }

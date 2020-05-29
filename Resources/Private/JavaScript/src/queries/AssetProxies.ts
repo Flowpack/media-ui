@@ -1,10 +1,12 @@
 import { gql } from 'apollo-boost';
 
+import { Fragments } from './Fragments';
+
 // TODO: Split this big query into individual reusable pieces including the matching interfaces
 export const ASSET_PROXIES = gql`
     query ASSET_PROXIES(
         $searchTerm: String
-        $assetSource: String
+        $assetSource: AssetSourceId
         $assetCollection: String
         $assetType: String
         $tag: String
@@ -21,53 +23,16 @@ export const ASSET_PROXIES = gql`
             limit: $limit
             offset: $offset
         ) {
-            identifier
-            label
-            mediaType
-            filename
-            fileSize
-            fileTypeIcon {
-                src
-                alt
-            }
-            lastModified
-            widthInPixels
-            heightInPixels
-            thumbnailUri
-            previewUri
-            iptcMetadata {
-                key
-                value
-            }
-            localAssetIdentifier
-            localAssetData {
-                identifier
-                label
-                title
-                caption
-                copyrightNotice
-                tags {
-                    label
-                }
-                assetCollections {
-                    title
-                }
-            }
+            ...AssetProxyProps
         }
         assetCollections {
             title
             tags {
-                label
+                ...TagProps
             }
         }
         assetSources {
-            label
-            identifier
-            description
-            iconUri
-            readOnly
-            supportsTagging
-            supportsCollections
+            ...AssetSourceProps
         }
         assetCount(
             searchTerm: $searchTerm
@@ -80,7 +45,8 @@ export const ASSET_PROXIES = gql`
             label
         }
         tags {
-            label
+            ...TagProps
         }
     }
+    ${Fragments.assetProxy}
 `;

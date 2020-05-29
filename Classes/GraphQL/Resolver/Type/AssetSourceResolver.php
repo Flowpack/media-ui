@@ -16,6 +16,15 @@ class AssetSourceResolver implements ResolverInterface
 {
     /**
      * @param AssetSourceInterface $assetSource
+     * @return string
+     */
+    public function id(AssetSourceInterface $assetSource): string
+    {
+        return $assetSource->getIdentifier();
+    }
+
+    /**
+     * @param AssetSourceInterface $assetSource
      * @return bool
      */
     public function supportsTagging(AssetSourceInterface $assetSource): bool
@@ -39,7 +48,7 @@ class AssetSourceResolver implements ResolverInterface
     public function description(AssetSourceInterface $assetSource): string
     {
         // TODO: Use getter when new describable interface has been implemented
-        return 'Description for Asset Source ' .  $assetSource->getLabel();
+        return 'Description for Asset Source ' . $assetSource->getLabel();
     }
 
     /**

@@ -6,17 +6,23 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { ApolloProvider } from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { hot, setConfig } from 'react-hot-loader';
 
 import { IntlProvider, MediaUiProvider, PersistentStateManager } from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
 import { createRef } from 'react';
+import { NotifyProvider } from './core';
 
 loadIconLibrary();
 
+setConfig({
+    showReactDomPatchNotification: false
+});
+
 const withDragDropContext = DragDropContext(HTML5Backend);
-const AppWithDnd = withDragDropContext(App);
+const AppWithDnd = withDragDropContext(hot(module)(App));
 
 window.onload = async (): Promise<void> => {
     while (!window.NeosCMS || !window.NeosCMS.I18n.initialized) {
@@ -39,9 +45,7 @@ window.onload = async (): Promise<void> => {
 
     const containerRef = createRef();
 
-    const notify = (type, message) => {
-        window.NeosCMS.Notification[type](message);
-    };
+    const { Notification } = window.NeosCMS;
 
     const translate = (id, value = null, args = [], packageKey = 'Flowpack.Media.Ui', source = 'Main') => {
         return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
@@ -49,11 +53,13 @@ window.onload = async (): Promise<void> => {
 
     render(
         <IntlProvider translate={translate}>
-            <ApolloProvider client={client}>
-                <MediaUiProvider notify={notify} dummyImage={root.dataset.dummyImage} containerRef={containerRef}>
-                    <AppWithDnd />
-                </MediaUiProvider>
-            </ApolloProvider>
+            <NotifyProvider notificationApi={Notification}>
+                <ApolloProvider client={client}>
+                    <MediaUiProvider dummyImage={root.dataset.dummyImage} containerRef={containerRef}>
+                        <AppWithDnd />
+                    </MediaUiProvider>
+                </ApolloProvider>
+            </NotifyProvider>
         </IntlProvider>,
         root
     );

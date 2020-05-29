@@ -9,7 +9,7 @@ const useAssetSourceFilter = (): [string, (assetSource: AssetSource) => Promise<
     const [mutateAssetSourceFilter] = useMutation(SET_ASSET_SOURCE_FILTER);
     const setAssetSourceFilter = (assetSource: AssetSource) =>
         mutateAssetSourceFilter({
-            variables: { assetSourceFilter: assetSource.identifier }
+            variables: { assetSourceFilter: assetSource.id }
         });
     return [assetSourceFilter, setAssetSourceFilter];
 };

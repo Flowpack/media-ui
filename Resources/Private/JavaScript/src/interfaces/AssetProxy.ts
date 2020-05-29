@@ -1,10 +1,11 @@
-import FileTypeIcon from './FileTypeIcon';
-import Asset from './Asset';
-import IptcMetadata from './IptcMetadata';
+import { AssetSource, IptcMetadata, Asset, FileTypeIcon } from './index';
 
 export default interface AssetProxy {
-    readonly identifier: string;
+    readonly id: string;
+    imported: boolean;
+    assetSource: AssetSource;
     label: string;
+    caption: string;
     mediaType: string;
     fileTypeIcon: FileTypeIcon;
     filename: string;
@@ -15,6 +16,5 @@ export default interface AssetProxy {
     thumbnailUri?: string;
     previewUri?: string;
     iptcMetadata: IptcMetadata[];
-    localAssetIdentifier?: string;
     localAssetData?: Asset;
 }

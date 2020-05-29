@@ -21,12 +21,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         gridTemplateColumns: selectionMode ? '250px 1fr' : '250px 1fr 250px',
         gridTemplateAreas: selectionMode
             ? `
-            "left top"
-            "left main"
-        `
-            : `
             "left top right"
             "left main right"
+        `
+            : `
+            "left top"
+            "left main"
         `,
         gridGap: '1rem'
     })
