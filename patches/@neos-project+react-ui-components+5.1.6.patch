@@ -1,0 +1,24 @@
+diff --git a/node_modules/@neos-project/react-ui-components/lib-esm/Icon/index.js b/node_modules/@neos-project/react-ui-components/lib-esm/Icon/index.js
+index a68dc87..b20b250 100644
+--- a/node_modules/@neos-project/react-ui-components/lib-esm/Icon/index.js
++++ b/node_modules/@neos-project/react-ui-components/lib-esm/Icon/index.js
+@@ -1,8 +1,8 @@
+ import { config, library } from '@fortawesome/fontawesome-svg-core';
+ import '@fortawesome/fontawesome-svg-core/styles.css';
+-import { fab } from '@fortawesome/free-brands-svg-icons';
+-import { far } from '@fortawesome/free-regular-svg-icons';
+-import { fas } from '@fortawesome/free-solid-svg-icons';
++// import { fab } from '@fortawesome/free-brands-svg-icons';
++// import { far } from '@fortawesome/free-regular-svg-icons';
++// import { fas } from '@fortawesome/free-solid-svg-icons';
+ import { themr } from '@friendsofreactjs/react-css-themr';
+ import identifiers from '../identifiers';
+ import Icon from './icon';
+@@ -10,6 +10,6 @@ import style from './style.css';
+ config.autoAddCss = false;
+ config.familyPrefix = 'neos-fa';
+ config.replacementClass = 'neos-svg-inline--fa';
+-library.add(fab, fas, far);
++// library.add(fab, fas, far);
+ export default themr(identifiers.icon, style)(Icon);
+ //# sourceMappingURL=index.js.map
