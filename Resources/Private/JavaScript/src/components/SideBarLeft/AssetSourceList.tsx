@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { useAssetSourceFilter } from '../../hooks';
@@ -9,6 +10,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         border: `1px solid ${theme.colors.contrastDark}`
     },
     item: {
+        display: 'flex',
+        alignItems: 'center',
         '& a': {
             fontWeight: 'normal',
             cursor: 'pointer',
@@ -33,7 +36,12 @@ export default function AssetSourceList() {
                 <nav className={classes.assetSourceList}>
                     <IconLabel icon="box" label={translate('assetSourceList.header', 'Media sources')} />
                     {assetSources?.map(assetSource => (
-                        <IconLabel key={assetSource.id} icon={assetSource.iconUri} className={classes.item}>
+                        <IconLabel
+                            key={assetSource.id}
+                            label={assetSource.label}
+                            iconUri={assetSource.iconUri}
+                            className={classes.item}
+                        >
                             <a
                                 className={assetSourceFilter === assetSource.id ? classes.itemSelected : null}
                                 onClick={() => setAssetSourceFilter(assetSource)}

@@ -57,10 +57,9 @@ class AssetSourceResolver implements ResolverInterface
      */
     public function iconUri(AssetSourceInterface $assetSource): string
     {
-        // TODO: Use getter when new describable interface has been implemented
-        if ($assetSource->getIdentifier() === 'neos') {
-            return 'neos';
+        if (method_exists($assetSource, 'getIconUri')) {
+            return $assetSource->getIconUri();
         }
-        return 'box';
+        return '';
     }
 }

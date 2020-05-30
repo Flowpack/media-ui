@@ -9,29 +9,40 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         display: 'inline-flex',
         justifyContent: 'center'
     },
-    headline: {
+    label: {
         fontWeight: 'bold',
         lineHeight: theme.spacing.goldenUnit,
         paddingLeft: theme.spacing.half
+    },
+    imgIcon: {
+        width: 'auto',
+        height: '18px'
     }
 }));
 
 interface IconLabelProps {
-    icon: string;
+    icon?: string;
+    iconUri?: string;
     label?: string;
     className?: string;
     children?: React.ReactElement;
 }
 
-export default function IconLabel(props: IconLabelProps) {
+export default function IconLabel({
+    icon = 'question',
+    iconUri = '',
+    label = '',
+    className = '',
+    children = null
+}: IconLabelProps) {
     const classes = useStyles();
 
     return (
-        <div className={props.className}>
+        <div className={className}>
             <span className={classes.iconWrap}>
-                <Icon icon={props.icon} />
+                {iconUri ? <img src={iconUri} alt={label} className={classes.imgIcon} /> : <Icon icon={icon} />}
             </span>
-            <span className={classes.headline}>{props.children || props.label || ''}</span>
+            <span className={classes.label}>{children || label || ''}</span>
         </div>
     );
 }
