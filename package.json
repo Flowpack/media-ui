@@ -8,11 +8,11 @@
     "lint": "tsc --noEmit && eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
     "test": "exit 0",
     "dev": "node Resources/Private/JavaScript/dev/server",
-    "watch:parcel": "parcel watch Resources/Private/JavaScript/src/index.tsx --out-dir Resources/Public/Assets -o main.bundle.js",
+    "watch:parcel": "parcel watch Resources/Private/JavaScript/src/index.tsx --public-url . --out-dir Resources/Public/Assets -o main.bundle.js",
     "watch:ui-plugin": "cd Resources/Private/JavaScript/AssetEditor && yarn watch",
     "watch": "concurrently -k \"yarn watch:parcel\" \"yarn watch:ui-plugin\"",
     "build": "yarn build:module && yarn build:ui-plugin",
-    "build:module": "parcel build Resources/Private/JavaScript/src/index.tsx --out-dir Resources/Public/Assets -o main.bundle.js",
+    "build:module": "parcel build Resources/Private/JavaScript/src/index.tsx --public-url . --out-dir Resources/Public/Assets -o main.bundle.js",
     "build:ui-plugin": "cd Resources/Private/JavaScript/AssetEditor && yarn build"
   },
   "dependencies": {
