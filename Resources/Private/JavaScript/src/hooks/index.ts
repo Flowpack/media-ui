@@ -1,4 +1,5 @@
 import useAssetSourceFilter from './useAssetSourceFilter';
 import useViewModeSelection, { VIEW_MODES } from './useViewModeSelection';
+import useAssetQuery from './useAssetQuery';
 
-export { useAssetSourceFilter, useViewModeSelection, VIEW_MODES };
+export { useAssetSourceFilter, useViewModeSelection, useAssetQuery, VIEW_MODES };

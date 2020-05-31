@@ -9,18 +9,10 @@ const { ThemeProvider, useTheme } = theming;
 
 // Extend theme config from Neos.Ui package
 const mediaUiTheme: MediaUiTheme = {
-    spacing: {
-        ...config.spacing
-    },
-    fontSize: {
-        ...config.fontSize
-    },
-    colors: {
-        ...config.colors
-    },
-    transition: {
-        ...config.transition
-    },
+    spacing: config.spacing,
+    fontSize: config.fontSize,
+    colors: config.colors,
+    transition: config.transition,
     primaryColor: config.colors.primaryBlue,
     mainBackgroundColor: config.colors.contrastNeutral,
     alternatingBackgroundColor: config.colors.contrastDark,

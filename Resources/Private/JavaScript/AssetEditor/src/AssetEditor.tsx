@@ -32,7 +32,7 @@ interface AssetEditorProps {
     };
 }
 
-@connect(state => ({}), {
+@connect(() => ({}), {
     flashMessages: actions.UI.FlashMessages
 })
 @neos(globalRegistry => ({

@@ -35,17 +35,17 @@ export default function IptcMetadataInspector() {
 
     return (
         <>
-            {selectedAsset?.iptcMetadata.length ? (
+            {selectedAsset?.iptcProperties.length ? (
                 <div className={classes.iptcData}>
                     <Headline type="h2" className={classes.headline}>
                         {translate('inspector.iptcMetadata', 'IPTC Metadata')}
                     </Headline>
                     <PropertyList>
-                        {selectedAsset.iptcMetadata.map(iptcMetadata => (
+                        {selectedAsset.iptcProperties.map(iptcProperty => (
                             <PropertyListItem
-                                key={iptcMetadata.key}
-                                label={iptcMetadata.key}
-                                value={iptcMetadata.value}
+                                key={iptcProperty.propertyName}
+                                label={iptcProperty.propertyName}
+                                value={iptcProperty.value}
                             />
                         ))}
                     </PropertyList>

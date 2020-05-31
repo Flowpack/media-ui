@@ -3,11 +3,21 @@ declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
+/*
+ * This file is part of the Flowpack.Media.Ui package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
@@ -63,7 +73,7 @@ class QueryResolver implements ResolverInterface
         $query = $this->createAssetProxyQuery($variables, $assetSourceContext);
 
         if (!$query) {
-            // TODO: Add logging
+            $this->systemLogger->error('Could not build asset query for given variables', $variables);
             return 0;
         }
 
@@ -86,21 +96,33 @@ class QueryResolver implements ResolverInterface
         array $variables,
         AssetSourceContext $assetSourceContext
     ): ?AssetProxyQueryInterface {
-        $assetSourceName = $variables['assetSource'] ?? 'neos';
-        $tag = $variables['tag'] ?? null;
-        $assetCollection = $variables['assetCollection'] ?? null;
-        $assetType = $variables['assetType'] ?? null;
-        $searchTerm = $variables['searchTerm'] ?? null;
+        [
+            'assetSourceId' => $assetSourceId,
+            'tag' => $tag,
+            'assetCollection' => $assetCollection,
+            'mediaType' => $mediaType,
+            'searchTerm' => $searchTerm,
+        ] = $variables + [
+            'assetSourceId' => 'neos',
+            'tag' => null,
+            'assetCollection' => null,
+            'mediaType' => null,
+            'searchTerm' => null
+        ];
 
-        $activeAssetSource = $assetSourceContext->getAssetSource($assetSourceName);
+        $activeAssetSource = $assetSourceContext->getAssetSource($assetSourceId);
         if (!$activeAssetSource) {
             return null;
         }
         $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
 
-        if (is_string($assetType) && !empty($assetType)) {
-            // TODO: Catch possible errors with wrong types
-            $assetProxyRepository->filterByType(new AssetTypeFilter($assetType));
+        if (is_string($mediaType) && !empty($mediaType)) {
+            try {
+                $assetTypeFilter = new AssetTypeFilter(ucfirst($mediaType));
+                $assetProxyRepository->filterByType($assetTypeFilter);
+            } catch (\InvalidArgumentException $e) {
+                $this->systemLogger->warning('Ignoring invalid mediatype when filtering assets ' . $mediaType);
+            }
         }
 
         if ($assetCollection && $assetProxyRepository instanceof SupportsCollectionsInterface) {
@@ -136,7 +158,7 @@ class QueryResolver implements ResolverInterface
      * @param AssetSourceContext $assetSourceContext
      * @return AssetProxyQueryResultInterface|null
      */
-    public function assetProxies(
+    public function assets(
         $_,
         array $variables,
         AssetSourceContext $assetSourceContext
@@ -147,7 +169,7 @@ class QueryResolver implements ResolverInterface
         $query = $this->createAssetProxyQuery($variables, $assetSourceContext);
 
         if (!$query) {
-            // TODO: Add logging
+            $this->systemLogger->error('Could not build asset query for given variables', $variables);
             return null;
         }
 
@@ -163,27 +185,6 @@ class QueryResolver implements ResolverInterface
 
         // TODO: It's not possible to use `toArray` here as not all asset sources implement it
         return $query->execute();
-    }
-
-    /**
-     * Provides a filterable list of assets.
-     * The asset proxies are the preferred entity as they provide more information and include thumbnail uris, etc...
-     * You can access the asset also vie the asset proxy.
-     *
-     * @param $_
-     * @param array $variables
-     * @return array<Asset>
-     * @throws InvalidQueryException
-     */
-    public function assets($_, array $variables): array
-    {
-        if (array_key_exists('tag', $variables) && !empty($variables['tag'])) {
-            $tag = $this->tagRepository->findOneByLabel($variables['tag']);
-            return $tag ? $this->assetRepository->findByTag($tag)->toArray() : [];
-        }
-
-        // TODO: Discuss whether to remove this whole method (and the schema) and only allow access to assets via AssetProxies or add more filter/limit methods if it should stay
-        return $this->assetRepository->findAll()->toArray();
     }
 
     /**
@@ -222,34 +223,19 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
-     * Returns a list of asset types which can be used for filtering in the assetProxy query
-     *
      * @param $_
      * @param array $variables
-     * @return array<string>
+     * @param AssetSourceContext $assetSourceContext
+     * @return AssetProxyInterface|null
      */
-    public function assetTypes($_, array $variables): array
+    public function asset($_, array $variables, AssetSourceContext $assetSourceContext): ?Asset
     {
-        // TODO: These types are currently privately defined in `NeosAssetProxyRepository` and should be available for the API as constants
-        return [
-            ['label' => 'All'],
-            ['label' => 'Image'],
-            ['label' => 'Document'],
-            ['label' => 'Video'],
-            ['label' => 'Audio']
-        ];
-    }
+        [
+            'id' => $id,
+            'assetSourceId' => $assetSourceId,
+        ] = $variables + ['id' => null, 'assetSourceId' => null];
 
-    /**
-     * @param $_
-     * @param array $variables
-     * @return Asset|null
-     */
-    public function asset($_, array $variables): ?Asset
-    {
-        $identifier = $variables['identifier'];
-        /** @var Asset $asset */
-        $asset = $this->assetRepository->findByIdentifier($identifier);
-        return $asset;
+        $activeAssetSource = $assetSourceContext->getAssetSource($assetSourceId);
+        return $activeAssetSource ? $activeAssetSource->getAssetProxyRepository()->getAssetProxy($id) : null;
     }
 }

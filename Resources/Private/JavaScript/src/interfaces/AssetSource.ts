@@ -1,6 +1,6 @@
 export default interface AssetSource {
-    readonly label: string;
     readonly id: string;
+    readonly label: string;
     readonly description: string;
     readonly iconUri: string;
     readonly readOnly: boolean;

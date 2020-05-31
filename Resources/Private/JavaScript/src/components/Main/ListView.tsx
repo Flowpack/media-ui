@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useMediaUi, createUseMediaUiStyles, useIntl, useNotify } from '../../core';
-import { MediaUiTheme, GridComponentProps, AssetProxy } from '../../interfaces';
+import { MediaUiTheme, GridComponentProps, Asset } from '../../interfaces';
 import { humanFileSize } from '../../helper/FileSize';
 import { IconButton } from '@neos-project/react-ui-components';
 
@@ -74,17 +74,17 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function ListView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const { assetProxies, dummyImage, setSelectedAsset } = useMediaUi();
+    const { assets, dummyImage, setSelectedAsset } = useMediaUi();
     const Notify = useNotify();
     const { translate } = useIntl();
 
-    const handleDeleteAction = (asset: AssetProxy) => {
+    const handleDeleteAction = (asset: Asset) => {
         Notify.info('This action has not been implemented yet');
     };
 
     return (
         <section className={classes.listView}>
-            {assetProxies.length ? (
+            {assets.length ? (
                 <table>
                     <thead>
                         <tr>
@@ -98,12 +98,12 @@ export default function ListView(props: GridComponentProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {assetProxies.map(asset => (
+                        {assets.map(asset => (
                             <tr key={asset.id} onClick={() => setSelectedAsset(asset)}>
                                 <td className={classes.previewColumn}>
                                     <picture>
                                         <img
-                                            src={asset.thumbnailUri || dummyImage}
+                                            src={asset.thumbnailUrl || dummyImage}
                                             alt={asset.label}
                                             width={40}
                                             height={36}
@@ -112,15 +112,13 @@ export default function ListView(props: GridComponentProps) {
                                 </td>
                                 <td className={classes.labelColumn}>{asset.label}</td>
                                 <td>{new Date(asset.lastModified).toLocaleString()}</td>
-                                <td>{humanFileSize(asset.fileSize)}</td>
-                                <td>{asset.mediaType}</td>
+                                <td>{humanFileSize(asset.file.size)}</td>
+                                <td>{asset.file.mediaType}</td>
                                 <td
                                     className={classes.tagsColumn}
-                                    title={asset.localAssetData?.tags?.map(({ label }) => label).join(', ') || ''}
+                                    title={asset.tags?.map(({ label }) => label).join(', ') || ''}
                                 >
-                                    <span>
-                                        {asset.localAssetData?.tags?.map(({ label }) => label).join(', ') || ''}
-                                    </span>
+                                    <span>{asset.tags?.map(({ label }) => label).join(', ') || ''}</span>
                                 </td>
                                 <td className={classes.actionsColumn}>
                                     <IconButton

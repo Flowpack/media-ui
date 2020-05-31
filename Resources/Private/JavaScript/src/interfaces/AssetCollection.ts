@@ -1,8 +1,6 @@
-import Tag from './Tag';
-import Asset from './Asset';
+import { Tag } from './index';
 
 export default interface AssetCollection {
     readonly title: string;
     tags?: Tag[];
-    assets?: Asset[];
 }

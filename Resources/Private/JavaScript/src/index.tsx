@@ -8,7 +8,7 @@ import ApolloClient from 'apollo-boost';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { hot, setConfig } from 'react-hot-loader';
 
-import { IntlProvider, MediaUiProvider, PersistentStateManager } from './core';
+import { IntlProvider, MediaUiProvider, MediaUiThemeProvider, PersistentStateManager } from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
@@ -56,7 +56,9 @@ window.onload = async (): Promise<void> => {
             <NotifyProvider notificationApi={Notification}>
                 <ApolloProvider client={client}>
                     <MediaUiProvider dummyImage={root.dataset.dummyImage} containerRef={containerRef}>
-                        <AppWithDnd />
+                        <MediaUiThemeProvider>
+                            <AppWithDnd />
+                        </MediaUiThemeProvider>
                     </MediaUiProvider>
                 </ApolloProvider>
             </NotifyProvider>

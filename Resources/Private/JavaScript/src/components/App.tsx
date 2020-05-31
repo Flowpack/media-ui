@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useQuery } from '@apollo/react-hooks';
+
 import { SideBarLeft } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
 import Pagination from './Pagination';
-import { useMediaUi, createUseMediaUiStyles, MediaUiThemeProvider } from '../core';
+import { useMediaUi, createUseMediaUiStyles } from '../core';
 import LoadingIndicator from './LoadingIndicator';
 import { MediaUiTheme } from '../interfaces';
-import { VIEW_MODE_SELECTION } from '../queries/ViewModeSelectionQuery';
+import { VIEW_MODE_SELECTION } from '../queries';
 import { TopBar } from './TopBar';
 import { ThumbnailView, ListView } from './Main';
 import { VIEW_MODES } from '../hooks';
@@ -18,7 +19,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         // TODO: Find a way to not calculate height to allow scrolling in main grid area
         height: `calc(100vh - 40px * 4 - 21px)`,
         gridTemplateRows: 'auto 1fr',
-        gridTemplateColumns: selectionMode ? '250px 1fr' : '250px 1fr 250px',
+        gridTemplateColumns: selectionMode ? '250px 1fr 250px' : '250px 1fr',
         gridTemplateAreas: selectionMode
             ? `
             "left top right"
@@ -28,7 +29,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             "left top"
             "left main"
         `,
-        gridGap: '1rem'
+        gridGap: theme.spacing.full
     })
 }));
 
@@ -40,21 +41,19 @@ export default function App() {
     const { viewModeSelection } = viewModeSelectionQuery.data;
 
     return (
-        <MediaUiThemeProvider>
-            <div className={classes.container} ref={containerRef}>
-                <LoadingIndicator />
-                <SideBarLeft gridPosition="left" />
-                <TopBar gridPosition="top" />
-                {viewModeSelection === VIEW_MODES.List ? (
-                    <ListView gridPosition="main" />
-                ) : (
-                    <ThumbnailView gridPosition="main" />
-                )}
-                <Pagination />
-                {!selectionMode && <SideBarRight gridPosition="right" />}
+        <div className={classes.container} ref={containerRef}>
+            <LoadingIndicator />
+            <SideBarLeft gridPosition="left" />
+            <TopBar gridPosition="top" />
+            {viewModeSelection === VIEW_MODES.List ? (
+                <ListView gridPosition="main" />
+            ) : (
+                <ThumbnailView gridPosition="main" />
+            )}
+            <Pagination />
+            {!selectionMode && <SideBarRight gridPosition="right" />}
 
-                {selectedAssetForPreview && <AssetPreview />}
-            </div>
-        </MediaUiThemeProvider>
+            {selectedAssetForPreview && <AssetPreview />}
+        </div>
     );
 }

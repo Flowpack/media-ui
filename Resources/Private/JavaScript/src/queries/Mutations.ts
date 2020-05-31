@@ -1,12 +1,12 @@
 import { gql } from 'apollo-boost';
 
-import { Fragments } from './Fragments';
+import { ASSET_FRAGMENT } from './Fragments';
 
 export const UPDATE_ASSET = gql`
-    mutation UpdateAsset($id: AssetId!, $assetSource: AssetSourceId!, $title: String, $caption: String) {
-        updateAsset(id: $id, assetSource: $assetSource, title: $title, caption: $caption) {
-            ...AssetProxyProps
+    mutation UpdateAsset($id: AssetId!, $assetSource: AssetSourceId!, $label: String, $caption: String) {
+        updateAsset(id: $id, assetSource: $assetSource, label: $label, caption: $caption) {
+            ...AssetProps
         }
     }
-    ${Fragments.assetProxy}
+    ${ASSET_FRAGMENT}
 `;

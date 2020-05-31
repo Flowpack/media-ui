@@ -3,6 +3,16 @@ declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
+/*
+ * This file is part of the Flowpack.Media.Ui package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
@@ -36,9 +46,9 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'assetSource' => $assetSource,
-            'title' => $title,
+            'label' => $label,
             'caption' => $caption
-        ] = $variables + ['title' => null, 'caption' => null];
+        ] = $variables + ['label' => null, 'caption' => null];
 
         $activeAssetSource = $assetSourceContext->getAssetSource($assetSource);
 
@@ -61,8 +71,8 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Cannot update asset that was never imported', 1590659044);
         }
 
-        if ($title !== null) {
-            $asset->setTitle($title);
+        if ($label !== null) {
+            $asset->setTitle($label);
         }
 
         if ($caption !== null) {

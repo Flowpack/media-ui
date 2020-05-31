@@ -1,96 +1,153 @@
 type Query {
-  asset(identifier: ID!): Asset
-  assets(tag: String): [Asset!]!
-  assetProxies(assetSource: AssetSourceId, tag: String, assetCollection: String, assetType: String, searchTerm: String, limit: Int, offset: Int): [AssetProxy!]!
-  assetSources: [AssetSource!]!
-  assetCollections: [AssetCollection!]!
-  assetTypes: [AssetType!]!
-  assetCount(assetSource: AssetSourceId, tag: String, assetCollection: String, assetType: String, searchTerm: String): Int!
-  tags: [Tag!]!
+    """
+    a single asset by its id, or null if no corresponding asset exists
+    """
+    asset(id: AssetId!, assetSourceId: AssetSourceId!): Asset
+
+    """
+    all assets that match the given criteria
+    """
+    assets(
+        assetSourceId: AssetSourceId,
+        tag: TagLabel,
+        assetCollectionId: AssetCollectionId,
+        mediaType: MediaType,
+        searchTerm: String,
+        limit: Int,
+        offset: Int
+    ): [Asset!]!
+
+    """
+    number of assets matching the given criteria
+    """
+    assetCount(
+        assetSourceId: AssetSourceId,
+        tag: Tag,
+        assetCollectionId: AssetCollectionId,
+        mediaType: MediaType,
+        searchTerm: String
+    ): Int!
+
+    """
+    all configured asset sources (by default only the "neos" source)
+    """
+    assetSources: [AssetSource!]!
+
+    """
+    all asset collections
+    """
+    assetCollections: [AssetCollection!]!
+
+    """
+    all tags
+    """
+    tags: [Tag!]!
 }
 
 type Mutation {
-    updateAsset(id: AssetId!, assetSource: AssetSourceId!, title: String, caption: String): AssetProxy
+    updateAsset(
+        id: AssetId!,
+        assetSource: AssetSourceId!,
+        label: String,
+        caption: String
+    ): Asset
 }
 
-# The default local asset source is `neos`. Other externals ones can be available through plugins.
-type AssetSource {
-    id: AssetSourceId!
-    label: String!
-    description: String
-    iconUri: String
-    readOnly: Boolean!
-    supportsTagging: Boolean!
-    supportsCollections: Boolean!
-}
-
-# The main type that should be queries to fetch assets.
-# The proxy reflects local and external asset data.
-# Local and already imported assets have the `localAssetIdentifier` set and `localAssetData` available.
-type AssetProxy {
+"""
+An asset (Image, Document, Video or Audio)
+"""
+type Asset {
     id: AssetId!
     assetSource: AssetSource!
+    imported: Boolean!
 
     label: String!
     caption: String
     filename: Filename!
 
-    lastModified: DateTime
-    fileSize: Int!
-    mediaType: String
-    fileTypeIcon: FileTypeIcon!
-    widthInPixels: Int
-    heightInPixels: Int
-    thumbnailUri: String # Provides an image uri for thumbnails views
-    previewUri: String # Provides a full size image uri for details views
-    iptcMetadata: [IptcMetadata!]!
-    imported: Boolean!
-    localAssetData: Asset
-}
-
-type IptcMetadata {
-    key: String!
-    value: String
-}
-
-type Asset {
-    identifier: ID!
-    title: String
-    label: String!
-    caption: String
-    mediaType: String!
-    fileExtension: String!
-    filename: String!
-    copyrightNotice: String
-    thumbnail: String
     tags: [Tag!]!
-    assetCollections: [AssetCollection!]!
-    # TODO: implement `variants: [AssetVariant]`
+    collections: [AssetCollection!]!
+
+    copyrightNotice: String
+    iptcProperty(property: IptcPropertyName): IptcProperty
+    lastModified: DateTime
+    iptcProperties: [IptcProperty!]
+
+    # width in pixels (only for Images and Videos)
+    width: Int
+    # height in pixels (only for Images and Videos)
+    height: Int
+
+    file: File!
+    thumbnailUrl: Url
+    previewUrl: Url
+    thumbnail(maximumWidth: Int, maximumHeight: Int, ratioMode: RatioMode, allowUpScaling: Boolean): Image
 }
 
-type AssetType {
-    label: String!
+"""
+The file-representation of an asset including its type and (if available) the URL
+"""
+type File {
+    extension: FileExtension!
+    mediaType: MediaType!
+    typeIcon: Image!
+    size: FileSize!
+    url: Url
 }
 
+"""
+A tag to which assets can be assigned. Can have parent and child tags
+"""
 type Tag {
-    label: String!
+    label: TagLabel!
+    parent: Tag
+    children: [Tag!]!
 }
 
+"""
+A collection of assets. One asset can belong to multiple collections
+"""
 type AssetCollection {
-    title: String!
-    assets: [Asset]
-    tags: [Tag]
+    title: AssetCollectionTitle!
+    assets: [Asset!]!
+    tags: [Tag!]!
 }
 
-type FileTypeIcon {
-    src: String!
+"""
+Asset sources allow to integrate assets from external DAM systems
+"""
+type AssetSource {
+    id: AssetSourceId!
+    label: String!
+    description: String
+    iconUri: Url
+    readOnly: Boolean!
+    supportsTagging: Boolean!
+    supportsCollections: Boolean!
+}
+
+"""
+IPTC metadata of an asset that implements the SupportsIptcMetadataInterface (see https://www.iptc.org/))
+"""
+type IptcProperty {
+    propertyName: IptcPropertyName!
+    value: String!
+}
+
+"""
+Representation of an image that can be rendered to the browser
+"""
+type Image {
+    width: Int!
+    height: Int!
+    url: Url!
     alt: String
 }
 
 """
 Ratio mode of an image
 """
-enum RatioMode{
+enum RatioMode {
     """
     Inset ratio mode: If an image is attempted to get scaled with the size of both edges stated, using this mode will scale it to the lower of both edges.
     Consider an image of 320/480 being scaled to 50/50: because aspect ratio wouldn't get hurt, the target image size will become 33/50.
@@ -158,7 +215,12 @@ An absolute or relative URL
 """
 scalar Url
 
+"""
+The label of a tag
+"""
+scalar TagLabel
+
 schema {
-  query: Query
-  mutation: Mutation
+    query: Query
+    mutation: Mutation
 }

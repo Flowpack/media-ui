@@ -1,58 +1,88 @@
 import { gql } from 'apollo-boost';
 
-export const Fragments = {
-    assetProxy: gql`
-        fragment AssetProxyProps on AssetProxy {
-            id
-            assetSource {
-                ...AssetSourceProps
-            }
+export const ASSET_SOURCE_FRAGMENT = gql`
+    fragment AssetSourceProps on AssetSource {
+        label
+        id
+        description
+        iconUri
+        readOnly
+        supportsTagging
+        supportsCollections
+    }
+`;
 
+export const TAG_FRAGMENT = gql`
+    fragment TagProps on Tag {
+        label
+        parent {
             label
-            caption
-            filename
+        }
+        children {
+            label
+        }
+    }
+`;
 
-            imported
-            mediaType
-            fileSize
-            fileTypeIcon {
-                src
-                alt
-            }
-            lastModified
-            widthInPixels
-            heightInPixels
-            thumbnailUri
-            previewUri
-            iptcMetadata {
-                key
-                value
-            }
-            localAssetData {
-                identifier
-                label
-                title
-                caption
-                copyrightNotice
-                tags {
-                    ...TagProps
-                }
-                assetCollections {
-                    title
-                }
-            }
+export const FILE_FRAGMENT = gql`
+    fragment FileProps on File {
+        extension
+        mediaType
+        typeIcon {
+            url
+            alt
         }
-        fragment AssetSourceProps on AssetSource {
-            label
-            id
-            description
-            iconUri
-            readOnly
-            supportsTagging
-            supportsCollections
-        }
-        fragment TagProps on Tag {
+        size
+        url
+    }
+`;
+
+export const IPTC_PROPERTY_FRAGMENT = gql`
+    fragment IptcPropertyProps on IptcProperty {
+        propertyName
+        value
+    }
+`;
+
+export const ASSET_COLLECTION_FRAGMENT = gql`
+    fragment AssetCollectionProps on AssetCollection {
+        title
+        tags {
             label
         }
-    `
-};
+    }
+`;
+
+export const ASSET_FRAGMENT = gql`
+    fragment AssetProps on Asset {
+        id
+        assetSource {
+            ...AssetSourceProps
+        }
+        imported
+        label
+        caption
+        filename
+        tags {
+            label
+        }
+        collections {
+            title
+        }
+        copyrightNotice
+        lastModified
+        iptcProperties {
+            ...IptcPropertyProps
+        }
+        width
+        height
+        file {
+            ...FileProps
+        }
+        thumbnailUrl
+        previewUrl
+    }
+    ${ASSET_SOURCE_FRAGMENT}
+    ${IPTC_PROPERTY_FRAGMENT}
+    ${FILE_FRAGMENT}
+`;

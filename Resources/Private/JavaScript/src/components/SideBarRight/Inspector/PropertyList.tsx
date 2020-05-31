@@ -4,18 +4,24 @@ import { MediaUiTheme } from '../../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     propertyList: {
+        overflow: 'hidden',
+        width: '100%',
         '& dt': {
             backgroundColor: theme.alternatingBackgroundColor,
-            fontWeight: 'bold',
             color: 'white',
-            padding: '8px 8px 0'
+            fontWeight: 'bold',
+            padding: '8px 8px 0',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
         },
         '& dd': {
             backgroundColor: theme.alternatingBackgroundColor,
+            color: theme.inactiveColor,
+            lineHeight: '1.3',
             margin: '0 0 1px',
             padding: '8px',
-            lineHeight: '1.3',
-            color: theme.inactiveColor
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
         }
     }
 }));

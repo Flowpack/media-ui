@@ -1,16 +1,30 @@
-import Tag from './Tag';
-import AssetCollection from './AssetCollection';
+import { AssetSource, IptcProperty, Image, Tag, AssetCollection } from './index';
 
 export default interface Asset {
-    readonly identifier: string;
-    title?: string;
+    readonly id: string;
+    assetSource: AssetSource;
+    imported: boolean;
+
     label: string;
-    caption?: string;
-    mediaType: string;
-    fileExtension: string;
+    caption: string;
     filename: string;
-    copyrightNotice?: string;
-    thumbnail: string;
+
     tags: Tag[];
-    assetCollections: AssetCollection[];
+    collections: AssetCollection[];
+
+    copyrightNotice: string;
+    lastModified: Date;
+    iptcProperties: IptcProperty[];
+
+    width?: number;
+    height?: number;
+
+    file: {
+        extension: string;
+        mediaType: string;
+        typeIcon: Image;
+        size?: number;
+    };
+    thumbnailUrl?: string;
+    previewUrl?: string;
 }

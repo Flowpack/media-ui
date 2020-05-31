@@ -13,7 +13,7 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
 import { I18nRegistry, Notify } from '../../src/interfaces';
-import { IntlProvider, MediaUiProvider } from '../../src/core';
+import { IntlProvider, MediaUiProvider, MediaUiThemeProvider } from '../../src/core';
 import App from '../../src/components/App';
 import { restoreLocalState } from '../../src/core/PersistentStateManager';
 import { resolvers, typeDefs } from '../../src/core/Resolvers';
@@ -31,7 +31,7 @@ interface AssetSelectionScreenProps {
     };
 }
 
-@connect(state => ({}), {
+@connect(() => ({}), {
     flashMessages: actions.UI.FlashMessages
 })
 @neos(globalRegistry => ({
@@ -101,7 +101,9 @@ export default class AssetSelectionScreen extends React.PureComponent<AssetSelec
                     <NotifyProvider notificationApi={Notification}>
                         <ApolloProvider client={client}>
                             <MediaUiProvider dummyImage={dummyImage} selectionMode={true} containerRef={containerRef}>
-                                <App />
+                                <MediaUiThemeProvider>
+                                    <App />
+                                </MediaUiThemeProvider>
                             </MediaUiProvider>
                         </ApolloProvider>
                     </NotifyProvider>

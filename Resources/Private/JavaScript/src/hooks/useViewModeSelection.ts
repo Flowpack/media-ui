@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { ExecutionResult } from 'graphql';
-import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from '../queries/ViewModeSelectionQuery';
+
+import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from '../queries';
 
 export enum VIEW_MODES {
     Thumbnails = 'thumbnails',

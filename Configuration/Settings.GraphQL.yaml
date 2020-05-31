@@ -8,3 +8,5 @@ t3n:
           root:
             typeDefs: 'resource://Flowpack.Media.Ui/Private/GraphQL/schema.root.graphql'
             resolverPathPattern: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\{Type}Resolver'
+            resolvers:
+              AssetProxy: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetResolver'

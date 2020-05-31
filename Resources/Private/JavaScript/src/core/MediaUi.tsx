@@ -1,34 +1,40 @@
 import * as React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/react-hooks';
 
-import {
-    AssetSource,
-    AssetCollection,
-    AssetProxy,
-    AssetType,
-    Tag,
-    MediaUiProviderValues,
-    MediaUiProviderProps
-} from '../interfaces';
-import { ASSET_PROXIES } from '../queries/AssetProxies';
+import { AssetSource, AssetCollection, Asset, Tag } from '../interfaces';
+import { useAssetQuery } from '../hooks';
 
-interface AssetProxiesQueryResult {
-    assetProxies: AssetProxy[];
-    assetCollections: AssetCollection[];
-    assetSources: AssetSource[];
-    assetTypes: AssetType[];
-    assetCount: number;
-    tags: Tag[];
+interface MediaUiProviderProps {
+    children: React.ReactElement;
+    dummyImage: string;
+    selectionMode?: boolean;
+    containerRef: React.ElementRef<any>;
 }
 
-interface AssetProxiesQueryVariables {
+interface MediaUiProviderValues {
+    isLoading: boolean;
+    assetCount: number;
+    assets: Asset[];
     searchTerm: string;
-    assetCollection: string;
-    assetType: string;
-    tag: string;
-    limit: number;
-    offset: number;
+    setSearchTerm: (searchTerm: string) => void;
+    tags: Tag[];
+    tagFilter: Tag;
+    setTagFilter: (tag: Tag) => void;
+    assetSources: AssetSource[];
+    assetCollections: AssetCollection[];
+    assetCollectionFilter: AssetCollection;
+    setAssetCollectionFilter: (assetCollection: AssetCollection) => void;
+    currentPage: number;
+    setCurrentPage: (currentPage: number) => void;
+    selectedAsset: Asset;
+    setSelectedAsset: (asset: Asset) => void;
+    selectedAssetForPreview: Asset;
+    setSelectedAssetForPreview: (asset: Asset) => void;
+    mediaTypeFilter: string;
+    setMediaTypeFilter: (mediaType: string) => void;
+    dummyImage: string;
+    selectionMode: boolean;
+    containerRef: React.ElementRef<any>;
 }
 
 export const MediaUiContext = createContext({} as MediaUiProviderValues);
@@ -38,54 +44,29 @@ export const ASSETS_PER_PAGE = 20;
 
 export function MediaUiProvider({ children, dummyImage, selectionMode = false, containerRef }: MediaUiProviderProps) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [tagFilter, setTagFilter] = useState<Tag>();
+    const [tagFilter, setTagFilter] = useState<Tag>(null);
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedAsset, setSelectedAsset] = useState<AssetProxy>();
-    const [selectedAssetForPreview, setSelectedAssetForPreview] = useState<AssetProxy>();
-    const [assetTypeFilter, setAssetTypeFilter] = useState<AssetType>();
-    // TODO: Use useReducer for state (like here https://github.com/sandstorm/NeosAcl/blob/master/Resources/Private/react-acl-editor/src/state/index.ts)
-    const [uiState, setUiState] = useState<AssetProxiesQueryResult>({
-        assetProxies: [],
-        assetCollections: [],
-        assetSources: [],
-        assetCount: 0,
-        assetTypes: [],
-        tags: []
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    // const containerRef = createRef();
+    const [selectedAsset, setSelectedAsset] = useState<Asset>();
+    const [selectedAssetForPreview, setSelectedAssetForPreview] = useState<Asset>();
+    const [mediaTypeFilter, setMediaTypeFilter] = useState('');
 
     // Main query to fetch all initial data from api
-    const [query, { loading, error, data }] = useLazyQuery<AssetProxiesQueryResult, AssetProxiesQueryVariables>(
-        ASSET_PROXIES,
-        {
-            notifyOnNetworkStatusChange: false
-        }
-    );
+    const { isLoading, error, assetData } = useAssetQuery({
+        searchTerm: searchTerm,
+        assetCollection: assetCollectionFilter?.title,
+        mediaType: mediaTypeFilter,
+        tag: tagFilter?.label,
+        limit: ASSETS_PER_PAGE,
+        offset: (currentPage - 1) * ASSETS_PER_PAGE
+    });
 
+    // Update currentPage if asset count changes
     useEffect(() => {
-        if (!loading && !isLoading) {
-            query({
-                variables: {
-                    searchTerm: searchTerm,
-                    assetCollection: assetCollectionFilter?.title,
-                    assetType: assetTypeFilter?.label,
-                    tag: tagFilter?.label,
-                    limit: ASSETS_PER_PAGE,
-                    offset: (currentPage - 1) * ASSETS_PER_PAGE
-                }
-            });
-            setIsLoading(true);
+        if (!isLoading && (currentPage - 1) * ASSETS_PER_PAGE > assetData.assetCount) {
+            setCurrentPage(1);
         }
-        if (data && !loading && isLoading) {
-            setUiState({ ...data });
-            if ((currentPage - 1) * ASSETS_PER_PAGE > data.assetCount) {
-                setCurrentPage(1);
-            }
-            setIsLoading(false);
-        }
-    }, [query, data, loading, searchTerm, assetCollectionFilter, assetTypeFilter, tagFilter, currentPage]);
+    }, [assetData.assetCount, isLoading]);
 
     if (error) {
         console.error(error);
@@ -103,8 +84,8 @@ export function MediaUiProvider({ children, dummyImage, selectionMode = false, c
                     setTagFilter,
                     assetCollectionFilter,
                     setAssetCollectionFilter,
-                    assetTypeFilter,
-                    setAssetTypeFilter,
+                    mediaTypeFilter: mediaTypeFilter,
+                    setMediaTypeFilter: setMediaTypeFilter,
                     currentPage,
                     setCurrentPage,
                     selectedAsset,
@@ -114,7 +95,7 @@ export function MediaUiProvider({ children, dummyImage, selectionMode = false, c
                     dummyImage,
                     selectionMode,
                     containerRef,
-                    ...uiState
+                    ...assetData
                 }}
             >
                 {children}

@@ -17,33 +17,21 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             display: 'flex',
             flexDirection: 'column',
             position: 'relative',
-            '&:hover': {
-                outline: `4px solid ${theme.primaryColor}`
-            },
-            '& picture': {
-                cursor: 'pointer',
-                backgroundColor: theme.assetBackgroundColor
+            '&:hover $label': {
+                backgroundColor: theme.primaryColor
             },
             '&:hover $toolBar': {
                 display: 'block'
-            },
-            '& figcaption': {
-                backgroundColor: theme.captionBackgroundColor,
-                padding: '.8rem .8rem',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                '& img': {
-                    width: '1.3rem',
-                    height: 'auto',
-                    marginRight: '.5rem'
-                }
-            },
-            '& img': {
-                height: '250px',
-                width: '100%',
-                objectFit: 'contain'
             }
+        }
+    },
+    thumbnail: {
+        cursor: 'pointer',
+        backgroundColor: theme.assetBackgroundColor,
+        '& img': {
+            height: '250px',
+            width: '100%',
+            objectFit: 'contain'
         }
     },
     toolBar: {
@@ -57,28 +45,42 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             display: 'flex'
         }
     },
+    label: {
+        backgroundColor: theme.captionBackgroundColor,
+        padding: '.8rem .8rem',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        '& img': {
+            width: '1.3rem',
+            height: 'auto',
+            marginRight: '.5rem'
+        }
+    },
     selected: {
-        outline: `4px solid ${theme.primaryColor}`
+        '& $label': {
+            backgroundColor: theme.primaryColor
+        }
     }
 }));
 
 export default function ThumbnailView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const { assetProxies, dummyImage, selectedAsset, setSelectedAsset, setSelectedAssetForPreview } = useMediaUi();
+    const { assets, dummyImage, selectedAsset, setSelectedAsset, setSelectedAssetForPreview } = useMediaUi();
     const { translate } = useIntl();
 
     return (
         <section className={classes.thumbnailView}>
-            {assetProxies.length ? (
-                assetProxies.map(asset => {
+            {assets.length ? (
+                assets.map(asset => {
                     const { id, label } = asset;
                     return (
-                        <figure key={id} className={selectedAsset === asset ? classes.selected : null}>
-                            <picture onClick={() => setSelectedAsset(asset)}>
-                                <img src={asset.thumbnailUri || dummyImage} alt={asset.label} />
+                        <figure key={id} className={selectedAsset?.id === id ? classes.selected : null}>
+                            <picture onClick={() => setSelectedAsset(asset)} className={classes.thumbnail}>
+                                <img src={asset.thumbnailUrl || dummyImage} alt={asset.label} />
                             </picture>
-                            <figcaption>
-                                <img src={asset.fileTypeIcon.src} alt={asset.fileTypeIcon.alt} /> {label}
+                            <figcaption className={classes.label}>
+                                <img src={asset.file.typeIcon.url} alt={asset.file.typeIcon.alt} /> {label}
                             </figcaption>
                             <div className={classes.toolBar}>
                                 <IconButton

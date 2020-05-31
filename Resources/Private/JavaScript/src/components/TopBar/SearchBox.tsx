@@ -6,13 +6,13 @@ import { TextInput } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+const useStyles = createUseMediaUiStyles({
     searchBox: {
         '& input': {
             width: '100%'
         }
     }
-}));
+});
 
 export default function SearchBox() {
     const classes = useStyles();

@@ -1,9 +1,8 @@
 import * as React from 'react';
 import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 import { useMediaUi, useMediaUiTheme } from '../core';
-
-import 'react-image-lightbox/style.css';
 
 export default function AssetPreview() {
     const theme = useMediaUiTheme();
@@ -13,7 +12,7 @@ export default function AssetPreview() {
         <Lightbox
             reactModalStyle={{ overlay: { zIndex: theme.lightboxZIndex } }}
             reactModalProps={{ parentSelector: () => containerRef.current }}
-            mainSrc={selectedAssetForPreview.previewUri}
+            mainSrc={selectedAssetForPreview.previewUrl}
             onCloseRequest={() => setSelectedAssetForPreview(null)}
         />
     );

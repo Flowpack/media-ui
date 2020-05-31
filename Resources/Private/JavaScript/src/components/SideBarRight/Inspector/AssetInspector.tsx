@@ -5,10 +5,10 @@ import { useMutation } from '@apollo/react-hooks';
 import { Button, Label, TextArea, TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../../core';
-import { AssetProxy, MediaUiTheme } from '../../../interfaces';
+import { Asset, MediaUiTheme } from '../../../interfaces';
 import { PropertyList, PropertyListItem } from '.';
 import { humanFileSize } from '../../../helper/FileSize';
-import { UPDATE_ASSET } from '../../../queries/Mutations';
+import { UPDATE_ASSET } from '../../../queries';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
@@ -17,7 +17,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         gridGap: '1rem',
         '& ul': {
             backgroundColor: theme.alternatingBackgroundColor,
-            padding: '1rem'
+            padding: theme.spacing.full
         },
         '& input, & textarea': {
             width: '100%'
@@ -38,7 +38,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 interface AssetUpdate {
     id: string;
     assetSource: string;
-    title?: string;
+    label?: string;
     caption?: string;
 }
 
@@ -49,11 +49,12 @@ export default function AssetInspector() {
     const { translate } = useIntl();
     const [label, setLabel] = useState(selectedAsset?.label);
     const [caption, setCaption] = useState(selectedAsset?.caption);
-    const [updateAsset, { error, data }] = useMutation<{ updateAsset: AssetProxy }, AssetUpdate>(UPDATE_ASSET, {
+    // TODO: Refactor to standalone hook and handle error result
+    const [updateAsset, { error, data }] = useMutation<{ updateAsset: Asset }, AssetUpdate>(UPDATE_ASSET, {
         variables: {
             id: selectedAsset?.id,
             assetSource: selectedAsset?.assetSource?.id,
-            title: label,
+            label,
             caption
         }
     });
@@ -84,7 +85,7 @@ export default function AssetInspector() {
         <>
             {selectedAsset && (
                 <div className={classes.inspector}>
-                    {selectedAsset.localAssetData && (
+                    {selectedAsset && (
                         <>
                             <div className={classes.propertyGroup}>
                                 <Label>{translate('inspector.title', 'Title')}</Label>
@@ -93,6 +94,7 @@ export default function AssetInspector() {
                                     type="text"
                                     value={label}
                                     onChange={value => setLabel(value)}
+                                    onEnterKey={() => handleApply()}
                                 />
                             </div>
                             <div className={classes.propertyGroup}>
@@ -105,21 +107,21 @@ export default function AssetInspector() {
                                     onChange={value => setCaption(value)}
                                 />
                             </div>
-                            {selectedAsset.localAssetData.tags.length ? (
+                            {selectedAsset.tags.length ? (
                                 <div className={classes.propertyGroup}>
                                     <Label>{translate('inspector.tags', 'Tags')}</Label>
                                     <ul>
-                                        {selectedAsset.localAssetData.tags.map(tag => (
+                                        {selectedAsset.tags.map(tag => (
                                             <li key={tag.label}>{tag.label}</li>
                                         ))}
                                     </ul>
                                 </div>
                             ) : null}
-                            {selectedAsset.localAssetData.assetCollections.length ? (
+                            {selectedAsset.collections.length ? (
                                 <div className={classes.propertyGroup}>
                                     <Label>{translate('inspector.assetCollections', 'Collections')}</Label>
                                     <ul>
-                                        {selectedAsset.localAssetData.assetCollections.map(assetCollection => (
+                                        {selectedAsset.collections.map(assetCollection => (
                                             <li key={assetCollection.title}>{assetCollection.title}</li>
                                         ))}
                                     </ul>
@@ -128,10 +130,10 @@ export default function AssetInspector() {
                         </>
                     )}
                     <PropertyList>
-                        {selectedAsset.fileSize > 0 && (
+                        {selectedAsset.file.size > 0 && (
                             <PropertyListItem
                                 label={translate('inspector.property.fileSize', 'Size')}
-                                value={humanFileSize(selectedAsset.fileSize)}
+                                value={humanFileSize(selectedAsset.file.size)}
                             />
                         )}
                         <PropertyListItem
@@ -140,11 +142,11 @@ export default function AssetInspector() {
                         />
                         <PropertyListItem
                             label={translate('inspector.property.dimensions', 'Dimensions')}
-                            value={`${selectedAsset.widthInPixels}px x ${selectedAsset.heightInPixels}px`}
+                            value={`${selectedAsset.width}px x ${selectedAsset.height}px`}
                         />
                         <PropertyListItem
                             label={translate('inspector.property.mediaType', 'MIME type')}
-                            value={selectedAsset.mediaType}
+                            value={selectedAsset.file.mediaType}
                         />
                         <PropertyListItem
                             label={translate('inspector.property.filename', 'Filename')}

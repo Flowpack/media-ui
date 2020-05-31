@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useMemo } from 'react';
+
 import { SelectBox } from '@neos-project/react-ui-components';
+
 import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { VIEW_MODES, useViewModeSelection } from '../../hooks';
@@ -10,7 +12,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         display: 'flex',
         alignItems: 'baseline',
         '& label': {
-            marginRight: '.5rem'
+            marginRight: theme.spacing.quarter
         }
     }
 }));
