@@ -22,12 +22,6 @@ Neos:
           Flowpack.Media.Ui:
             - 'Main'
 
-       # Copy these lines to your site package and enable them to use the new asset editor by default
-#      inspector:
-#        dataTypes:
-#          Neos\Media\Domain\Model\Asset:
-#            editor: Flowpack.Media.Ui/Inspector/Editors/AssetEditor
-
     fusion:
       autoInclude:
         Flowpack.Media.Ui: true
@@ -40,3 +34,7 @@ Neos:
         stylesheets:
           Flowpack.Media.Ui:AssetEditor:
             resource: resource://Flowpack.Media.Ui/Public/AssetEditor/Plugin.css
+
+      frontendConfiguration:
+        Flowpack.Media.Ui:
+          useNewMediaSelection: true

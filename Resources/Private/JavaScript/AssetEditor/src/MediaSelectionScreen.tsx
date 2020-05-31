@@ -13,19 +13,24 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
 import { I18nRegistry, Notify } from '../../src/interfaces';
-import { IntlProvider, MediaUiProvider, MediaUiThemeProvider } from '../../src/core';
+import {
+    IntlProvider,
+    MediaUiProvider,
+    MediaUiThemeProvider,
+    NotifyProvider,
+    Resolvers,
+    PersistentStateManager
+} from '../../src/core';
 import App from '../../src/components/App';
-import { restoreLocalState } from '../../src/core/PersistentStateManager';
-import { resolvers, typeDefs } from '../../src/core/Resolvers';
-import { NotifyProvider } from '../../src/core';
 
 let apolloClient = null;
 
-interface AssetSelectionScreenProps {
+interface MediaSelectionScreenProps {
     i18nRegistry: I18nRegistry;
     handleAssetSelected: Function;
     neos: object;
     type: 'assets' | 'images';
+    onComplete: (localAssetIdentifier: string) => void;
     flashMessages: {
         add: (title: string, message: string, severity?: string, timeout?: number) => void;
     };
@@ -37,8 +42,8 @@ interface AssetSelectionScreenProps {
 @neos(globalRegistry => ({
     i18nRegistry: globalRegistry.get('i18n')
 }))
-export default class AssetSelectionScreen extends React.PureComponent<AssetSelectionScreenProps> {
-    constructor(props: AssetSelectionScreenProps) {
+export default class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps> {
+    constructor(props: MediaSelectionScreenProps) {
         super(props);
         this.state = {};
     }
@@ -58,14 +63,14 @@ export default class AssetSelectionScreen extends React.PureComponent<AssetSelec
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
             const cache = new InMemoryCache();
-            restoreLocalState(cache);
+            PersistentStateManager.restoreLocalState(cache);
 
             apolloClient = new ApolloClient({
                 cache,
                 uri: endpoints.graphql,
                 credentials: 'same-origin',
-                typeDefs,
-                resolvers
+                typeDefs: Resolvers.typeDefs,
+                resolvers: Resolvers.resolvers
             });
         }
         return apolloClient;
@@ -82,7 +87,7 @@ export default class AssetSelectionScreen extends React.PureComponent<AssetSelec
     };
 
     render() {
-        const { flashMessages } = this.props;
+        const { flashMessages, onComplete } = this.props;
         const client = this.getApolloClient();
         const { dummyImage } = this.getConfig();
         const containerRef = createRef();
@@ -100,7 +105,12 @@ export default class AssetSelectionScreen extends React.PureComponent<AssetSelec
                 <IntlProvider translate={this.translate}>
                     <NotifyProvider notificationApi={Notification}>
                         <ApolloProvider client={client}>
-                            <MediaUiProvider dummyImage={dummyImage} selectionMode={true} containerRef={containerRef}>
+                            <MediaUiProvider
+                                dummyImage={dummyImage}
+                                onAssetSelection={localAssetIdentifier => onComplete(localAssetIdentifier)}
+                                selectionMode={true}
+                                containerRef={containerRef}
+                            >
                                 <MediaUiThemeProvider>
                                     <App />
                                 </MediaUiThemeProvider>

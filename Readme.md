@@ -22,6 +22,25 @@ Run the following command to install it
 
     composer require flowpack/media-ui 
     
+### What changes?
+
+This package will currently add a second media backend module called `Media (new)` and a new 
+media selection screen for asset and image editors.
+The old media module will still be available until this package replaces it completely.
+    
+#### Disabling the new media selection
+
+If you want to use this package in a real project you might want to 
+disable the new media selection if it doesn't work as expected.
+You can do this by adding the following setting to your `Settings.yaml`:
+
+    Neos:
+        Neos:
+            Ui:
+                frontendConfiguration:
+                    Flowpack.Media.Ui:
+                        useNewMediaSelection: false 
+    
 ## Architecture
 
 ### API / GraphQL

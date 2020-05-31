@@ -1,18 +1,15 @@
 import manifest from '@neos-project/neos-ui-extensibility';
 
-import AssetEditor from './AssetEditor.tsx';
-import AssetSelectionScreen from './AssetSelectionScreen.tsx';
+import MediaSelectionScreen from './MediaSelectionScreen';
 
 manifest('Flowpack.Media.Ui:AssetEditor', {}, (globalRegistry, { frontendConfiguration }) => {
-    const editorsRegistry = globalRegistry.get('inspector').get('editors');
     const secondaryEditorsRegistry = globalRegistry.get('inspector').get('secondaryEditors');
-    const assetEditorConfig = frontendConfiguration['Flowpack.Media.Ui:AssetEditor'];
 
-    editorsRegistry.set('Flowpack.Media.Ui/Inspector/Editors/AssetEditor', {
-        component: AssetEditor
-    });
+    const { useNewMediaSelection } = frontendConfiguration['Flowpack.Media.Ui'];
 
-    secondaryEditorsRegistry.set('Flowpack.Media.Ui/Secondary/Editors/AssetSelectionScreen', {
-        component: AssetSelectionScreen
-    });
+    if (useNewMediaSelection) {
+        secondaryEditorsRegistry.set('Neos.Neos/Inspector/Secondary/Editors/MediaSelectionScreen', {
+            component: MediaSelectionScreen
+        });
+    }
 });

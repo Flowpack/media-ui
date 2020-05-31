@@ -51,6 +51,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         textOverflow: 'ellipsis',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
+        display: 'flex',
+        alignItems: 'center',
         '& img': {
             width: '1.3rem',
             height: 'auto',

@@ -58,6 +58,7 @@ An asset (Image, Document, Video or Audio)
 """
 type Asset {
     id: AssetId!
+    localId: LocalAssetId!
     assetSource: AssetSource!
     imported: Boolean!
 
@@ -164,6 +165,11 @@ enum RatioMode {
 Unique identifier (UUID) of an Asset
 """
 scalar AssetId
+
+"""
+Unique identifier (UUID) of an imported Asset
+"""
+scalar LocalAssetId
 
 """
 Unique identifier of an Asset source (e.g. "neos")

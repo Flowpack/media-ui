@@ -56,6 +56,7 @@ export const ASSET_COLLECTION_FRAGMENT = gql`
 export const ASSET_FRAGMENT = gql`
     fragment AssetProps on Asset {
         id
+        localId
         assetSource {
             ...AssetSourceProps
         }

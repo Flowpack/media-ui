@@ -2,6 +2,7 @@ import { AssetSource, IptcProperty, Image, Tag, AssetCollection } from './index'
 
 export default interface Asset {
     readonly id: string;
+    readonly localId: string;
     assetSource: AssetSource;
     imported: boolean;
 

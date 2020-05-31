@@ -3,12 +3,14 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import { AssetSource, AssetCollection, Asset, Tag } from '../interfaces';
 import { useAssetQuery } from '../hooks';
+import { useNotify } from './index';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
     dummyImage: string;
     selectionMode?: boolean;
     containerRef: React.ElementRef<any>;
+    onAssetSelection?: (localAssetIdentifier: string) => void;
 }
 
 interface MediaUiProviderValues {
@@ -42,7 +44,13 @@ export const useMediaUi = (): MediaUiProviderValues => useContext(MediaUiContext
 
 export const ASSETS_PER_PAGE = 20;
 
-export function MediaUiProvider({ children, dummyImage, selectionMode = false, containerRef }: MediaUiProviderProps) {
+export function MediaUiProvider({
+    children,
+    dummyImage,
+    selectionMode = false,
+    onAssetSelection = null,
+    containerRef
+}: MediaUiProviderProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState<Tag>(null);
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
@@ -50,6 +58,7 @@ export function MediaUiProvider({ children, dummyImage, selectionMode = false, c
     const [selectedAsset, setSelectedAsset] = useState<Asset>();
     const [selectedAssetForPreview, setSelectedAssetForPreview] = useState<Asset>();
     const [mediaTypeFilter, setMediaTypeFilter] = useState('');
+    const Notify = useNotify();
 
     // Main query to fetch all initial data from api
     const { isLoading, error, assetData } = useAssetQuery({
@@ -67,6 +76,18 @@ export function MediaUiProvider({ children, dummyImage, selectionMode = false, c
             setCurrentPage(1);
         }
     }, [assetData.assetCount, isLoading]);
+
+    useEffect(() => {
+        if (!onAssetSelection || !selectedAsset) {
+            return;
+        }
+        if (selectedAsset.localId) {
+            onAssetSelection(selectedAsset.localId);
+        } else {
+            // TODO: Implement import
+            Notify.warning('Selecting external assets has not been implemented yet');
+        }
+    }, [selectedAsset]);
 
     if (error) {
         console.error(error);

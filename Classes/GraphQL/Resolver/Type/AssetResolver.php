@@ -63,6 +63,15 @@ class AssetResolver implements ResolverInterface
     }
 
     /**
+     * @param AssetProxyInterface $assetProxy
+     * @return string|null
+     */
+    public function localId(AssetProxyInterface $assetProxy): ?string
+    {
+        return $assetProxy->getLocalAssetIdentifier();
+    }
+
+    /**
      * Returns the title of the associated local asset data or the label of the proxy as fallback
      *
      * @param AssetProxyInterface $assetProxy
