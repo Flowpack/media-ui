@@ -14,20 +14,20 @@ import { VIEW_MODES } from '../hooks';
 import AssetPreview from './AssetPreview';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    container: selectionMode => ({
+    container: ({ selectionMode }) => ({
         display: 'grid',
         // TODO: Find a way to not calculate height to allow scrolling in main grid area
         height: `calc(100vh - 40px * 4 - 21px)`,
         gridTemplateRows: 'auto 1fr',
-        gridTemplateColumns: selectionMode ? '250px 1fr 250px' : '250px 1fr',
+        gridTemplateColumns: selectionMode ? '250px 1fr' : '250px 1fr 250px',
         gridTemplateAreas: selectionMode
             ? `
-            "left top right"
-            "left main right"
-        `
-            : `
             "left top"
             "left main"
+        `
+            : `
+            "left top right"
+            "left main right"
         `,
         gridGap: theme.spacing.full
     })
