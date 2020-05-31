@@ -23,14 +23,14 @@ export default function CurrentSelection() {
     const { translate } = useIntl();
 
     const assetIcon = useMemo(() => {
-        if (selectedAsset?.mediaType) {
-            const mainMediaType = getMediaTypeFromString(selectedAsset.mediaType);
+        if (selectedAsset?.file.mediaType) {
+            const mainMediaType = getMediaTypeFromString(selectedAsset.file.mediaType);
             if (mainMediaType.type === 'audio') return 'file-audio';
             if (mainMediaType.type === 'video') return 'file-video';
             if (mainMediaType.type === 'image') return 'file-image';
         }
         return 'file';
-    }, [selectedAsset?.mediaType]);
+    }, [selectedAsset?.file.mediaType]);
 
     return (
         <>
