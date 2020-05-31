@@ -22,14 +22,15 @@ Neos:
           Flowpack.Media.Ui:
             - 'Main'
 
+       # Copy these lines to your site package and enable them to use the new asset editor by default
+#      inspector:
+#        dataTypes:
+#          Neos\Media\Domain\Model\Asset:
+#            editor: Flowpack.Media.Ui/Inspector/Editors/AssetEditor
+
     fusion:
       autoInclude:
         Flowpack.Media.Ui: true
-
-      inspector:
-        dataTypes:
-          Neos\Media\Domain\Model\Asset:
-            editor: Flowpack.Media.Ui/Inspector/Editors/AssetEditor
 
     Ui:
       resources:
