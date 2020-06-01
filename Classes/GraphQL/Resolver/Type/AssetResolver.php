@@ -232,7 +232,7 @@ class AssetResolver implements ResolverInterface
      */
     public function width(AssetProxyInterface $assetProxy): int
     {
-        return $assetProxy->getWidthInPixels();
+        return $assetProxy->getWidthInPixels() ?? 0;
     }
 
     /**
@@ -241,7 +241,7 @@ class AssetResolver implements ResolverInterface
      */
     public function height(AssetProxyInterface $assetProxy): int
     {
-        return $assetProxy->getHeightInPixels();
+        return $assetProxy->getHeightInPixels() ?? 0;
     }
 
     /**
