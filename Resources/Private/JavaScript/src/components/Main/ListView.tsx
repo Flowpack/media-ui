@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useMediaUi, createUseMediaUiStyles, useIntl, useNotify } from '../../core';
 import { MediaUiTheme, GridComponentProps, Asset } from '../../interfaces';
-import { humanFileSize } from '../../helper/FileSize';
-import { IconButton } from '@neos-project/react-ui-components';
+import { ListViewItem } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
@@ -11,70 +10,25 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '& table': {
             borderSpacing: '0 1px',
             width: '100%',
-            '& tbody tr': {
-                cursor: 'pointer',
-                backgroundColor: theme.mainBackgroundColor,
-                '&:nth-of-type(2n)': {
-                    backgroundColor: theme.alternatingBackgroundColor
-                },
-                '&:hover': {
-                    backgroundColor: theme.primaryColor
-                }
-            },
             '& th': {
                 textAlign: 'left',
-                lineHeight: theme.spacing.goldenUnit
-            },
-            '& td, & th': {
+                lineHeight: theme.spacing.goldenUnit,
                 padding: `0 ${theme.spacing.half}`,
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
-                userSelect: 'none'
-            },
-            '& td:first-child': {
-                minWidth: theme.spacing.goldenUnit,
-                padding: '0 !important' // Hack to solve issue with backend default css
-            },
-            '& td:last-child': {
-                paddingRight: '0 !important' // Hack to solve issue with backend default css
+                userSelect: 'none',
+                '&:first-child, &:last-child': {
+                    padding: 0
+                }
             }
-        }
-    },
-    previewColumn: {
-        width: theme.spacing.goldenUnit,
-        '& picture': {
-            display: 'block',
-            width: '100%',
-            height: theme.spacing.goldenUnit,
-            '& img': {
-                display: 'block',
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain'
-            }
-        }
-    },
-    labelColumn: {
-        userSelect: 'text'
-    },
-    actionsColumn: {
-        textAlign: 'right'
-    },
-    tagsColumn: {
-        '& span': {
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            display: 'block',
-            maxWidth: '200px'
         }
     }
 }));
 
 export default function ListView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const { assets, dummyImage, setSelectedAsset } = useMediaUi();
+    const { assets, selectedAsset, setSelectedAsset, setSelectedAssetForPreview } = useMediaUi();
     const Notify = useNotify();
     const { translate } = useIntl();
 
@@ -93,43 +47,19 @@ export default function ListView(props: GridComponentProps) {
                             <th>{translate('thumbnailView.header.lastModified', 'Last Modified')}</th>
                             <th>{translate('thumbnailView.header.fileSize', 'File size')}</th>
                             <th>{translate('thumbnailView.header.mediaType', 'Type')}</th>
-                            <th>{translate('thumbnailView.header.tags', 'Tags')}</th>
                             <th />
                         </tr>
                     </thead>
                     <tbody>
                         {assets.map(asset => (
-                            <tr key={asset.id} onClick={() => setSelectedAsset(asset)}>
-                                <td className={classes.previewColumn}>
-                                    <picture>
-                                        <img
-                                            src={asset.thumbnailUrl || dummyImage}
-                                            alt={asset.label}
-                                            width={40}
-                                            height={36}
-                                        />
-                                    </picture>
-                                </td>
-                                <td className={classes.labelColumn}>{asset.label}</td>
-                                <td>{new Date(asset.lastModified).toLocaleString()}</td>
-                                <td>{humanFileSize(asset.file.size)}</td>
-                                <td>{asset.file.mediaType}</td>
-                                <td
-                                    className={classes.tagsColumn}
-                                    title={asset.tags?.map(({ label }) => label).join(', ') || ''}
-                                >
-                                    <span>{asset.tags?.map(({ label }) => label).join(', ') || ''}</span>
-                                </td>
-                                <td className={classes.actionsColumn}>
-                                    <IconButton
-                                        icon="trash"
-                                        size="regular"
-                                        style="transparent"
-                                        hoverStyle="error"
-                                        onClick={() => handleDeleteAction(asset)}
-                                    />
-                                </td>
-                            </tr>
+                            <ListViewItem
+                                key={asset.id}
+                                asset={asset}
+                                isSelected={selectedAsset?.id === asset.id}
+                                onSelect={asset => setSelectedAsset(asset)}
+                                onDelete={asset => handleDeleteAction(asset)}
+                                onShowPreview={asset => setSelectedAssetForPreview(asset)}
+                            />
                         ))}
                     </tbody>
                 </table>

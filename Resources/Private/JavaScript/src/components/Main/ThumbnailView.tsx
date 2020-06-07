@@ -10,7 +10,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         overflow: 'scroll',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-        gridGap: '1rem'
+        gridGap: theme.spacing.full
     }
 }));
 
