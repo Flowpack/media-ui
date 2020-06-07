@@ -21,22 +21,22 @@ interface UpdateAssetVariables {
 export default function useUpdateAsset() {
     const [action, { error, data, loading }] = useMutation<{ updateAsset: Asset }, UpdateAssetVariables>(UPDATE_ASSET);
 
-    const updateAsset = ({
-        asset: {
-            id,
-            assetSource: { id: assetSource }
-        },
-        label,
-        caption,
-        copyrightNotice
-    }: UpdateAssetProps) =>
+    const updateAsset = ({ asset, label, caption, copyrightNotice }: UpdateAssetProps) =>
         action({
             variables: {
-                id,
-                assetSource,
+                id: asset.id,
+                assetSource: asset.assetSource.id,
                 label,
                 caption,
                 copyrightNotice
+            },
+            optimisticResponse: {
+                updateAsset: {
+                    ...asset,
+                    label,
+                    caption,
+                    copyrightNotice
+                }
             }
         });
 

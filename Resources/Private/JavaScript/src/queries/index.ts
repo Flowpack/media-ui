@@ -8,7 +8,7 @@ import {
     IPTC_PROPERTY_FRAGMENT,
     TAG_FRAGMENT
 } from './Fragments';
-import { UPDATE_ASSET, DELETE_ASSET } from './Mutations';
+import { UPDATE_ASSET, DELETE_ASSET, TAG_ASSET, UNTAG_ASSET } from './Mutations';
 import { VIEW_MODE_SELECTION, SET_VIEW_MODE_SELECTION } from './ViewModeSelectionQuery';
 
 export {
@@ -22,7 +22,9 @@ export {
     IPTC_PROPERTY_FRAGMENT,
     SET_ASSET_SOURCE_FILTER,
     SET_VIEW_MODE_SELECTION,
+    TAG_ASSET,
     TAG_FRAGMENT,
+    UNTAG_ASSET,
     UPDATE_ASSET,
     VIEW_MODE_SELECTION
 };

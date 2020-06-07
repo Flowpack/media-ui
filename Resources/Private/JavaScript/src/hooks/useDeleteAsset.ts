@@ -9,8 +9,10 @@ interface DeleteAssetVariables {
 }
 
 export default function useDeleteAsset() {
-    const [action, { error, data }] = useMutation<{ deleteAsset: Asset }, DeleteAssetVariables>(DELETE_ASSET);
+    const [action, { error, data }] = useMutation<{ deleteAsset: boolean }, DeleteAssetVariables>(DELETE_ASSET);
 
+    // TODO: Check whether an optimisticResponse can be used here
+    // Without a fast asset usage count retrieval a lot of negative responses are possible
     const deleteAsset = ({ id, assetSource: { id: assetSource } }: Asset) => action({ variables: { id, assetSource } });
 
     return { deleteAsset, data, error };

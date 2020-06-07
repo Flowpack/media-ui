@@ -57,6 +57,18 @@ type Mutation {
         id: AssetId!,
         assetSource: AssetSourceId!
     ): Boolean
+
+    tagAsset(
+        id: AssetId!,
+        assetSource: AssetSourceId!,
+        tag: TagLabel
+    ): Asset
+
+    untagAsset(
+        id: AssetId!,
+        assetSource: AssetSourceId!,
+        tag: TagLabel
+    ): Asset
 }
 
 """

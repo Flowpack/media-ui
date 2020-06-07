@@ -28,3 +28,21 @@ export const DELETE_ASSET = gql`
         deleteAsset(id: $id, assetSource: $assetSource)
     }
 `;
+
+export const TAG_ASSET = gql`
+    mutation TagAsset($id: AssetId!, $assetSource: AssetSourceId!, $tag: TagLabel!) {
+        tagAsset(id: $id, assetSource: $assetSource, tag: $tag) {
+            ...AssetProps
+        }
+    }
+    ${ASSET_FRAGMENT}
+`;
+
+export const UNTAG_ASSET = gql`
+    mutation UntagAsset($id: AssetId!, $assetSource: AssetSourceId!, $tag: TagLabel!) {
+        untagAsset(id: $id, assetSource: $assetSource, tag: $tag) {
+            ...AssetProps
+        }
+    }
+    ${ASSET_FRAGMENT}
+`;

@@ -6,6 +6,7 @@ import { config, IconPrefix, library } from '@fortawesome/fontawesome-svg-core';
 // Use explicit imports as tree shaking is not working properly
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons/faAngleLeft';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons/faAngleRight';
+import { faBan } from '@fortawesome/free-solid-svg-icons/faBan';
 import { faBox } from '@fortawesome/free-solid-svg-icons/faBox';
 import { faChevronCircleUp } from '@fortawesome/free-solid-svg-icons/faChevronCircleUp';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
@@ -17,6 +18,7 @@ import { faFileImage } from '@fortawesome/free-solid-svg-icons/faFileImage';
 import { faFileVideo } from '@fortawesome/free-solid-svg-icons/faFileVideo';
 import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons/faFolderOpen';
+import { faGripLinesVertical } from '@fortawesome/free-solid-svg-icons/faGripLinesVertical';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import { faPhotoVideo } from '@fortawesome/free-solid-svg-icons/faPhotoVideo';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
@@ -26,6 +28,7 @@ import { faTag } from '@fortawesome/free-solid-svg-icons/faTag';
 import { faTags } from '@fortawesome/free-solid-svg-icons/faTags';
 import { faTh } from '@fortawesome/free-solid-svg-icons/faTh';
 import { faThList } from '@fortawesome/free-solid-svg-icons/faThList';
+import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 
@@ -38,6 +41,7 @@ export default function loadIconLibrary() {
     library.add(
         faAngleLeft,
         faAngleRight,
+        faBan,
         faBox,
         faChevronCircleUp,
         faChevronDown,
@@ -49,6 +53,7 @@ export default function loadIconLibrary() {
         faFileVideo,
         faFolder,
         faFolderOpen,
+        faGripLinesVertical,
         faInfoCircle,
         faNeos,
         faPhotoVideo,
@@ -59,6 +64,7 @@ export default function loadIconLibrary() {
         faTags,
         faTh,
         faThList,
+        faTimes,
         faTimesCircle,
         faTrashAlt,
     );

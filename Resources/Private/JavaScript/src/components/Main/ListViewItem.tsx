@@ -43,8 +43,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '& span': {
             width: '200px',
             display: 'inline-block',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
+            overflowX: 'hidden',
+            textOverflow: 'ellipsis',
+            lineHeight: '1.5'
         }
     },
     lastModifiedColumn: {

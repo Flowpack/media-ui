@@ -1,23 +1,19 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { Button, Label, TextArea, TextInput } from '@neos-project/react-ui-components';
+import { Button, Label, MultiSelectBox, TextArea, TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../../core';
-import { MediaUiTheme } from '../../../interfaces';
+import { Asset, MediaUiTheme } from '../../../interfaces';
 import { PropertyList, PropertyListItem } from '.';
 import { humanFileSize } from '../../../helper/FileSize';
-import { useUpdateAsset } from '../../../hooks';
+import { useTagAsset, useUntagAsset, useUpdateAsset } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
         display: 'grid',
         gridAutoRows: 'auto',
-        gridGap: '1rem',
-        '& ul': {
-            backgroundColor: theme.alternatingBackgroundColor,
-            padding: theme.spacing.full
-        },
+        gridGap: theme.spacing.full,
         '& input, & textarea': {
             width: '100%'
         }
@@ -31,44 +27,112 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '& > *': {
             flex: 1
         }
+    },
+    textArea: {
+        // TODO: Remove when overriding rule is removed from Minimal Module Style in Neos
+        '.neos textarea&': {
+            padding: theme.spacing.half
+        }
     }
 }));
 
+const tagsMatchAsset = (tags: string[], asset: Asset) => {
+    return (
+        tags.join(',') ===
+        asset.tags
+            .map(tag => tag.label)
+            .sort()
+            .join(',')
+    );
+};
+
 export default function AssetInspector() {
     const classes = useStyles();
-    const { selectedAsset, setSelectedAsset } = useMediaUi();
+    const { selectedAsset, setSelectedAsset, tags: allTags, assetCollections } = useMediaUi();
     const Notify = useNotify();
     const { translate } = useIntl();
-    const [label, setLabel] = useState(selectedAsset?.label);
-    const [caption, setCaption] = useState(selectedAsset?.caption);
-    const [copyrightNotice, setCopyrightNotice] = useState(selectedAsset?.copyrightNotice);
+    const [label, setLabel] = useState<string>(null);
+    const [caption, setCaption] = useState<string>(null);
+    const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
+    const [tags, setTags] = useState<string[]>([]);
+    const [collections, setCollections] = useState<string[]>([]);
     const { updateAsset, loading } = useUpdateAsset();
+    const { tagAsset, loading: tagLoading } = useTagAsset();
+    const { untagAsset, loading: untagLoading } = useUntagAsset();
+
+    const allCollections = assetCollections.map(collection => ({ label: collection.title }));
     const isImported = !!selectedAsset?.imported;
+    const isLoading = loading || tagLoading || untagLoading;
     const hasUnpublishedChanges =
         selectedAsset &&
         (label !== selectedAsset.label ||
             caption !== selectedAsset.caption ||
-            copyrightNotice !== selectedAsset.copyrightNotice);
+            copyrightNotice !== selectedAsset.copyrightNotice ||
+            !tagsMatchAsset(tags, selectedAsset));
 
     const handleDiscard = () => {
         setLabel(selectedAsset?.label);
         setCaption(selectedAsset?.caption);
         setCopyrightNotice(selectedAsset?.copyrightNotice);
+        setTags(selectedAsset?.tags.map(tag => tag.label).sort());
+        setCollections(selectedAsset?.collections.map(collection => collection.title).sort());
     };
     const handleApply = () => {
-        updateAsset({
-            asset: selectedAsset,
-            label,
-            caption,
-            copyrightNotice
-        })
-            .then(({ data }) => {
-                setSelectedAsset(data.updateAsset);
-                Notify.ok(translate('actions.updateAsset.success', 'The asset has been updated'));
+        if (
+            label !== selectedAsset.label ||
+            caption !== selectedAsset.caption ||
+            copyrightNotice !== selectedAsset.copyrightNotice
+        ) {
+            updateAsset({
+                asset: selectedAsset,
+                label,
+                caption,
+                copyrightNotice
             })
-            .catch(({ message }) => {
-                Notify.error(translate('actions.deleteAsset.error', 'Error while updating the asset'), message);
+                .then(({ data }) => {
+                    setSelectedAsset(data.updateAsset);
+                    Notify.ok(translate('actions.updateAsset.success', 'The asset has been updated'));
+                })
+                .catch(({ message }) => {
+                    Notify.error(translate('actions.deleteAsset.error', 'Error while updating the asset'), message);
+                });
+        }
+        // TODO: Combine all modifications into one query
+        if (!tagsMatchAsset(tags, selectedAsset)) {
+            // Add each tag that is missing in the asset
+            tags.filter(tagName => !selectedAsset.tags.find(tag => tag.label === tagName)).forEach(tagName => {
+                tagAsset({
+                    asset: selectedAsset,
+                    tagName
+                })
+                    .then(({ data }) => {
+                        setSelectedAsset(data.tagAsset);
+                        Notify.ok(translate('actions.tagAsset.success', 'The asset has been tagged'));
+                    })
+                    .catch(({ message }) => {
+                        Notify.error(translate('actions.tagAsset.error', 'Error while tagging the asset'), message);
+                    });
             });
+            // Remove each tag that is missing in the local state
+            selectedAsset.tags
+                .filter(tag => !tags.find(tagName => tagName === tag.label))
+                .forEach(tag => {
+                    untagAsset({
+                        asset: selectedAsset,
+                        tagName: tag.label
+                    })
+                        .then(({ data }) => {
+                            setSelectedAsset(data.untagAsset);
+                            Notify.ok(translate('actions.untagAsset.success', 'The asset has been untagged'));
+                        })
+                        .catch(({ message }) => {
+                            Notify.error(
+                                translate('actions.untagAsset.error', 'Error while untagging the asset'),
+                                message
+                            );
+                        });
+                });
+        }
     };
 
     useEffect(() => {
@@ -84,9 +148,9 @@ export default function AssetInspector() {
                             <div className={classes.propertyGroup}>
                                 <Label>{translate('inspector.title', 'Title')}</Label>
                                 <TextInput
-                                    disabled={!isImported}
+                                    disabled={!isImported || isLoading}
                                     type="text"
-                                    value={label}
+                                    value={label || ''}
                                     onChange={value => setLabel(value)}
                                     onEnterKey={() => handleApply()}
                                 />
@@ -94,7 +158,8 @@ export default function AssetInspector() {
                             <div className={classes.propertyGroup}>
                                 <Label>{translate('inspector.caption', 'Caption')}</Label>
                                 <TextArea
-                                    disabled={!isImported}
+                                    className={classes.textArea}
+                                    disabled={!isImported || isLoading}
                                     minRows={3}
                                     expandedRows={6}
                                     value={caption}
@@ -104,7 +169,8 @@ export default function AssetInspector() {
                             <div className={classes.propertyGroup}>
                                 <Label>{translate('inspector.copyrightNotice', 'Copyright notice')}</Label>
                                 <TextArea
-                                    disabled={!isImported}
+                                    className={classes.textArea}
+                                    disabled={!isImported || isLoading}
                                     minRows={2}
                                     expandedRows={4}
                                     value={copyrightNotice}
@@ -114,21 +180,32 @@ export default function AssetInspector() {
                             {selectedAsset.tags.length ? (
                                 <div className={classes.propertyGroup}>
                                     <Label>{translate('inspector.tags', 'Tags')}</Label>
-                                    <ul>
-                                        {selectedAsset.tags.map(tag => (
-                                            <li key={tag.label}>{tag.label}</li>
-                                        ))}
-                                    </ul>
+                                    <MultiSelectBox
+                                        disabled={!isImported || isLoading}
+                                        placeholder={translate('inspector.tags.placeholder', 'Select a tag')}
+                                        values={tags}
+                                        optionValueField="label"
+                                        options={allTags}
+                                        searchOptions={allTags}
+                                        onValuesChange={values => setTags(values)}
+                                    />
                                 </div>
                             ) : null}
                             {selectedAsset.collections.length ? (
                                 <div className={classes.propertyGroup}>
                                     <Label>{translate('inspector.assetCollections', 'Collections')}</Label>
-                                    <ul>
-                                        {selectedAsset.collections.map(assetCollection => (
-                                            <li key={assetCollection.title}>{assetCollection.title}</li>
-                                        ))}
-                                    </ul>
+                                    <MultiSelectBox
+                                        disabled={!isImported || isLoading}
+                                        placeholder={translate(
+                                            'inspector.collections.placeholder',
+                                            'Select a collection'
+                                        )}
+                                        values={collections}
+                                        optionValueField="label"
+                                        options={allCollections}
+                                        searchOptions={allCollections}
+                                        onValuesChange={values => setCollections(values)}
+                                    />
                                 </div>
                             ) : null}
                         </>
@@ -160,7 +237,7 @@ export default function AssetInspector() {
                     {selectedAsset.imported && (
                         <div className={classes.actions}>
                             <Button
-                                disabled={!hasUnpublishedChanges || loading}
+                                disabled={!hasUnpublishedChanges || isLoading}
                                 size="regular"
                                 style="lighter"
                                 hoverStyle="brand"
@@ -169,7 +246,7 @@ export default function AssetInspector() {
                                 {translate('inspector.actions.discard', 'Discard')}
                             </Button>
                             <Button
-                                disabled={!hasUnpublishedChanges || loading}
+                                disabled={!hasUnpublishedChanges || isLoading}
                                 size="regular"
                                 style="success"
                                 hoverStyle="success"

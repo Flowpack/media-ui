@@ -19,6 +19,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
+use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Exception\AssetServiceException;
 use t3n\GraphQL\ResolverInterface;
 
@@ -32,6 +33,12 @@ class MutationResolver implements ResolverInterface
      * @var AssetRepository
      */
     protected $assetRepository;
+
+    /**
+     * @Flow\Inject
+     * @var TagRepository
+     */
+    protected $tagRepository;
 
     /**
      * @param $_
@@ -110,6 +117,90 @@ class MutationResolver implements ResolverInterface
             $this->assetRepository->update($asset);
         } catch (IllegalObjectTypeException $e) {
             throw new Exception('Failed to update asset', 1590659063);
+        }
+
+        return $assetProxy;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return AssetProxyInterface|null
+     * @throws Exception
+     */
+    public function tagAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    {
+        [
+            'id' => $id,
+            'assetSource' => $assetSource,
+            'tag' => $tagName
+        ] = $variables;
+
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSource);
+        if (!$assetProxy) {
+            return null;
+        }
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            throw new Exception('Cannot tag asset that was never imported', 1591561758);
+        }
+
+        $tag = $this->tagRepository->findOneByLabel($tagName);
+
+        if (!$tag) {
+            throw new Exception('Cannot tag asset with tag that does not exist', 1591561845);
+        }
+
+        $asset->addTag($tag);
+
+        try {
+            $this->assetRepository->update($asset);
+        } catch (IllegalObjectTypeException $e) {
+            throw new Exception('Failed to update asset', 1591561868);
+        }
+
+        return $assetProxy;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return AssetProxyInterface|null
+     * @throws Exception
+     */
+    public function untagAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    {
+        [
+            'id' => $id,
+            'assetSource' => $assetSource,
+            'tag' => $tagName
+        ] = $variables;
+
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSource);
+        if (!$assetProxy) {
+            return null;
+        }
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            throw new Exception('Cannot untag asset that was never imported', 1591561930);
+        }
+
+        $tag = $this->tagRepository->findOneByLabel($tagName);
+
+        if (!$tag) {
+            throw new Exception('Cannot untag asset from tag that does not exist', 1591561934);
+        }
+
+        $asset->removeTag($tag);
+
+        try {
+            $this->assetRepository->update($asset);
+        } catch (IllegalObjectTypeException $e) {
+            throw new Exception('Failed to update asset', 1591561938);
         }
 
         return $assetProxy;
