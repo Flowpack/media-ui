@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { useMutation } from '@apollo/react-hooks';
 
 import { Button, Label, TextArea, TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../../core';
-import { Asset, MediaUiTheme } from '../../../interfaces';
+import { MediaUiTheme } from '../../../interfaces';
 import { PropertyList, PropertyListItem } from '.';
 import { humanFileSize } from '../../../helper/FileSize';
-import { UPDATE_ASSET } from '../../../queries';
+import { useUpdateAsset } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
@@ -35,13 +34,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-interface AssetUpdate {
-    id: string;
-    assetSource: string;
-    label?: string;
-    caption?: string;
-}
-
 export default function AssetInspector() {
     const classes = useStyles();
     const { selectedAsset, setSelectedAsset } = useMediaUi();
@@ -49,15 +41,7 @@ export default function AssetInspector() {
     const { translate } = useIntl();
     const [label, setLabel] = useState(selectedAsset?.label);
     const [caption, setCaption] = useState(selectedAsset?.caption);
-    // TODO: Refactor to standalone hook and handle error result
-    const [updateAsset, { error, data }] = useMutation<{ updateAsset: Asset }, AssetUpdate>(UPDATE_ASSET, {
-        variables: {
-            id: selectedAsset?.id,
-            assetSource: selectedAsset?.assetSource?.id,
-            label,
-            caption
-        }
-    });
+    const { updateAsset } = useUpdateAsset();
     const isImported = !!selectedAsset?.imported;
     const hasUnpublishedChanges = selectedAsset && (label !== selectedAsset.label || caption !== selectedAsset.caption);
 
@@ -71,13 +55,17 @@ export default function AssetInspector() {
         setCaption(selectedAsset?.caption);
     };
     const handleApply = () => {
-        updateAsset()
+        updateAsset({
+            asset: selectedAsset,
+            label,
+            caption
+        })
             .then(({ data }) => {
                 setSelectedAsset(data.updateAsset);
-                Notify.ok(translate('inspector.message.assetUpdated', 'Asset has been updated'));
+                Notify.ok(translate('actions.updateAsset.success', 'The asset has been updated'));
             })
-            .catch(error => {
-                Notify.error(error);
+            .catch(({ message }) => {
+                Notify.error(translate('actions.deleteAsset.error', 'Error while updating the asset'), message);
             });
     };
 

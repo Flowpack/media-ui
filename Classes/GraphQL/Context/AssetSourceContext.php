@@ -15,12 +15,20 @@ namespace Flowpack\Media\Ui\GraphQL\Context;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
+use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Service\AssetSourceService;
 use t3n\GraphQL\Context as BaseContext;
 
 class AssetSourceContext extends BaseContext
 {
+
+    /**
+     * @Flow\Inject
+     * @var AssetRepository
+     */
+    protected $assetRepository;
 
     /**
      * @Flow\Inject
@@ -42,19 +50,44 @@ class AssetSourceContext extends BaseContext
     }
 
     /**
+     * @return array<AssetSourceInterface>
+     */
+    public function getAssetSources(): array
+    {
+        return $this->assetSources;
+    }
+
+    /**
+     * @param string $id
+     * @param string $assetSource
+     * @return array
+     */
+    public function getAssetForProxy(string $id, string $assetSource): array
+    {
+        $activeAssetSource = $this->getAssetSource($assetSource);
+        if (!$activeAssetSource) {
+            return [null, null];
+        }
+
+        $assetProxy = $activeAssetSource->getAssetProxyRepository()->getAssetProxy($id);
+        if (!$assetProxy) {
+            return [null, null];
+        }
+
+        $assetIdentifier = $assetProxy->getLocalAssetIdentifier();
+
+        /** @var Asset $asset */
+        $asset = $this->assetRepository->findByIdentifier($assetIdentifier);
+
+        return [$assetProxy, $asset];
+    }
+
+    /**
      * @param string $assetSourceName
      * @return AssetSourceInterface|null
      */
     public function getAssetSource(string $assetSourceName): ?AssetSourceInterface
     {
         return $this->assetSources[$assetSourceName] ?? null;
-    }
-
-    /**
-     * @return array<AssetSourceInterface>
-     */
-    public function getAssetSources(): array
-    {
-        return $this->assetSources;
     }
 }

@@ -10,3 +10,9 @@ export const UPDATE_ASSET = gql`
     }
     ${ASSET_FRAGMENT}
 `;
+
+export const DELETE_ASSET = gql`
+    mutation DeleteAsset($id: AssetId!, $assetSource: AssetSourceId!) {
+        deleteAsset(id: $id, assetSource: $assetSource)
+    }
+`;

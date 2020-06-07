@@ -14,29 +14,30 @@ interface MediaUiProviderProps {
 }
 
 interface MediaUiProviderValues {
-    isLoading: boolean;
-    assetCount: number;
-    assets: Asset[];
-    searchTerm: string;
-    setSearchTerm: (searchTerm: string) => void;
-    tags: Tag[];
-    tagFilter: Tag;
-    setTagFilter: (tag: Tag) => void;
-    assetSources: AssetSource[];
-    assetCollections: AssetCollection[];
     assetCollectionFilter: AssetCollection;
-    setAssetCollectionFilter: (assetCollection: AssetCollection) => void;
-    currentPage: number;
-    setCurrentPage: (currentPage: number) => void;
-    selectedAsset: Asset;
-    setSelectedAsset: (asset: Asset) => void;
-    selectedAssetForPreview: Asset;
-    setSelectedAssetForPreview: (asset: Asset) => void;
-    mediaTypeFilter: string;
-    setMediaTypeFilter: (mediaType: string) => void;
-    dummyImage: string;
-    selectionMode: boolean;
+    assetCollections: AssetCollection[];
+    assetCount: number;
+    assetSources: AssetSource[];
+    assets: Asset[];
     containerRef: React.ElementRef<any>;
+    currentPage: number;
+    dummyImage: string;
+    isLoading: boolean;
+    mediaTypeFilter: string;
+    refetchAssets: () => Promise<boolean>;
+    searchTerm: string;
+    selectedAsset: Asset;
+    selectedAssetForPreview: Asset;
+    selectionMode: boolean;
+    setAssetCollectionFilter: (assetCollection: AssetCollection) => void;
+    setCurrentPage: (currentPage: number) => void;
+    setMediaTypeFilter: (mediaType: string) => void;
+    setSearchTerm: (searchTerm: string) => void;
+    setSelectedAsset: (asset: Asset) => void;
+    setSelectedAssetForPreview: (asset: Asset) => void;
+    setTagFilter: (tag: Tag) => void;
+    tagFilter: Tag;
+    tags: Tag[];
 }
 
 export const MediaUiContext = createContext({} as MediaUiProviderValues);
@@ -61,7 +62,7 @@ export function MediaUiProvider({
     const Notify = useNotify();
 
     // Main query to fetch all initial data from api
-    const { isLoading, error, assetData } = useAssetQuery({
+    const { isLoading, error, assetData, refetchAssets } = useAssetQuery({
         searchTerm: searchTerm,
         assetCollection: assetCollectionFilter?.title,
         mediaType: mediaTypeFilter,
@@ -116,6 +117,7 @@ export function MediaUiProvider({
                     dummyImage,
                     selectionMode,
                     containerRef,
+                    refetchAssets,
                     ...assetData
                 }}
             >

@@ -22,7 +22,7 @@ interface AssetsQueryVariables {
 }
 
 const useAssetQuery = (variables: AssetsQueryVariables) => {
-    const [query, { loading, error, data }] = useLazyQuery<AssetsQueryResult, AssetsQueryVariables>(ASSETS, {
+    const [query, { loading, error, data, refetch }] = useLazyQuery<AssetsQueryResult, AssetsQueryVariables>(ASSETS, {
         notifyOnNetworkStatusChange: false,
         variables
     });
@@ -57,7 +57,9 @@ const useAssetQuery = (variables: AssetsQueryVariables) => {
         variables.tag
     ]);
 
-    return { assetData, isLoading, error };
+    const refetchAssets = () => refetch().then(() => true);
+
+    return { assetData, isLoading, error, refetchAssets };
 };
 
 export default useAssetQuery;

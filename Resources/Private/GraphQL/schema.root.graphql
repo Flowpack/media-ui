@@ -51,6 +51,11 @@ type Mutation {
         label: String,
         caption: String
     ): Asset
+
+    deleteAsset(
+        id: AssetId!,
+        assetSource: AssetSourceId!
+    ): Boolean
 }
 
 """

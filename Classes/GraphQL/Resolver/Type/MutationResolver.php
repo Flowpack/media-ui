@@ -13,13 +13,13 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
+use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
-use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
-use Neos\Media\Exception;
+use Neos\Media\Exception\AssetServiceException;
 use t3n\GraphQL\ResolverInterface;
 
 /**
@@ -27,12 +27,37 @@ use t3n\GraphQL\ResolverInterface;
  */
 class MutationResolver implements ResolverInterface
 {
-
     /**
      * @Flow\Inject
      * @var AssetRepository
      */
     protected $assetRepository;
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return bool
+     * @throws Exception
+     * @throws AssetServiceException
+     */
+    public function deleteAsset($_, array $variables, AssetSourceContext $assetSourceContext): bool
+    {
+        [
+            'id' => $id,
+            'assetSource' => $assetSource,
+        ] = $variables;
+
+        [$assetProxy, $asset] = $assetSourceContext->getAssetForProxy($id, $assetSource);
+
+        try {
+            $this->assetRepository->remove($asset);
+        } catch (IllegalObjectTypeException $e) {
+            throw new Exception('Failed to delete asset', 1591537315);
+        }
+
+        return true;
+    }
 
     /**
      * @param $_
@@ -50,22 +75,7 @@ class MutationResolver implements ResolverInterface
             'caption' => $caption
         ] = $variables + ['label' => null, 'caption' => null];
 
-        $activeAssetSource = $assetSourceContext->getAssetSource($assetSource);
-
-        if (!$activeAssetSource) {
-            return null;
-        }
-
-        $assetProxy = $activeAssetSource->getAssetProxyRepository()->getAssetProxy($id);
-
-        if (!$assetProxy) {
-            return null;
-        }
-
-        $assetIdentifier = $assetProxy->getLocalAssetIdentifier();
-
-        /** @var Asset $asset */
-        $asset = $this->assetRepository->findByIdentifier($assetIdentifier);
+        [$assetProxy, $asset] = $assetSourceContext->getAssetForProxy($id, $assetSource);
 
         if (!$asset) {
             throw new Exception('Cannot update asset that was never imported', 1590659044);
