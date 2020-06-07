@@ -41,24 +41,26 @@ export default function AssetInspector() {
     const { translate } = useIntl();
     const [label, setLabel] = useState(selectedAsset?.label);
     const [caption, setCaption] = useState(selectedAsset?.caption);
-    const { updateAsset } = useUpdateAsset();
+    const [copyrightNotice, setCopyrightNotice] = useState(selectedAsset?.copyrightNotice);
+    const { updateAsset, loading } = useUpdateAsset();
     const isImported = !!selectedAsset?.imported;
-    const hasUnpublishedChanges = selectedAsset && (label !== selectedAsset.label || caption !== selectedAsset.caption);
-
-    useEffect(() => {
-        setLabel(selectedAsset?.label);
-        setCaption(selectedAsset?.caption);
-    }, [selectedAsset]);
+    const hasUnpublishedChanges =
+        selectedAsset &&
+        (label !== selectedAsset.label ||
+            caption !== selectedAsset.caption ||
+            copyrightNotice !== selectedAsset.copyrightNotice);
 
     const handleDiscard = () => {
         setLabel(selectedAsset?.label);
         setCaption(selectedAsset?.caption);
+        setCopyrightNotice(selectedAsset?.copyrightNotice);
     };
     const handleApply = () => {
         updateAsset({
             asset: selectedAsset,
             label,
-            caption
+            caption,
+            copyrightNotice
         })
             .then(({ data }) => {
                 setSelectedAsset(data.updateAsset);
@@ -68,6 +70,10 @@ export default function AssetInspector() {
                 Notify.error(translate('actions.deleteAsset.error', 'Error while updating the asset'), message);
             });
     };
+
+    useEffect(() => {
+        handleDiscard();
+    }, [selectedAsset]);
 
     return (
         <>
@@ -93,6 +99,16 @@ export default function AssetInspector() {
                                     expandedRows={6}
                                     value={caption}
                                     onChange={value => setCaption(value)}
+                                />
+                            </div>
+                            <div className={classes.propertyGroup}>
+                                <Label>{translate('inspector.copyrightNotice', 'Copyright notice')}</Label>
+                                <TextArea
+                                    disabled={!isImported}
+                                    minRows={2}
+                                    expandedRows={4}
+                                    value={copyrightNotice}
+                                    onChange={value => setCopyrightNotice(value)}
                                 />
                             </div>
                             {selectedAsset.tags.length ? (
@@ -144,7 +160,7 @@ export default function AssetInspector() {
                     {selectedAsset.imported && (
                         <div className={classes.actions}>
                             <Button
-                                disabled={!hasUnpublishedChanges}
+                                disabled={!hasUnpublishedChanges || loading}
                                 size="regular"
                                 style="lighter"
                                 hoverStyle="brand"
@@ -153,7 +169,7 @@ export default function AssetInspector() {
                                 {translate('inspector.actions.discard', 'Discard')}
                             </Button>
                             <Button
-                                disabled={!hasUnpublishedChanges}
+                                disabled={!hasUnpublishedChanges || loading}
                                 size="regular"
                                 style="success"
                                 hoverStyle="success"

@@ -7,6 +7,7 @@ interface UpdateAssetProps {
     asset: Asset;
     label?: string;
     caption?: string;
+    copyrightNotice?: string;
 }
 
 interface UpdateAssetVariables {
@@ -14,10 +15,11 @@ interface UpdateAssetVariables {
     assetSource: string;
     label?: string;
     caption?: string;
+    copyrightNotice?: string;
 }
 
 export default function useUpdateAsset() {
-    const [action, { error, data }] = useMutation<{ updateAsset: Asset }, UpdateAssetVariables>(UPDATE_ASSET);
+    const [action, { error, data, loading }] = useMutation<{ updateAsset: Asset }, UpdateAssetVariables>(UPDATE_ASSET);
 
     const updateAsset = ({
         asset: {
@@ -25,16 +27,18 @@ export default function useUpdateAsset() {
             assetSource: { id: assetSource }
         },
         label,
-        caption
+        caption,
+        copyrightNotice
     }: UpdateAssetProps) =>
         action({
             variables: {
                 id,
                 assetSource,
                 label,
-                caption
+                caption,
+                copyrightNotice
             }
         });
 
-    return { updateAsset, data, error };
+    return { updateAsset, data, error, loading };
 }

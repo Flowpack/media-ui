@@ -16,6 +16,7 @@ namespace Flowpack\Media\Ui\GraphQL\Context;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\Asset;
+use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Service\AssetSourceService;
@@ -60,26 +61,34 @@ class AssetSourceContext extends BaseContext
     /**
      * @param string $id
      * @param string $assetSource
-     * @return array
+     * @return AssetProxyInterface|null
      */
-    public function getAssetForProxy(string $id, string $assetSource): array
+    public function getAssetProxy(string $id, string $assetSource): ?AssetProxyInterface
     {
         $activeAssetSource = $this->getAssetSource($assetSource);
         if (!$activeAssetSource) {
-            return [null, null];
+            return null;
         }
 
         $assetProxy = $activeAssetSource->getAssetProxyRepository()->getAssetProxy($id);
         if (!$assetProxy) {
-            return [null, null];
+            return null;
         }
+        return $assetProxy;
+    }
 
+    /**
+     * @param AssetProxyInterface $assetProxy
+     * @return Asset|null
+     */
+    public function getAssetForProxy(AssetProxyInterface $assetProxy): ?Asset
+    {
         $assetIdentifier = $assetProxy->getLocalAssetIdentifier();
 
         /** @var Asset $asset */
         $asset = $this->assetRepository->findByIdentifier($assetIdentifier);
 
-        return [$assetProxy, $asset];
+        return $asset;
     }
 
     /**

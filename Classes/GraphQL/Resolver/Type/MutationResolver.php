@@ -48,7 +48,15 @@ class MutationResolver implements ResolverInterface
             'assetSource' => $assetSource,
         ] = $variables;
 
-        [$assetProxy, $asset] = $assetSourceContext->getAssetForProxy($id, $assetSource);
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSource);
+        if (!$assetProxy) {
+            return false;
+        }
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            throw new Exception('Cannot delete asset that was never imported', 1591553708);
+        }
 
         try {
             $this->assetRepository->remove($asset);
@@ -72,10 +80,15 @@ class MutationResolver implements ResolverInterface
             'id' => $id,
             'assetSource' => $assetSource,
             'label' => $label,
-            'caption' => $caption
-        ] = $variables + ['label' => null, 'caption' => null];
+            'caption' => $caption,
+            'copyrightNotice' => $copyrightNotice
+        ] = $variables + ['label' => null, 'caption' => null, 'copyrightNotice' => 'nix'];
 
-        [$assetProxy, $asset] = $assetSourceContext->getAssetForProxy($id, $assetSource);
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSource);
+        if (!$assetProxy) {
+            return null;
+        }
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
 
         if (!$asset) {
             throw new Exception('Cannot update asset that was never imported', 1590659044);
@@ -87,6 +100,10 @@ class MutationResolver implements ResolverInterface
 
         if ($caption !== null) {
             $asset->setCaption($caption);
+        }
+
+        if ($copyrightNotice !== null) {
+            $asset->setCopyrightNotice($copyrightNotice);
         }
 
         try {
