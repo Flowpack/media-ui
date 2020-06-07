@@ -1,4 +1,5 @@
 import ListView from './ListView';
 import ThumbnailView from './ThumbnailView';
+import Thumbnail from './Thumbnail';
 
-export { ThumbnailView, ListView };
+export { ThumbnailView, Thumbnail, ListView };
