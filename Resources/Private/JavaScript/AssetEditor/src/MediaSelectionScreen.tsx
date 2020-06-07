@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-boost';
+import { $get, $transform } from 'plow-js';
 
 // Neos dependencies are provided by the UI
 // @ts-ignore
@@ -31,21 +32,54 @@ interface MediaSelectionScreenProps {
     neos: object;
     type: 'assets' | 'images';
     onComplete: (localAssetIdentifier: string) => void;
+    isLeftSideBarHidden: boolean;
+    toggleSidebar: () => void;
     flashMessages: {
         add: (title: string, message: string, severity?: string, timeout?: number) => void;
     };
 }
 
-@connect(() => ({}), {
-    flashMessages: actions.UI.FlashMessages
-})
+interface MediaSelectionScreenState {
+    initialLeftSideBarHiddenState: boolean;
+}
+
+@connect(
+    $transform({
+        isLeftSideBarHidden: $get('ui.leftSideBar.isHidden')
+    }),
+    {
+        flashMessages: actions.UI.FlashMessages,
+        toggleSidebar: actions.UI.LeftSideBar.toggle
+    }
+)
 @neos(globalRegistry => ({
     i18nRegistry: globalRegistry.get('i18n')
 }))
-export default class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps> {
+// eslint-disable-next-line prettier/prettier
+export default class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps, MediaSelectionScreenState> {
     constructor(props: MediaSelectionScreenProps) {
         super(props);
-        this.state = {};
+        this.state = {
+            initialLeftSideBarHiddenState: false
+        };
+    }
+
+    componentDidMount() {
+        const { isLeftSideBarHidden, toggleSidebar } = this.props;
+        this.setState({
+            initialLeftSideBarHiddenState: isLeftSideBarHidden
+        });
+        if (!isLeftSideBarHidden) {
+            toggleSidebar();
+        }
+    }
+
+    componentWillUnmount() {
+        const { isLeftSideBarHidden, toggleSidebar } = this.props;
+        const { initialLeftSideBarHiddenState } = this.state;
+        if (initialLeftSideBarHiddenState !== isLeftSideBarHidden) {
+            toggleSidebar();
+        }
     }
 
     getConfig() {
