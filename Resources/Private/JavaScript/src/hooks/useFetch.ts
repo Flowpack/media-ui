@@ -1,22 +1,27 @@
 import { useState } from 'react';
+import { useMediaUi } from '../core';
 
 export default function useFetch(url: string, initOptions: RequestInit = {}) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
-
-    const options: RequestInit = {
-        method: 'POST',
-        credentials: 'include',
-        ...initOptions
-    };
+    const { fetchWithErrorHandling } = useMediaUi();
 
     const fetchData = (body: BodyInit | null = null) => {
         setLoading(true);
-        return fetch(url, { ...options, body })
-            .then(response => response.json())
-            .then(json => {
-                setData(json);
-                return json;
+        return fetchWithErrorHandling
+            .withCsrfToken(csrfToken => ({
+                method: 'POST',
+                credentials: 'include',
+                ...initOptions,
+                url,
+                headers: {
+                    'X-Flow-Csrftoken': csrfToken
+                },
+                body
+            }))
+            .then(data => {
+                setData(data);
+                return data;
             })
             .finally(() => setLoading(false));
     };

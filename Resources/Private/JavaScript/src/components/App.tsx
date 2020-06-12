@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
-import { SideBarLeft } from './SideBarLeft';
+import { SideBarLeft, UploadDialog } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
 import Pagination from './Pagination';
 import { useMediaUi, createUseMediaUiStyles } from '../core';
@@ -55,6 +55,7 @@ export default function App() {
             {!selectionMode && <SideBarRight gridPosition="right" />}
 
             {selectedAssetForPreview && <AssetPreview />}
+            <UploadDialog />
         </div>
     );
 }

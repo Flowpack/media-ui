@@ -4,7 +4,7 @@ Flowpack.Media.Ui.MediaController {
             graphql = '/neos/graphql/media-assets'
             upload = Neos.Fusion:UriBuilder {
                 package = 'Flowpack.Media.Ui'
-                controller = 'Media'
+                controller = 'Upload'
                 action = 'upload'
                 format = 'json'
             }

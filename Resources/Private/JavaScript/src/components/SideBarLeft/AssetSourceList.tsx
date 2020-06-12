@@ -19,7 +19,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         }
     },
     itemSelected: {
-        '.neos.neos-module &': {
+        '&, .neos.neos-module &': {
             color: theme.colors.primary
         }
     }

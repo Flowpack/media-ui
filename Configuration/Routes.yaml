@@ -5,3 +5,12 @@
       package: 't3n.GraphQL'
       variables:
         'endpoint': 'media-assets'
+
+# Remove when methods are done via GraphQL
+- name: 'Media Upload'
+  uriPattern: 'neos/media-ui/upload'
+  defaults:
+    '@package': 'Flowpack.Media.Ui'
+    '@controller': 'Upload'
+    '@action': 'upload'
+    '@format': 'json'

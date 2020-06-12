@@ -125,9 +125,9 @@ export default function UploadDialog() {
     const { translate } = useIntl();
     const Notify = useNotify();
     const [state, setState] = useRecoilState(uploadDialogState);
-    const { endpoints, csrfToken, dummyImage, refetchAssets } = useMediaUi();
+    const { endpoints, dummyImage, refetchAssets } = useMediaUi();
     const { config } = useConfigQuery();
-    const { uploadFiles, uploadState, loading } = useAlternativeUploadFiles(endpoints.upload, csrfToken);
+    const { uploadFiles, uploadState, loading } = useAlternativeUploadFiles(endpoints.upload);
     const [files, setFiles] = useState<UploadedFile[]>([]);
     const uploadPossible = !loading && files.length > 0;
 
@@ -232,6 +232,8 @@ export default function UploadDialog() {
                             if (success) stateClassName = classes.success;
                             if (response && !success) stateClassName = classes.error;
 
+                            // TODO: Output helpful messages for results 'EXISTS', 'ADDED', 'ERROR'
+
                             return (
                                 <div
                                     className={[classes.thumb, stateClassName].join(' ')}
@@ -243,7 +245,7 @@ export default function UploadDialog() {
                                         {loading && <Icon icon="spinner" spin={true} />}
                                         {success && <Icon icon="check" />}
                                         {response && !response.success && <Icon icon="exclamation-circle" />}
-                                        {response?.result && <span>{uploadState[file.name].response.result}</span>}
+                                        {response?.result && <span>{response.result}</span>}
                                     </div>
                                 </div>
                             );

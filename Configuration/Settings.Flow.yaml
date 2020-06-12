@@ -10,7 +10,11 @@ Neos:
         providers:
           'Neos.Neos:Backend':
             requestPatterns:
-              'Flowpack.Media.Ui:Controllers':
+              'Flowpack.Media.Ui:GraphQLControllers':
                 pattern: 'ControllerObjectName'
                 patternOptions:
                   controllerObjectNamePattern: 't3n\GraphQL\Controller\.*'
+              'Flowpack.Media.Ui:Controllers':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 'Flowpack\Media\Ui\Controller\.*'

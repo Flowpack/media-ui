@@ -11,13 +11,19 @@ interface ImportAssetVariables {
 export default function useImportAsset() {
     const [action, { error, data, loading }] = useMutation<{ importAsset: Asset }, ImportAssetVariables>(IMPORT_ASSET);
 
-    const importAsset = (asset: Asset) =>
+    const importAsset = (asset: Asset, useOptimisticResponse = true) =>
         action({
             variables: {
                 id: asset.id,
                 assetSourceId: asset.assetSource.id
+            },
+            optimisticResponse: useOptimisticResponse && {
+                importAsset: {
+                    ...asset,
+                    imported: true,
+                    localId: 'tmp'
+                }
             }
-            // TODO: Find out whether we can create an optimistic response here as the local id is relevant for selection operations
         });
 
     return { importAsset, data, error, loading };

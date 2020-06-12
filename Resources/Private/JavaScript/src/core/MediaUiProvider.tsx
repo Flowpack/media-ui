@@ -13,7 +13,9 @@ interface MediaUiProviderProps {
     selectionMode?: boolean;
     containerRef: React.ElementRef<any>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
-    csrfToken: string;
+    fetchWithErrorHandling: {
+        withCsrfToken: (callback: (csrfToken: string) => any) => Promise<any>;
+    };
     endpoints: {
         graphql: string;
         upload: string;
@@ -27,7 +29,9 @@ interface MediaUiProviderValues {
     assetSources: AssetSource[];
     assets: Asset[];
     containerRef: React.ElementRef<any>;
-    csrfToken: string;
+    fetchWithErrorHandling: {
+        withCsrfToken: (callback: (csrfToken: string) => any) => Promise<any>;
+    };
     currentPage: number;
     dummyImage: string;
     endpoints: {
@@ -65,7 +69,7 @@ export function MediaUiProvider({
     onAssetSelection = null,
     containerRef,
     endpoints,
-    csrfToken
+    fetchWithErrorHandling
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
     const [searchTerm, setSearchTerm] = useState('');
@@ -120,6 +124,7 @@ export function MediaUiProvider({
         }
     }, [assetData.assetCount, isLoading]);
 
+    // Handle selection mode for the secondary Neos UI inspector
     useEffect(() => {
         if (!onAssetSelection || !selectedAsset) {
             return;
@@ -127,7 +132,9 @@ export function MediaUiProvider({
         if (selectedAsset.localId) {
             onAssetSelection(selectedAsset.localId);
         } else {
-            importAsset(selectedAsset).then(() => onAssetSelection(selectedAsset.localId));
+            importAsset(selectedAsset, false).then(({ data }) => {
+                onAssetSelection(data.importAsset.localId);
+            });
         }
     }, [selectedAsset]);
 
@@ -146,10 +153,10 @@ export function MediaUiProvider({
                 value={{
                     assetCollectionFilter,
                     containerRef,
-                    csrfToken,
                     currentPage,
                     dummyImage,
                     endpoints,
+                    fetchWithErrorHandling,
                     handleDeleteAsset,
                     isLoading,
                     mediaTypeFilter,

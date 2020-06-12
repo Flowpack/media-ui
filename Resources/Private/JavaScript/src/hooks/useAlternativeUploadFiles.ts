@@ -1,6 +1,7 @@
-import { useFetch } from './index';
 import { useState } from 'react';
-import { useIntl, useNotify } from '../core';
+
+import { useFetch } from './index';
+import { useIntl, useMediaUi, useNotify } from '../core';
 
 interface UploadState {
     [filename: string]: {
@@ -12,19 +13,20 @@ interface UploadState {
     };
 }
 
-export default function useAlternativeUploadFiles(endpoint: string, csrfToken: string) {
+export default function useAlternativeUploadFiles(endpoint: string) {
     const { fetchData } = useFetch(endpoint);
     const { translate } = useIntl();
     const [uploadState, setUploadState] = useState<UploadState>({});
     const Notify = useNotify();
+    const { selectionMode } = useMediaUi();
 
     const loading = Object.keys(uploadState).reduce((carry, upload) => carry || uploadState[upload].loading, false);
 
     const uploadFiles = async (files: File[]) => {
         const requests = files.map(async file => {
             const formData = new FormData();
-            formData.append('__csrfToken', csrfToken);
-            formData.append('moduleArguments[file]', file, file.name);
+            // TODO: Property name is different in the backend module and in the Neos UI
+            formData.append(selectionMode ? 'file' : 'moduleArguments[file]', file, file.name);
 
             // Don't repeat successful uploads
             if (uploadState[file.name]?.response.success) {

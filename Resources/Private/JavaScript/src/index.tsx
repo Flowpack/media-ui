@@ -15,7 +15,6 @@ import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
 import { createRef } from 'react';
 import { NotifyProvider } from './core';
-import { UploadDialog } from './components/SideBarLeft';
 import { RecoilRoot } from 'recoil';
 
 loadIconLibrary();
@@ -60,6 +59,20 @@ window.onload = async (): Promise<void> => {
         return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
     };
 
+    // Lightweight port of the method with the same name from Neos UI
+    // TODO: Remove when all queries are done via GraphQL
+    const fetchWithErrorHandling = {
+        withCsrfToken: makeFetchRequest => {
+            const fetchOptions = makeFetchRequest(csrfToken);
+            const { url } = fetchOptions;
+            if (!url) {
+                throw new Error('Url option not provided');
+            }
+            delete fetchOptions.url;
+            return fetch(url, fetchOptions).then(response => response.json());
+        }
+    };
+
     const withDragDropContext = DragDropContext(HTML5Backend);
     const AppWithDnd = withDragDropContext(hot(module)(App));
 
@@ -69,14 +82,13 @@ window.onload = async (): Promise<void> => {
                 <ApolloProvider client={client}>
                     <RecoilRoot>
                         <MediaUiProvider
-                            csrfToken={csrfToken}
+                            fetchWithErrorHandling={fetchWithErrorHandling}
                             endpoints={endpoints}
                             dummyImage={dummyImage}
                             containerRef={containerRef}
                         >
                             <MediaUiThemeProvider>
                                 <AppWithDnd />
-                                <UploadDialog />
                             </MediaUiThemeProvider>
                         </MediaUiProvider>
                     </RecoilRoot>

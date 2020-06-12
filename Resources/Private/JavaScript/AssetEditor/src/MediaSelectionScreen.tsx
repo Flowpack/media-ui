@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createRef } from 'react';
 import { connect } from 'react-redux';
+import { RecoilRoot } from 'recoil';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-boost';
@@ -11,6 +12,8 @@ import { $get, $transform } from 'plow-js';
 import { neos } from '@neos-project/neos-ui-decorators';
 // @ts-ignore
 import { actions } from '@neos-project/neos-ui-redux-store';
+// @ts-ignore
+import { fetchWithErrorHandling } from '@neos-project/neos-ui-backend-connector';
 
 // Media UI dependencies
 import { I18nRegistry, Notify } from '../../src/interfaces';
@@ -34,9 +37,7 @@ interface MediaSelectionScreenProps {
     onComplete: (localAssetIdentifier: string) => void;
     isLeftSideBarHidden: boolean;
     toggleSidebar: () => void;
-    flashMessages: {
-        add: (title: string, message: string, severity?: string, timeout?: number) => void;
-    };
+    addFlashMessage: (title: string, message: string, severity?: string, timeout?: number) => void;
 }
 
 interface MediaSelectionScreenState {
@@ -48,7 +49,7 @@ interface MediaSelectionScreenState {
         isLeftSideBarHidden: $get('ui.leftSideBar.isHidden')
     }),
     {
-        flashMessages: actions.UI.FlashMessages,
+        addFlashMessage: actions.UI.FlashMessages.add,
         toggleSidebar: actions.UI.LeftSideBar.toggle
     }
 )
@@ -86,7 +87,8 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
         return {
             endpoints: {
                 // TODO: Generate uri from Neos maybe like $get('routes.core.modules.mediaBrowser', neos);
-                graphql: '/neos/graphql/media-assets'
+                graphql: '/neos/graphql/media-assets',
+                upload: '/neos/media-ui/upload'
             },
             // TODO: Generate image uri from Neos
             dummyImage: '/_Resources/Static/Packages/Neos.Neos/Images/dummy-image.svg'
@@ -121,17 +123,17 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
     };
 
     render() {
-        const { flashMessages, onComplete } = this.props;
+        const { addFlashMessage, onComplete } = this.props;
         const client = this.getApolloClient();
-        const { dummyImage } = this.getConfig();
+        const { dummyImage, endpoints } = this.getConfig();
         const containerRef = createRef();
 
         const Notification: Notify = {
-            info: title => flashMessages.add(title, '', 'error'),
-            ok: title => flashMessages.add(title, '', 'error'),
-            notice: title => flashMessages.add(title, '', 'error'),
-            warning: (title, message = '') => flashMessages.add(title, message, 'error'),
-            error: (title, message = '') => flashMessages.add(title, message, 'error')
+            info: message => addFlashMessage(message, message, 'error'),
+            ok: message => addFlashMessage(message, message, 'error'),
+            notice: message => addFlashMessage(message, message, 'error'),
+            warning: (title, message = '') => addFlashMessage(title, message, 'error'),
+            error: (title, message = '') => addFlashMessage(title, message, 'error')
         };
 
         return (
@@ -139,16 +141,20 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
                 <IntlProvider translate={this.translate}>
                     <NotifyProvider notificationApi={Notification}>
                         <ApolloProvider client={client}>
-                            <MediaUiProvider
-                                dummyImage={dummyImage}
-                                onAssetSelection={localAssetIdentifier => onComplete(localAssetIdentifier)}
-                                selectionMode={true}
-                                containerRef={containerRef}
-                            >
-                                <MediaUiThemeProvider>
-                                    <App />
-                                </MediaUiThemeProvider>
-                            </MediaUiProvider>
+                            <RecoilRoot>
+                                <MediaUiProvider
+                                    fetchWithErrorHandling={fetchWithErrorHandling}
+                                    endpoints={endpoints}
+                                    dummyImage={dummyImage}
+                                    onAssetSelection={localAssetIdentifier => onComplete(localAssetIdentifier)}
+                                    selectionMode={true}
+                                    containerRef={containerRef}
+                                >
+                                    <MediaUiThemeProvider>
+                                        <App />
+                                    </MediaUiThemeProvider>
+                                </MediaUiProvider>
+                            </RecoilRoot>
                         </ApolloProvider>
                     </NotifyProvider>
                 </IntlProvider>
