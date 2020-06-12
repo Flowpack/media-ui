@@ -40,8 +40,7 @@ const useAssetQuery = (variables: AssetsQueryVariables) => {
         if (!loading && !isLoading) {
             query({ variables });
             setIsLoading(true);
-        }
-        if (data && !loading && isLoading) {
+        } else if (data && !loading && isLoading) {
             setAssetData(data);
             setIsLoading(false);
         }

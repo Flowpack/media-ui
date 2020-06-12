@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { AssetSource, AssetCollection, Asset, Tag } from '../interfaces';
-import { useAssetQuery, useAssetSourceFilter, useDeleteAsset } from '../hooks';
+import { useAssetQuery, useAssetSourceFilter, useDeleteAsset, useImportAsset } from '../hooks';
 import { useIntl, useNotify } from './index';
 import { useSetRecoilState } from 'recoil';
 import { selectedAssetSourceState } from '../state';
@@ -79,6 +79,7 @@ export function MediaUiProvider({
     const [assetSourceFilter] = useAssetSourceFilter();
     const setSelectedAssetSourceState = useSetRecoilState(selectedAssetSourceState);
     const { deleteAsset } = useDeleteAsset();
+    const { importAsset } = useImportAsset();
 
     // Main query to fetch all initial data from api
     const { isLoading, error, assetData, refetchAssets } = useAssetQuery({
@@ -126,8 +127,7 @@ export function MediaUiProvider({
         if (selectedAsset.localId) {
             onAssetSelection(selectedAsset.localId);
         } else {
-            // TODO: Implement import
-            Notify.warning('Selecting external assets has not been implemented yet');
+            importAsset(selectedAsset).then(() => onAssetSelection(selectedAsset.localId));
         }
     }, [selectedAsset]);
 

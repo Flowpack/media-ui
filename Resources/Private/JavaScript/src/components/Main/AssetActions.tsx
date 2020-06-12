@@ -20,7 +20,7 @@ export default function AssetActions({ asset }: ItemActionsProps) {
     const { importAsset } = useImportAsset();
 
     const handleImportAsset = () => {
-        importAsset({ asset })
+        importAsset(asset)
             .then(() => {
                 Notify.ok(translate('assetActions.import.success', 'Asset was successfully imported'));
             })

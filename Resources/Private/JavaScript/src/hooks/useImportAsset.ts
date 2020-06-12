@@ -3,10 +3,6 @@ import { useMutation } from '@apollo/react-hooks';
 import { IMPORT_ASSET } from '../queries';
 import { Asset } from '../interfaces';
 
-interface ImportAssetProps {
-    asset: Asset;
-}
-
 interface ImportAssetVariables {
     id: string;
     assetSourceId: string;
@@ -15,7 +11,7 @@ interface ImportAssetVariables {
 export default function useImportAsset() {
     const [action, { error, data, loading }] = useMutation<{ importAsset: Asset }, ImportAssetVariables>(IMPORT_ASSET);
 
-    const importAsset = ({ asset }: ImportAssetProps) =>
+    const importAsset = (asset: Asset) =>
         action({
             variables: {
                 id: asset.id,
