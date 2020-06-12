@@ -15,6 +15,7 @@ namespace Flowpack\Media\Ui\GraphQL\Context;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
@@ -37,6 +38,12 @@ class AssetSourceContext extends BaseContext
      * @var AssetSourceService
      */
     protected $assetSourceService;
+
+    /**
+     * @Flow\Inject
+     * @var PersistenceManagerInterface
+     */
+    protected $persistenceManager;
 
     /**
      * @var array<AssetSourceInterface>
@@ -109,9 +116,8 @@ class AssetSourceContext extends BaseContext
     public function importAsset($assetSourceIdentifier, $assetIdentifier): ?AssetProxyInterface
     {
         try {
-            $importedAsset = $this->assetSourceService->importAsset($assetSourceIdentifier, $assetIdentifier);
-            $assetProxy = new \stdClass();
-            $assetProxy->localAssetIdentifier = $importedAsset->getLocalAssetIdentifier();
+            $this->assetSourceService->importAsset($assetSourceIdentifier, $assetIdentifier);
+            $this->persistenceManager->persistAll();
             return $this->getAssetProxy($assetIdentifier, $assetSourceIdentifier);
         } catch (AssetSourceServiceException | \Exception $e) {
         }
