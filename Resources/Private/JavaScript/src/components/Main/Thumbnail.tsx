@@ -1,9 +1,8 @@
 import * as React from 'react';
 
-import { IconButton } from '@neos-project/react-ui-components';
-
 import { Asset, MediaUiTheme } from '../../interfaces';
-import { createUseMediaUiStyles, useMediaUi } from '../../core';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
+import { AssetActions } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnail: {
@@ -11,31 +10,32 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
-        '&:hover $label': {
+        '&:hover $caption': {
             backgroundColor: theme.colors.primary
         },
         '&:hover $toolBar': {
-            display: 'block'
+            display: 'flex'
         }
     },
     picture: {
         cursor: 'pointer',
         backgroundColor: theme.colors.assetBackground,
         '& img': {
+            display: 'block',
             height: '250px',
             width: '100%',
             objectFit: 'contain'
         }
     },
-    label: {
+    caption: {
         backgroundColor: ({ isSelected }) => (isSelected ? theme.colors.primary : theme.colors.captionBackground),
-        padding: '.8rem .8rem',
+        padding: theme.spacing.half,
         display: 'flex',
         alignItems: 'center',
         '& img': {
             width: '1.3rem',
             height: 'auto',
-            marginRight: '.5rem'
+            marginRight: theme.spacing.quarter
         },
         '& span': {
             display: 'inline-block',
@@ -47,46 +47,48 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     toolBar: {
         display: 'none',
         position: 'absolute',
-        top: '5px',
-        right: '5px',
-        '& button': {
-            alignContent: 'center',
-            justifyContent: 'center',
-            display: 'flex'
-        }
+        top: theme.spacing.quarter,
+        right: theme.spacing.quarter,
+        backgroundColor: 'rgba(0.15, 0.15, 0.15, 0.25)'
+    },
+    label: {
+        position: 'absolute',
+        top: theme.spacing.quarter,
+        left: theme.spacing.quarter,
+        fontSize: theme.fontSize.small,
+        borderRadius: '3px',
+        padding: '2px 4px',
+        backgroundColor: theme.colors.primary,
+        userSelect: 'none'
     }
 }));
 
 interface ThumbnailProps {
     asset: Asset;
     isSelected: boolean;
-    onSelect: (asset: Asset) => void;
-    onShowPreview: (asset: Asset) => void;
 }
 
-export default function Thumbnail({ asset, isSelected, onSelect, onShowPreview }: ThumbnailProps) {
+export default function Thumbnail({ asset, isSelected }: ThumbnailProps) {
     const classes = useStyles({ isSelected });
-    const { dummyImage } = useMediaUi();
+    const { translate } = useIntl();
+    const { dummyImage, setSelectedAsset, setSelectedAssetForPreview } = useMediaUi();
     const { label, thumbnailUrl, file } = asset;
 
     return (
         <figure className={classes.thumbnail}>
-            <picture onClick={() => onSelect(asset)} className={classes.picture}>
+            {asset.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
+            <picture
+                onClick={() => (isSelected ? setSelectedAssetForPreview(asset) : setSelectedAsset(asset))}
+                className={classes.picture}
+            >
                 <img src={thumbnailUrl || dummyImage} alt={label} />
             </picture>
-            <figcaption className={classes.label}>
+            <figcaption className={classes.caption}>
                 <img src={file.typeIcon.url} alt={file.typeIcon.alt} />
                 <span>{label}</span>
             </figcaption>
             <div className={classes.toolBar}>
-                <IconButton
-                    className={classes.previewButton}
-                    icon="expand-alt"
-                    size="small"
-                    style="clean"
-                    hoverStyle="brand"
-                    onClick={() => onShowPreview(asset)}
-                />
+                <AssetActions asset={asset} />
             </div>
         </figure>
     );

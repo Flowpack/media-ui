@@ -10,7 +10,7 @@ interface TagAssetProps {
 
 interface TagAssetVariables {
     id: string;
-    assetSource: string;
+    assetSourceId: string;
     tag: string;
 }
 
@@ -21,7 +21,7 @@ export default function useTagAsset() {
         action({
             variables: {
                 id: asset.id,
-                assetSource: asset.assetSource.id,
+                assetSourceId: asset.assetSource.id,
                 tag: tagName
             },
             optimisticResponse: {

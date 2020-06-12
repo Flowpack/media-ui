@@ -16,20 +16,14 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function ThumbnailView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const { assets, selectedAsset, setSelectedAsset, setSelectedAssetForPreview } = useMediaUi();
+    const { assets, selectedAsset } = useMediaUi();
     const { translate } = useIntl();
 
     return (
         <section className={classes.thumbnailView}>
             {assets.length ? (
                 assets.map(asset => (
-                    <Thumbnail
-                        key={asset.id}
-                        asset={asset}
-                        isSelected={selectedAsset?.id === asset.id}
-                        onSelect={asset => setSelectedAsset(asset)}
-                        onShowPreview={asset => setSelectedAssetForPreview(asset)}
-                    />
+                    <Thumbnail key={asset.id} asset={asset} isSelected={selectedAsset?.id === asset.id} />
                 ))
             ) : (
                 <div>{translate('assetList', 'No assets found')}</div>

@@ -12,7 +12,7 @@ interface UpdateAssetProps {
 
 interface UpdateAssetVariables {
     id: string;
-    assetSource: string;
+    assetSourceId: string;
     label?: string;
     caption?: string;
     copyrightNotice?: string;
@@ -25,7 +25,7 @@ export default function useUpdateAsset() {
         action({
             variables: {
                 id: asset.id,
-                assetSource: asset.assetSource.id,
+                assetSourceId: asset.assetSource.id,
                 label,
                 caption,
                 copyrightNotice

@@ -5,14 +5,14 @@ import { ASSET_FRAGMENT } from './Fragments';
 export const UPDATE_ASSET = gql`
     mutation UpdateAsset(
         $id: AssetId!
-        $assetSource: AssetSourceId!
+        $assetSourceId: AssetSourceId!
         $label: String
         $caption: String
         $copyrightNotice: String
     ) {
         updateAsset(
             id: $id
-            assetSource: $assetSource
+            assetSourceId: $assetSourceId
             label: $label
             caption: $caption
             copyrightNotice: $copyrightNotice
@@ -24,14 +24,14 @@ export const UPDATE_ASSET = gql`
 `;
 
 export const DELETE_ASSET = gql`
-    mutation DeleteAsset($id: AssetId!, $assetSource: AssetSourceId!) {
-        deleteAsset(id: $id, assetSource: $assetSource)
+    mutation DeleteAsset($id: AssetId!, $assetSourceId: AssetSourceId!) {
+        deleteAsset(id: $id, assetSourceId: $assetSourceId)
     }
 `;
 
 export const TAG_ASSET = gql`
-    mutation TagAsset($id: AssetId!, $assetSource: AssetSourceId!, $tag: TagLabel!) {
-        tagAsset(id: $id, assetSource: $assetSource, tag: $tag) {
+    mutation TagAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tag: TagLabel!) {
+        tagAsset(id: $id, assetSourceId: $assetSourceId, tag: $tag) {
             ...AssetProps
         }
     }
@@ -39,8 +39,8 @@ export const TAG_ASSET = gql`
 `;
 
 export const UNTAG_ASSET = gql`
-    mutation UntagAsset($id: AssetId!, $assetSource: AssetSourceId!, $tag: TagLabel!) {
-        untagAsset(id: $id, assetSource: $assetSource, tag: $tag) {
+    mutation UntagAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tag: TagLabel!) {
+        untagAsset(id: $id, assetSourceId: $assetSourceId, tag: $tag) {
             ...AssetProps
         }
     }
@@ -59,6 +59,15 @@ export const UPLOAD_FILE = gql`
 export const UPLOAD_FILES = gql`
     mutation UploadFiles($files: [Upload!]!) {
         uploadFiles(files: $files) {
+            ...AssetProps
+        }
+    }
+    ${ASSET_FRAGMENT}
+`;
+
+export const IMPORT_ASSET = gql`
+    mutation ImportAsset($id: AssetId!, $assetSourceId: AssetSourceId!) {
+        importAsset(id: $id, assetSourceId: $assetSourceId) {
             ...AssetProps
         }
     }

@@ -19,8 +19,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         }
     },
     itemSelected: {
-        '.neos &': {
-            fontWeight: 'bold',
+        '.neos.neos-module &': {
             color: theme.colors.primary
         }
     }

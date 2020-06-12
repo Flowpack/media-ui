@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useMediaUi, createUseMediaUiStyles, useIntl, useNotify } from '../../core';
-import { MediaUiTheme, GridComponentProps, Asset } from '../../interfaces';
+
+import { useMediaUi, createUseMediaUiStyles, useIntl } from '../../core';
+import { MediaUiTheme, GridComponentProps } from '../../interfaces';
 import { ListViewItem } from './index';
-import { useDeleteAsset } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
@@ -29,30 +29,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function ListView(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const { assets, selectedAsset, setSelectedAsset, setSelectedAssetForPreview, refetchAssets } = useMediaUi();
-    const Notify = useNotify();
+    const { assets, selectedAsset } = useMediaUi();
     const { translate } = useIntl();
-    const { deleteAsset } = useDeleteAsset();
-
-    const handleDeleteAction = (asset: Asset) => {
-        const confirm = window.confirm(
-            translate('action.deleteAsset.confirm', 'Do you really want to delete the asset ' + asset.label, [asset.label])
-        );
-        if (!confirm) return;
-
-        deleteAsset(asset)
-            .then(() => {
-                if (asset.id === selectedAsset?.id) {
-                    setSelectedAsset(null);
-                }
-                refetchAssets().then(() => {
-                    Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
-                });
-            })
-            .catch(({ message }) => {
-                Notify.error(translate('action.deleteAsset.error', 'Error while trying to delete the asset'), message);
-            });
-    };
 
     return (
         <section className={classes.listView}>
@@ -70,14 +48,7 @@ export default function ListView(props: GridComponentProps) {
                     </thead>
                     <tbody>
                         {assets.map(asset => (
-                            <ListViewItem
-                                key={asset.id}
-                                asset={asset}
-                                isSelected={selectedAsset?.id === asset.id}
-                                onSelect={asset => setSelectedAsset(asset)}
-                                onDelete={asset => handleDeleteAction(asset)}
-                                onShowPreview={asset => setSelectedAssetForPreview(asset)}
-                            />
+                            <ListViewItem key={asset.id} asset={asset} isSelected={selectedAsset?.id === asset.id} />
                         ))}
                     </tbody>
                 </table>

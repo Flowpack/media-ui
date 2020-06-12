@@ -20,6 +20,7 @@ use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Service\AssetSourceService;
+use Neos\Media\Exception\AssetSourceServiceException;
 use t3n\GraphQL\Context as BaseContext;
 
 class AssetSourceContext extends BaseContext
@@ -60,12 +61,12 @@ class AssetSourceContext extends BaseContext
 
     /**
      * @param string $id
-     * @param string $assetSource
+     * @param string $assetSourceIdentifier
      * @return AssetProxyInterface|null
      */
-    public function getAssetProxy(string $id, string $assetSource): ?AssetProxyInterface
+    public function getAssetProxy(string $id, string $assetSourceIdentifier): ?AssetProxyInterface
     {
-        $activeAssetSource = $this->getAssetSource($assetSource);
+        $activeAssetSource = $this->getAssetSource($assetSourceIdentifier);
         if (!$activeAssetSource) {
             return null;
         }
@@ -98,5 +99,22 @@ class AssetSourceContext extends BaseContext
     public function getAssetSource(string $assetSourceName): ?AssetSourceInterface
     {
         return $this->assetSources[$assetSourceName] ?? null;
+    }
+
+    /**
+     * @param $assetSourceIdentifier
+     * @param $assetIdentifier
+     * @return AssetProxyInterface|null
+     */
+    public function importAsset($assetSourceIdentifier, $assetIdentifier): ?AssetProxyInterface
+    {
+        try {
+            $importedAsset = $this->assetSourceService->importAsset($assetSourceIdentifier, $assetIdentifier);
+            $assetProxy = new \stdClass();
+            $assetProxy->localAssetIdentifier = $importedAsset->getLocalAssetIdentifier();
+            return $this->getAssetProxy($assetIdentifier, $assetSourceIdentifier);
+        } catch (AssetSourceServiceException | \Exception $e) {
+        }
+        return null;
     }
 }

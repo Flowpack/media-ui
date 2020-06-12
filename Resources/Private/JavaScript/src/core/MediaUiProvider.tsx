@@ -2,8 +2,8 @@ import * as React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { AssetSource, AssetCollection, Asset, Tag } from '../interfaces';
-import { useAssetQuery, useAssetSourceFilter } from '../hooks';
-import { useNotify } from './index';
+import { useAssetQuery, useAssetSourceFilter, useDeleteAsset } from '../hooks';
+import { useIntl, useNotify } from './index';
 import { useSetRecoilState } from 'recoil';
 import { selectedAssetSourceState } from '../state';
 
@@ -37,6 +37,7 @@ interface MediaUiProviderValues {
     isLoading: boolean;
     mediaTypeFilter: string;
     refetchAssets: () => Promise<boolean>;
+    handleDeleteAsset: (asset: Asset) => void;
     searchTerm: string;
     selectedAsset: Asset;
     selectedAssetForPreview: Asset;
@@ -66,6 +67,7 @@ export function MediaUiProvider({
     endpoints,
     csrfToken
 }: MediaUiProviderProps) {
+    const { translate } = useIntl();
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState<Tag>(null);
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
@@ -76,6 +78,7 @@ export function MediaUiProvider({
     const Notify = useNotify();
     const [assetSourceFilter] = useAssetSourceFilter();
     const setSelectedAssetSourceState = useSetRecoilState(selectedAssetSourceState);
+    const { deleteAsset } = useDeleteAsset();
 
     // Main query to fetch all initial data from api
     const { isLoading, error, assetData, refetchAssets } = useAssetQuery({
@@ -86,6 +89,28 @@ export function MediaUiProvider({
         limit: ASSETS_PER_PAGE,
         offset: (currentPage - 1) * ASSETS_PER_PAGE
     });
+
+    const handleDeleteAsset = (asset: Asset) => {
+        const confirm = window.confirm(
+            translate('action.deleteAsset.confirm', 'Do you really want to delete the asset ' + asset.label, [
+                asset.label
+            ])
+        );
+        if (!confirm) return;
+
+        deleteAsset(asset)
+            .then(() => {
+                if (asset.id === selectedAsset?.id) {
+                    setSelectedAsset(null);
+                }
+                refetchAssets().then(() => {
+                    Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
+                });
+            })
+            .catch(({ message }) => {
+                Notify.error(translate('action.deleteAsset.error', 'Error while trying to delete the asset'), message);
+            });
+    };
 
     // Update currentPage if asset count changes
     useEffect(() => {
@@ -125,6 +150,7 @@ export function MediaUiProvider({
                     currentPage,
                     dummyImage,
                     endpoints,
+                    handleDeleteAsset,
                     isLoading,
                     mediaTypeFilter,
                     refetchAssets,

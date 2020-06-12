@@ -1,15 +1,16 @@
-import useAssetSourceFilter from './useAssetSourceFilter';
-import useViewModeSelection, { VIEW_MODES } from './useViewModeSelection';
+import useAlternativeUploadFiles from './useAlternativeUploadFiles';
 import useAssetQuery from './useAssetQuery';
+import useAssetSourceFilter from './useAssetSourceFilter';
 import useConfigQuery from './useConfigQuery';
 import useDeleteAsset from './useDeleteAsset';
-import useUpdateAsset from './useUpdateAsset';
+import useFetch from './useFetch';
+import useImportAsset from './useImportAsset';
 import useTagAsset from './useTagAsset';
 import useUntagAsset from './useUntagAsset';
+import useUpdateAsset from './useUpdateAsset';
 import useUploadFile from './useUploadFile';
 import useUploadFiles from './useUploadFiles';
-import useFetch from './useFetch';
-import useAlternativeUploadFiles from './useAlternativeUploadFiles';
+import useViewModeSelection, { VIEW_MODES } from './useViewModeSelection';
 
 export {
     VIEW_MODES,
@@ -19,6 +20,7 @@ export {
     useConfigQuery,
     useDeleteAsset,
     useFetch,
+    useImportAsset,
     useTagAsset,
     useUntagAsset,
     useUpdateAsset,

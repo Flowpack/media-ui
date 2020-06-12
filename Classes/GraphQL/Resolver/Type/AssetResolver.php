@@ -128,7 +128,8 @@ class AssetResolver implements ResolverInterface
      */
     public function imported(AssetProxyInterface $assetProxy): bool
     {
-        return (bool)$assetProxy->getLocalAssetIdentifier();
+        // TODO: Find better way to make sure the asset originates from somewhere outside Neos
+        return (bool)$assetProxy->getLocalAssetIdentifier() && $assetProxy->getAssetSource()->getIdentifier() !== 'neos';
     }
 
     /**

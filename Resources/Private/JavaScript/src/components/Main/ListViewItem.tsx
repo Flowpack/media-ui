@@ -1,12 +1,9 @@
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
-
-import { IconButton } from '@neos-project/react-ui-components';
 
 import { Asset, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useMediaUi } from '../../core';
 import { humanFileSize } from '../../helper';
-import { selectedAssetSourceState } from '../../state';
+import { AssetActions } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {
@@ -67,9 +64,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 interface ListViewItemProos {
     asset: Asset;
     isSelected: boolean;
-    onSelect: (asset: Asset) => void;
-    onShowPreview: (asset: Asset) => void;
-    onDelete: (asset: Asset) => void;
 }
 
 const dateFormatOptions = {
@@ -79,14 +73,13 @@ const dateFormatOptions = {
     day: 'numeric'
 };
 
-export default function ListViewItem({ asset, isSelected, onSelect, onShowPreview, onDelete }: ListViewItemProos) {
+export default function ListViewItem({ asset, isSelected }: ListViewItemProos) {
     const classes = useStyles({ isSelected });
-    const { dummyImage } = useMediaUi();
-    const selectedAssetSource = useRecoilValue(selectedAssetSourceState);
+    const { dummyImage, setSelectedAsset } = useMediaUi();
     const { label, thumbnailUrl, file, lastModified } = asset;
 
     return (
-        <tr onClick={() => onSelect(asset)} className={classes.listViewItem}>
+        <tr onClick={() => setSelectedAsset(asset)} className={classes.listViewItem}>
             <td className={classes.previewColumn}>
                 <picture>
                     <img src={thumbnailUrl || dummyImage} alt={label} width={40} height={36} />
@@ -101,22 +94,7 @@ export default function ListViewItem({ asset, isSelected, onSelect, onShowPrevie
             <td className={classes.fileSizeColumn}>{humanFileSize(file.size)}</td>
             <td className={classes.mediaTypeColumn}>{file.mediaType}</td>
             <td className={classes.actionsColumn}>
-                <IconButton
-                    icon="expand-alt"
-                    size="regular"
-                    style="transparent"
-                    hoverStyle="lighter"
-                    onClick={() => onShowPreview(asset)}
-                />
-                {!selectedAssetSource?.readOnly && (
-                    <IconButton
-                        icon="trash"
-                        size="regular"
-                        style="transparent"
-                        hoverStyle="error"
-                        onClick={() => onDelete(asset)}
-                    />
-                )}
+                <AssetActions asset={asset} />
             </td>
         </tr>
     );

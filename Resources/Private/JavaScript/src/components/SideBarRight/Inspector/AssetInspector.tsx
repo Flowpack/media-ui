@@ -61,7 +61,7 @@ export default function AssetInspector() {
     const { untagAsset, loading: untagLoading } = useUntagAsset();
 
     const allCollections = assetCollections.map(collection => ({ label: collection.title }));
-    const isImported = !!selectedAsset?.imported;
+    const isEditable = selectedAsset?.localId;
     const isLoading = loading || tagLoading || untagLoading;
     const hasUnpublishedChanges =
         selectedAsset &&
@@ -74,9 +74,10 @@ export default function AssetInspector() {
         setLabel(selectedAsset?.label);
         setCaption(selectedAsset?.caption);
         setCopyrightNotice(selectedAsset?.copyrightNotice);
-        setTags(selectedAsset?.tags.map(tag => tag.label).sort());
-        setCollections(selectedAsset?.collections.map(collection => collection.title).sort());
+        setTags(selectedAsset?.tags.map(tag => tag.label).sort() || []);
+        setCollections(selectedAsset?.collections.map(collection => collection.title).sort() || []);
     };
+
     const handleApply = () => {
         if (
             label !== selectedAsset.label ||
@@ -97,6 +98,7 @@ export default function AssetInspector() {
                     Notify.error(translate('actions.deleteAsset.error', 'Error while updating the asset'), message);
                 });
         }
+
         // TODO: Combine all modifications into one query
         if (!tagsMatchAsset(tags, selectedAsset)) {
             // Add each tag that is missing in the asset
@@ -148,7 +150,7 @@ export default function AssetInspector() {
                             <div className={classes.propertyGroup}>
                                 <Label>{translate('inspector.title', 'Title')}</Label>
                                 <TextInput
-                                    disabled={!isImported || isLoading}
+                                    disabled={!isEditable || isLoading}
                                     type="text"
                                     value={label || ''}
                                     onChange={value => setLabel(value)}
@@ -159,7 +161,7 @@ export default function AssetInspector() {
                                 <Label>{translate('inspector.caption', 'Caption')}</Label>
                                 <TextArea
                                     className={classes.textArea}
-                                    disabled={!isImported || isLoading}
+                                    disabled={!isEditable || isLoading}
                                     minRows={3}
                                     expandedRows={6}
                                     value={caption || ''}
@@ -170,18 +172,18 @@ export default function AssetInspector() {
                                 <Label>{translate('inspector.copyrightNotice', 'Copyright notice')}</Label>
                                 <TextArea
                                     className={classes.textArea}
-                                    disabled={!isImported || isLoading}
+                                    disabled={!isEditable || isLoading}
                                     minRows={2}
                                     expandedRows={4}
                                     value={copyrightNotice || ''}
                                     onChange={value => setCopyrightNotice(value)}
                                 />
                             </div>
-                            {selectedAsset.tags.length ? (
+                            {isEditable ? (
                                 <div className={classes.propertyGroup}>
                                     <Label>{translate('inspector.tags', 'Tags')}</Label>
                                     <MultiSelectBox
-                                        disabled={!isImported || isLoading}
+                                        disabled={isLoading}
                                         placeholder={translate('inspector.tags.placeholder', 'Select a tag')}
                                         values={tags}
                                         optionValueField="label"
@@ -191,11 +193,11 @@ export default function AssetInspector() {
                                     />
                                 </div>
                             ) : null}
-                            {selectedAsset.collections.length ? (
+                            {isEditable ? (
                                 <div className={classes.propertyGroup}>
                                     <Label>{translate('inspector.assetCollections', 'Collections')}</Label>
                                     <MultiSelectBox
-                                        disabled={!isImported || isLoading}
+                                        disabled={isLoading}
                                         placeholder={translate(
                                             'inspector.collections.placeholder',
                                             'Select a collection'

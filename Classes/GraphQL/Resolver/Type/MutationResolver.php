@@ -52,10 +52,10 @@ class MutationResolver implements ResolverInterface
     {
         [
             'id' => $id,
-            'assetSource' => $assetSource,
+            'assetSourceId' => $assetSourceId,
         ] = $variables;
 
-        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSource);
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
             return false;
         }
@@ -85,13 +85,13 @@ class MutationResolver implements ResolverInterface
     {
         [
             'id' => $id,
-            'assetSource' => $assetSource,
+            'assetSourceId' => $assetSourceId,
             'label' => $label,
             'caption' => $caption,
             'copyrightNotice' => $copyrightNotice
         ] = $variables + ['label' => null, 'caption' => null, 'copyrightNotice' => 'nix'];
 
-        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSource);
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
             return null;
         }
@@ -133,11 +133,11 @@ class MutationResolver implements ResolverInterface
     {
         [
             'id' => $id,
-            'assetSource' => $assetSource,
+            'assetSourceId' => $assetSourceId,
             'tag' => $tagName
         ] = $variables;
 
-        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSource);
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
             return null;
         }
@@ -175,11 +175,11 @@ class MutationResolver implements ResolverInterface
     {
         [
             'id' => $id,
-            'assetSource' => $assetSource,
+            'assetSourceId' => $assetSourceId,
             'tag' => $tagName
         ] = $variables;
 
-        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSource);
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
             return null;
         }
@@ -230,5 +230,27 @@ class MutationResolver implements ResolverInterface
     {
         // TODO: Implement with GraphQL upload middleware like https://github.com/Ecodev/graphql-upload
         throw new Exception('Not implemented');
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return AssetProxyInterface|null
+     * @throws Exception
+     */
+    public function importAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    {
+        [
+            'id' => $id,
+            'assetSourceId' => $assetSourceId,
+        ] = $variables;
+
+        $importedAsset = $assetSourceContext->importAsset($assetSourceId, $id);
+
+        if (!$importedAsset) {
+            throw new Exception('Could not import asset', 1591972264);
+        }
+        return $importedAsset;
     }
 }
