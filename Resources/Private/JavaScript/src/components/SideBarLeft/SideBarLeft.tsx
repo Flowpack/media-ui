@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { createUseMediaUiStyles } from '../../core';
 import { AssetCollectionTree } from './Tree';
-import { AssetSourceList, AssetSourceDescription } from './index';
+import { AssetSourceList, AssetSourceDescription, UploadButton } from './index';
 import { MediaUiTheme, GridComponentProps } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -10,13 +10,15 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         gridArea: props => props.gridPosition,
         display: 'grid',
         gridAutoRows: 'min-content',
-        gridGap: theme.spacing.full
+        gridGap: theme.spacing.full,
+        marginBottom: theme.spacing.full,
+        overflowY: 'auto'
     }
 }));
 
 export default function SideBarLeft(props: GridComponentProps) {
     const classes = useStyles({ ...props });
-    const components = [AssetSourceList, AssetCollectionTree, AssetSourceDescription];
+    const components = [UploadButton, AssetSourceList, AssetCollectionTree, AssetSourceDescription];
 
     return (
         <div className={classes.leftSideBar}>

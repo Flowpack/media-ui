@@ -7,7 +7,7 @@ import IconLabel from '../IconLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceList: {
-        border: `1px solid ${theme.colors.contrastDark}`
+        border: `1px solid ${theme.colors.border}`
     },
     item: {
         display: 'flex',
@@ -19,8 +19,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         }
     },
     itemSelected: {
-        fontWeight: 'bold',
-        color: theme.colors.primaryBlue
+        '.neos &': {
+            fontWeight: 'bold',
+            color: theme.colors.primary
+        }
     }
 }));
 

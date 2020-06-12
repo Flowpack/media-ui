@@ -8,17 +8,16 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iptcData: {
         '& dl': {
             '& dt': {
-                backgroundColor: theme.alternatingBackgroundColor,
+                backgroundColor: theme.colors.alternatingBackground,
                 fontWeight: 'bold',
                 color: 'white',
                 padding: '8px 8px 0'
             },
             '& dd': {
-                backgroundColor: theme.alternatingBackgroundColor,
+                backgroundColor: theme.colors.alternatingBackground,
                 marginBottom: '1px',
                 padding: '8px',
-                lineHeight: '1.3',
-                color: theme.inactiveColor
+                color: theme.colors.inactive
             }
         }
     },

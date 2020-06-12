@@ -29,7 +29,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             "left top right"
             "left main right"
         `,
-        gridGap: theme.spacing.full
+        gridGap: theme.spacing.full,
+        lineHeight: 1.5
     })
 }));
 

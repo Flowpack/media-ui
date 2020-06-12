@@ -7,7 +7,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         overflow: 'hidden',
         width: '100%',
         '& dt': {
-            backgroundColor: theme.alternatingBackgroundColor,
+            backgroundColor: theme.colors.alternatingBackground,
             color: 'white',
             fontWeight: 'bold',
             padding: '8px 8px 0',
@@ -15,11 +15,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             whiteSpace: 'nowrap'
         },
         '& dd': {
-            backgroundColor: theme.alternatingBackgroundColor,
-            color: theme.inactiveColor,
-            lineHeight: '1.3',
+            backgroundColor: theme.colors.alternatingBackground,
+            color: theme.colors.inactive,
             margin: '0 0 1px',
-            padding: '8px',
+            padding: theme.spacing.half,
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap'
         }

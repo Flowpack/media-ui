@@ -28,6 +28,8 @@ use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
+use Neos\Utility\Exception\FilesException;
+use Neos\Utility\Files;
 use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
 
@@ -148,6 +150,34 @@ class QueryResolver implements ResolverInterface
         }
 
         return $assetProxyRepository->findAll()->getQuery();
+    }
+
+    /**
+     * Returns an array with helpful configurations for interacting with the API
+     *
+     * @param $_
+     * @return array
+     */
+    public function config($_): array
+    {
+        return [
+            'uploadMaxFileSize' => $this->getMaximumFileUploadSize(),
+        ];
+    }
+
+    /**
+     * Returns the lowest configured maximum upload file size
+     *
+     * @return int
+     */
+    protected function getMaximumFileUploadSize(): int
+    {
+        try {
+            return (int)min(Files::sizeStringToBytes(ini_get('post_max_size')),
+                Files::sizeStringToBytes(ini_get('upload_max_filesize')));
+        } catch (FilesException $e) {
+            return 0;
+        }
     }
 
     /**

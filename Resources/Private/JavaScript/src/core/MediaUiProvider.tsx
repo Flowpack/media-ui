@@ -11,6 +11,11 @@ interface MediaUiProviderProps {
     selectionMode?: boolean;
     containerRef: React.ElementRef<any>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
+    csrfToken: string;
+    endpoints: {
+        graphql: string;
+        upload: string;
+    };
 }
 
 interface MediaUiProviderValues {
@@ -20,8 +25,13 @@ interface MediaUiProviderValues {
     assetSources: AssetSource[];
     assets: Asset[];
     containerRef: React.ElementRef<any>;
+    csrfToken: string;
     currentPage: number;
     dummyImage: string;
+    endpoints: {
+        graphql: string;
+        upload: string;
+    };
     isLoading: boolean;
     mediaTypeFilter: string;
     refetchAssets: () => Promise<boolean>;
@@ -50,7 +60,9 @@ export function MediaUiProvider({
     dummyImage,
     selectionMode = false,
     onAssetSelection = null,
-    containerRef
+    containerRef,
+    endpoints,
+    csrfToken
 }: MediaUiProviderProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState<Tag>(null);
@@ -99,25 +111,27 @@ export function MediaUiProvider({
         <>
             <MediaUiContext.Provider
                 value={{
-                    isLoading,
-                    searchTerm,
-                    setSearchTerm,
-                    tagFilter,
-                    setTagFilter,
                     assetCollectionFilter,
-                    setAssetCollectionFilter,
-                    mediaTypeFilter: mediaTypeFilter,
-                    setMediaTypeFilter: setMediaTypeFilter,
-                    currentPage,
-                    setCurrentPage,
-                    selectedAsset,
-                    setSelectedAsset,
-                    selectedAssetForPreview,
-                    setSelectedAssetForPreview,
-                    dummyImage,
-                    selectionMode,
                     containerRef,
+                    csrfToken,
+                    currentPage,
+                    dummyImage,
+                    endpoints,
+                    isLoading,
+                    mediaTypeFilter,
                     refetchAssets,
+                    searchTerm,
+                    selectedAsset,
+                    selectedAssetForPreview,
+                    selectionMode,
+                    setAssetCollectionFilter,
+                    setCurrentPage,
+                    setMediaTypeFilter,
+                    setSearchTerm,
+                    setSelectedAsset,
+                    setSelectedAssetForPreview,
+                    setTagFilter,
+                    tagFilter,
                     ...assetData
                 }}
             >

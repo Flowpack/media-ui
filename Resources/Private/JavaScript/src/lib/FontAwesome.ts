@@ -8,9 +8,12 @@ import { faAngleLeft } from '@fortawesome/free-solid-svg-icons/faAngleLeft';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons/faAngleRight';
 import { faBan } from '@fortawesome/free-solid-svg-icons/faBan';
 import { faBox } from '@fortawesome/free-solid-svg-icons/faBox';
+import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
+import { faChevronCircleDown } from '@fortawesome/free-solid-svg-icons/faChevronCircleDown';
 import { faChevronCircleUp } from '@fortawesome/free-solid-svg-icons/faChevronCircleUp';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
+import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons/faExpandAlt';
 import { faFile } from '@fortawesome/free-solid-svg-icons/faFile';
 import { faFileAudio } from '@fortawesome/free-solid-svg-icons/faFileAudio';
@@ -23,6 +26,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import { faPhotoVideo } from '@fortawesome/free-solid-svg-icons/faPhotoVideo';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
 import { faSortDown } from '@fortawesome/free-solid-svg-icons/faSortDown';
 import { faTag } from '@fortawesome/free-solid-svg-icons/faTag';
 import { faTags } from '@fortawesome/free-solid-svg-icons/faTags';
@@ -31,6 +35,7 @@ import { faThList } from '@fortawesome/free-solid-svg-icons/faThList';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
+import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload';
 
 import { faNeos } from '@fortawesome/free-brands-svg-icons/faNeos';
 
@@ -43,9 +48,12 @@ export default function loadIconLibrary() {
         faAngleRight,
         faBan,
         faBox,
+        faCheck,
+        faChevronCircleDown,
         faChevronCircleUp,
         faChevronDown,
         faChevronUp,
+        faExclamationCircle,
         faExpandAlt,
         faFile,
         faFileAudio,
@@ -59,6 +67,7 @@ export default function loadIconLibrary() {
         faPhotoVideo,
         faPlus,
         faQuestion,
+        faSpinner,
         faSortDown,
         faTag,
         faTags,
@@ -67,5 +76,6 @@ export default function loadIconLibrary() {
         faTimes,
         faTimesCircle,
         faTrashAlt,
+        faUpload
     );
 }

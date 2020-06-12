@@ -1,4 +1,4 @@
-import { ASSETS } from './Assets';
+import { ASSETS } from './AssetsQuery';
 import { ASSET_SOURCE_FILTER, SET_ASSET_SOURCE_FILTER } from './AssetSourceFilterQuery';
 import {
     ASSET_COLLECTION_FRAGMENT,
@@ -8,8 +8,9 @@ import {
     IPTC_PROPERTY_FRAGMENT,
     TAG_FRAGMENT
 } from './Fragments';
-import { UPDATE_ASSET, DELETE_ASSET, TAG_ASSET, UNTAG_ASSET } from './Mutations';
+import { UPDATE_ASSET, DELETE_ASSET, TAG_ASSET, UNTAG_ASSET, UPLOAD_FILE, UPLOAD_FILES } from './Mutations';
 import { VIEW_MODE_SELECTION, SET_VIEW_MODE_SELECTION } from './ViewModeSelectionQuery';
+import { CONFIG } from './ConfigQuery';
 
 export {
     ASSETS,
@@ -17,6 +18,7 @@ export {
     ASSET_FRAGMENT,
     ASSET_SOURCE_FILTER,
     ASSET_SOURCE_FRAGMENT,
+    CONFIG,
     DELETE_ASSET,
     FILE_FRAGMENT,
     IPTC_PROPERTY_FRAGMENT,
@@ -26,5 +28,7 @@ export {
     TAG_FRAGMENT,
     UNTAG_ASSET,
     UPDATE_ASSET,
+    UPLOAD_FILES,
+    UPLOAD_FILE,
     VIEW_MODE_SELECTION
 };

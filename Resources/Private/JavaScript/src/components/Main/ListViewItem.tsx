@@ -4,17 +4,17 @@ import { IconButton } from '@neos-project/react-ui-components';
 
 import { Asset, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useMediaUi } from '../../core';
-import { humanFileSize } from '../../helper/FileSize';
+import { humanFileSize } from '../../helper';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {
         cursor: 'pointer',
-        backgroundColor: ({ isSelected }) => (isSelected ? theme.primaryColor : theme.mainBackgroundColor),
+        backgroundColor: ({ isSelected }) => (isSelected ? theme.colors.primary : theme.colors.mainBackground),
         '&:nth-of-type(2n)': {
-            backgroundColor: theme.alternatingBackgroundColor
+            backgroundColor: theme.colors.alternatingBackground
         },
         '&:hover': {
-            backgroundColor: theme.primaryColor
+            backgroundColor: theme.colors.primary
         }
     },
     textColumn: {
@@ -44,8 +44,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             width: '200px',
             display: 'inline-block',
             overflowX: 'hidden',
-            textOverflow: 'ellipsis',
-            lineHeight: '1.5'
+            textOverflow: 'ellipsis'
         }
     },
     lastModifiedColumn: {

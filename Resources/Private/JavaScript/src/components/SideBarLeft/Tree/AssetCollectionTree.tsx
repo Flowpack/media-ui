@@ -9,7 +9,7 @@ import IconLabel from '../../IconLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
-        border: `1px solid ${theme.colors.contrastDark}`
+        border: `1px solid ${theme.colors.border}`
     },
     iconWrap: {
         width: theme.spacing.goldenUnit,
@@ -22,10 +22,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         paddingLeft: theme.spacing.half
     },
     toolbar: {
-        borderTop: `1px solid ${theme.colors.contrastDark}`
+        borderTop: `1px solid ${theme.colors.border}`
     },
     tree: {
-        borderTop: `1px solid ${theme.colors.contrastDark}`
+        borderTop: `1px solid ${theme.colors.border}`
     }
 }));
 

@@ -1,5 +1,4 @@
--
-  requestFilter: 'isPackage("Flowpack.Media.Ui") && isController("Media")'
+- requestFilter: 'isPackage("Flowpack.Media.Ui") && isController("Media") && isFormat("html")'
   viewObjectName: 'Neos\Fusion\View\FusionView'
   options:
     fusionPathPatterns:

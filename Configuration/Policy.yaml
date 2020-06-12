@@ -5,9 +5,15 @@ privilegeTargets:
     'Flowpack.Media.Ui:Queries':
       matcher: 'method(public Flowpack\Media\Ui\GraphQL\Resolver\(.*)Resolver->.*()) || method(t3n\GraphQL\Controller\GraphQLController->queryAction())'
 
+  'Neos\Neos\Security\Authorization\Privilege\ModulePrivilege':
+    'Flowpack.Media.Ui:Backend.Module.Management.Media':
+      matcher: 'management/mediaui'
+
 roles:
   'Neos.Neos:AbstractEditor':
     privileges:
+      - privilegeTarget: 'Flowpack.Media.Ui:Backend.Module.Management.Media'
+        permission: GRANT
       - privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
         permission: GRANT
       - privilegeTarget: 'Flowpack.Media.Ui:Queries'

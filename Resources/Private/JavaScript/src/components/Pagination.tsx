@@ -8,28 +8,27 @@ import { MediaUiTheme } from '../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
-        display: 'flex',
+        display: 'grid',
+        gridTemplateColumns: '250px 1fr 250px',
         position: 'fixed',
         bottom: 0,
         left: 0,
         right: 0,
-        justifyContent: 'center',
-        borderTop: `1px solid ${theme.borderColor}`,
-        backgroundColor: theme.moduleBackgroundColor,
+        borderTop: `1px solid ${theme.colors.border}`,
+        backgroundColor: theme.colors.moduleBackground,
         zIndex: theme.paginationZIndex
     },
-    selected: {
-        border: `1px solid ${theme.borderColor}`,
-        borderTop: 0,
-        borderBottom: 0,
-        '& a': {
-            color: theme.primaryColor
-        }
+    assetCount: {
+        height: '100%',
+        alignSelf: 'flex-start',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        userSelect: 'none'
     },
     list: {
         display: 'flex',
-        margin: '0 -.5rem',
-        justifyContent: 'center',
+        justifySelf: 'center',
         listStyleType: 'none',
         textAlign: 'center',
         '& > li': {
@@ -38,14 +37,22 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             lineHeight: '2.4rem',
             '& a': {
                 display: 'block',
-                height: '2.4rem',
-                width: '2.4rem',
+                height: '100%',
+                width: '100%',
                 cursor: 'pointer',
                 '&:hover': {
-                    backgroundColor: theme.primaryColor,
+                    backgroundColor: theme.colors.primary,
                     color: 'white'
                 }
             }
+        }
+    },
+    selected: {
+        border: `1px solid ${theme.colors.border}`,
+        borderTop: 0,
+        borderBottom: 0,
+        '& a': {
+            color: theme.colors.primary
         }
     }
 }));
@@ -99,69 +106,70 @@ export default function Pagination() {
     // TODO: Replace left and right chevrons with proper Icon components from Neos.UI
 
     return (
-        <>
+        <nav className={classes.pagination}>
+            <div className={classes.assetCount}>
+                {assetCount} {translate('pagination.assetCount', 'assets')}
+            </div>
             {numberOfPages > 0 && (
-                <nav className={classes.pagination}>
-                    <ol className={classes.list}>
-                        {currentPage > 1 && (
-                            <li>
-                                <IconButton
-                                    icon="angle-left"
-                                    size="regular"
-                                    style="transparent"
-                                    hoverStyle="brand"
-                                    title={translate('pagination.previousPageTitle', `Go to previous page`)}
-                                    onClick={() => handlePageClick(currentPage - 1)}
-                                />
-                            </li>
-                        )}
-                        {displayRange.start > 1 && (
-                            <li>
-                                <a
-                                    onClick={() => handlePageClick(1)}
-                                    title={translate('pagination.firstPageTitle', `Go to first page`)}
-                                >
-                                    1
-                                </a>
-                            </li>
-                        )}
-                        {displayRange.hasLessPages && <li>…</li>}
-                        {displayRange.pages.map(page => (
-                            <li key={page} className={currentPage === page ? classes.selected : null}>
-                                <a
-                                    onClick={() => handlePageClick(page)}
-                                    title={translate('pagination.page', `Go to page ${page}`, [page])}
-                                >
-                                    {page}
-                                </a>
-                            </li>
-                        ))}
-                        {displayRange.hasMorePages && <li>…</li>}
-                        {displayRange.end < numberOfPages && (
-                            <li>
-                                <a
-                                    onClick={() => handlePageClick(numberOfPages)}
-                                    title={translate('pagination.lastPageTitle', `Go to last page`)}
-                                >
-                                    {numberOfPages}
-                                </a>
-                            </li>
-                        )}
-                        {currentPage < numberOfPages && (
-                            <li>
-                                <IconButton
-                                    icon="angle-right"
-                                    size="regular"
-                                    style="transparent"
-                                    hoverStyle="brand"
-                                    title={translate('pagination.nextPageTitle', `Go to next page`)}
-                                    onClick={() => handlePageClick(currentPage + 1)}
-                                />
-                            </li>
-                        )}
-                    </ol>
-                </nav>
+                <ol className={classes.list}>
+                    {currentPage > 1 && (
+                        <li>
+                            <IconButton
+                                icon="angle-left"
+                                size="regular"
+                                style="transparent"
+                                hoverStyle="brand"
+                                title={translate('pagination.previousPageTitle', `Go to previous page`)}
+                                onClick={() => handlePageClick(currentPage - 1)}
+                            />
+                        </li>
+                    )}
+                    {displayRange.start > 1 && (
+                        <li>
+                            <a
+                                onClick={() => handlePageClick(1)}
+                                title={translate('pagination.firstPageTitle', `Go to first page`)}
+                            >
+                                1
+                            </a>
+                        </li>
+                    )}
+                    {displayRange.hasLessPages && <li>…</li>}
+                    {displayRange.pages.map(page => (
+                        <li key={page} className={currentPage === page ? classes.selected : null}>
+                            <a
+                                onClick={() => handlePageClick(page)}
+                                title={translate('pagination.page', `Go to page ${page}`, [page])}
+                            >
+                                {page}
+                            </a>
+                        </li>
+                    ))}
+                    {displayRange.hasMorePages && <li>…</li>}
+                    {displayRange.end < numberOfPages && (
+                        <li>
+                            <a
+                                onClick={() => handlePageClick(numberOfPages)}
+                                title={translate('pagination.lastPageTitle', `Go to last page`)}
+                            >
+                                {numberOfPages}
+                            </a>
+                        </li>
+                    )}
+                    {currentPage < numberOfPages && (
+                        <li>
+                            <IconButton
+                                icon="angle-right"
+                                size="regular"
+                                style="transparent"
+                                hoverStyle="brand"
+                                title={translate('pagination.nextPageTitle', `Go to next page`)}
+                                onClick={() => handlePageClick(currentPage + 1)}
+                            />
+                        </li>
+                    )}
+                </ol>
             )}
-        </>
+        </nav>
     );
 }

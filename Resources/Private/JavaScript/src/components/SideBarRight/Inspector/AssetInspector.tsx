@@ -6,7 +6,7 @@ import { Button, Label, MultiSelectBox, TextArea, TextInput } from '@neos-projec
 import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../../core';
 import { Asset, MediaUiTheme } from '../../../interfaces';
 import { PropertyList, PropertyListItem } from '.';
-import { humanFileSize } from '../../../helper/FileSize';
+import { humanFileSize } from '../../../helper';
 import { useTagAsset, useUntagAsset, useUpdateAsset } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -22,7 +22,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     actions: {
         display: 'flex',
         position: 'sticky',
-        backgroundColor: theme.colors.contrastNeutral,
+        backgroundColor: theme.colors.mainBackground,
         bottom: 0,
         '& > *': {
             flex: 1
@@ -162,7 +162,7 @@ export default function AssetInspector() {
                                     disabled={!isImported || isLoading}
                                     minRows={3}
                                     expandedRows={6}
-                                    value={caption}
+                                    value={caption || ''}
                                     onChange={value => setCaption(value)}
                                 />
                             </div>
@@ -173,7 +173,7 @@ export default function AssetInspector() {
                                     disabled={!isImported || isLoading}
                                     minRows={2}
                                     expandedRows={4}
-                                    value={copyrightNotice}
+                                    value={copyrightNotice || ''}
                                     onChange={value => setCopyrightNotice(value)}
                                 />
                             </div>

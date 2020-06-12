@@ -46,3 +46,21 @@ export const UNTAG_ASSET = gql`
     }
     ${ASSET_FRAGMENT}
 `;
+
+export const UPLOAD_FILE = gql`
+    mutation UploadFile($file: Upload!) {
+        uploadFile(file: $file) {
+            ...AssetProps
+        }
+    }
+    ${ASSET_FRAGMENT}
+`;
+
+export const UPLOAD_FILES = gql`
+    mutation UploadFiles($files: [Upload!]!) {
+        uploadFiles(files: $files) {
+            ...AssetProps
+        }
+    }
+    ${ASSET_FRAGMENT}
+`;

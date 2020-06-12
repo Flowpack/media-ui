@@ -10,7 +10,8 @@ module.exports = {
   plugins: [
     '@typescript-eslint',
     'prettier',
-    'react'
+    'react',
+    'react-hooks'
   ],
   /*parserOptions: {
     jsx: true,
@@ -38,6 +39,12 @@ module.exports = {
       singleQuote: true,
       tabWidth: 4,
       printWidth: 120
-    }]
+    }],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": [
+      "warn", {
+        "additionalHooks": "useRecoilCallback"
+      }
+    ]
   }
 };

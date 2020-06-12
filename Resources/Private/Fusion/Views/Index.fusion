@@ -2,8 +2,16 @@ Flowpack.Media.Ui.MediaController {
     index = Neos.Fusion:Component {
         data-endpoints = Neos.Fusion:DataStructure {
             graphql = '/neos/graphql/media-assets'
+            upload = Neos.Fusion:UriBuilder {
+                package = 'Flowpack.Media.Ui'
+                controller = 'Media'
+                action = 'upload'
+                format = 'json'
+            }
             @process.stringify = ${Json.stringify(value)}
         }
+
+        data-csrf-token = ${Security.csrfToken()}
 
         data-dummy-image = Neos.Fusion:ResourceUri {
             path = 'resource://Neos.Neos/Public/Images/dummy-image.svg'

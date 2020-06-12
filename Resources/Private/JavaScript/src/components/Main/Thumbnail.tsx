@@ -12,7 +12,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         flexDirection: 'column',
         position: 'relative',
         '&:hover $label': {
-            backgroundColor: theme.primaryColor
+            backgroundColor: theme.colors.primary
         },
         '&:hover $toolBar': {
             display: 'block'
@@ -20,7 +20,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     picture: {
         cursor: 'pointer',
-        backgroundColor: theme.assetBackgroundColor,
+        backgroundColor: theme.colors.assetBackground,
         '& img': {
             height: '250px',
             width: '100%',
@@ -28,7 +28,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         }
     },
     label: {
-        backgroundColor: ({ isSelected }) => (isSelected ? theme.primaryColor : theme.captionBackgroundColor),
+        backgroundColor: ({ isSelected }) => (isSelected ? theme.colors.primary : theme.colors.captionBackground),
         padding: '.8rem .8rem',
         display: 'flex',
         alignItems: 'center',

@@ -6,7 +6,7 @@ import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceDescription: {
-        border: `1px solid ${theme.borderColor}`,
+        border: `1px solid ${theme.colors.border}`,
         '& .ReactCollapse--collapse': {
             transition: `height ${theme.transition.slow}`
         }

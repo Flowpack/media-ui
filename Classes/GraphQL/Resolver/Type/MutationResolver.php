@@ -205,4 +205,30 @@ class MutationResolver implements ResolverInterface
 
         return $assetProxy;
     }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return AssetProxyInterface|null
+     * @throws Exception
+     */
+    public function uploadFile($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    {
+        // TODO: Implement with GraphQL upload middleware like https://github.com/Ecodev/graphql-upload
+        throw new Exception('Not implemented');
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return AssetProxyInterface|null
+     * @throws Exception
+     */
+    public function uploadFiles($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    {
+        // TODO: Implement with GraphQL upload middleware like https://github.com/Ecodev/graphql-upload
+        throw new Exception('Not implemented');
+    }
 }

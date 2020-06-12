@@ -42,6 +42,8 @@ type Query {
     all tags
     """
     tags: [Tag!]!
+
+    config: Config!
 }
 
 type Mutation {
@@ -51,24 +53,39 @@ type Mutation {
         label: String,
         caption: String,
         copyrightNotice: String
-    ): Asset
+    ): Asset!
 
     deleteAsset(
         id: AssetId!,
         assetSource: AssetSourceId!
-    ): Boolean
+    ): Boolean!
 
     tagAsset(
         id: AssetId!,
         assetSource: AssetSourceId!,
         tag: TagLabel
-    ): Asset
+    ): Asset!
 
     untagAsset(
         id: AssetId!,
         assetSource: AssetSourceId!,
         tag: TagLabel
-    ): Asset
+    ): Asset!
+
+    uploadFile(
+        file: Upload!
+    ): Asset!
+
+    uploadFiles(
+        files: [Upload!]!
+    ): [Asset!]!
+}
+
+"""
+Configuration object containing helpful parameters for API interaction
+"""
+type Config {
+    uploadMaxFileSize: Int
 }
 
 """
@@ -243,6 +260,11 @@ scalar Url
 The label of a tag
 """
 scalar TagLabel
+
+"""
+A file upload from the browser
+"""
+scalar Upload
 
 schema {
     query: Query

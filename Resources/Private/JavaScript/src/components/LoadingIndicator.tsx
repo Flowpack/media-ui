@@ -30,7 +30,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     bar: {
         height: '100%',
         position: 'relative',
-        backgroundColor: theme.deletedColor,
+        backgroundColor: theme.colors.warn,
         animation: '$cssloadWidth 2s cubic-bezier(.45, 0, 1, 1) infinite'
     }
 }));

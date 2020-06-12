@@ -13,7 +13,7 @@ export const ASSETS = gql`
         $limit: Int
         $offset: Int
     ) {
-        assetSourceFilter @client(always: true) @export(as: "assetSource")
+        assetSourceFilter @client(always: true) @export(as: "assetSourceId")
         assets(
             searchTerm: $searchTerm
             assetSourceId: $assetSourceId
