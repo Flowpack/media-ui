@@ -36,7 +36,7 @@ export default function ListView(props: GridComponentProps) {
 
     const handleDeleteAction = (asset: Asset) => {
         const confirm = window.confirm(
-            translate('action.deleteAsset.confirm', 'Do you really want to delete the asset {0}', [asset.label])
+            translate('action.deleteAsset.confirm', 'Do you really want to delete the asset ' + asset.label, [asset.label])
         );
         if (!confirm) return;
 

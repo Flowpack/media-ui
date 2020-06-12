@@ -1,11 +1,14 @@
 import * as React from 'react';
+import { useRecoilValue } from 'recoil';
+
 import { Tree, IconButton } from '@neos-project/react-ui-components';
+
 import { createUseMediaUiStyles, useMediaUi, useIntl, useNotify } from '../../../core';
-import { useAssetSourceFilter } from '../../../hooks';
 import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import IconLabel from '../../IconLabel';
+import { selectedAssetSourceState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
@@ -37,14 +40,11 @@ const AssetCollectionTree = () => {
         assetCollections,
         assetCollectionFilter,
         setAssetCollectionFilter,
-        assetSources,
         tagFilter,
         setTagFilter,
         tags
     } = useMediaUi();
-    const [assetSourceFilter] = useAssetSourceFilter();
-
-    const selectedAssetSource = assetSources.find(assetSource => assetSource.id === assetSourceFilter);
+    const selectedAssetSource = useRecoilValue(selectedAssetSourceState);
 
     const onClickAdd = () => {
         Notify.info('This feature has not been implemented yet');

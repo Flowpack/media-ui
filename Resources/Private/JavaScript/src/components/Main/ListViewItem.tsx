@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
 import { Asset, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useMediaUi } from '../../core';
 import { humanFileSize } from '../../helper';
+import { selectedAssetSourceState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {
@@ -80,6 +82,7 @@ const dateFormatOptions = {
 export default function ListViewItem({ asset, isSelected, onSelect, onShowPreview, onDelete }: ListViewItemProos) {
     const classes = useStyles({ isSelected });
     const { dummyImage } = useMediaUi();
+    const selectedAssetSource = useRecoilValue(selectedAssetSourceState);
     const { label, thumbnailUrl, file, lastModified } = asset;
 
     return (
@@ -105,13 +108,15 @@ export default function ListViewItem({ asset, isSelected, onSelect, onShowPrevie
                     hoverStyle="lighter"
                     onClick={() => onShowPreview(asset)}
                 />
-                <IconButton
-                    icon="trash"
-                    size="regular"
-                    style="transparent"
-                    hoverStyle="error"
-                    onClick={() => onDelete(asset)}
-                />
+                {!selectedAssetSource?.readOnly && (
+                    <IconButton
+                        icon="trash"
+                        size="regular"
+                        style="transparent"
+                        hoverStyle="error"
+                        onClick={() => onDelete(asset)}
+                    />
+                )}
             </td>
         </tr>
     );

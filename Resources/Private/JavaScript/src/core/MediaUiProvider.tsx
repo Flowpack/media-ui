@@ -2,8 +2,10 @@ import * as React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { AssetSource, AssetCollection, Asset, Tag } from '../interfaces';
-import { useAssetQuery } from '../hooks';
+import { useAssetQuery, useAssetSourceFilter } from '../hooks';
 import { useNotify } from './index';
+import { useSetRecoilState } from 'recoil';
+import { selectedAssetSourceState } from '../state';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
@@ -72,6 +74,8 @@ export function MediaUiProvider({
     const [selectedAssetForPreview, setSelectedAssetForPreview] = useState<Asset>();
     const [mediaTypeFilter, setMediaTypeFilter] = useState('');
     const Notify = useNotify();
+    const [assetSourceFilter] = useAssetSourceFilter();
+    const setSelectedAssetSourceState = useSetRecoilState(selectedAssetSourceState);
 
     // Main query to fetch all initial data from api
     const { isLoading, error, assetData, refetchAssets } = useAssetQuery({
@@ -101,6 +105,10 @@ export function MediaUiProvider({
             Notify.warning('Selecting external assets has not been implemented yet');
         }
     }, [selectedAsset]);
+
+    useEffect(() => {
+        setSelectedAssetSourceState(assetData.assetSources.find(assetSource => assetSource.id === assetSourceFilter));
+    }, [assetData.assetSources, assetSourceFilter]);
 
     if (error) {
         console.error(error);

@@ -1,3 +1,4 @@
 import uploadDialogState from './uploadDialogState';
+import selectedAssetSourceState from './selectedAssetSourceState';
 
-export { uploadDialogState };
+export { uploadDialogState, selectedAssetSourceState };
