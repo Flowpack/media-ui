@@ -7,10 +7,11 @@
     "postinstall": "patch-package",
     "lint": "tsc --noEmit && eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
     "test": "exit 0",
+    "e2e": "echo 'TODO: implement e2e tests'",
     "dev": "node Resources/Private/JavaScript/dev/server",
-    "watch:parcel": "parcel watch Resources/Private/JavaScript/src/index.tsx --public-url . --out-dir Resources/Public/Assets -o main.bundle.js",
+    "watch:module": "parcel watch Resources/Private/JavaScript/src/index.tsx --public-url . --out-dir Resources/Public/Assets -o main.bundle.js",
     "watch:ui-plugin": "cd Resources/Private/JavaScript/AssetEditor && yarn watch",
-    "watch": "concurrently -k \"yarn watch:parcel\" \"yarn watch:ui-plugin\"",
+    "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:ui-plugin\"",
     "build": "yarn build:module && yarn build:ui-plugin",
     "build:module": "parcel build Resources/Private/JavaScript/src/index.tsx --public-url . --out-dir Resources/Public/Assets -o main.bundle.js",
     "build:ui-plugin": "cd Resources/Private/JavaScript/AssetEditor && yarn build"
