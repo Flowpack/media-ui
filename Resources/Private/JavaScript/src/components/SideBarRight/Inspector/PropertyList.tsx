@@ -6,6 +6,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     propertyList: {
         overflow: 'hidden',
         width: '100%',
+        maxWidth: '100%',
         '& dt': {
             backgroundColor: theme.colors.alternatingBackground,
             color: 'white',
@@ -20,6 +21,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             margin: '0 0 1px',
             padding: theme.spacing.half,
             textOverflow: 'ellipsis',
+            overflowX: 'hidden',
             whiteSpace: 'nowrap'
         }
     }
