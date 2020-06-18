@@ -59,20 +59,6 @@ window.onload = async (): Promise<void> => {
         return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
     };
 
-    // Lightweight port of the method with the same name from Neos UI
-    // TODO: Remove when all queries are done via GraphQL
-    const fetchWithErrorHandling = {
-        withCsrfToken: makeFetchRequest => {
-            const fetchOptions = makeFetchRequest(csrfToken);
-            const { url } = fetchOptions;
-            if (!url) {
-                throw new Error('Url option not provided');
-            }
-            delete fetchOptions.url;
-            return fetch(url, fetchOptions).then(response => response.json());
-        }
-    };
-
     const AppWithHmr = hot(module)(App);
 
     render(
@@ -80,12 +66,7 @@ window.onload = async (): Promise<void> => {
             <NotifyProvider notificationApi={Notification}>
                 <ApolloProvider client={client}>
                     <RecoilRoot>
-                        <MediaUiProvider
-                            fetchWithErrorHandling={fetchWithErrorHandling}
-                            endpoints={endpoints}
-                            dummyImage={dummyImage}
-                            containerRef={containerRef}
-                        >
+                        <MediaUiProvider endpoints={endpoints} dummyImage={dummyImage} containerRef={containerRef}>
                             <MediaUiThemeProvider>
                                 <DndProvider backend={HTML5Backend}>
                                     <AppWithHmr />

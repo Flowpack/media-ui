@@ -73,7 +73,7 @@ const typeDefs = gql`
     ${fs.readFileSync(path.join(__dirname, '../../GraphQL/schema.root.graphql'), 'utf8')}
 `;
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers, uploads: false });
 const app = express();
 
 server.applyMiddleware({ app, path: '/graphql' });

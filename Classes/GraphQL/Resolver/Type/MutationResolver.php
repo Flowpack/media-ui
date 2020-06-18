@@ -17,10 +17,15 @@ use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\ResourceManagement\ResourceManager;
+use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
+use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Media\Exception\AssetServiceException;
+use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
 
 /**
@@ -39,6 +44,30 @@ class MutationResolver implements ResolverInterface
      * @var TagRepository
      */
     protected $tagRepository;
+
+    /**
+     * @Flow\Inject
+     * @var ResourceManager
+     */
+    protected $resourceManager;
+
+    /**
+     * @Flow\Inject
+     * @var AssetModelMappingStrategyInterface
+     */
+    protected $mappingStrategy;
+
+    /**
+     * @Flow\Inject
+     * @var PersistenceManagerInterface
+     */
+    protected $persistenceManager;
+
+    /**
+     * @Flow\Inject
+     * @var LoggerInterface
+     */
+    protected $systemLogger;
 
     /**
      * @param $_
@@ -207,29 +236,76 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
+     * Stores the given file and returns an array with the result
+     *
      * @param $_
      * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
-     * @throws Exception
+     * @return array
      */
-    public function uploadFile($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    public function uploadFile($_, array $variables): array
     {
-        // TODO: Implement with GraphQL upload middleware like https://github.com/Ecodev/graphql-upload
-        throw new Exception('Not implemented');
+        /** @var FlowUploadedFile $file */
+        $file = $variables['file'];
+
+        $success = false;
+        $result = 'ERROR';
+
+        $filename = $file->getClientFilename();
+        try {
+            $resource = $this->resourceManager->importResource($file->getStream()->detach());
+        } catch (\Neos\Flow\ResourceManagement\Exception $e) {
+            $this->systemLogger->error('Could not import uploaded file');
+            $resource = null;
+        }
+
+        if ($resource) {
+            $resource->setFilename($filename);
+            $resource->setMediaType($file->getClientMediaType());
+
+            if ($this->assetRepository->findOneByResourceSha1($resource->getSha1())) {
+                $result = 'EXISTS';
+            } else {
+                try {
+                    $className = $this->mappingStrategy->map($resource);
+                    $asset = new $className($resource);
+
+                    if ($this->persistenceManager->isNewObject($asset)) {
+                        $this->assetRepository->add($asset);
+                        $result = 'ADDED';
+                        $success = true;
+                    } else {
+                        $result = 'EXISTS';
+                    }
+                } catch (IllegalObjectTypeException $e) {
+                    $this->systemLogger->error('Type of uploaded file cannot be stored');
+                }
+            }
+        }
+
+        return [
+            'filename' => $filename,
+            'success' => $success,
+            'result' => $result,
+        ];
     }
 
     /**
+     * Stores all given files and returns an array of results for each upload
+     *
      * @param $_
      * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
-     * @throws Exception
+     * @return array<array>
      */
-    public function uploadFiles($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    public function uploadFiles($_, array $variables): array
     {
-        // TODO: Implement with GraphQL upload middleware like https://github.com/Ecodev/graphql-upload
-        throw new Exception('Not implemented');
+        /** @var array<FlowUploadedFile> $files */
+        $files = $variables['files'];
+
+        $results = [];
+        foreach ($files as $file) {
+            $results[$file->getClientFilename()] = $this->uploadFile($_, ['file' => $file]);
+        }
+        return $results;
     }
 
     /**

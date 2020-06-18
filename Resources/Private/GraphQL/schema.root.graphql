@@ -73,12 +73,12 @@ type Mutation {
     ): Asset!
 
     uploadFile(
-        file: UploadedFile!
-    ): Asset!
+        file: Upload!
+    ): FileUploadResult!
 
     uploadFiles(
-        files: [UploadedFile!]!
-    ): [Asset!]!
+        files: [Upload!]!
+    ): [FileUploadResult!]!
 
     importAsset(
         id: AssetId!,
@@ -186,6 +186,15 @@ type Image {
 }
 
 """
+The result of a single file upload
+"""
+type FileUploadResult {
+    filename: Filename!
+    success: Boolean!
+    result: String!
+}
+
+"""
 Ratio mode of an image
 """
 enum RatioMode {
@@ -269,7 +278,7 @@ scalar TagLabel
 """
 A file upload from the browser
 """
-scalar UploadedFile
+scalar Upload
 
 schema {
     query: Query

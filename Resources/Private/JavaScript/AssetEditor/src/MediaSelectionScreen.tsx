@@ -12,8 +12,6 @@ import { $get, $transform } from 'plow-js';
 import { neos } from '@neos-project/neos-ui-decorators';
 // @ts-ignore
 import { actions } from '@neos-project/neos-ui-redux-store';
-// @ts-ignore
-import { fetchWithErrorHandling } from '@neos-project/neos-ui-backend-connector';
 
 // Media UI dependencies
 import { I18nRegistry, Notify } from '../../src/interfaces';
@@ -143,7 +141,6 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
                         <ApolloProvider client={client}>
                             <RecoilRoot>
                                 <MediaUiProvider
-                                    fetchWithErrorHandling={fetchWithErrorHandling}
                                     endpoints={endpoints}
                                     dummyImage={dummyImage}
                                     onAssetSelection={localAssetIdentifier => onComplete(localAssetIdentifier)}

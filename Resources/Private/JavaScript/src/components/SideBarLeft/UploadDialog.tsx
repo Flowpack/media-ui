@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 
 import { Button, Icon, Dialog } from '@neos-project/react-ui-components';
 
-import { useAlternativeUploadFiles, useConfigQuery } from '../../hooks';
+import { useConfigQuery, useUploadFiles } from '../../hooks';
 import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { humanFileSize } from '../../helper';
@@ -125,9 +125,9 @@ export default function UploadDialog() {
     const { translate } = useIntl();
     const Notify = useNotify();
     const [state, setState] = useRecoilState(uploadDialogState);
-    const { endpoints, dummyImage, refetchAssets } = useMediaUi();
+    const { dummyImage, refetchAssets } = useMediaUi();
     const { config } = useConfigQuery();
-    const { uploadFiles, uploadState, loading } = useAlternativeUploadFiles(endpoints.upload);
+    const { uploadFiles, uploadState, loading } = useUploadFiles();
     const [files, setFiles] = useState<UploadedFile[]>([]);
     const uploadPossible = !loading && files.length > 0;
 
@@ -165,10 +165,14 @@ export default function UploadDialog() {
     }, [files]);
 
     const handleUpload = () => {
-        uploadFiles(files).then(() => {
-            Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
-            refetchAssets();
-        });
+        uploadFiles(files)
+            .then(() => {
+                Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
+                refetchAssets();
+            })
+            .catch(error => {
+                Notify.error(translate('fileUpload.error', 'Upload failed'), error);
+            });
     };
 
     const handleRequestClose = () => {
@@ -221,16 +225,15 @@ export default function UploadDialog() {
                         </h4>
                         {files.map((file: UploadedFile) => {
                             // TODO: cleanup and move into component
-                            const loading = uploadState[file.name]?.loading;
-                            const response = uploadState[file.name]?.response;
-                            const success = response?.success;
+                            const fileState = uploadState.find(result => result.filename === file.name);
+                            const success = fileState?.success;
 
                             let stateClassName = '';
                             if (loading) stateClassName = classes.loading;
                             if (success) stateClassName = classes.success;
-                            if (response && !success) stateClassName = classes.error;
+                            if (fileState && !success) stateClassName = classes.error;
 
-                            // TODO: Output helpful messages for results 'EXISTS', 'ADDED', 'ERROR'
+                            // TODO: Output helpful localised messages for results 'EXISTS', 'ADDED', 'ERROR'
 
                             return (
                                 <div
@@ -242,8 +245,8 @@ export default function UploadDialog() {
                                         <img src={file.preview} alt={file.name} className={classes.img} />
                                         {loading && <Icon icon="spinner" spin={true} />}
                                         {success && <Icon icon="check" />}
-                                        {response && !response.success && <Icon icon="exclamation-circle" />}
-                                        {response?.result && <span>{response.result}</span>}
+                                        {fileState && !fileState.success && <Icon icon="exclamation-circle" />}
+                                        {fileState?.result && <span>{fileState.result}</span>}
                                     </div>
                                 </div>
                             );

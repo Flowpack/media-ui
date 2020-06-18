@@ -1,7 +1,7 @@
 privilegeTargets:
   'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
     'Flowpack.Media.Ui:ManageAssets':
-      matcher: 'method(public Flowpack\Media\Ui\Controller\MediaController->(.*)Action()) || method(public Flowpack\Media\Ui\Controller\UploadController->(.*)Action())'
+      matcher: 'method(public Flowpack\Media\Ui\Controller\MediaController->(.*)Action())'
     'Flowpack.Media.Ui:Queries':
       matcher: 'method(public Flowpack\Media\Ui\GraphQL\Resolver\(.*)Resolver->.*()) || method(t3n\GraphQL\Controller\GraphQLController->queryAction())'
 

@@ -50,19 +50,21 @@ export const UNTAG_ASSET = gql`
 export const UPLOAD_FILE = gql`
     mutation UploadFile($file: Upload!) {
         uploadFile(file: $file) {
-            ...AssetProps
+            filename
+            success
+            result
         }
     }
-    ${ASSET_FRAGMENT}
 `;
 
 export const UPLOAD_FILES = gql`
     mutation UploadFiles($files: [Upload!]!) {
         uploadFiles(files: $files) {
-            ...AssetProps
+            filename
+            success
+            result
         }
     }
-    ${ASSET_FRAGMENT}
 `;
 
 export const IMPORT_ASSET = gql`
