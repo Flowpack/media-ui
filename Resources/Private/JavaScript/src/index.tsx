@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import Modal from 'react-modal';
-import { DragDropContext } from 'react-dnd';
+import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { ApolloClient } from 'apollo-client';
@@ -73,8 +73,7 @@ window.onload = async (): Promise<void> => {
         }
     };
 
-    const withDragDropContext = DragDropContext(HTML5Backend);
-    const AppWithDnd = withDragDropContext(hot(module)(App));
+    const AppWithHmr = hot(module)(App);
 
     render(
         <IntlProvider translate={translate}>
@@ -88,7 +87,9 @@ window.onload = async (): Promise<void> => {
                             containerRef={containerRef}
                         >
                             <MediaUiThemeProvider>
-                                <AppWithDnd />
+                                <DndProvider backend={HTML5Backend}>
+                                    <AppWithHmr />
+                                </DndProvider>
                             </MediaUiThemeProvider>
                         </MediaUiProvider>
                     </RecoilRoot>

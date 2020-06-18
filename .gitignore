@@ -1,1 +1,22 @@
+#
+# System files
+#
+.DS_store
+
+#
+# Application & development dependencies.
+#
+/node_modules
+
+#
+# Compiled assets.
+#
 /.cache
+Resources/Private/JavaScript/dev/dist
+yarn-error.log
+
+#
+# editors / IDEs
+#
+.vscode/
+.idea/
