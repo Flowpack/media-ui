@@ -129,7 +129,12 @@ Run the following command to verify the TypeScript files:
     
 ### Run e2e tests
 
+First start the dev server via `yarn dev` and the run the following command to execute all end-to-end tests: 
+
     yarn e2e
+
+The test configuration is defined in `.testcaferc.json`. Change the options there if you want to use
+a different browser or make some other changes.
     
 ### Other development hints
 
