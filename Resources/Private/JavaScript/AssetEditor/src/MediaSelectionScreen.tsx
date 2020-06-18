@@ -126,7 +126,7 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
         const { addFlashMessage, onComplete } = this.props;
         const client = this.getApolloClient();
         const { dummyImage, endpoints } = this.getConfig();
-        const containerRef = createRef();
+        const containerRef = createRef<HTMLDivElement>();
 
         const Notification: Notify = {
             info: message => addFlashMessage(message, message, 'error'),

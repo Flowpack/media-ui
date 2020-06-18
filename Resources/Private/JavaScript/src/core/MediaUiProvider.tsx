@@ -11,7 +11,7 @@ interface MediaUiProviderProps {
     children: React.ReactElement;
     dummyImage: string;
     selectionMode?: boolean;
-    containerRef: React.ElementRef<any>;
+    containerRef: React.RefObject<HTMLDivElement>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
     fetchWithErrorHandling: {
         withCsrfToken: (callback: (csrfToken: string) => any) => Promise<any>;
@@ -28,7 +28,7 @@ interface MediaUiProviderValues {
     assetCount: number;
     assetSources: AssetSource[];
     assets: Asset[];
-    containerRef: React.ElementRef<any>;
+    containerRef: React.RefObject<HTMLDivElement>;
     fetchWithErrorHandling: {
         withCsrfToken: (callback: (csrfToken: string) => any) => Promise<any>;
     };

@@ -51,7 +51,7 @@ window.onload = async (): Promise<void> => {
         resolvers
     });
 
-    const containerRef = createRef();
+    const containerRef = createRef<HTMLDivElement>();
 
     const { Notification } = window.NeosCMS;
 
