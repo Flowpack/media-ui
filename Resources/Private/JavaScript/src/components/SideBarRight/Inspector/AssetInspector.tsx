@@ -236,7 +236,7 @@ export default function AssetInspector() {
                             value={selectedAsset.filename}
                         />
                     </PropertyList>
-                    {selectedAsset.imported && (
+                    {isEditable && (
                         <div className={classes.actions}>
                             <Button
                                 disabled={!hasUnpublishedChanges || isLoading}
