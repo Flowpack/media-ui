@@ -22,7 +22,7 @@ type Query {
     """
     assetCount(
         assetSourceId: AssetSourceId,
-        tag: Tag,
+        tag: TagLabel,
         assetCollectionId: AssetCollectionId,
         mediaType: MediaType,
         searchTerm: String
@@ -73,11 +73,11 @@ type Mutation {
     ): Asset!
 
     uploadFile(
-        file: Upload!
+        file: UploadedFile!
     ): Asset!
 
     uploadFiles(
-        files: [Upload!]!
+        files: [UploadedFile!]!
     ): [Asset!]!
 
     importAsset(
@@ -269,7 +269,7 @@ scalar TagLabel
 """
 A file upload from the browser
 """
-scalar Upload
+scalar UploadedFile
 
 schema {
     query: Query

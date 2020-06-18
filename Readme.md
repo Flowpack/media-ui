@@ -93,6 +93,13 @@ the GraphQL queries.
 To start with development make sure you have `nvm` and `yarn` installed and run the following command in the packages folder:
 
     yarn
+    
+### Running the standalone dev server without Neos
+
+The dev server allows to run the module without a Neos instance.
+This is also the basis for running most tests and implementing new features.
+
+    yarn dev
 
 ### Building the module assets
 

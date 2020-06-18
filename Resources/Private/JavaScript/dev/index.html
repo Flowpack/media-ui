@@ -1,47 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>Media UI</title>
-  </head>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Media UI</title>
+</head>
 
-  <body class="neos neos-module neos-controls">
-    <div class="neos-module-wrap">
-      <div id="content" class="neos-content neos-container-fluid">
-      </div>
-    </div>
+<body class="neos neos-module neos-controls">
+<div class="neos-module-wrap">
+    <div class="neos-content neos-container-fluid" id="content"></div>
+</div>
 
-    <script>
-      // This prevents parcel to bundle the css
-      const style = document.createElement('link');
-      style.rel = 'stylesheet';
-      style.href = '/Styles/Includes-built.css';
-      document.head.appendChild(style)
-    </script>
+<script>
+    // This prevents parcel to bundle the css
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = '/Styles/Minimal.css';
+    document.head.appendChild(style)
+</script>
 
-    <script>
-      setTimeout(() => {
-        const app = document.createElement('div');
-        app.id = 'media-ui-app';
-        app.setAttribute('data-endpoints', JSON.stringify({
-          graphql: '/graphql.json'
-        }));
-        app.setAttribute('data-csrf-token', Math.random().toString(36).substring(2, 15));
-
-        document.getElementById('content').appendChild(app);
-
-        // Apply mock
-        window.Typo3Neos = {
-          I18n: {
-            initialized: true
-          },
-          Notification: {}
-        }
-      }, 2000)
-    </script>
-
-    <script src="./index.tsx"></script>
-  </body>
+<script src="./index.ts"></script>
+<script src="../src/index.tsx"></script>
+</body>
 </html>
