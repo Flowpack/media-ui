@@ -132,7 +132,6 @@ export default function UploadDialog() {
     const uploadPossible = !loading && files.length > 0;
 
     // TODO: Define accepted mimetypes `{ accept: 'image/jpeg, image/png, video/*'}`
-    // TODO: D&D with dropzone is currently incompatible with react-dnd -> solve everything with react-dnd or find other solution
     const { getRootProps, getInputProps, isDragAccept, isDragActive, isDragReject } = useDropzone({
         onDrop: acceptedFiles => {
             if (acceptedFiles.length === 0) return;
@@ -207,7 +206,6 @@ export default function UploadDialog() {
                             "Drag 'n' drop some files here, or click to select files"
                         )}
                     </p>
-                    <p className={classes.warning}>Drag & drop is currently not working fully</p>
                     {config?.uploadMaxFileSize && (
                         <p>
                             {translate('uploadDialog.maxFileSize', 'Maximum file size is ')}
