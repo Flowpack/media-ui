@@ -6,7 +6,8 @@
         "neos/media": "^5.2",
         "neos/neos": "^5.2",
         "neos/neos-ui": "^5.2",
-        "t3n/graphql": "^2.1"
+        "t3n/graphql": "^2.1",
+        "t3n/graphql-upload": "^1.0"
     },
     "license": "GPL-3.0-or-later",
     "autoload": {
