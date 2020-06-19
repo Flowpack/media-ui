@@ -17,6 +17,7 @@ setTimeout(() => {
     window.NeosCMS = {
         I18n: {
             initialized: true,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             translate: (id, fallback: string, packageKey = null, source = null, args = []) => fallback
         },
         Notification: {

@@ -139,6 +139,7 @@ export default function AssetInspector() {
 
     useEffect(() => {
         handleDiscard();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAsset]);
 
     return (

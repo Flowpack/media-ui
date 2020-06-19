@@ -44,6 +44,7 @@ const useAssetQuery = (variables: AssetsQueryVariables) => {
             setAssetData(data);
             setIsLoading(false);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         query,
         data,

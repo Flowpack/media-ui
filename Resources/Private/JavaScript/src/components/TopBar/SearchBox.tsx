@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles({
     searchBox: {

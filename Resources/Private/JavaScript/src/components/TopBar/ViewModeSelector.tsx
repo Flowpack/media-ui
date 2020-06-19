@@ -35,6 +35,7 @@ export default function ViewModeSelector() {
                 icon: 'th-list'
             }
         ];
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

@@ -58,7 +58,9 @@ const assets = [
 
 const resolvers = {
     Query: {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         assets: (assetSourceId, tag, assetCollectionId, mediaType, searchTerm, limit, offset) => assets,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         assetCount: (assetSourceId, tag, assetCollectionId, mediaType, searchTerm) => assets.length,
         assetSources: () => assetSources,
         assetCollections: () => [],

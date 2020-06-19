@@ -115,6 +115,7 @@ export function MediaUiProvider({
         if (!isLoading && (currentPage - 1) * ASSETS_PER_PAGE > assetData.assetCount) {
             setCurrentPage(1);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [assetData.assetCount, isLoading]);
 
     // Handle selection mode for the secondary Neos UI inspector
@@ -129,10 +130,12 @@ export function MediaUiProvider({
                 onAssetSelection(data.importAsset.localId);
             });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAsset]);
 
     useEffect(() => {
         setSelectedAssetSourceState(assetData.assetSources.find(assetSource => assetSource.id === assetSourceFilter));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [assetData.assetSources, assetSourceFilter]);
 
     if (error) {
