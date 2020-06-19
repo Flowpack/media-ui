@@ -1,0 +1,50 @@
+name: Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Install dependencies
+        run: yarn lint
+
+# TODO: Testcafe cannot reach dev server yet and fails
+#  e2e:
+#    env:
+#      # Solves error when parcel tries to count cpus via lscpu
+#      PARCEL_WORKERS: 1
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-node@v1
+#        with:
+#          node-version: '12.x'
+#
+#      - name: Install dependencies
+#        run: yarn
+#
+#      - name: Build sources
+#        run: yarn build
+#
+#      - name: Run dev server
+#        run: yarn dev &
+#
+#      - uses: DevExpress/testcafe-action@latest
+#        with:
+#          args: "chrome"
