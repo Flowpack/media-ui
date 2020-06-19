@@ -88,6 +88,10 @@ See the `Resources/Private/JavaScript/src/state` folder for examples.
 Those should be used every time multiple components share a state that is not relevant for
 the GraphQL queries.
 
+## Fund the development
+
+We need your help to develop this package. You can find supporter badges on the official [Neos funding site](https://neosfunding.sandstorm.de/en).
+
 ## Contributing
 
 To start with development make sure you have `nvm` and `yarn` installed and run the following command in the packages folder:
