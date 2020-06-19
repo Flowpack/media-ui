@@ -11,14 +11,7 @@ If you want to use Neos, please have a look at the [Neos documentation](http://n
 
 ## Installation
 
-Add the following source to your composer.json
-
-    {
-      "type": "vcs",
-      "url": "https://github.com/Flowpack/media-ui.git"
-    }
-
-Run the following command to install it
+Run the following command to install it:
 
     composer require flowpack/media-ui 
     
