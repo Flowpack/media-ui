@@ -11,8 +11,6 @@ Flowpack.Media.Ui.MediaController {
             @process.stringify = ${Json.stringify(value)}
         }
 
-        data-csrf-token = ${Security.csrfToken()}
-
         data-dummy-image = Neos.Fusion:ResourceUri {
             path = 'resource://Neos.Neos/Public/Images/dummy-image.svg'
         }

@@ -9,12 +9,6 @@ setTimeout(() => {
             graphql: '/graphql'
         })
     );
-    app.setAttribute(
-        'data-csrf-token',
-        Math.random()
-            .toString(36)
-            .substring(2, 15)
-    );
     app.setAttribute('data-dummy-image', '/dummy-image.svg');
 
     document.getElementById('content').appendChild(app);
