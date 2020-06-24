@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file original="" product-name="Flowpack.Media.Ui" source-language="en" datatype="plaintext" target-language="hu">
+        <body>
+            <trans-unit id="module.label" xml:space="preserve" approved="yes">
+                <source>Media (new)</source>
+                <target>Média (új)</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
