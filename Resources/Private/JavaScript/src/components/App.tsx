@@ -19,7 +19,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         // TODO: Find a way to not calculate height to allow scrolling in main grid area
         height: `calc(100vh - 40px * 4 - 21px)`,
         gridTemplateRows: 'auto 1fr',
-        gridTemplateColumns: selectionMode ? '250px 1fr' : '250px 1fr 250px',
+        gridTemplateColumns: theme.size.sidebarWidth + ' 1fr ' + `${!selectionMode ? theme.size.sidebarWidth : ''}`,
         gridTemplateAreas: selectionMode
             ? `
             "left top"

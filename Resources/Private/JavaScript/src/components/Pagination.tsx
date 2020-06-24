@@ -9,7 +9,7 @@ import { MediaUiTheme } from '../interfaces';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
         display: 'grid',
-        gridTemplateColumns: '250px 1fr 250px',
+        gridTemplateColumns: theme.size.sidebarWidth + ' 1fr ' + theme.size.sidebarWidth,
         position: 'fixed',
         bottom: 0,
         left: 0,
