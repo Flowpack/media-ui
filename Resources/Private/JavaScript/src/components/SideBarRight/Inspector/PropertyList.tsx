@@ -11,9 +11,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             backgroundColor: theme.colors.alternatingBackground,
             color: 'white',
             fontWeight: 'bold',
-            padding: '8px 8px 0',
+            padding: `${theme.spacing.half} ${theme.spacing.half} 0`,
             textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            width: `calc(${theme.size.sidebarWidth} - ${theme.spacing.full})`
         },
         '& dd': {
             backgroundColor: theme.colors.alternatingBackground,
@@ -22,7 +23,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             padding: theme.spacing.half,
             textOverflow: 'ellipsis',
             overflowX: 'hidden',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            width: `calc(${theme.size.sidebarWidth} - ${theme.spacing.full})`
         }
     }
 }));

@@ -14,6 +14,10 @@ const mediaUiTheme: MediaUiTheme = {
         ...config.fontSize,
         large: '18px'
     },
+    size: {
+        ...config.size,
+        sidebarWidth: '250px'
+    },
     colors: {
         primary: config.colors.primaryBlue,
         text: config.colors.contrastBright,

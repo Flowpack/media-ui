@@ -10,6 +10,9 @@ export default interface MediaUiTheme {
         base: string;
         small: string;
     };
+    size: {
+        sidebarWidth: string;
+    };
     colors: {
         success: string;
         warn: string;
