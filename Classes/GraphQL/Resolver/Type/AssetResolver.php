@@ -51,7 +51,7 @@ class AssetResolver implements ResolverInterface
     /**
      * @var array<AssetInterface>
      */
-    protected array $localAssetData = [];
+    protected $localAssetData = [];
 
     /**
      * @param AssetProxyInterface $assetProxy
