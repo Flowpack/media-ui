@@ -8,9 +8,7 @@ import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    currentSelection: {
-        marginBottom: theme.spacing.full
-    },
+    currentSelection: {},
     headline: {
         fontWeight: 'bold',
         lineHeight: theme.spacing.goldenUnit

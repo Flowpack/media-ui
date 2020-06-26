@@ -7,7 +7,7 @@ import { createUseMediaUiStyles, useMediaUi, useIntl, useNotify } from '../../..
 import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
-import IconLabel from '../../IconLabel';
+import { IconLabel } from '../../Presentation';
 import { selectedAssetSourceState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

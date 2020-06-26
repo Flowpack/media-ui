@@ -1,7 +1,6 @@
 import Asset from './Asset';
 import AssetCollection from './AssetCollection';
 import AssetSource from './AssetSource';
-import GridComponentProps from './GridComponentProps';
 import FileUploadResult from './FileUploadResult';
 import I18nRegistry from './I18nRegistry';
 import Image from './Image';
@@ -17,7 +16,6 @@ export {
     AssetCollection,
     AssetCollectionTreeNodeProps,
     AssetSource,
-    GridComponentProps,
     FileUploadResult,
     I18nRegistry,
     Image,

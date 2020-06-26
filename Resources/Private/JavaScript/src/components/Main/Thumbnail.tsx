@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Asset, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { AssetActions } from './index';
+import { AssetLabel } from '../Presentation';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnail: {
@@ -36,12 +37,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             width: '1.3rem',
             height: 'auto',
             marginRight: theme.spacing.quarter
-        },
-        '& span': {
-            display: 'inline-block',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis'
         }
     },
     toolBar: {
@@ -85,7 +80,7 @@ export default function Thumbnail({ asset, isSelected }: ThumbnailProps) {
             </picture>
             <figcaption className={classes.caption}>
                 <img src={file.typeIcon.url} alt={file.typeIcon.alt} />
-                <span>{label}</span>
+                <AssetLabel label={label} />
             </figcaption>
             <div className={classes.toolBar}>
                 <AssetActions asset={asset} />

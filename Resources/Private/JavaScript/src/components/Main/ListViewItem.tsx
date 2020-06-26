@@ -4,6 +4,7 @@ import { Asset, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useMediaUi } from '../../core';
 import { humanFileSize } from '../../helper';
 import { AssetActions } from './index';
+import { AssetLabel } from '../Presentation';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {
@@ -19,7 +20,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     textColumn: {
         padding: `0 ${theme.spacing.half}`,
         whiteSpace: 'nowrap',
-        userSelect: 'none'
+        userSelect: 'none',
+        '& > *': {
+            verticalAlign: 'middle'
+        }
     },
     previewColumn: {
         minWidth: theme.spacing.goldenUnit,
@@ -39,11 +43,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     labelColumn: {
         extend: 'textColumn',
         userSelect: 'text',
-        '& span': {
-            width: '200px',
-            display: 'inline-block',
-            overflowX: 'hidden',
-            textOverflow: 'ellipsis'
+        '& > *': {
+            width: '200px'
         }
     },
     lastModifiedColumn: {
@@ -86,7 +87,7 @@ export default function ListViewItem({ asset, isSelected }: ListViewItemProos) {
                 </picture>
             </td>
             <td className={classes.labelColumn}>
-                <span>{label}</span>
+                <AssetLabel label={label} />
             </td>
             <td className={classes.lastModifiedColumn}>
                 {new Date(lastModified).toLocaleString([], dateFormatOptions)}

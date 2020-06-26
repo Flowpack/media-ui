@@ -4,12 +4,12 @@ import { useQuery } from '@apollo/react-hooks';
 import { SideBarLeft, UploadDialog } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
 import Pagination from './Pagination';
-import { useMediaUi, createUseMediaUiStyles } from '../core';
+import { createUseMediaUiStyles, useMediaUi } from '../core';
 import LoadingIndicator from './LoadingIndicator';
 import { MediaUiTheme } from '../interfaces';
 import { VIEW_MODE_SELECTION } from '../queries';
 import { TopBar } from './TopBar';
-import { ThumbnailView, ListView } from './Main';
+import { ListView, ThumbnailView } from './Main';
 import { VIEW_MODES } from '../hooks';
 import AssetPreview from './AssetPreview';
 
@@ -18,7 +18,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         display: 'grid',
         // TODO: Find a way to not calculate height to allow scrolling in main grid area
         height: `calc(100vh - 40px * 4 - 21px)`,
-        gridTemplateRows: 'auto 1fr',
+        gridTemplateRows: '40px 1fr',
         gridTemplateColumns: selectionMode
             ? theme.size.sidebarWidth + ' 1fr'
             : theme.size.sidebarWidth + ' 1fr ' + theme.size.sidebarWidth,
@@ -33,7 +33,26 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         `,
         gridGap: theme.spacing.full,
         lineHeight: 1.5
-    })
+    }),
+    gridColumn: {
+        height: '100%',
+        overflowY: 'scroll'
+    },
+    gridRight: {
+        extend: 'gridColumn',
+        gridArea: 'right'
+    },
+    gridLeft: {
+        extend: 'gridColumn',
+        gridArea: 'left'
+    },
+    gridMain: {
+        extend: 'gridColumn',
+        gridArea: 'main'
+    },
+    gridTop: {
+        gridArea: 'top'
+    }
 }));
 
 export default function App() {
@@ -46,17 +65,29 @@ export default function App() {
     return (
         <div className={classes.container} ref={containerRef}>
             <LoadingIndicator />
-            <SideBarLeft gridPosition="left" />
-            <TopBar gridPosition="top" />
-            {viewModeSelection === VIEW_MODES.List ? (
-                <ListView gridPosition="main" />
-            ) : (
-                <ThumbnailView gridPosition="main" />
-            )}
+
+            <div className={classes.gridLeft}>
+                <SideBarLeft />
+            </div>
+
+            <div className={classes.gridTop}>
+                <TopBar />
+            </div>
+
+            <div className={classes.gridMain}>
+                {viewModeSelection === VIEW_MODES.List ? <ListView /> : <ThumbnailView />}
+            </div>
+
             <Pagination />
-            {!selectionMode && <SideBarRight gridPosition="right" />}
+
+            {!selectionMode && (
+                <div className={classes.gridRight}>
+                    <SideBarRight />
+                </div>
+            )}
 
             {selectedAssetForPreview && <AssetPreview />}
+
             <UploadDialog />
         </div>
     );

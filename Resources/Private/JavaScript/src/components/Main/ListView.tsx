@@ -1,12 +1,11 @@
 import * as React from 'react';
 
 import { useMediaUi, createUseMediaUiStyles, useIntl } from '../../core';
-import { MediaUiTheme, GridComponentProps } from '../../interfaces';
+import { MediaUiTheme } from '../../interfaces';
 import { ListViewItem } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
-        gridArea: props => props.gridPosition,
         overflow: 'scroll',
         '& table': {
             borderSpacing: '0 1px',
@@ -27,8 +26,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-export default function ListView(props: GridComponentProps) {
-    const classes = useStyles({ ...props });
+export default function ListView() {
+    const classes = useStyles();
     const { assets, selectedAsset } = useMediaUi();
     const { translate } = useIntl();
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Icon } from '@neos-project/react-ui-components';
-import { createUseMediaUiStyles } from '../core';
-import { MediaUiTheme } from '../interfaces';
+import { createUseMediaUiStyles } from '../../core';
+import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iconWrap: {

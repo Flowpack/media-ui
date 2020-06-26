@@ -1,29 +1,18 @@
 import * as React from 'react';
-import { createUseMediaUiStyles } from '../../core';
-import { GridComponentProps, MediaUiTheme } from '../../interfaces';
+
 import { AssetInspector, IptcMetadataInspector } from './Inspector';
 import CurrentSelection from './CurrentSelection';
+import { Column } from '../Presentation';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    sidebarRight: {
-        gridArea: props => props.gridPosition,
-        display: 'flex',
-        flexDirection: 'column',
-        marginBottom: theme.spacing.full,
-        overflowY: 'auto'
-    }
-}));
-
-export default function SideBarRight(props: GridComponentProps) {
-    const classes = useStyles({ ...props });
-
+export default function SideBarRight() {
+    // TODO: Read from component store
     const components = [CurrentSelection, AssetInspector, IptcMetadataInspector];
 
     return (
-        <div className={classes.sidebarRight}>
+        <Column>
             {components.map((Component, index) => (
                 <Component key={index} />
             ))}
-        </div>
+        </Column>
     );
 }

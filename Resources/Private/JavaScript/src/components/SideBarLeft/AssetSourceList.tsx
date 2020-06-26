@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { useAssetSourceFilter } from '../../hooks';
-import IconLabel from '../IconLabel';
+import { IconLabel } from '../Presentation';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceList: {

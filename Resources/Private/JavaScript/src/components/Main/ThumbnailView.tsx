@@ -1,12 +1,11 @@
 import * as React from 'react';
 
 import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
-import { MediaUiTheme, GridComponentProps } from '../../interfaces';
+import { MediaUiTheme } from '../../interfaces';
 import { Thumbnail } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnailView: {
-        gridArea: props => props.gridPosition,
         overflow: 'scroll',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
@@ -14,8 +13,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-export default function ThumbnailView(props: GridComponentProps) {
-    const classes = useStyles({ ...props });
+export default function ThumbnailView() {
+    const classes = useStyles();
     const { assets, selectedAsset } = useMediaUi();
     const { translate } = useIntl();
 
