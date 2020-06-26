@@ -109,11 +109,11 @@ class AssetSourceContext extends BaseContext
     }
 
     /**
-     * @param $assetSourceIdentifier
-     * @param $assetIdentifier
+     * @param string $assetSourceIdentifier
+     * @param string $assetIdentifier
      * @return AssetProxyInterface|null
      */
-    public function importAsset($assetSourceIdentifier, $assetIdentifier): ?AssetProxyInterface
+    public function importAsset(string $assetSourceIdentifier, string $assetIdentifier): ?AssetProxyInterface
     {
         try {
             $this->assetSourceService->importAsset($assetSourceIdentifier, $assetIdentifier);

@@ -132,6 +132,18 @@ First start the dev server via `yarn dev` and the run the following command to e
 
 The test configuration is defined in `.testcaferc.json`. Change the options there if you want to use
 a different browser or make some other changes.
+
+### Run phpstan for codestyle checks
+
+First make sure you have [phpstand](https://phpstan.org) installed.
+
+When the package is installed in a Neos distribution:
+
+    phpstan analyse --autoload-file ../../Libraries/autoload.php
+    
+When the package is standalone
+
+    composer run phpstan 
     
 ### Other development hints
 

@@ -9,6 +9,12 @@
         "t3n/graphql": "^2.1",
         "t3n/graphql-upload": "^1.0"
     },
+    "suggest": {
+      "phpstan/phpstan": "For running code quality checks"
+    },
+    "scripts": {
+      "codestyle": "phpstan analyse"
+    },
     "license": "GPL-3.0-or-later",
     "autoload": {
         "psr-4": {
