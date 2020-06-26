@@ -48,7 +48,7 @@ class AssetSourceContext extends BaseContext
     /**
      * @var array<AssetSourceInterface>
      */
-    protected array $assetSources;
+    protected $assetSources;
 
     /**
      * @return void
