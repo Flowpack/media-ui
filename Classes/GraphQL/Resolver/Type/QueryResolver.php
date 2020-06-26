@@ -69,6 +69,7 @@ class QueryResolver implements ResolverInterface
      * @param array $variables
      * @param AssetSourceContext $assetSourceContext
      * @return int
+     * @noinspection PhpUnusedParameterInspection
      */
     public function assetCount($_, array $variables, AssetSourceContext $assetSourceContext): int
     {
@@ -258,7 +259,7 @@ class QueryResolver implements ResolverInterface
      * @param AssetSourceContext $assetSourceContext
      * @return AssetProxyInterface|null
      */
-    public function asset($_, array $variables, AssetSourceContext $assetSourceContext): ?Asset
+    public function asset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
     {
         [
             'id' => $id,
