@@ -13,10 +13,6 @@ interface MediaUiProviderProps {
     selectionMode?: boolean;
     containerRef: React.RefObject<HTMLDivElement>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
-    endpoints: {
-        graphql: string;
-        upload: string;
-    };
 }
 
 interface MediaUiProviderValues {
@@ -28,10 +24,6 @@ interface MediaUiProviderValues {
     containerRef: React.RefObject<HTMLDivElement>;
     currentPage: number;
     dummyImage: string;
-    endpoints: {
-        graphql: string;
-        upload: string;
-    };
     isLoading: boolean;
     mediaTypeFilter: string;
     refetchAssets: () => Promise<boolean>;
@@ -151,7 +143,6 @@ export function MediaUiProvider({
                     mediaTypeFilter,
                     refetchAssets,
                     searchTerm,
-                    endpoints,
                     selectionMode,
                     setAssetCollectionFilter,
                     setCurrentPage,

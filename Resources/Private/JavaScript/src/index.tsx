@@ -66,7 +66,7 @@ window.onload = async (): Promise<void> => {
             <NotifyProvider notificationApi={Notification}>
                 <ApolloProvider client={client}>
                     <RecoilRoot>
-                        <MediaUiProvider endpoints={endpoints} dummyImage={dummyImage} containerRef={containerRef}>
+                        <MediaUiProvider dummyImage={dummyImage} containerRef={containerRef}>
                             <MediaUiThemeProvider>
                                 <DndProvider backend={HTML5Backend}>
                                     <AppWithHmr />

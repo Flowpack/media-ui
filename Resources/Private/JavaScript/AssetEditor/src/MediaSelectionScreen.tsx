@@ -123,7 +123,7 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
     render() {
         const { addFlashMessage, onComplete } = this.props;
         const client = this.getApolloClient();
-        const { dummyImage, endpoints } = this.getConfig();
+        const { dummyImage } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
 
         const Notification: Notify = {
@@ -141,7 +141,6 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
                         <ApolloProvider client={client}>
                             <RecoilRoot>
                                 <MediaUiProvider
-                                    endpoints={endpoints}
                                     dummyImage={dummyImage}
                                     onAssetSelection={localAssetIdentifier => onComplete(localAssetIdentifier)}
                                     selectionMode={true}
