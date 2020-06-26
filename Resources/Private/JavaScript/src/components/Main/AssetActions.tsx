@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
 import { Asset } from '../../interfaces';
-import { selectedAssetSourceState } from '../../state';
+import { selectedAssetForPreviewState, selectedAssetSourceState } from '../../state';
 import { useIntl, useMediaUi, useNotify } from '../../core';
 import { useImportAsset } from '../../hooks';
 
@@ -16,7 +16,8 @@ export default function AssetActions({ asset }: ItemActionsProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
     const selectedAssetSource = useRecoilValue(selectedAssetSourceState);
-    const { setSelectedAssetForPreview, handleDeleteAsset } = useMediaUi();
+    const { handleDeleteAsset } = useMediaUi();
+    const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { importAsset } = useImportAsset();
 
     const handleImportAsset = () => {

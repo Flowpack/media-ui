@@ -1,19 +1,27 @@
 import * as React from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { Asset, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useMediaUi } from '../../core';
 import { humanFileSize } from '../../helper';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
+import { selectedAssetForPreviewState, selectedAssetState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {
         cursor: 'pointer',
-        backgroundColor: ({ isSelected }) => (isSelected ? theme.colors.primary : theme.colors.mainBackground),
+        backgroundColor: theme.colors.mainBackground,
         '&:nth-of-type(2n)': {
             backgroundColor: theme.colors.alternatingBackground
         },
         '&:hover': {
+            backgroundColor: theme.colors.primary
+        }
+    },
+    selected: {
+        backgroundColor: theme.colors.primary,
+        '&:nth-of-type(2n)': {
             backgroundColor: theme.colors.primary
         }
     },
@@ -62,9 +70,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-interface ListViewItemProos {
+interface ListViewItemProps {
     asset: Asset;
-    isSelected: boolean;
 }
 
 const dateFormatOptions = {
@@ -74,13 +81,20 @@ const dateFormatOptions = {
     day: 'numeric'
 };
 
-export default function ListViewItem({ asset, isSelected }: ListViewItemProos) {
-    const classes = useStyles({ isSelected });
-    const { dummyImage, setSelectedAsset } = useMediaUi();
+export default function ListViewItem({ asset }: ListViewItemProps) {
+    const classes = useStyles();
+    const { dummyImage } = useMediaUi();
+    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
+    const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { label, thumbnailUrl, file, lastModified } = asset;
 
     return (
-        <tr onClick={() => setSelectedAsset(asset)} className={classes.listViewItem}>
+        <tr
+            onClick={() =>
+                selectedAsset?.id === asset.id ? setSelectedAssetForPreview(asset) : setSelectedAsset(asset)
+            }
+            className={[classes.listViewItem, selectedAsset?.id === asset.id ? classes.selected : ''].join(' ')}
+        >
             <td className={classes.previewColumn}>
                 <picture>
                     <img src={thumbnailUrl || dummyImage} alt={label} width={40} height={36} />

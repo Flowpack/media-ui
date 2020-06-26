@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { AssetSource, AssetCollection, Asset, Tag } from '../interfaces';
 import { useAssetQuery, useAssetSourceFilter, useDeleteAsset, useImportAsset } from '../hooks';
 import { useIntl, useNotify } from './index';
-import { useSetRecoilState } from 'recoil';
-import { selectedAssetSourceState } from '../state';
+import { selectedAssetSourceState, selectedAssetState } from '../state';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
@@ -37,15 +37,11 @@ interface MediaUiProviderValues {
     refetchAssets: () => Promise<boolean>;
     handleDeleteAsset: (asset: Asset) => void;
     searchTerm: string;
-    selectedAsset: Asset;
-    selectedAssetForPreview: Asset;
     selectionMode: boolean;
     setAssetCollectionFilter: (assetCollection: AssetCollection) => void;
     setCurrentPage: (currentPage: number) => void;
     setMediaTypeFilter: (mediaType: string) => void;
     setSearchTerm: (searchTerm: string) => void;
-    setSelectedAsset: (asset: Asset) => void;
-    setSelectedAssetForPreview: (asset: Asset) => void;
     setTagFilter: (tag: Tag) => void;
     tagFilter: Tag;
     tags: Tag[];
@@ -54,6 +50,7 @@ interface MediaUiProviderValues {
 export const MediaUiContext = createContext({} as MediaUiProviderValues);
 export const useMediaUi = (): MediaUiProviderValues => useContext(MediaUiContext);
 
+// TODO: Make configurable via Settings
 export const ASSETS_PER_PAGE = 20;
 
 export function MediaUiProvider({
@@ -61,20 +58,18 @@ export function MediaUiProvider({
     dummyImage,
     selectionMode = false,
     onAssetSelection = null,
-    containerRef,
-    endpoints
+    containerRef
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
+    const Notify = useNotify();
     const [searchTerm, setSearchTerm] = useState('');
     const [tagFilter, setTagFilter] = useState<Tag>(null);
     const [assetCollectionFilter, setAssetCollectionFilter] = useState<AssetCollection>();
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedAsset, setSelectedAsset] = useState<Asset>();
-    const [selectedAssetForPreview, setSelectedAssetForPreview] = useState<Asset>();
     const [mediaTypeFilter, setMediaTypeFilter] = useState('');
-    const Notify = useNotify();
     const [assetSourceFilter] = useAssetSourceFilter();
-    const setSelectedAssetSourceState = useSetRecoilState(selectedAssetSourceState);
+    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
+    const setSelectedAssetSource = useSetRecoilState(selectedAssetSourceState);
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
 
@@ -134,7 +129,7 @@ export function MediaUiProvider({
     }, [selectedAsset]);
 
     useEffect(() => {
-        setSelectedAssetSourceState(assetData.assetSources.find(assetSource => assetSource.id === assetSourceFilter));
+        setSelectedAssetSource(assetData.assetSources.find(assetSource => assetSource.id === assetSourceFilter));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [assetData.assetSources, assetSourceFilter]);
 
@@ -151,21 +146,17 @@ export function MediaUiProvider({
                     containerRef,
                     currentPage,
                     dummyImage,
-                    endpoints,
                     handleDeleteAsset,
                     isLoading,
                     mediaTypeFilter,
                     refetchAssets,
                     searchTerm,
-                    selectedAsset,
-                    selectedAssetForPreview,
+                    endpoints,
                     selectionMode,
                     setAssetCollectionFilter,
                     setCurrentPage,
                     setMediaTypeFilter,
                     setSearchTerm,
-                    setSelectedAsset,
-                    setSelectedAssetForPreview,
                     setTagFilter,
                     tagFilter,
                     ...assetData

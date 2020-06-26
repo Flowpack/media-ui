@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useMediaUi, createUseMediaUiStyles, useIntl } from '../../core';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { ListViewItem } from './index';
 
@@ -28,7 +28,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function ListView() {
     const classes = useStyles();
-    const { assets, selectedAsset } = useMediaUi();
+    const { assets, isLoading } = useMediaUi();
     const { translate } = useIntl();
 
     return (
@@ -46,13 +46,17 @@ export default function ListView() {
                         </tr>
                     </thead>
                     <tbody>
-                        {assets.map(asset => (
-                            <ListViewItem key={asset.id} asset={asset} isSelected={selectedAsset?.id === asset.id} />
+                        {assets.map((asset, index) => (
+                            <ListViewItem key={index} asset={asset} />
                         ))}
                     </tbody>
                 </table>
             ) : (
-                <div>{translate('assetList', 'No assets found')}</div>
+                <div>
+                    {isLoading
+                        ? translate('assetList.loading', 'Loading assets')
+                        : translate('assetList.empty', 'No assets found')}
+                </div>
             )}
         </section>
     );

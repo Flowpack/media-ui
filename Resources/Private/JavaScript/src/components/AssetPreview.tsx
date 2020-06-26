@@ -1,8 +1,10 @@
 import * as React from 'react';
 import Lightbox from 'react-image-lightbox';
+import { useRecoilState } from 'recoil';
 import 'react-image-lightbox/style.css';
 
 import { createUseMediaUiStyles, useMediaUi, useMediaUiTheme } from '../core';
+import { selectedAssetForPreviewState } from '../state';
 
 const useStyles = createUseMediaUiStyles({
     lightbox: {
@@ -15,7 +17,8 @@ const useStyles = createUseMediaUiStyles({
 export default function AssetPreview() {
     const classes = useStyles();
     const theme = useMediaUiTheme();
-    const { selectedAssetForPreview, setSelectedAssetForPreview, containerRef } = useMediaUi();
+    const { containerRef } = useMediaUi();
+    const [selectedAssetForPreview, setSelectedAssetForPreview] = useRecoilState(selectedAssetForPreviewState);
 
     return (
         <Lightbox

@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { Asset, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
+import { selectedAssetForPreviewState, selectedAssetState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnail: {
@@ -29,7 +31,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         }
     },
     caption: {
-        backgroundColor: ({ isSelected }) => (isSelected ? theme.colors.primary : theme.colors.captionBackground),
+        backgroundColor: theme.colors.captionBackground,
         padding: theme.spacing.half,
         display: 'flex',
         alignItems: 'center',
@@ -38,6 +40,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             height: 'auto',
             marginRight: theme.spacing.quarter
         }
+    },
+    selected: {
+        backgroundColor: theme.colors.primary
     },
     toolBar: {
         display: 'none',
@@ -60,14 +65,16 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 interface ThumbnailProps {
     asset: Asset;
-    isSelected: boolean;
 }
 
-export default function Thumbnail({ asset, isSelected }: ThumbnailProps) {
-    const classes = useStyles({ isSelected });
+export default function Thumbnail({ asset }: ThumbnailProps) {
+    const classes = useStyles();
     const { translate } = useIntl();
-    const { dummyImage, setSelectedAsset, setSelectedAssetForPreview } = useMediaUi();
+    const { dummyImage } = useMediaUi();
+    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
+    const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { label, thumbnailUrl, file } = asset;
+    const isSelected = selectedAsset?.id === asset.id;
 
     return (
         <figure className={classes.thumbnail}>
@@ -78,7 +85,7 @@ export default function Thumbnail({ asset, isSelected }: ThumbnailProps) {
             >
                 <img src={thumbnailUrl || dummyImage} alt={label} />
             </picture>
-            <figcaption className={classes.caption}>
+            <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
                 <img src={file.typeIcon.url} alt={file.typeIcon.alt} />
                 <AssetLabel label={label} />
             </figcaption>

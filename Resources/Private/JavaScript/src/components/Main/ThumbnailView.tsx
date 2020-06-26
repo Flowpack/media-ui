@@ -15,17 +15,19 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function ThumbnailView() {
     const classes = useStyles();
-    const { assets, selectedAsset } = useMediaUi();
+    const { assets, isLoading } = useMediaUi();
     const { translate } = useIntl();
 
     return (
         <section className={classes.thumbnailView}>
             {assets.length ? (
-                assets.map(asset => (
-                    <Thumbnail key={asset.id} asset={asset} isSelected={selectedAsset?.id === asset.id} />
-                ))
+                assets.map((asset, index) => <Thumbnail key={index} asset={asset} />)
             ) : (
-                <div>{translate('assetList', 'No assets found')}</div>
+                <div>
+                    {isLoading
+                        ? translate('assetList.loading', 'Loading assets')
+                        : translate('assetList.empty', 'No assets found')}
+                </div>
             )}
         </section>
     );

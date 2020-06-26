@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { useMemo } from 'react';
+import { useRecoilValue } from 'recoil';
 import { fromString as getMediaTypeFromString } from 'media-type';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
+import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
+import { selectedAssetState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     currentSelection: {},
@@ -17,7 +19,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function CurrentSelection() {
     const classes = useStyles();
-    const { selectedAsset } = useMediaUi();
+    const selectedAsset = useRecoilValue(selectedAssetState);
     const { translate } = useIntl();
 
     const assetIcon = useMemo(() => {

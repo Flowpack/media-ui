@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import { Button, Label, MultiSelectBox, TextArea, TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../../core';
 import { Asset, MediaUiTheme } from '../../../interfaces';
-import { PropertyList, PropertyListItem } from '.';
+import { PropertyList, PropertyListItem } from '../../Presentation';
 import { humanFileSize } from '../../../helper';
 import { useTagAsset, useUntagAsset, useUpdateAsset } from '../../../hooks';
+import { selectedAssetState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
@@ -48,7 +50,8 @@ const tagsMatchAsset = (tags: string[], asset: Asset) => {
 
 export default function AssetInspector() {
     const classes = useStyles();
-    const { selectedAsset, setSelectedAsset, tags: allTags, assetCollections } = useMediaUi();
+    const { tags: allTags, assetCollections } = useMediaUi();
+    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
     const Notify = useNotify();
     const { translate } = useIntl();
     const [label, setLabel] = useState<string>(null);
@@ -142,6 +145,7 @@ export default function AssetInspector() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAsset]);
 
+    // TODO: Refactor parts into separate components
     return (
         <>
             {selectedAsset && (

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useQuery } from '@apollo/react-hooks';
+import { useRecoilValue } from 'recoil';
 
 import { SideBarLeft, UploadDialog } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
@@ -12,6 +13,7 @@ import { TopBar } from './TopBar';
 import { ListView, ThumbnailView } from './Main';
 import { VIEW_MODES } from '../hooks';
 import AssetPreview from './AssetPreview';
+import { selectedAssetForPreviewState } from '../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode }) => ({
@@ -56,7 +58,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 }));
 
 export default function App() {
-    const { selectedAssetForPreview, selectionMode, containerRef } = useMediaUi();
+    const { selectionMode, containerRef } = useMediaUi();
+    const selectedAssetForPreview = useRecoilValue(selectedAssetForPreviewState);
     const classes = useStyles({ selectionMode });
 
     const viewModeSelectionQuery = useQuery(VIEW_MODE_SELECTION);

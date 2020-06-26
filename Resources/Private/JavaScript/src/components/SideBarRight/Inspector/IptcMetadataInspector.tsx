@@ -1,8 +1,12 @@
 import * as React from 'react';
+import { useRecoilValue } from 'recoil';
+
 import { Headline } from '@neos-project/react-ui-components';
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../../core';
+
+import { createUseMediaUiStyles, useIntl } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
-import { PropertyList, PropertyListItem } from './PropertyList';
+import { PropertyList, PropertyListItem } from '../../Presentation';
+import { selectedAssetState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iptcData: {
@@ -29,7 +33,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function IptcMetadataInspector() {
     const classes = useStyles();
-    const { selectedAsset } = useMediaUi();
+    const selectedAsset = useRecoilValue(selectedAssetState);
     const { translate } = useIntl();
 
     return (
