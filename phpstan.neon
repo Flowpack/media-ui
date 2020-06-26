@@ -1,0 +1,7 @@
+parameters:
+    level: 2
+    paths:
+        - Classes
+    ignoreErrors:
+        - '#PHPDoc tag @param has invalid value \(\$_\).*#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOne[a-zA-Z]+\(\)#'

@@ -22,6 +22,16 @@ jobs:
       - name: Run linting
         run: yarn lint
 
+  codestyle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: PHPStan
+        uses: docker://oskarstark/phpstan-ga
+        with:
+          args: analyse
+
 # TODO: Testcafe cannot reach dev server yet and fails
 #  e2e:
 #    env:
