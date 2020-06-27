@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useCallback } from 'react';
+import { useRecoilState } from 'recoil';
 
-import { Tree, IconButton } from '@neos-project/react-ui-components';
+import { IconButton, Tree } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useMediaUi, useIntl, useNotify } from '../../../core';
+import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
-import { selectedAssetSourceState } from '../../../state';
+import { selectedAssetCollectionState, selectedTagState } from '../../../state';
+import { useAssetCollectionsQuery, useSelectAssetSource, useTagsQuery } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
@@ -36,19 +38,30 @@ const AssetCollectionTree = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
-    const {
-        assetCollections,
-        assetCollectionFilter,
-        setAssetCollectionFilter,
-        tagFilter,
-        setTagFilter,
-        tags
-    } = useMediaUi();
-    const selectedAssetSource = useRecoilValue(selectedAssetSourceState);
+    const [selectedAssetCollection, setSelectedAssetCollection] = useRecoilState(selectedAssetCollectionState);
+    const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
+    const { tags } = useTagsQuery();
+    const { assetCollections } = useAssetCollectionsQuery();
+    const [selectedAssetSource] = useSelectAssetSource();
 
-    const onClickAdd = () => {
+    const onClickAdd = useCallback(() => {
         Notify.info('This feature has not been implemented yet');
-    };
+    }, [Notify]);
+
+    const selectTag = useCallback(
+        (tag, assetCollection = null) => {
+            setSelectedAssetCollection(assetCollection);
+            setSelectedTag(tag);
+        },
+        [setSelectedTag, setSelectedAssetCollection]
+    );
+    const selectAssetCollection = useCallback(
+        assetCollection => {
+            setSelectedTag(null);
+            setSelectedAssetCollection(assetCollection);
+        },
+        [setSelectedTag, setSelectedAssetCollection]
+    );
 
     return (
         <>
@@ -62,43 +75,37 @@ const AssetCollectionTree = () => {
                             size="regular"
                             style="transparent"
                             hoverStyle="brand"
-                            disabled={!assetCollectionFilter && !tagFilter}
+                            disabled={!selectedAssetCollection && !selectedTag}
                             title={translate('assetCollectionTree.toolbar.create', 'Create new')}
-                            onClick={() => onClickAdd()}
+                            onClick={onClickAdd}
                         />
                         <IconButton
                             icon="trash-alt"
                             size="regular"
                             style="transparent"
                             hoverStyle="brand"
-                            disabled={!assetCollectionFilter && !tagFilter}
+                            disabled={!selectedAssetCollection && !selectedTag}
                             title={translate('assetCollectionTree.toolbar.delete', 'Delete')}
-                            onClick={() => onClickAdd()}
+                            onClick={onClickAdd}
                         />
                     </div>
 
                     <Tree className={classes.tree}>
                         <AssetCollectionTreeNode
-                            isActive={!assetCollectionFilter && !tagFilter}
+                            isActive={!selectedAssetCollection && !selectedTag}
                             label={translate('assetCollectionList.showAll', 'All')}
                             title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
                             level={1}
-                            onClick={() => {
-                                setAssetCollectionFilter(null);
-                                setTagFilter(null);
-                            }}
+                            onClick={() => selectAssetCollection(null)}
                             assetCollection={null}
                         >
                             {tags?.map(tag => (
                                 <TagTreeNode
                                     key={tag.label}
                                     tag={tag}
-                                    isActive={!assetCollectionFilter && tag.label == tagFilter?.label}
+                                    isActive={!selectedAssetCollection && tag.label == selectedTag?.label}
                                     level={2}
-                                    onClick={() => {
-                                        setAssetCollectionFilter(null);
-                                        setTagFilter(tag);
-                                    }}
+                                    onClick={selectTag}
                                 />
                             ))}
                         </AssetCollectionTreeNode>
@@ -106,26 +113,21 @@ const AssetCollectionTree = () => {
                             <AssetCollectionTreeNode
                                 key={index}
                                 assetCollection={assetCollection}
-                                onClick={() => {
-                                    setAssetCollectionFilter(assetCollection);
-                                    setTagFilter(null);
-                                }}
+                                onClick={selectAssetCollection}
                                 level={1}
-                                isActive={assetCollection.title == assetCollectionFilter?.title && !tagFilter}
+                                isActive={assetCollection.title == selectedAssetCollection?.title && !selectedTag}
                             >
                                 {assetCollection.tags?.map(tag => (
                                     <TagTreeNode
                                         key={tag.label}
                                         tag={tag}
+                                        assetCollection={assetCollection}
                                         isActive={
-                                            assetCollection.title == assetCollectionFilter?.title &&
-                                            tag.label == tagFilter?.label
+                                            assetCollection.title == selectedAssetCollection?.title &&
+                                            tag.label == selectedTag?.label
                                         }
                                         level={2}
-                                        onClick={() => {
-                                            setAssetCollectionFilter(assetCollection);
-                                            setTagFilter(tag);
-                                        }}
+                                        onClick={selectTag}
                                     />
                                 ))}
                             </AssetCollectionTreeNode>

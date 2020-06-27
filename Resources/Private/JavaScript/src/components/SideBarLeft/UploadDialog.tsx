@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useRecoilState } from 'recoil';
 
 import { Button, Icon, Dialog } from '@neos-project/react-ui-components';
 
-import { useConfigQuery, useUploadFiles } from '../../hooks';
+import { useAssetQuery, useConfigQuery, useUploadFiles } from '../../hooks';
 import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { humanFileSize } from '../../helper';
 import { uploadDialogState } from '../../state';
-import { useRecoilState } from 'recoil';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     uploadArea: {
@@ -125,9 +125,10 @@ export default function UploadDialog() {
     const { translate } = useIntl();
     const Notify = useNotify();
     const [state, setState] = useRecoilState(uploadDialogState);
-    const { dummyImage, refetchAssets } = useMediaUi();
+    const { dummyImage } = useMediaUi();
     const { config } = useConfigQuery();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
+    const { refetchAssets } = useAssetQuery();
     const [files, setFiles] = useState<UploadedFile[]>([]);
     const uploadPossible = !loading && files.length > 0;
 

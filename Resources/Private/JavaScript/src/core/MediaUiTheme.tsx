@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { createTheming, createUseStyles } from 'react-jss';
-import { MediaUiTheme } from '../interfaces';
+import jss from 'jss';
+import jssPluginCache from 'jss-plugin-cache';
+
 import { config } from '@neos-project/build-essentials/src/styles/styleConstants';
+
+import { MediaUiTheme } from '../interfaces';
 
 const ThemeContext = React.createContext({} as MediaUiTheme);
 const theming = createTheming(ThemeContext);
 const { ThemeProvider, useTheme } = theming;
+
+jss.use(jssPluginCache());
 
 // Extend theme config from Neos.Ui package
 const mediaUiTheme: MediaUiTheme = {
@@ -44,7 +50,7 @@ const mediaUiTheme: MediaUiTheme = {
 
 export const useMediaUiTheme = useTheme;
 
-export const createUseMediaUiStyles = styles => createUseStyles(styles, { theming } as object);
+export const createUseMediaUiStyles = styles => createUseStyles<MediaUiTheme>(styles, { theming });
 
 export function MediaUiThemeProvider({ children }: { children: React.ReactElement }) {
     return <ThemeProvider theme={mediaUiTheme}>{children}</ThemeProvider>;

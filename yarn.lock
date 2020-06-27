@@ -7496,6 +7496,14 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+jss-plugin-cache@^10.3.0:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/jss-plugin-cache/-/jss-plugin-cache-10.3.0.tgz#bdb81cd874e4b5b64a7a22d5ab33aa7b165430fa"
+  integrity sha512-8C863YQytIQMvZRfisGEd3lUWCtvgv/UPeD71wm5CQvbkWZF9BtW/R/ldfYyLSUVdL+NjaWVKZMG36Y2GOP9KA==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    jss "^10.3.0"
+
 jss-plugin-camel-case@^10.3.0:
   version "10.3.0"
   resolved "https://registry.yarnpkg.com/jss-plugin-camel-case/-/jss-plugin-camel-case-10.3.0.tgz#ae4da53b39a6e3ea94b70a20fc41c11f0b87386a"

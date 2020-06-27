@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { Icon, ToggablePanel } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
-import { selectedAssetSourceState } from '../../state';
+import { useSelectAssetSource } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceDescription: {
@@ -24,7 +23,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 export default function AssetSourceDescription() {
     const classes = useStyles();
     const { translate } = useIntl();
-    const selectedAssetSource = useRecoilValue(selectedAssetSourceState);
+    const [selectedAssetSource] = useSelectAssetSource();
 
     return (
         <>

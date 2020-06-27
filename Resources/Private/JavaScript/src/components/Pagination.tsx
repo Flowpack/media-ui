@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { ASSETS_PER_PAGE, createUseMediaUiStyles, useMediaUi, useIntl } from '../core';
+import { ASSETS_PER_PAGE, createUseMediaUiStyles, useIntl } from '../core';
 import { MediaUiTheme } from '../interfaces';
+import { currentPageState } from '../state';
+import { useAssetCountQuery } from '../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
@@ -59,7 +62,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function Pagination() {
     const classes = useStyles();
-    const { assetCount, currentPage, setCurrentPage } = useMediaUi();
+    const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
+    const { assetCount } = useAssetCountQuery();
     const { translate } = useIntl();
 
     const numberOfPages = Math.ceil(assetCount / ASSETS_PER_PAGE);
@@ -102,8 +106,6 @@ export default function Pagination() {
             pages
         });
     }, [numberOfPages, currentPage]);
-
-    // TODO: Replace left and right chevrons with proper Icon components from Neos.UI
 
     return (
         <nav className={classes.pagination}>

@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
+import { useIntl, createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
-import { useAssetSourceFilter } from '../../hooks';
+import { useSelectAssetSource, useAssetSourcesQuery } from '../../hooks';
 import { IconLabel } from '../Presentation';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -27,13 +27,13 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function AssetSourceList() {
     const classes = useStyles();
-    const { assetSources } = useMediaUi();
+    const { assetSources } = useAssetSourcesQuery();
     const { translate } = useIntl();
-    const [assetSourceFilter, setAssetSourceFilter] = useAssetSourceFilter();
+    const [selectedAssetSource, setSelectedAssetSource] = useSelectAssetSource();
 
     return (
         <>
-            {assetSources.length > 1 && (
+            {assetSources?.length > 1 && (
                 <nav className={classes.assetSourceList}>
                     <IconLabel icon="box" label={translate('assetSourceList.header', 'Media sources')} />
                     {assetSources?.map(assetSource => (
@@ -44,8 +44,8 @@ export default function AssetSourceList() {
                             className={classes.item}
                         >
                             <a
-                                className={assetSourceFilter === assetSource.id ? classes.itemSelected : null}
-                                onClick={() => setAssetSourceFilter(assetSource)}
+                                className={selectedAssetSource?.id === assetSource.id ? classes.itemSelected : null}
+                                onClick={() => setSelectedAssetSource(assetSource)}
                             >
                                 {assetSource.id === 'neos'
                                     ? translate('assetsource.local', 'Local')

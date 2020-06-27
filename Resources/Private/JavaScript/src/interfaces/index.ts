@@ -7,14 +7,13 @@ import Image from './Image';
 import IptcProperty from './IptcProperty';
 import MediaUiTheme from './MediaUiTheme';
 import Notify from './Notify';
-import PersistentState from './PersistentState';
 import Tag from './Tag';
-import { AssetCollectionTreeNodeProps, TagTreeNodeProps } from './TreeNode';
+import AbstractTreeNodeProps from './TreeNode';
 
 export {
+    AbstractTreeNodeProps,
     Asset,
     AssetCollection,
-    AssetCollectionTreeNodeProps,
     AssetSource,
     FileUploadResult,
     I18nRegistry,
@@ -22,7 +21,5 @@ export {
     IptcProperty,
     MediaUiTheme,
     Notify,
-    PersistentState,
-    Tag,
-    TagTreeNodeProps
+    Tag
 };

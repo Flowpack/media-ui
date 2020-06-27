@@ -4,12 +4,12 @@ import { updateLocalState } from './PersistentStateManager';
 
 export const typeDefs = gql`
     extend type Query {
-        assetSourceFilter: String
+        selectedAssetSourceId: String
         viewModeSelection: String
     }
 
     extend type Mutation {
-        setAssetSourceFilter(assetSourceFilter: String): String
+        setSelectedAssetSourceId(selectedAssetSourceId: String): String
         setViewModeSelection(viewModeSelection: String): String
     }
 `;
@@ -17,9 +17,9 @@ export const typeDefs = gql`
 // noinspection JSUnusedGlobalSymbols
 export const resolvers = {
     Mutation: {
-        setAssetSourceFilter: (_, { assetSourceFilter }, { cache }) => {
-            updateLocalState({ assetSourceFilter }, cache);
-            return assetSourceFilter;
+        setSelectedAssetSourceId: (_, { selectedAssetSourceId }, { cache }) => {
+            updateLocalState({ selectedAssetSourceId }, cache);
+            return selectedAssetSourceId;
         },
         setViewModeSelection: (_, { viewModeSelection }, { cache }) => {
             updateLocalState({ viewModeSelection }, cache);

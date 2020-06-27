@@ -1,5 +1,9 @@
 import { ASSETS } from './AssetsQuery';
-import { ASSET_SOURCE_FILTER, SET_ASSET_SOURCE_FILTER } from './AssetSourceFilterQuery';
+import { SELECTED_ASSET_SOURCE_ID, SET_SELECTED_ASSET_SOURCE_ID } from './SelectedAssetSourceQuery';
+import ASSET_COLLECTIONS from './AssetCollectionQuery';
+import ASSET_COUNT from './AssetCountQuery';
+import ASSET_SOURCES from './AssetSourcesQuery';
+import TAGS from './TagsQuery';
 import {
     ASSET_COLLECTION_FRAGMENT,
     ASSET_FRAGMENT,
@@ -17,24 +21,28 @@ import {
     UPLOAD_FILE,
     UPLOAD_FILES
 } from './Mutations';
-import { VIEW_MODE_SELECTION, SET_VIEW_MODE_SELECTION } from './ViewModeSelectionQuery';
+import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from './ViewModeSelectionQuery';
 import { CONFIG } from './ConfigQuery';
 
 export {
     ASSETS,
     ASSET_COLLECTION_FRAGMENT,
     ASSET_FRAGMENT,
-    ASSET_SOURCE_FILTER,
+    SELECTED_ASSET_SOURCE_ID,
     ASSET_SOURCE_FRAGMENT,
+    ASSET_SOURCES,
+    ASSET_COUNT,
+    ASSET_COLLECTIONS,
     CONFIG,
     DELETE_ASSET,
     FILE_FRAGMENT,
     IMPORT_ASSET,
     IPTC_PROPERTY_FRAGMENT,
-    SET_ASSET_SOURCE_FILTER,
+    SET_SELECTED_ASSET_SOURCE_ID,
     SET_VIEW_MODE_SELECTION,
     TAG_ASSET,
     TAG_FRAGMENT,
+    TAGS,
     UNTAG_ASSET,
     UPDATE_ASSET,
     UPLOAD_FILES,

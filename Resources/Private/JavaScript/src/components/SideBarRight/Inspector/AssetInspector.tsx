@@ -4,11 +4,11 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Label, MultiSelectBox, TextArea, TextInput } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../../core';
+import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { Asset, MediaUiTheme } from '../../../interfaces';
 import { PropertyList, PropertyListItem } from '../../Presentation';
 import { humanFileSize } from '../../../helper';
-import { useTagAsset, useUntagAsset, useUpdateAsset } from '../../../hooks';
+import { useAssetCollectionsQuery, useTagAsset, useTagsQuery, useUntagAsset, useUpdateAsset } from '../../../hooks';
 import { selectedAssetState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -50,7 +50,8 @@ const tagsMatchAsset = (tags: string[], asset: Asset) => {
 
 export default function AssetInspector() {
     const classes = useStyles();
-    const { tags: allTags, assetCollections } = useMediaUi();
+    const { tags: allTags } = useTagsQuery();
+    const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
     const Notify = useNotify();
     const { translate } = useIntl();

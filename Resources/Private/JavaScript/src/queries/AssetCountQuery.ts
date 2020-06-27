@@ -1,29 +1,22 @@
 import { gql } from 'apollo-boost';
 
-import { ASSET_FRAGMENT } from './Fragments';
-
-export const ASSETS = gql`
-    query ASSETS(
+const ASSET_COUNT = gql`
+    query ASSET_COUNT(
         $searchTerm: String
         $assetSourceId: AssetSourceId
         $assetCollectionId: AssetCollectionId
         $mediaType: MediaType
         $tag: TagLabel
-        $limit: Int
-        $offset: Int
     ) {
         selectedAssetSourceId @client(always: true) @export(as: "assetSourceId")
-        assets(
+        assetCount(
             searchTerm: $searchTerm
             assetSourceId: $assetSourceId
             assetCollectionId: $assetCollectionId
             mediaType: $mediaType
             tag: $tag
-            limit: $limit
-            offset: $offset
-        ) {
-            ...AssetProps
-        }
+        )
     }
-    ${ASSET_FRAGMENT}
 `;
+
+export default ASSET_COUNT;

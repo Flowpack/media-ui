@@ -1,6 +1,9 @@
 import * as React from 'react';
-import { useMediaUi, createUseMediaUiStyles } from '../core';
+import { useRecoilValue } from 'recoil';
+
+import { createUseMediaUiStyles } from '../core';
 import { MediaUiTheme } from '../interfaces';
+import { loadingState } from '../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     '@keyframes cssloadWidth': {
@@ -37,7 +40,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function LoadingIndicator() {
     const classes = useStyles();
-    const { isLoading } = useMediaUi();
+    const isLoading = useRecoilValue(loadingState);
 
     return (
         <>

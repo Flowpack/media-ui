@@ -1,8 +1,11 @@
 import * as React from 'react';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
+import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { ListViewItem } from './index';
+import { useRecoilValue } from 'recoil';
+import { loadingState } from '../../state';
+import { useAssetQuery } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
@@ -28,8 +31,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function ListView() {
     const classes = useStyles();
-    const { assets, isLoading } = useMediaUi();
     const { translate } = useIntl();
+    const { assets } = useAssetQuery();
+    const isLoading = useRecoilValue(loadingState);
 
     return (
         <section className={classes.listView}>

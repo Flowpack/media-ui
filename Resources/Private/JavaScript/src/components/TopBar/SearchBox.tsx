@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
+import { createUseMediaUiStyles, useIntl } from '../../core';
+import { searchTermState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
     searchBox: {
@@ -15,7 +17,7 @@ const useStyles = createUseMediaUiStyles({
 
 export default function SearchBox() {
     const classes = useStyles();
-    const { searchTerm, setSearchTerm } = useMediaUi();
+    const [searchTerm, setSearchTerm] = useRecoilState(searchTermState);
     const [searchValue, setSearchValue] = useState(searchTerm);
     const { translate } = useIntl();
 

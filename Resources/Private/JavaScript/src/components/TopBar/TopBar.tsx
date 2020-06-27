@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useMemo } from 'react';
 
 import { createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
@@ -15,7 +16,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 export default function TopBar() {
     const classes = useStyles();
 
-    const components = [SearchBox, TypeFilter, ViewModeSelector];
+    const components = useMemo(() => [SearchBox, TypeFilter, ViewModeSelector], []);
 
     return (
         <div className={classes.topBar}>

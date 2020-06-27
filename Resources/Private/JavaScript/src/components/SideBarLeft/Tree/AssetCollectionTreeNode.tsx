@@ -1,7 +1,15 @@
 import * as React from 'react';
+
 import { Tree } from '@neos-project/react-ui-components';
-import { AssetCollectionTreeNodeProps } from '../../../interfaces';
+
+import { AbstractTreeNodeProps } from '../../../interfaces';
 import { dndTypes } from '../../../constants';
+import AssetCollection from '../../../interfaces/AssetCollection';
+
+export interface AssetCollectionTreeNodeProps extends AbstractTreeNodeProps {
+    assetCollection: AssetCollection;
+    onClick: (assetCollection: AssetCollection) => void;
+}
 
 export default function AssetCollectionTreeNode(props: AssetCollectionTreeNodeProps) {
     return (
@@ -17,7 +25,7 @@ export default function AssetCollectionTreeNode(props: AssetCollectionTreeNodePr
                 icon="folder"
                 nodeDndType={dndTypes.COLLECTION}
                 level={props.level}
-                onClick={props.onClick}
+                onClick={() => props.onClick(props.assetCollection)}
                 hasChildren={!!props.children}
             />
             {props.children}

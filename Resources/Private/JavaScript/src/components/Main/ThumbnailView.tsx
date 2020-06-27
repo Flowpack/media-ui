@@ -1,8 +1,11 @@
 import * as React from 'react';
+import { useRecoilValue } from 'recoil';
 
-import { useMediaUi, useIntl, createUseMediaUiStyles } from '../../core';
+import { useIntl, createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { Thumbnail } from './index';
+import { loadingState } from '../../state';
+import { useAssetQuery } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnailView: {
@@ -15,7 +18,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 export default function ThumbnailView() {
     const classes = useStyles();
-    const { assets, isLoading } = useMediaUi();
+    const { assets } = useAssetQuery();
+    const isLoading = useRecoilValue(loadingState);
     const { translate } = useIntl();
 
     return (

@@ -5,9 +5,14 @@ import { VIEW_MODES } from '../hooks';
 
 const STORAGE_PREFIX = 'flowpack.mediaui';
 
+interface PersistentState {
+    selectedAssetSourceId: string;
+    viewModeSelection: string;
+}
+
 export function restoreLocalState(cache: ApolloCache<NormalizedCacheObject>) {
     const data: PersistentState = {
-        assetSourceFilter: localStorage.getItem(`${STORAGE_PREFIX}.assetSourceFilter`) || 'neos', // TODO: Use global constant for fallback
+        selectedAssetSourceId: localStorage.getItem(`${STORAGE_PREFIX}.selectedAssetSourceId`) || 'neos', // TODO: Use global constant for fallback
         viewModeSelection: localStorage.getItem(`${STORAGE_PREFIX}.viewModeSelection`) || VIEW_MODES.Thumbnails
     };
     cache.writeData({ data: { ...data } });
@@ -15,7 +20,7 @@ export function restoreLocalState(cache: ApolloCache<NormalizedCacheObject>) {
 
 export function resetLocalState(cache: ApolloCache<NormalizedCacheObject>) {
     const data: PersistentState = {
-        assetSourceFilter: 'neos', // TODO: Use global constant
+        selectedAssetSourceId: 'neos', // TODO: Use global constant
         viewModeSelection: VIEW_MODES.Thumbnails
     };
     cache.writeData({ data: { ...data } });

@@ -1,8 +1,19 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useLazyQuery } from '@apollo/react-hooks';
-import { useEffect, useState } from 'react';
+import isEqual from 'lodash.isequal';
 
 import { ASSETS } from '../queries';
 import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
+import {
+    currentPageState,
+    loadingState,
+    searchTermState,
+    selectedAssetCollectionState,
+    selectedMediaTypeState,
+    selectedTagState
+} from '../state';
+import { ASSETS_PER_PAGE } from '../core';
 
 interface AssetsQueryResult {
     assets: Asset[];
@@ -21,45 +32,47 @@ interface AssetsQueryVariables {
     offset: number;
 }
 
-const useAssetQuery = (variables: AssetsQueryVariables) => {
+const useAssetQuery = () => {
+    const searchTerm = useRecoilValue(searchTermState);
+    const selectedAssetCollection = useRecoilValue(selectedAssetCollectionState);
+    const selectedTag = useRecoilValue(selectedTagState);
+    const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
+    const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
+    const [isLoading, setIsLoading] = useRecoilState(loadingState);
+    const [assets, setAssets] = useState<Asset[]>([]);
+
+    const limit = ASSETS_PER_PAGE;
+    const offset = (currentPage - 1) * ASSETS_PER_PAGE;
+
     const [query, { loading, error, data, refetch }] = useLazyQuery<AssetsQueryResult, AssetsQueryVariables>(ASSETS, {
         notifyOnNetworkStatusChange: false,
-        variables
-    });
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [assetData, setAssetData] = useState<AssetsQueryResult>({
-        assets: [],
-        assetCollections: [],
-        assetSources: [],
-        assetCount: 0,
-        tags: []
+        variables: {
+            searchTerm,
+            assetCollection: selectedAssetCollection?.title,
+            mediaType: mediaTypeFilter,
+            tag: selectedTag?.label,
+            limit,
+            offset
+        }
     });
 
     useEffect(() => {
         if (!loading && !isLoading) {
-            query({ variables });
+            query();
             setIsLoading(true);
         } else if (data && !loading && isLoading) {
-            setAssetData(data);
+            setAssets(prev => (isEqual(prev, data.assets) ? prev : data.assets));
             setIsLoading(false);
+
+            // Update currentPage if asset count changes
+            setCurrentPage(prev => ((prev - 1) * limit > data.assetCount ? 1 : prev));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-        query,
-        data,
-        loading,
-        variables.assetCollection,
-        variables.limit,
-        variables.mediaType,
-        variables.offset,
-        variables.searchTerm,
-        variables.tag
-    ]);
+    }, [query, data, loading, selectedAssetCollection, mediaTypeFilter, offset, searchTerm, selectedTag]);
 
-    const refetchAssets = () => refetch().then(() => true);
+    const refetchAssets = useCallback(() => refetch().then(() => true), [refetch]);
 
-    return { assetData, isLoading, error, refetchAssets };
+    return { isLoading, error, assets, refetchAssets };
 };
 
 export default useAssetQuery;

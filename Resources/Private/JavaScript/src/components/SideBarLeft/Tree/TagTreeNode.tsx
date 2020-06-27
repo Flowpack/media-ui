@@ -1,7 +1,16 @@
 import * as React from 'react';
+
 import { Tree } from '@neos-project/react-ui-components';
-import { TagTreeNodeProps } from '../../../interfaces';
+
+import { AbstractTreeNodeProps, AssetCollection } from '../../../interfaces';
 import { dndTypes } from '../../../constants';
+import Tag from '../../../interfaces/Tag';
+
+export interface TagTreeNodeProps extends AbstractTreeNodeProps {
+    tag: Tag;
+    assetCollection?: AssetCollection;
+    onClick: (tag: Tag, assetCollection?: AssetCollection) => void;
+}
 
 export default function TagTreeNode(props: TagTreeNodeProps) {
     // TODO: Adjust props when nested tags are supported
@@ -18,7 +27,7 @@ export default function TagTreeNode(props: TagTreeNodeProps) {
                 icon="tag"
                 nodeDndType={dndTypes.TAG}
                 level={props.level}
-                onClick={props.onClick}
+                onClick={() => props.onClick(props.tag, props.assetCollection)}
                 hasChildren={false}
             />
         </Tree.Node>
