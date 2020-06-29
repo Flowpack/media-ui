@@ -1,6 +1,5 @@
 import { ApolloCache } from 'apollo-cache';
 import { NormalizedCacheObject } from 'apollo-cache-inmemory/lib/types';
-import { PersistentState } from '../interfaces';
 import { VIEW_MODES } from '../hooks';
 
 const STORAGE_PREFIX = 'flowpack.mediaui';

@@ -53,7 +53,7 @@ export default function TypeFilter() {
                 icon: 'file'
             }
         }),
-        []
+        [translate]
     );
 
     return (
