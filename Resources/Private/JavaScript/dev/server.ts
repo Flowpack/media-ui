@@ -1,9 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const { gql } = require('apollo-boost');
-const Bundler = require('parcel-bundler');
-const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
+import fs from 'fs';
+import path from 'path';
+import Bundler from 'parcel-bundler';
+import { gql } from 'apollo-boost';
+import { ApolloServer } from 'apollo-server-express';
+import express from 'express';
+
+import { assetCollections, assets, assetSources, tags } from './fixtures';
 
 const PORT = 8000;
 
@@ -11,60 +13,43 @@ const bundler = new Bundler(__dirname + '/index.html', {
     outDir: __dirname + '/dist'
 });
 
-const assetSources = [
-    {
-        id: 'neos',
-        label: 'Neos',
-        description: 'The Neos core asset source',
-        iconUri: '',
-        readOnly: false,
-        supportsTagging: true,
-        supportsCollections: true
-    }
-];
-
-const assets = [
-    {
-        id: 1,
-        localId: 1,
-        assetSource: assetSources[0],
-        imported: false,
-        label: 'Dummy 1',
-        caption: 'The caption for dummy 1',
-        filename: 'dummy1.jpg',
-        tags: [],
-        collections: [],
-        copyrightNotice: 'The Neos team',
-        lastModified: '2020-06-16 15:07:00',
-        iptcProperties: [],
-        width: 90,
-        height: 210,
-        file: {
-            extension: 'jpg',
-            mediaType: 'image/jpeg',
-            typeIcon: {
-                width: 16,
-                height: 16,
-                url: 'jpg.svg',
-                alt: 'jpeg image'
-            },
-            size: '200',
-            url: 'Assets/dummy1.jpg'
-        },
-        thumbnailUrl: 'Assets/dummy1.jpg',
-        previewUrl: 'Assets/dummy1.jpg'
-    }
-];
+const filterAssets = (assetSourceId, tag, assetCollectionId, mediaType, searchTerm) => {
+    return assets.filter(asset => {
+        return (
+            (!assetSourceId || asset.assetSource.id === assetSourceId) &&
+            (!tag || asset.tags.find(({ label }) => label === tag)) &&
+            (!assetCollectionId || asset.collections.find(({ title }) => title === assetCollectionId)) &&
+            (!searchTerm || asset.label.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0) &&
+            (!mediaType || asset.file.mediaType.indexOf(mediaType) >= 0)
+        );
+    });
+};
 
 const resolvers = {
     Query: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        assets: (assetSourceId, tag, assetCollectionId, mediaType, searchTerm, limit, offset) => assets,
+        assets: (
+            $_,
+            {
+                assetSourceId = 'neos',
+                tag = null,
+                assetCollectionId = null,
+                mediaType = '',
+                searchTerm = '',
+                limit = 20,
+                offset = 0
+            }
+        ) => filterAssets(assetSourceId, tag, assetCollectionId, mediaType, searchTerm).slice(offset, offset + limit),
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        assetCount: (assetSourceId, tag, assetCollectionId, mediaType, searchTerm) => assets.length,
+        assetCount: (
+            $_,
+            { assetSourceId = 'neos', tag = null, assetCollectionId = null, mediaType = '', searchTerm = '' }
+        ) => {
+            return filterAssets(assetSourceId, tag, assetCollectionId, mediaType, searchTerm).length;
+        },
         assetSources: () => assetSources,
-        assetCollections: () => [],
-        tags: () => [],
+        assetCollections: () => assetCollections,
+        tags: () => tags,
         config: () => ({
             uploadMaxFileSize: 1024 * 1024
         })
@@ -75,6 +60,7 @@ const typeDefs = gql`
     ${fs.readFileSync(path.join(__dirname, '../../GraphQL/schema.root.graphql'), 'utf8')}
 `;
 
+// @ts-ignore
 const server = new ApolloServer({ typeDefs, resolvers, uploads: false });
 const app = express();
 

@@ -1,4 +1,4 @@
-import { AssetSource, IptcProperty, Image, Tag, AssetCollection } from './index';
+import { AssetSource, IptcProperty, Tag, AssetCollection, AssetFile } from './index';
 
 export default interface Asset {
     readonly id: string;
@@ -20,12 +20,7 @@ export default interface Asset {
     width?: number;
     height?: number;
 
-    file: {
-        extension: string;
-        mediaType: string;
-        typeIcon: Image;
-        size?: number;
-    };
+    file: AssetFile;
     thumbnailUrl?: string;
     previewUrl?: string;
 }

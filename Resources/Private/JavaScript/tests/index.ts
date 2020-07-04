@@ -2,6 +2,16 @@ import { Selector } from 'testcafe';
 
 fixture('Media Module').page('http://localhost:8000/');
 
-test('The first dummy image appears as thumbnail', async t => {
-    await t.expect(Selector('#media-ui-app [class^="thumbnail-"] [class^="caption-"]').innerText).eql('Dummy 1');
+const firstThumbnail = Selector('[class^="thumbnail-"] [class^="caption-"]');
+const paginationPage2 = Selector('[class^="pagination-"] [class^="list-"] [class^="item-"]:nth-child(2)');
+
+test('The first example image appears as thumbnail', async t => {
+    await t.expect(firstThumbnail.innerText).eql('Example asset 1');
+});
+
+test('Clicking next page shows more thumbnails', async t => {
+    await t
+        .click(paginationPage2)
+        .expect(firstThumbnail.innerText)
+        .eql('Example asset 21');
 });

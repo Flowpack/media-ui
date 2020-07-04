@@ -3,6 +3,10 @@
     "experimentalDecorators": true,
     "lib": ["es5", "es2015", "dom"],
     "skipLibCheck": true,
+    "target": "es5",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
     "jsx": "react",
     "typeRoots": ["./Resources/Private/JavaScript/typings"]
   },

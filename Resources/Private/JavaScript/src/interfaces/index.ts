@@ -1,5 +1,6 @@
 import Asset from './Asset';
 import AssetCollection from './AssetCollection';
+import AssetFile from './AssetFile';
 import AssetSource from './AssetSource';
 import FileUploadResult from './FileUploadResult';
 import I18nRegistry from './I18nRegistry';
@@ -14,6 +15,7 @@ export {
     AbstractTreeNodeProps,
     Asset,
     AssetCollection,
+    AssetFile,
     AssetSource,
     FileUploadResult,
     I18nRegistry,
