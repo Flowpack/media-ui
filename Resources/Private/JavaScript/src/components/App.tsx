@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil';
 
 import { SideBarLeft, UploadDialog } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
-import Pagination from './Pagination';
+import { Pagination } from './Pagination';
 import { createUseMediaUiStyles, useMediaUi } from '../core';
 import LoadingIndicator from './LoadingIndicator';
 import { MediaUiTheme } from '../interfaces';

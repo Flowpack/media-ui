@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { IconButton } from '@neos-project/react-ui-components';
-
-import { ASSETS_PER_PAGE, createUseMediaUiStyles, useIntl } from '../core';
-import { MediaUiTheme } from '../interfaces';
-import { currentPageState } from '../state';
-import { useAssetCountQuery } from '../hooks';
+import { ASSETS_PER_PAGE, createUseMediaUiStyles, useIntl } from '../../core';
+import { MediaUiTheme } from '../../interfaces';
+import { currentPageState } from '../../state';
+import { useAssetCountQuery } from '../../hooks';
+import { PaginationItem } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
@@ -76,7 +75,7 @@ export default function Pagination() {
         pages: []
     });
 
-    const handlePageClick = page => setCurrentPage(page);
+    const handlePageClick = useCallback(page => setCurrentPage(page), [setCurrentPage]);
 
     // Calculates visible display range
     useEffect(() => {
@@ -115,60 +114,45 @@ export default function Pagination() {
             {numberOfPages > 0 && (
                 <ol className={classes.list}>
                     {currentPage > 1 && (
-                        <li>
-                            <IconButton
-                                icon="angle-left"
-                                size="regular"
-                                style="transparent"
-                                hoverStyle="brand"
-                                title={translate('pagination.previousPageTitle', `Go to previous page`)}
-                                onClick={() => handlePageClick(currentPage - 1)}
-                            />
-                        </li>
+                        <PaginationItem
+                            icon="angle-left"
+                            title={translate('pagination.previousPageTitle', `Go to previous page`)}
+                            onClick={handlePageClick}
+                            page={currentPage - 1}
+                        />
                     )}
                     {displayRange.start > 1 && (
-                        <li>
-                            <a
-                                onClick={() => handlePageClick(1)}
-                                title={translate('pagination.firstPageTitle', `Go to first page`)}
-                            >
-                                1
-                            </a>
-                        </li>
+                        <PaginationItem
+                            onClick={handlePageClick}
+                            title={translate('pagination.firstPageTitle', `Go to first page`)}
+                            page={1}
+                        />
                     )}
                     {displayRange.hasLessPages && <li>…</li>}
                     {displayRange.pages.map(page => (
-                        <li key={page} className={currentPage === page ? classes.selected : null}>
-                            <a
-                                onClick={() => handlePageClick(page)}
-                                title={translate('pagination.page', `Go to page ${page}`, [page])}
-                            >
-                                {page}
-                            </a>
-                        </li>
+                        <PaginationItem
+                            key={page}
+                            selected={currentPage === page}
+                            onClick={handlePageClick}
+                            title={translate('pagination.page', `Go to page ${page}`, [page])}
+                            page={page}
+                        />
                     ))}
                     {displayRange.hasMorePages && <li>…</li>}
                     {displayRange.end < numberOfPages && (
-                        <li>
-                            <a
-                                onClick={() => handlePageClick(numberOfPages)}
-                                title={translate('pagination.lastPageTitle', `Go to last page`)}
-                            >
-                                {numberOfPages}
-                            </a>
-                        </li>
+                        <PaginationItem
+                            onClick={handlePageClick}
+                            title={translate('pagination.lastPageTitle', `Go to last page`)}
+                            page={numberOfPages}
+                        />
                     )}
                     {currentPage < numberOfPages && (
-                        <li>
-                            <IconButton
-                                icon="angle-right"
-                                size="regular"
-                                style="transparent"
-                                hoverStyle="brand"
-                                title={translate('pagination.nextPageTitle', `Go to next page`)}
-                                onClick={() => handlePageClick(currentPage + 1)}
-                            />
-                        </li>
+                        <PaginationItem
+                            icon="angle-right"
+                            title={translate('pagination.nextPageTitle', `Go to next page`)}
+                            onClick={handlePageClick}
+                            page={currentPage + 1}
+                        />
                     )}
                 </ol>
             )}
