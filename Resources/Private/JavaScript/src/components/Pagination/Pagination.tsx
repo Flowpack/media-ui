@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { ASSETS_PER_PAGE, createUseMediaUiStyles, useIntl } from '../../core';
+import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS, createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { currentPageState } from '../../state';
 import { useAssetCountQuery } from '../../hooks';
-import { PaginationItem } from './index';
+import { AssetCount, PaginationItem } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
@@ -20,53 +20,24 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         backgroundColor: theme.colors.moduleBackground,
         zIndex: theme.paginationZIndex
     },
-    assetCount: {
-        height: '100%',
-        alignSelf: 'flex-start',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        userSelect: 'none'
-    },
     list: {
         display: 'flex',
         justifySelf: 'center',
         listStyleType: 'none',
-        textAlign: 'center',
-        '& > li': {
-            width: '2.4rem',
-            userSelect: 'none',
-            lineHeight: '2.4rem',
-            '& a': {
-                display: 'block',
-                height: '100%',
-                width: '100%',
-                cursor: 'pointer',
-                '&:hover': {
-                    backgroundColor: theme.colors.primary,
-                    color: 'white'
-                }
-            }
-        }
+        textAlign: 'center'
     },
-    selected: {
-        border: `1px solid ${theme.colors.border}`,
-        borderTop: 0,
-        borderBottom: 0,
-        '& a': {
-            color: theme.colors.primary
-        }
+    ellipsis: {
+        lineHeight: '2.4rem'
     }
 }));
 
-export default function Pagination() {
+const Pagination: React.FC = () => {
     const classes = useStyles();
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const { assetCount } = useAssetCountQuery();
     const { translate } = useIntl();
 
     const numberOfPages = Math.ceil(assetCount / ASSETS_PER_PAGE);
-    const maximumNumberOfLinks = 5;
     const [displayRange, setDisplayRange] = useState({
         start: 0,
         end: 0,
@@ -75,11 +46,14 @@ export default function Pagination() {
         pages: []
     });
 
-    const handlePageClick = useCallback(page => setCurrentPage(page), [setCurrentPage]);
+    const handlePageClick = useCallback(page => page != currentPage && setCurrentPage(page), [
+        currentPage,
+        setCurrentPage
+    ]);
 
     // Calculates visible display range
-    useEffect(() => {
-        const maxLinks = Math.min(maximumNumberOfLinks, numberOfPages);
+    useMemo(() => {
+        const maxLinks = Math.min(PAGINATION_MAXIMUM_LINKS, numberOfPages);
         const delta = Math.floor(maxLinks / 2);
 
         let start = currentPage - delta;
@@ -108,9 +82,7 @@ export default function Pagination() {
 
     return (
         <nav className={classes.pagination}>
-            <div className={classes.assetCount}>
-                {assetCount} {translate('pagination.assetCount', 'assets')}
-            </div>
+            <AssetCount />
             {numberOfPages > 0 && (
                 <ol className={classes.list}>
                     {currentPage > 1 && (
@@ -128,7 +100,7 @@ export default function Pagination() {
                             page={1}
                         />
                     )}
-                    {displayRange.hasLessPages && <li>…</li>}
+                    {displayRange.hasLessPages && <li className={classes.ellipsis}>…</li>}
                     {displayRange.pages.map(page => (
                         <PaginationItem
                             key={page}
@@ -138,7 +110,7 @@ export default function Pagination() {
                             page={page}
                         />
                     ))}
-                    {displayRange.hasMorePages && <li>…</li>}
+                    {displayRange.hasMorePages && <li className={classes.ellipsis}>…</li>}
                     {displayRange.end < numberOfPages && (
                         <PaginationItem
                             onClick={handlePageClick}
@@ -158,4 +130,6 @@ export default function Pagination() {
             )}
         </nav>
     );
-}
+};
+
+export default React.memo(Pagination);

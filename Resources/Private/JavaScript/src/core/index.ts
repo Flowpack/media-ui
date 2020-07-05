@@ -1,21 +1,22 @@
 import { IntlProvider, useIntl } from './Intl';
-import { MediaUiProvider, useMediaUi, ASSETS_PER_PAGE } from './MediaUiProvider';
+import { MediaUiProvider, useMediaUi, ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS } from './MediaUiProvider';
 import { MediaUiThemeProvider, createUseMediaUiStyles, useMediaUiTheme } from './MediaUiTheme';
 import * as PersistentStateManager from './PersistentStateManager';
 import * as Resolvers from './Resolvers';
 import { useNotify, NotifyProvider } from './Notify';
 
 export {
-    IntlProvider,
-    useIntl,
-    MediaUiProvider,
-    useMediaUi,
     ASSETS_PER_PAGE,
+    IntlProvider,
+    MediaUiProvider,
     MediaUiThemeProvider,
-    createUseMediaUiStyles,
-    useNotify,
     NotifyProvider,
-    useMediaUiTheme,
+    PAGINATION_MAXIMUM_LINKS,
     PersistentStateManager,
-    Resolvers
+    Resolvers,
+    createUseMediaUiStyles,
+    useIntl,
+    useMediaUi,
+    useMediaUiTheme,
+    useNotify
 };

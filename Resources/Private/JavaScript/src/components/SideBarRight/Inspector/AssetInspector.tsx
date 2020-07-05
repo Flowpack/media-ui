@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { Button, Label, MultiSelectBox, TextArea, TextInput } from '@neos-project/react-ui-components';
@@ -48,7 +48,7 @@ const tagsMatchAsset = (tags: string[], asset: Asset) => {
     );
 };
 
-export default function AssetInspector() {
+const AssetInspector: React.FC = () => {
     const classes = useStyles();
     const { tags: allTags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
@@ -74,15 +74,17 @@ export default function AssetInspector() {
             copyrightNotice !== selectedAsset.copyrightNotice ||
             !tagsMatchAsset(tags, selectedAsset));
 
-    const handleDiscard = () => {
-        setLabel(selectedAsset?.label);
-        setCaption(selectedAsset?.caption);
-        setCopyrightNotice(selectedAsset?.copyrightNotice);
-        setTags(selectedAsset?.tags.map(tag => tag.label).sort() || []);
-        setCollections(selectedAsset?.collections.map(collection => collection.title).sort() || []);
-    };
+    const handleDiscard = useCallback(() => {
+        if (selectedAsset) {
+            setLabel(selectedAsset.label);
+            setCaption(selectedAsset.caption);
+            setCopyrightNotice(selectedAsset.copyrightNotice);
+            setTags(selectedAsset.tags.map(tag => tag.label).sort() || []);
+            setCollections(selectedAsset.collections.map(collection => collection.title).sort() || []);
+        }
+    }, [selectedAsset, setLabel, setCaption, setCopyrightNotice, setTags, setCollections]);
 
-    const handleApply = () => {
+    const handleApply = useCallback(() => {
         if (
             label !== selectedAsset.label ||
             caption !== selectedAsset.caption ||
@@ -139,7 +141,19 @@ export default function AssetInspector() {
                         });
                 });
         }
-    };
+    }, [
+        Notify,
+        translate,
+        caption,
+        copyrightNotice,
+        label,
+        selectedAsset,
+        setSelectedAsset,
+        tags,
+        tagAsset,
+        untagAsset,
+        updateAsset
+    ]);
 
     useEffect(() => {
         handleDiscard();
@@ -159,8 +173,8 @@ export default function AssetInspector() {
                                     disabled={!isEditable || isLoading}
                                     type="text"
                                     value={label || ''}
-                                    onChange={value => setLabel(value)}
-                                    onEnterKey={() => handleApply()}
+                                    onChange={setLabel}
+                                    onEnterKey={handleApply}
                                 />
                             </div>
                             <div className={classes.propertyGroup}>
@@ -171,7 +185,7 @@ export default function AssetInspector() {
                                     minRows={3}
                                     expandedRows={6}
                                     value={caption || ''}
-                                    onChange={value => setCaption(value)}
+                                    onChange={setCaption}
                                 />
                             </div>
                             <div className={classes.propertyGroup}>
@@ -182,7 +196,7 @@ export default function AssetInspector() {
                                     minRows={2}
                                     expandedRows={4}
                                     value={copyrightNotice || ''}
-                                    onChange={value => setCopyrightNotice(value)}
+                                    onChange={setCopyrightNotice}
                                 />
                             </div>
                             {isEditable ? (
@@ -195,7 +209,7 @@ export default function AssetInspector() {
                                         optionValueField="label"
                                         options={allTags}
                                         searchOptions={allTags}
-                                        onValuesChange={values => setTags(values)}
+                                        onValuesChange={setTags}
                                     />
                                 </div>
                             ) : null}
@@ -212,7 +226,7 @@ export default function AssetInspector() {
                                         optionValueField="label"
                                         options={allCollections}
                                         searchOptions={allCollections}
-                                        onValuesChange={values => setCollections(values)}
+                                        onValuesChange={setCollections}
                                     />
                                 </div>
                             ) : null}
@@ -249,7 +263,7 @@ export default function AssetInspector() {
                                 size="regular"
                                 style="lighter"
                                 hoverStyle="brand"
-                                onClick={() => handleDiscard()}
+                                onClick={handleDiscard}
                             >
                                 {translate('inspector.actions.discard', 'Discard')}
                             </Button>
@@ -258,7 +272,7 @@ export default function AssetInspector() {
                                 size="regular"
                                 style="success"
                                 hoverStyle="success"
-                                onClick={() => handleApply()}
+                                onClick={handleApply}
                             >
                                 {translate('inspector.actions.apply', 'Apply')}
                             </Button>
@@ -268,4 +282,6 @@ export default function AssetInspector() {
             )}
         </>
     );
-}
+};
+
+export default React.memo(AssetInspector);

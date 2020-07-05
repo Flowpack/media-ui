@@ -13,7 +13,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-export default function TopBar() {
+const TopBar: React.FC = () => {
     const classes = useStyles();
 
     const components = useMemo(() => [SearchBox, TypeFilter, ViewModeSelector], []);
@@ -25,4 +25,6 @@ export default function TopBar() {
             ))}
         </div>
     );
-}
+};
+
+export default React.memo(TopBar);

@@ -34,22 +34,10 @@ interface PropertyListProps {
     children: React.ReactElement[];
 }
 
-interface PropertyListItemProps {
-    label: string;
-    value: string;
-}
-
-export function PropertyList({ children }: PropertyListProps) {
+const PropertyList: React.FC<PropertyListProps> = ({ children }: PropertyListProps) => {
     const classes = useStyles();
 
     return <dl className={classes.propertyList}>{children}</dl>;
-}
+};
 
-export function PropertyListItem({ label, value }: PropertyListItemProps) {
-    return (
-        <>
-            <dt>{label}</dt>
-            <dd>{value}</dd>
-        </>
-    );
-}
+export default React.memo(PropertyList);

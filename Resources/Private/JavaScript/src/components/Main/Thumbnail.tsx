@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useCallback } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { Asset, MediaUiTheme } from '../../interfaces';
@@ -32,6 +33,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     caption: {
         backgroundColor: theme.colors.captionBackground,
+        transition: `background-color ${theme.transition.fast}`,
         padding: theme.spacing.half,
         display: 'flex',
         alignItems: 'center',
@@ -67,7 +69,7 @@ interface ThumbnailProps {
     asset: Asset;
 }
 
-export default function Thumbnail({ asset }: ThumbnailProps) {
+const Thumbnail: React.FC<ThumbnailProps> = ({ asset }: ThumbnailProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { dummyImage } = useMediaUi();
@@ -76,13 +78,18 @@ export default function Thumbnail({ asset }: ThumbnailProps) {
     const { label, thumbnailUrl, file } = asset;
     const isSelected = selectedAsset?.id === asset.id;
 
+    const onSelect = useCallback(() => {
+        if (isSelected) {
+            setSelectedAssetForPreview(asset);
+        } else {
+            setSelectedAsset(asset);
+        }
+    }, [isSelected, asset, setSelectedAssetForPreview, setSelectedAsset]);
+
     return (
         <figure className={classes.thumbnail}>
             {asset.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
-            <picture
-                onClick={() => (isSelected ? setSelectedAssetForPreview(asset) : setSelectedAsset(asset))}
-                className={classes.picture}
-            >
+            <picture onClick={onSelect} className={classes.picture}>
                 <img src={thumbnailUrl || dummyImage} alt={label} />
             </picture>
             <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
@@ -94,4 +101,6 @@ export default function Thumbnail({ asset }: ThumbnailProps) {
             </div>
         </figure>
     );
-}
+};
+
+export default React.memo(Thumbnail);

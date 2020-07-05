@@ -28,13 +28,13 @@ interface IconLabelProps {
     children?: React.ReactElement;
 }
 
-export default function IconLabel({
+const IconLabel: React.FC<IconLabelProps> = ({
     icon = 'question',
     iconUri = '',
     label = '',
     className = '',
     children = null
-}: IconLabelProps) {
+}: IconLabelProps) => {
     const classes = useStyles();
 
     return (
@@ -45,4 +45,6 @@ export default function IconLabel({
             <span className={classes.label}>{children || label || ''}</span>
         </div>
     );
-}
+};
+
+export default React.memo(IconLabel);

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
@@ -6,21 +7,20 @@ import { IconButton } from '@neos-project/react-ui-components';
 import { Asset } from '../../interfaces';
 import { selectedAssetForPreviewState } from '../../state';
 import { useIntl, useMediaUi, useNotify } from '../../core';
-import { useSelectAssetSource, useImportAsset } from '../../hooks';
+import { useImportAsset } from '../../hooks';
 
 interface ItemActionsProps {
     asset: Asset;
 }
 
-export default function AssetActions({ asset }: ItemActionsProps) {
+const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) => {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const [selectedAssetSource] = useSelectAssetSource();
     const { handleDeleteAsset } = useMediaUi();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { importAsset } = useImportAsset();
 
-    const handleImportAsset = () => {
+    const onImportAsset = useCallback(() => {
         importAsset(asset)
             .then(() => {
                 Notify.ok(translate('assetActions.import.success', 'Asset was successfully imported'));
@@ -28,7 +28,15 @@ export default function AssetActions({ asset }: ItemActionsProps) {
             .catch(error => {
                 Notify.error(translate('assetActions.import.error', 'Failed to import asset'), error.message);
             });
-    };
+    }, [importAsset, asset, Notify, translate]);
+
+    const onPreviewAsset = useCallback(() => {
+        setSelectedAssetForPreview(asset);
+    }, [setSelectedAssetForPreview, asset]);
+
+    const onDeleteAsset = useCallback(() => {
+        handleDeleteAsset(asset);
+    }, [handleDeleteAsset, asset]);
 
     return (
         <>
@@ -38,7 +46,7 @@ export default function AssetActions({ asset }: ItemActionsProps) {
                 size="regular"
                 style="transparent"
                 hoverStyle="brand"
-                onClick={() => setSelectedAssetForPreview(asset)}
+                onClick={onPreviewAsset}
             />
             {!asset.imported && !asset.localId && (
                 <IconButton
@@ -47,19 +55,21 @@ export default function AssetActions({ asset }: ItemActionsProps) {
                     size="regular"
                     style="transparent"
                     hoverStyle="brand"
-                    onClick={() => handleImportAsset()}
+                    onClick={onImportAsset}
                 />
             )}
-            {!selectedAssetSource?.readOnly && (
+            {!asset.assetSource.readOnly && (
                 <IconButton
                     title={translate('itemActions.delete', 'Delete asset')}
                     icon="trash"
                     size="regular"
                     style="transparent"
                     hoverStyle="warn"
-                    onClick={() => handleDeleteAsset(asset)}
+                    onClick={onDeleteAsset}
                 />
             )}
         </>
     );
-}
+};
+
+export default React.memo(AssetActions);

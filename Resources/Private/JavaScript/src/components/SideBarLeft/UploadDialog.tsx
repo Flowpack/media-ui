@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useRecoilState } from 'recoil';
 
@@ -121,10 +121,10 @@ interface UploadedFile extends File {
     preview?: string;
 }
 
-export default function UploadDialog() {
+const UploadDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const [state, setState] = useRecoilState(uploadDialogState);
+    const [dialogState, setDialogState] = useRecoilState(uploadDialogState);
     const { dummyImage } = useMediaUi();
     const { config } = useConfigQuery();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
@@ -165,7 +165,7 @@ export default function UploadDialog() {
         files.forEach(file => URL.revokeObjectURL(file.preview));
     }, [files]);
 
-    const handleUpload = () => {
+    const handleUpload = useCallback(() => {
         uploadFiles(files)
             .then(() => {
                 Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
@@ -174,16 +174,16 @@ export default function UploadDialog() {
             .catch(error => {
                 Notify.error(translate('fileUpload.error', 'Upload failed'), error);
             });
-    };
+    }, [uploadFiles, Notify, translate, files, refetchAssets]);
 
-    const handleRequestClose = () => {
+    const handleRequestClose = useCallback(() => {
         setFiles([]);
-        setState({ visible: false });
-    };
+        setDialogState({ visible: false });
+    }, [setFiles, setDialogState]);
 
     return (
         <Dialog
-            isOpen={state.visible}
+            isOpen={dialogState.visible}
             title={translate('uploadDialog.title', 'Upload assets')}
             onRequestClose={() => handleRequestClose()}
             actions={[
@@ -257,4 +257,6 @@ export default function UploadDialog() {
             </section>
         </Dialog>
     );
-}
+};
+
+export default React.memo(UploadDialog);

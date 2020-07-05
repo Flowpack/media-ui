@@ -4,7 +4,7 @@ import { AssetInspector, IptcMetadataInspector } from './Inspector';
 import CurrentSelection from './CurrentSelection';
 import { Column } from '../Presentation';
 
-export default function SideBarRight() {
+const SideBarRight: React.FC = () => {
     // TODO: Read from component store
     const components = [CurrentSelection, AssetInspector, IptcMetadataInspector];
 
@@ -15,4 +15,6 @@ export default function SideBarRight() {
             ))}
         </Column>
     );
-}
+};
+
+export default React.memo(SideBarRight);

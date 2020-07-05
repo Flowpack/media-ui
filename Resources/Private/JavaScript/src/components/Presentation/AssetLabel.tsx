@@ -15,8 +15,10 @@ interface AssetLabelProps {
     label: string;
 }
 
-export default function AssetLabel({ label }: AssetLabelProps) {
+const AssetLabel: React.FC<AssetLabelProps> = ({ label }: AssetLabelProps) => {
     const classes = useStyles();
 
     return <span className={classes.assetLabel}>{label}</span>;
-}
+};
+
+export default React.memo(AssetLabel);

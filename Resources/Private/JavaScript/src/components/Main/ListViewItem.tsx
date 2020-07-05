@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useCallback } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { Asset, MediaUiTheme } from '../../interfaces';
@@ -81,18 +82,21 @@ const dateFormatOptions = {
     day: 'numeric'
 };
 
-export default function ListViewItem({ asset }: ListViewItemProps) {
+const ListViewItem: React.FC<ListViewItemProps> = ({ asset }: ListViewItemProps) => {
     const classes = useStyles();
     const { dummyImage } = useMediaUi();
     const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { label, thumbnailUrl, file, lastModified } = asset;
 
+    const onSelect = useCallback(
+        () => (selectedAsset?.id === asset.id ? setSelectedAssetForPreview(asset) : setSelectedAsset(asset)),
+        [setSelectedAsset, setSelectedAssetForPreview, asset]
+    );
+
     return (
         <tr
-            onClick={() =>
-                selectedAsset?.id === asset.id ? setSelectedAssetForPreview(asset) : setSelectedAsset(asset)
-            }
+            onClick={onSelect}
             className={[classes.listViewItem, selectedAsset?.id === asset.id ? classes.selected : ''].join(' ')}
         >
             <td className={classes.previewColumn}>
@@ -113,4 +117,6 @@ export default function ListViewItem({ asset }: ListViewItemProps) {
             </td>
         </tr>
     );
-}
+};
+
+export default React.memo(ListViewItem);

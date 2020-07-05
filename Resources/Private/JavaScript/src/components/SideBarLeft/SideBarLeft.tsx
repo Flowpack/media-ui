@@ -4,7 +4,7 @@ import { AssetCollectionTree } from './Tree';
 import { AssetSourceList, AssetSourceDescription, UploadButton } from './index';
 import { Column } from '../Presentation';
 
-export default function SideBarLeft() {
+const SideBarLeft: React.FC = () => {
     const components = [UploadButton, AssetSourceList, AssetCollectionTree, AssetSourceDescription];
 
     return (
@@ -14,4 +14,6 @@ export default function SideBarLeft() {
             ))}
         </Column>
     );
-}
+};
+
+export default React.memo(SideBarLeft);

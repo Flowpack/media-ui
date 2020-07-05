@@ -34,7 +34,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-const AssetCollectionTree = () => {
+const AssetCollectionTree: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
@@ -96,7 +96,7 @@ const AssetCollectionTree = () => {
                             label={translate('assetCollectionList.showAll', 'All')}
                             title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
                             level={1}
-                            onClick={() => selectAssetCollection(null)}
+                            onClick={selectAssetCollection}
                             assetCollection={null}
                         >
                             {tags?.map(tag => (
@@ -139,4 +139,4 @@ const AssetCollectionTree = () => {
     );
 };
 
-export default AssetCollectionTree;
+export default React.memo(AssetCollectionTree);

@@ -3,9 +3,8 @@ import * as React from 'react';
 import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { ListViewItem } from './index';
-import { useRecoilValue } from 'recoil';
-import { loadingState } from '../../state';
 import { useAssetQuery } from '../../hooks';
+import LoadingLabel from '../LoadingLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
@@ -29,11 +28,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-export default function ListView() {
+const ListView: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { assets } = useAssetQuery();
-    const isLoading = useRecoilValue(loadingState);
 
     return (
         <section className={classes.listView}>
@@ -56,12 +54,13 @@ export default function ListView() {
                     </tbody>
                 </table>
             ) : (
-                <div>
-                    {isLoading
-                        ? translate('assetList.loading', 'Loading assets')
-                        : translate('assetList.empty', 'No assets found')}
-                </div>
+                <LoadingLabel
+                    loadingText={translate('assetList.loading', 'Loading assets')}
+                    emptyText={translate('assetList.empty', 'No assets found')}
+                />
             )}
         </section>
     );
-}
+};
+
+export default React.memo(ListView);
