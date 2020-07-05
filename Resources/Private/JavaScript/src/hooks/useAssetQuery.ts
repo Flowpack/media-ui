@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useLazyQuery } from '@apollo/react-hooks';
-import isEqual from 'lodash.isequal';
 
 import { ASSETS } from '../queries';
 import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';

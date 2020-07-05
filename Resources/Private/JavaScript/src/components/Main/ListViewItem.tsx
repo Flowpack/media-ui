@@ -91,7 +91,7 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ asset }: ListViewItemProps)
 
     const onSelect = useCallback(
         () => (selectedAsset?.id === asset.id ? setSelectedAssetForPreview(asset) : setSelectedAsset(asset)),
-        [setSelectedAsset, setSelectedAssetForPreview, asset]
+        [selectedAsset?.id, setSelectedAsset, setSelectedAssetForPreview, asset]
     );
 
     return (
