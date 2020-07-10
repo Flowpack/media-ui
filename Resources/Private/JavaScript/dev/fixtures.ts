@@ -63,7 +63,7 @@ const assetCollections: AssetCollection[] = range(3).map(index => ({
 }));
 
 const assets: Asset[] = range(150).map(index => {
-    const isCloud = index % 5 === 0;
+    const isCloud = index > 120;
     const filename = getExampleFilename(index);
 
     return {
