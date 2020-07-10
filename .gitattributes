@@ -1,0 +1,5 @@
+*.bundle.css binary
+*.bundle.js binary
+*.map binary
+Plugin.js binary
+Plugin.css binary
