@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
 const ASSET_COUNT = gql`
     query ASSET_COUNT(

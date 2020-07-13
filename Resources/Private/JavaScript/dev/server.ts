@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import Bundler from 'parcel-bundler';
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 

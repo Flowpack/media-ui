@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
 export const ASSET_SOURCE_FRAGMENT = gql`
     fragment AssetSourceProps on AssetSource {

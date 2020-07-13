@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { RecoilRoot } from 'recoil';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import ApolloClient from 'apollo-boost';
+import { ApolloClient } from 'apollo-client';
 import { $get, $transform } from 'plow-js';
 
 // Neos dependencies are provided by the UI
@@ -24,6 +24,7 @@ import {
     PersistentStateManager
 } from '../../src/core';
 import App from '../../src/components/App';
+import { createUploadLink } from 'apollo-upload-client';
 
 let apolloClient = null;
 
@@ -101,8 +102,10 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
 
             apolloClient = new ApolloClient({
                 cache,
-                uri: endpoints.graphql,
-                credentials: 'same-origin',
+                link: createUploadLink({
+                    uri: endpoints.graphql,
+                    credentials: 'same-origin'
+                }),
                 typeDefs: Resolvers.typeDefs,
                 resolvers: Resolvers.resolvers
             });

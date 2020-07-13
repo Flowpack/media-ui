@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
 import { TAG_FRAGMENT } from './Fragments';
 
