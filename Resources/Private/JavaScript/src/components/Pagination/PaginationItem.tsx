@@ -24,6 +24,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         border: `1px solid ${theme.colors.border}`,
         borderTop: 0,
         borderBottom: 0,
+        boxSizing: 'border-box',
         '& a': {
             color: theme.colors.primary
         }
