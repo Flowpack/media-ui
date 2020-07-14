@@ -69,6 +69,18 @@ const resolvers = {
             const asset = assets.find(asset => asset.id === id && asset.assetSource.id === assetSourceId);
             asset.tags = tags.filter(tag => newTags.includes(tag.label));
             return asset;
+        },
+        setAssetCollections: (
+            $_,
+            {
+                id,
+                assetSourceId,
+                collections: newCollections
+            }: { id: string; assetSourceId: string; collections: string[] }
+        ) => {
+            const asset = assets.find(asset => asset.id === id && asset.assetSource.id === assetSourceId);
+            asset.collections = assetCollections.filter(collection => newCollections.includes(collection.title));
+            return asset;
         }
     }
 };

@@ -78,6 +78,12 @@ type Mutation {
         tags: [TagLabel!]!
     ): Asset!
 
+    setAssetCollections(
+        id: AssetId!,
+        assetSourceId: AssetSourceId!,
+        collections: [AssetCollectionTitle!]!
+    ): Asset!
+
     uploadFile(
         file: Upload!
     ): FileUploadResult!

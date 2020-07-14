@@ -22,6 +22,7 @@ use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
+use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
@@ -69,6 +70,12 @@ class MutationResolver implements ResolverInterface
      * @var LoggerInterface
      */
     protected $systemLogger;
+
+    /**
+     * @Flow\Inject
+     * @var AssetCollectionRepository
+     */
+    protected $assetCollectionRepository;
 
     /**
      * @param $_
@@ -233,6 +240,50 @@ class MutationResolver implements ResolverInterface
             $this->assetRepository->update($asset);
         } catch (IllegalObjectTypeException $e) {
             throw new Exception('Failed to set asset tags', 1594621296);
+        }
+
+        return $assetProxy;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return AssetProxyInterface|null
+     * @throws Exception
+     */
+    public function setAssetCollections($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    {
+        [
+            'id' => $id,
+            'assetSourceId' => $assetSourceId,
+            'collections' => $collectionNames
+        ] = $variables;
+
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
+        if (!$assetProxy) {
+            return null;
+        }
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            throw new Exception('Cannot assign collections to asset that was never imported', 1594621322);
+        }
+
+        $collections = new ArrayCollection();
+        foreach ($collectionNames as $collectionName) {
+            $collection = $this->assetCollectionRepository->findOneByTitle($collectionName);
+            if (!$collection) {
+                throw new Exception('Cannot assign non existing assign collection to asset', 1594621318);
+            }
+            $collections->add($collection);
+        }
+        $asset->setAssetCollections($collections);
+
+        try {
+            $this->assetRepository->update($asset);
+        } catch (IllegalObjectTypeException $e) {
+            throw new Exception('Failed to assign asset collections', 1594621296);
         }
 
         return $assetProxy;
