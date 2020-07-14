@@ -1,24 +1,20 @@
 module.exports = {
     parser: '@typescript-eslint/parser',
     extends: [
-        'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
-        'prettier/@typescript-eslint',
-        'plugin:prettier/recommended',
+        'eslint:recommended',
         'plugin:react/recommended',
-        'plugin:testcafe/recommended'
+        'plugin:testcafe/recommended',
+        'plugin:prettier/recommended',
+        'prettier/@typescript-eslint'
     ],
     plugins: [
-        '@typescript-eslint',
+        // "@typescript-eslint",
         'testcafe',
         'prettier',
         'react',
         'react-hooks'
     ],
-    /*parserOptions: {
-      jsx: true,
-      useJSXTextNode: true
-    },*/
     settings: {
         react: {
             version: 'detect'
@@ -31,21 +27,16 @@ module.exports = {
     },
     ignorePatterns: ['.cache', 'dist', 'node_modules/'],
     rules: {
-        '@typescript-eslint/indent': ['error', 4],
-        "@typescript-eslint/explicit-function-return-type": "off",
+        '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-var-requires': 'off',
         '@typescript-eslint/ban-ts-ignore': 'off',
-        'prettier/prettier': ['error', {
-            semi: true,
-            singleQuote: true,
-            tabWidth: 4,
-            printWidth: 120
-        }],
-        "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": [
-            "warn", {
-                "additionalHooks": "useRecoilCallback"
+        'prettier/prettier': ['error'],
+        'react-hooks/rules-of-hooks': 'error',
+        'react-hooks/exhaustive-deps': [
+            'warn',
+            {
+                additionalHooks: 'useRecoilCallback'
             }
         ]
     }
