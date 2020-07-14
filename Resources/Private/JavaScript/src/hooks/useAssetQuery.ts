@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useLazyQuery } from '@apollo/react-hooks';
 
@@ -38,6 +38,7 @@ const useAssetQuery = () => {
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
+    const [assets, setAssets] = useState<Asset[]>([]);
 
     const limit = ASSETS_PER_PAGE;
     const offset = (currentPage - 1) * ASSETS_PER_PAGE;
@@ -60,6 +61,7 @@ const useAssetQuery = () => {
             setIsLoading(true);
         } else if (data && !loading && isLoading) {
             setIsLoading(false);
+            setAssets(data.assets);
 
             // Update currentPage if asset count changes and current page exceeds limit
             setCurrentPage(prev => ((prev - 1) * limit > data.assetCount ? 1 : prev));
@@ -67,7 +69,7 @@ const useAssetQuery = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query, data, loading, selectedAssetCollection, mediaTypeFilter, offset, searchTerm, selectedTag]);
 
-    return { error, assets: data?.assets || [], refetchAssets: refetch };
+    return { error, assets, refetchAssets: refetch };
 };
 
 export default useAssetQuery;
