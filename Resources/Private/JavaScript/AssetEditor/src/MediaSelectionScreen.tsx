@@ -32,6 +32,7 @@ interface MediaSelectionScreenProps {
     i18nRegistry: I18nRegistry;
     handleAssetSelected: Function;
     neos: object;
+    // TODO: Forward and use prop in selection screen
     type: 'assets' | 'images';
     onComplete: (localAssetIdentifier: string) => void;
     isLeftSideBarHidden: boolean;

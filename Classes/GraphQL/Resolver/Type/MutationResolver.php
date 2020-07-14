@@ -13,6 +13,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
@@ -188,6 +189,50 @@ class MutationResolver implements ResolverInterface
             $this->assetRepository->update($asset);
         } catch (IllegalObjectTypeException $e) {
             throw new Exception('Failed to update asset', 1591561868);
+        }
+
+        return $assetProxy;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return AssetProxyInterface|null
+     * @throws Exception
+     */
+    public function setAssetTags($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    {
+        [
+            'id' => $id,
+            'assetSourceId' => $assetSourceId,
+            'tags' => $tagNames
+        ] = $variables;
+
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
+        if (!$assetProxy) {
+            return null;
+        }
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            throw new Exception('Cannot tag asset that was never imported', 1594621322);
+        }
+
+        $tags = new ArrayCollection();
+        foreach ($tagNames as $tagName) {
+            $tag = $this->tagRepository->findOneByLabel($tagName);
+            if (!$tag) {
+                throw new Exception('Cannot tag asset with tag that does not exist', 1594621318);
+            }
+            $tags->add($tag);
+        }
+        $asset->setTags($tags);
+
+        try {
+            $this->assetRepository->update($asset);
+        } catch (IllegalObjectTypeException $e) {
+            throw new Exception('Failed to set asset tags', 1594621296);
         }
 
         return $assetProxy;

@@ -8,7 +8,7 @@ import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { Asset, MediaUiTheme } from '../../../interfaces';
 import { PropertyList, PropertyListItem } from '../../Presentation';
 import { humanFileSize } from '../../../helper';
-import { useAssetCollectionsQuery, useTagAsset, useTagsQuery, useUntagAsset, useUpdateAsset } from '../../../hooks';
+import { useAssetCollectionsQuery, useSetAssetTags, useTagsQuery, useUpdateAsset } from '../../../hooks';
 import { selectedAssetState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -35,7 +35,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '.neos textarea&': {
             padding: theme.spacing.half
         }
-    }
+    },
+    tagSelection: {},
+    collectionSelection: {}
 }));
 
 const tagsMatchAsset = (tags: string[], asset: Asset) => {
@@ -61,12 +63,11 @@ const AssetInspector: React.FC = () => {
     const [tags, setTags] = useState<string[]>([]);
     const [collections, setCollections] = useState<string[]>([]);
     const { updateAsset, loading } = useUpdateAsset();
-    const { tagAsset, loading: tagLoading } = useTagAsset();
-    const { untagAsset, loading: untagLoading } = useUntagAsset();
+    const { setAssetTags, loading: setTagsLoading } = useSetAssetTags();
 
     const allCollections = assetCollections.map(collection => ({ label: collection.title }));
     const isEditable = selectedAsset?.localId;
-    const isLoading = loading || tagLoading || untagLoading;
+    const isLoading = loading || setTagsLoading;
     const hasUnpublishedChanges =
         selectedAsset &&
         (label !== selectedAsset.label ||
@@ -105,40 +106,17 @@ const AssetInspector: React.FC = () => {
                 });
         }
 
-        // TODO: Combine all modifications into one query
         if (!tagsMatchAsset(tags, selectedAsset)) {
-            // Add each tag that is missing in the asset
-            tags.filter(tagName => !selectedAsset.tags.find(tag => tag.label === tagName)).forEach(tagName => {
-                tagAsset({
-                    asset: selectedAsset,
-                    tagName
+            setAssetTags({
+                asset: selectedAsset,
+                tagNames: tags
+            })
+                .then(({ data }) => {
+                    setSelectedAsset(data.setAssetTags);
+                    Notify.ok(translate('actions.tagAsset.success', 'The asset has been tagged'));
                 })
-                    .then(({ data }) => {
-                        setSelectedAsset(data.tagAsset);
-                        Notify.ok(translate('actions.tagAsset.success', 'The asset has been tagged'));
-                    })
-                    .catch(({ message }) => {
-                        Notify.error(translate('actions.tagAsset.error', 'Error while tagging the asset'), message);
-                    });
-            });
-            // Remove each tag that is missing in the local state
-            selectedAsset.tags
-                .filter(tag => !tags.find(tagName => tagName === tag.label))
-                .forEach(tag => {
-                    untagAsset({
-                        asset: selectedAsset,
-                        tagName: tag.label
-                    })
-                        .then(({ data }) => {
-                            setSelectedAsset(data.untagAsset);
-                            Notify.ok(translate('actions.untagAsset.success', 'The asset has been untagged'));
-                        })
-                        .catch(({ message }) => {
-                            Notify.error(
-                                translate('actions.untagAsset.error', 'Error while untagging the asset'),
-                                message
-                            );
-                        });
+                .catch(({ message }) => {
+                    Notify.error(translate('actions.tagAsset.error', 'Error while tagging the asset'), message);
                 });
         }
     }, [
@@ -150,8 +128,7 @@ const AssetInspector: React.FC = () => {
         selectedAsset,
         setSelectedAsset,
         tags,
-        tagAsset,
-        untagAsset,
+        setAssetTags,
         updateAsset
     ]);
 
@@ -203,6 +180,7 @@ const AssetInspector: React.FC = () => {
                                 <div className={classes.propertyGroup}>
                                     <Label>{translate('inspector.tags', 'Tags')}</Label>
                                     <MultiSelectBox
+                                        className={classes.tagSelection}
                                         disabled={isLoading}
                                         placeholder={translate('inspector.tags.placeholder', 'Select a tag')}
                                         values={tags}
@@ -217,6 +195,7 @@ const AssetInspector: React.FC = () => {
                                 <div className={classes.propertyGroup}>
                                     <Label>{translate('inspector.assetCollections', 'Collections')}</Label>
                                     <MultiSelectBox
+                                        className={classes.collectionSelection}
                                         disabled={isLoading}
                                         placeholder={translate(
                                             'inspector.collections.placeholder',

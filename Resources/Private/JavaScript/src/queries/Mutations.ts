@@ -29,6 +29,15 @@ export const DELETE_ASSET = gql`
     }
 `;
 
+export const SET_ASSET_TAGS = gql`
+    mutation SetAssetAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tags: [TagLabel!]!) {
+        setAssetTags(id: $id, assetSourceId: $assetSourceId, tags: $tags) {
+            ...AssetProps
+        }
+    }
+    ${ASSET_FRAGMENT}
+`;
+
 export const TAG_ASSET = gql`
     mutation TagAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tag: TagLabel!) {
         tagAsset(id: $id, assetSourceId: $assetSourceId, tag: $tag) {

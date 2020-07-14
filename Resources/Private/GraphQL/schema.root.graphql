@@ -63,13 +63,19 @@ type Mutation {
     tagAsset(
         id: AssetId!,
         assetSourceId: AssetSourceId!,
-        tag: TagLabel
+        tag: TagLabel!
     ): Asset!
 
     untagAsset(
         id: AssetId!,
         assetSourceId: AssetSourceId!,
-        tag: TagLabel
+        tag: TagLabel!
+    ): Asset!
+
+    setAssetTags(
+        id: AssetId!,
+        assetSourceId: AssetSourceId!,
+        tags: [TagLabel!]!
     ): Asset!
 
     uploadFile(

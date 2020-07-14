@@ -53,6 +53,23 @@ const resolvers = {
         config: () => ({
             uploadMaxFileSize: 1024 * 1024
         })
+    },
+    Mutation: {
+        updateAsset: ($_, { id, assetSourceId, label, caption, copyrightNotice }) => {
+            const asset = assets.find(asset => asset.id === id && asset.assetSource.id === assetSourceId);
+            asset.label = label;
+            asset.caption = caption;
+            asset.copyrightNotice = copyrightNotice;
+            return asset;
+        },
+        setAssetTags: (
+            $_,
+            { id, assetSourceId, tags: newTags }: { id: string; assetSourceId: string; tags: string[] }
+        ) => {
+            const asset = assets.find(asset => asset.id === id && asset.assetSource.id === assetSourceId);
+            asset.tags = tags.filter(tag => newTags.includes(tag.label));
+            return asset;
+        }
     }
 };
 

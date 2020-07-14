@@ -6,6 +6,7 @@ import useAssetCollectionsQuery from './useAssetCollectionsQuery';
 import useConfigQuery from './useConfigQuery';
 import useDeleteAsset from './useDeleteAsset';
 import useImportAsset from './useImportAsset';
+import useSetAssetTags from './useSetAssetTags';
 import useTagAsset from './useTagAsset';
 import useTagsQuery from './useTagsQuery';
 import useUntagAsset from './useUntagAsset';
@@ -24,6 +25,7 @@ export {
     useConfigQuery,
     useDeleteAsset,
     useImportAsset,
+    useSetAssetTags,
     useTagAsset,
     useTagsQuery,
     useUntagAsset,
