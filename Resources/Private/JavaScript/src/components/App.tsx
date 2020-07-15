@@ -38,7 +38,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }),
     gridColumn: {
         height: '100%',
-        overflowY: 'scroll'
+        overflowY: 'auto'
     },
     gridRight: {
         extend: 'gridColumn',
@@ -54,6 +54,22 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     gridTop: {
         gridArea: 'top'
+    },
+    '@global': {
+        '#media-ui-app': {
+            scrollbarWidth: 'thin',
+            scrollbarColor: `${theme.colors.scrollbarForeground} ${theme.colors.scrollbarBackground}`,
+
+            '& ::-webkit-scrollbar': {
+                width: theme.size.scrollbarSize
+            },
+            '& ::-webkit-scrollbar-track': {
+                background: theme.colors.scrollbarBackground
+            },
+            '& ::-webkit-scrollbar-thumb': {
+                backgroundColor: theme.colors.scrollbarForeground
+            }
+        }
     }
 }));
 

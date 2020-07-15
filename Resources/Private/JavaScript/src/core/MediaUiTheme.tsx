@@ -22,7 +22,8 @@ const mediaUiTheme: MediaUiTheme = {
     },
     size: {
         ...config.size,
-        sidebarWidth: '250px'
+        sidebarWidth: '250px',
+        scrollbarSize: '4px'
     },
     colors: {
         primary: config.colors.primaryBlue,
@@ -40,7 +41,9 @@ const mediaUiTheme: MediaUiTheme = {
         disabled: config.colors.contrastDark,
         assetBackground: config.colors.contrastDarkest,
         captionBackground: config.colors.contrastNeutral,
-        moduleBackground: config.colors.contrastDarker
+        moduleBackground: config.colors.contrastDarker,
+        scrollbarBackground: 'transparent',
+        scrollbarForeground: config.colors.contrastBright
     },
     transition: config.transition,
     loadingIndicatorZIndex: 10024,

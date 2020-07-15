@@ -12,6 +12,7 @@ export default interface MediaUiTheme {
     };
     size: {
         sidebarWidth: string;
+        scrollbarSize: string;
     };
     colors: {
         success: string;
@@ -30,6 +31,8 @@ export default interface MediaUiTheme {
         moduleBackground: string;
         assetBackground: string;
         captionBackground: string;
+        scrollbarBackground: string;
+        scrollbarForeground: string;
     };
     transition: {
         fast: string;

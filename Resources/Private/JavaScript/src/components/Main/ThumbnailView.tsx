@@ -9,7 +9,6 @@ import LoadingLabel from '../LoadingLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnailView: {
-        overflow: 'scroll',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
         gridGap: theme.spacing.full
