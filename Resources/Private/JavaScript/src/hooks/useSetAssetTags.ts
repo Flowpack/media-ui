@@ -15,9 +15,10 @@ interface SetAssetTagsVariables {
 }
 
 export default function useSetAssetTags() {
-    const [action, { error, data, loading }] = useMutation<{ setAssetTags: Asset }, SetAssetTagsVariables>(
-        SET_ASSET_TAGS
-    );
+    const [action, { error, data, loading }] = useMutation<
+        { __typename: string; setAssetTags: Asset },
+        SetAssetTagsVariables
+    >(SET_ASSET_TAGS);
 
     const setAssetTags = ({ asset, tagNames }: SetAssetTagsProps) =>
         action({
@@ -27,7 +28,9 @@ export default function useSetAssetTags() {
                 tags: tagNames
             },
             optimisticResponse: {
+                __typename: 'Mutation',
                 setAssetTags: {
+                    __typename: 'Asset',
                     ...asset,
                     tags: tagNames.map(tagName => ({
                         __typename: 'Tag',

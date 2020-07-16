@@ -9,7 +9,10 @@ interface ImportAssetVariables {
 }
 
 export default function useImportAsset() {
-    const [action, { error, data, loading }] = useMutation<{ importAsset: Asset }, ImportAssetVariables>(IMPORT_ASSET);
+    const [action, { error, data, loading }] = useMutation<
+        { __typename: string; importAsset: Asset },
+        ImportAssetVariables
+    >(IMPORT_ASSET);
 
     const importAsset = (asset: Asset, useOptimisticResponse = true) =>
         action({
@@ -18,7 +21,9 @@ export default function useImportAsset() {
                 assetSourceId: asset.assetSource.id
             },
             optimisticResponse: useOptimisticResponse && {
+                __typename: 'Mutation',
                 importAsset: {
+                    __typename: 'Asset',
                     ...asset,
                     imported: true,
                     localId: 'tmp'

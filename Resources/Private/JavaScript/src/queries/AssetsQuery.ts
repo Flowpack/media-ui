@@ -6,7 +6,7 @@ export const ASSETS = gql`
     query ASSETS(
         $searchTerm: String
         $assetSourceId: AssetSourceId
-        $assetCollectionId: AssetCollectionId
+        $assetCollection: AssetCollectionTitle
         $mediaType: MediaType
         $tag: TagLabel
         $limit: Int
@@ -16,7 +16,7 @@ export const ASSETS = gql`
         assets(
             searchTerm: $searchTerm
             assetSourceId: $assetSourceId
-            assetCollectionId: $assetCollectionId
+            assetCollection: $assetCollection
             mediaType: $mediaType
             tag: $tag
             limit: $limit

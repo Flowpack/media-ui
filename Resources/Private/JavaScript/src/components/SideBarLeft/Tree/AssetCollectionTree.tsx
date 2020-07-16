@@ -10,7 +10,7 @@ import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
 import { selectedAssetCollectionState, selectedTagState } from '../../../state';
-import { useAssetCollectionsQuery, useSelectAssetSource, useTagsQuery } from '../../../hooks';
+import { useAssetCollectionsQuery, useDeleteTag, useSelectAssetSource, useTagsQuery } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
@@ -43,10 +43,27 @@ const AssetCollectionTree: React.FC = () => {
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAssetSource] = useSelectAssetSource();
+    const { deleteTag } = useDeleteTag();
 
     const onClickAdd = useCallback(() => {
         Notify.info('This feature has not been implemented yet');
     }, [Notify]);
+
+    const onClickDelete = useCallback(() => {
+        const confirm = window.confirm(
+            translate('action.deleteTag.confirm', 'Do you really want to delete the tag ' + selectedTag.label, [
+                selectedTag.label
+            ])
+        );
+        if (!confirm) return;
+        deleteTag(selectedTag)
+            .then(() => {
+                Notify.ok(translate('action.deleteTag.success', 'The tag has been deleted'));
+            })
+            .catch(({ message }) => {
+                Notify.error(translate('action.deleteTag.error', 'Error while trying to delete the tag'), message);
+            });
+    }, [Notify, deleteTag, selectedTag, translate]);
 
     const selectTag = useCallback(
         (tag, assetCollection = null) => {
@@ -86,7 +103,7 @@ const AssetCollectionTree: React.FC = () => {
                             hoverStyle="brand"
                             disabled={!selectedAssetCollection && !selectedTag}
                             title={translate('assetCollectionTree.toolbar.delete', 'Delete')}
-                            onClick={onClickAdd}
+                            onClick={onClickDelete}
                         />
                     </div>
 

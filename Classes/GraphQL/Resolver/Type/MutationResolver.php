@@ -257,7 +257,7 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'assetSourceId' => $assetSourceId,
-            'collections' => $collectionNames
+            'assetCollections' => $assetCollectionNames
         ] = $variables;
 
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
@@ -270,15 +270,15 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Cannot assign collections to asset that was never imported', 1594621322);
         }
 
-        $collections = new ArrayCollection();
-        foreach ($collectionNames as $collectionName) {
-            $collection = $this->assetCollectionRepository->findOneByTitle($collectionName);
+        $assetCollections = new ArrayCollection();
+        foreach ($assetCollectionNames as $assetCollectionName) {
+            $collection = $this->assetCollectionRepository->findOneByTitle($assetCollectionName);
             if (!$collection) {
                 throw new Exception('Cannot assign non existing assign collection to asset', 1594621318);
             }
-            $collections->add($collection);
+            $assetCollections->add($collection);
         }
-        $asset->setAssetCollections($collections);
+        $asset->setAssetCollections($assetCollections);
 
         try {
             $this->assetRepository->update($asset);

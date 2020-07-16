@@ -15,7 +15,10 @@ interface UntagAssetVariables {
 }
 
 export default function useUntagAsset() {
-    const [action, { error, data, loading }] = useMutation<{ untagAsset: Asset }, UntagAssetVariables>(UNTAG_ASSET);
+    const [action, { error, data, loading }] = useMutation<
+        { __typename: string; untagAsset: Asset },
+        UntagAssetVariables
+    >(UNTAG_ASSET);
 
     const untagAsset = ({ asset, tagName }: UntagAssetProps) =>
         action({
@@ -25,7 +28,9 @@ export default function useUntagAsset() {
                 tag: tagName
             },
             optimisticResponse: {
+                __typename: 'Mutation',
                 untagAsset: {
+                    __typename: 'Asset',
                     ...asset,
                     tags: [...asset.tags.filter(tag => tag.label !== tagName)]
                 }

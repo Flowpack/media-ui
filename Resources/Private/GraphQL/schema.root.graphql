@@ -10,7 +10,7 @@ type Query {
     assets(
         assetSourceId: AssetSourceId,
         tag: TagLabel,
-        assetCollectionId: AssetCollectionId,
+        assetCollection: AssetCollectionTitle,
         mediaType: MediaType,
         searchTerm: String,
         limit: Int,
@@ -23,7 +23,7 @@ type Query {
     assetCount(
         assetSourceId: AssetSourceId,
         tag: TagLabel,
-        assetCollectionId: AssetCollectionId,
+        assetCollection: AssetCollectionTitle,
         mediaType: MediaType,
         searchTerm: String
     ): Int!
@@ -78,10 +78,32 @@ type Mutation {
         tags: [TagLabel!]!
     ): Asset!
 
+    deleteTag(
+        tag: TagLabel!
+    ): Boolean!
+
+    createTag(
+        tag: TagLabel!
+    ): Tag!
+
+    addTagToAssetCollection(
+        tag: TagLabel!,
+        assetCollection: AssetCollectionTitle!
+    ): Boolean!
+
+    removeTagFromAssetCollection(
+        tag: TagLabel!,
+        assetCollection: AssetCollectionTitle!
+    ): Boolean!
+
+    deleteAssetCollection(
+        assetCollection: AssetCollectionTitle!
+    ): Boolean!
+
     setAssetCollections(
         id: AssetId!,
         assetSourceId: AssetSourceId!,
-        collections: [AssetCollectionTitle!]!
+        assetCollections: [AssetCollectionTitle!]!
     ): Asset!
 
     uploadFile(
@@ -238,11 +260,6 @@ Unique identifier of an Asset source (e.g. "neos")
 scalar AssetSourceId
 
 """
-Unique identifier of an Asset collection (e.g. "neos")
-"""
-scalar AssetCollectionId
-
-"""
 IANA media type of an Asset (e.g. "image/jpeg")
 """
 scalar MediaType
@@ -273,7 +290,7 @@ Name of an IPTC metadata property (e.g. "Creator", see https://www.iptc.org/)
 scalar IptcPropertyName
 
 """
-The title of an Asset collection
+The title of an Asset collection (e.g. "slideshows")
 """
 scalar AssetCollectionTitle
 

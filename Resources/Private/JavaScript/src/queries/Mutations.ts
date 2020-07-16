@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import { ASSET_FRAGMENT } from './Fragments';
+import { ASSET_FRAGMENT, TAG_FRAGMENT } from './Fragments';
 
 export const UPDATE_ASSET = gql`
     mutation UpdateAsset(
@@ -42,13 +42,40 @@ export const SET_ASSET_COLLECTIONS = gql`
     mutation SetAssetCollections(
         $id: AssetId!
         $assetSourceId: AssetSourceId!
-        $collections: [AssetCollectionTitle!]!
+        $assetCollections: [AssetCollectionTitle!]!
     ) {
-        setAssetCollections(id: $id, assetSourceId: $assetSourceId, collections: $collections) {
+        setAssetCollections(id: $id, assetSourceId: $assetSourceId, assetCollections: $assetCollections) {
             ...AssetProps
         }
     }
     ${ASSET_FRAGMENT}
+`;
+
+export const DELETE_TAG = gql`
+    mutation DeleteTag($tag: TagLabel!) {
+        deleteTag(tag: $tag)
+    }
+`;
+
+export const CREATE_TAG = gql`
+    mutation CreateTag($tag: TagLabel!) {
+        createTag(tag: $tag) {
+            ...TagProps
+        }
+    }
+    ${TAG_FRAGMENT}
+`;
+
+export const REMOVE_TAG_FROM_ASSET_COLLECTION = gql`
+    mutation RemoveTagFromAssetCollection($tag: TagLabel!, $assetCollection: AssetCollectionTitle!) {
+        removeTagFromAssetCollection(tag: $tag, assetCollection: $assetCollection)
+    }
+`;
+
+export const ADD_TAG_TO_ASSET_COLLECTION = gql`
+    mutation RemoveTagFromAssetCollection($tag: TagLabel!, $assetCollection: AssetCollectionTitle!) {
+        removeTagFromAssetCollection(tag: $tag, assetCollection: $assetCollection)
+    }
 `;
 
 export const TAG_ASSET = gql`

@@ -15,7 +15,9 @@ interface TagAssetVariables {
 }
 
 export default function useTagAsset() {
-    const [action, { error, data, loading }] = useMutation<{ tagAsset: Asset }, TagAssetVariables>(TAG_ASSET);
+    const [action, { error, data, loading }] = useMutation<{ __typename: string; tagAsset: Asset }, TagAssetVariables>(
+        TAG_ASSET
+    );
 
     const tagAsset = ({ asset, tagName }: TagAssetProps) =>
         action({
@@ -25,7 +27,9 @@ export default function useTagAsset() {
                 tag: tagName
             },
             optimisticResponse: {
+                __typename: 'Mutation',
                 tagAsset: {
+                    __typename: 'Asset',
                     ...asset,
                     tags: [
                         ...asset.tags,

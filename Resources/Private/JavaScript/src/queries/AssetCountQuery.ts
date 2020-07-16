@@ -4,7 +4,7 @@ const ASSET_COUNT = gql`
     query ASSET_COUNT(
         $searchTerm: String
         $assetSourceId: AssetSourceId
-        $assetCollectionId: AssetCollectionId
+        $assetCollection: AssetCollectionTitle
         $mediaType: MediaType
         $tag: TagLabel
     ) {
@@ -12,7 +12,7 @@ const ASSET_COUNT = gql`
         assetCount(
             searchTerm: $searchTerm
             assetSourceId: $assetSourceId
-            assetCollectionId: $assetCollectionId
+            assetCollection: $assetCollection
             mediaType: $mediaType
             tag: $tag
         )
