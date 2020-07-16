@@ -9,7 +9,6 @@ module.exports = {
         'prettier/@typescript-eslint'
     ],
     plugins: [
-        // "@typescript-eslint",
         'testcafe',
         'prettier',
         'react',
