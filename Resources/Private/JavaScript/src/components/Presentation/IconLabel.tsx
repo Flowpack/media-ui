@@ -12,7 +12,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     label: {
         fontWeight: 'bold',
         lineHeight: theme.spacing.goldenUnit,
-        paddingLeft: theme.spacing.half
+        paddingLeft: theme.spacing.half,
+        userSelect: 'none'
     },
     imgIcon: {
         width: 'auto',
