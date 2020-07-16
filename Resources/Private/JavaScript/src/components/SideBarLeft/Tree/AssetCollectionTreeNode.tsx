@@ -1,11 +1,11 @@
 import * as React from 'react';
+import { useCallback, useState } from 'react';
 
 import { Tree } from '@neos-project/react-ui-components';
 
 import { AbstractTreeNodeProps } from '../../../interfaces';
 import { dndTypes } from '../../../constants';
 import AssetCollection from '../../../interfaces/AssetCollection';
-import { useCallback } from 'react';
 
 export interface AssetCollectionTreeNodeProps extends AbstractTreeNodeProps {
     assetCollection: AssetCollection;
@@ -19,14 +19,17 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     title,
     children,
     level,
-    onClick
+    onClick,
+    collapsedByDefault = true
 }: AssetCollectionTreeNodeProps) => {
+    const [collapsed, setCollapsed] = useState(collapsedByDefault);
+    const handleToggle = useCallback(() => setCollapsed(!collapsed), [collapsed]);
     const handleClick = useCallback(() => onClick(assetCollection), [onClick, assetCollection]);
     return (
         <Tree.Node>
             <Tree.Node.Header
                 isActive={isActive}
-                isCollapsed={!children}
+                isCollapsed={children.length === 0 || collapsed}
                 isFocused={isActive}
                 isLoading={false}
                 hasError={false}
@@ -35,10 +38,11 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
                 icon="folder"
                 nodeDndType={dndTypes.COLLECTION}
                 level={level}
+                onToggle={handleToggle}
                 onClick={handleClick}
-                hasChildren={!!children}
+                hasChildren={children.length > 0}
             />
-            {children}
+            {!collapsed && children}
         </Tree.Node>
     );
 };

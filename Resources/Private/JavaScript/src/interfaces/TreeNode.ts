@@ -7,4 +7,5 @@ export default interface AbstractTreeNodeProps {
     level: number;
     isActive: boolean;
     children?: React.ReactElement[];
+    collapsedByDefault?: boolean;
 }

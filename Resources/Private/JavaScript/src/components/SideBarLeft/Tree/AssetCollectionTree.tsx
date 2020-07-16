@@ -98,6 +98,7 @@ const AssetCollectionTree: React.FC = () => {
                             level={1}
                             onClick={selectAssetCollection}
                             assetCollection={null}
+                            collapsedByDefault={false}
                         >
                             {tags?.map(tag => (
                                 <TagTreeNode
