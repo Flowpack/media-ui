@@ -30,7 +30,6 @@ export default function useUntagAsset() {
             optimisticResponse: {
                 __typename: 'Mutation',
                 untagAsset: {
-                    __typename: 'Asset',
                     ...asset,
                     tags: [...asset.tags.filter(tag => tag.label !== tagName)]
                 }

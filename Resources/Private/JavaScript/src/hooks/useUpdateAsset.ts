@@ -36,7 +36,6 @@ export default function useUpdateAsset() {
             optimisticResponse: {
                 __typename: 'Mutation',
                 updateAsset: {
-                    __typename: 'Asset',
                     ...asset,
                     label,
                     caption,

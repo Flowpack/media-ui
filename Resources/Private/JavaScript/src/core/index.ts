@@ -4,9 +4,11 @@ import { MediaUiThemeProvider, createUseMediaUiStyles, useMediaUiTheme } from '.
 import * as PersistentStateManager from './PersistentStateManager';
 import * as Resolvers from './Resolvers';
 import { useNotify, NotifyProvider } from './Notify';
+import IdFromObjectResolver from './IdFromObjectResolver';
 
 export {
     ASSETS_PER_PAGE,
+    IdFromObjectResolver,
     IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,

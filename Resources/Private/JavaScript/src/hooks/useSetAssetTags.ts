@@ -30,16 +30,16 @@ export default function useSetAssetTags() {
             optimisticResponse: {
                 __typename: 'Mutation',
                 setAssetTags: {
-                    __typename: 'Asset',
                     ...asset,
                     tags: tagNames.map(tagName => ({
                         __typename: 'Tag',
                         label: tagName,
+                        parent: null,
                         children: []
                     }))
                 }
             }
         });
 
-    return { setAssetTags: setAssetTags, data, error, loading };
+    return { setAssetTags, data, error, loading };
 }

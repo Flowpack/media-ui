@@ -29,13 +29,13 @@ export default function useTagAsset() {
             optimisticResponse: {
                 __typename: 'Mutation',
                 tagAsset: {
-                    __typename: 'Asset',
                     ...asset,
                     tags: [
                         ...asset.tags,
                         {
                             __typename: 'Tag',
                             label: tagName,
+                            parent: null,
                             children: []
                         }
                     ]

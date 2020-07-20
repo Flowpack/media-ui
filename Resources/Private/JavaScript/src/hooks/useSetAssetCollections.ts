@@ -30,7 +30,6 @@ export default function useSetAssetCollections() {
             optimisticResponse: {
                 __typename: 'Mutation',
                 setAssetCollections: {
-                    __typename: 'Asset',
                     ...asset,
                     collections: collectionNames.map(title => ({
                         __typename: 'AssetCollection',

@@ -23,7 +23,6 @@ export default function useImportAsset() {
             optimisticResponse: useOptimisticResponse && {
                 __typename: 'Mutation',
                 importAsset: {
-                    __typename: 'Asset',
                     ...asset,
                     imported: true,
                     localId: 'tmp'
