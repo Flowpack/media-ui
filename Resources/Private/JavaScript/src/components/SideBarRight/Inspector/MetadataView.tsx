@@ -1,14 +1,15 @@
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { humanFileSize } from '../../../helper';
 import { PropertyList, PropertyListItem } from '../../Presentation';
-import { selectedAssetState } from '../../../state';
 import { useIntl } from '../../../core';
+import { useSelectedAsset } from '../../../hooks';
 
 const MetadataView: React.FC = () => {
     const { translate } = useIntl();
-    const selectedAsset = useRecoilValue(selectedAssetState);
+    const selectedAsset = useSelectedAsset();
+
+    if (!selectedAsset) return null;
 
     return (
         <PropertyList>

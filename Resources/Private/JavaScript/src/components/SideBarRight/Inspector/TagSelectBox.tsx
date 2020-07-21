@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
 
 import { Label, MultiSelectBox } from '@neos-project/react-ui-components';
 
-import { selectedAssetState } from '../../../state';
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { useSetAssetTags, useTagsQuery } from '../../../hooks';
+import { useSelectedAsset, useSetAssetTags, useTagsQuery } from '../../../hooks';
 import { Asset } from '../../../interfaces';
 
 const useStyles = createUseMediaUiStyles({
@@ -30,9 +28,9 @@ const TagSelectBox: React.FC = () => {
     const { translate } = useIntl();
     const { tags: allTags } = useTagsQuery();
     const { setAssetTags, loading } = useSetAssetTags();
-    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
+    const selectedAsset = useSelectedAsset();
 
-    const tags = useMemo(() => selectedAsset.tags.map(({ label }) => label).sort(), [selectedAsset.tags]);
+    const tags = useMemo(() => selectedAsset?.tags.map(({ label }) => label).sort(), [selectedAsset?.tags]);
 
     const handleChange = useCallback(
         newTags => {
@@ -41,8 +39,8 @@ const TagSelectBox: React.FC = () => {
                     asset: selectedAsset,
                     tagNames: newTags
                 })
-                    .then(({ data }) => {
-                        setSelectedAsset(data.setAssetTags);
+                    .then(() => {
+                        // setSelectedAssetI(data.setAssetTags);
                         Notify.ok(translate('actions.setAssetTags.success', 'The asset has been tagged'));
                     })
                     .catch(({ message }) => {
@@ -50,8 +48,10 @@ const TagSelectBox: React.FC = () => {
                     });
             }
         },
-        [Notify, selectedAsset, setAssetTags, setSelectedAsset, translate]
+        [Notify, selectedAsset, setAssetTags, translate]
     );
+
+    if (!selectedAsset) return null;
 
     return (
         <div className={classes.tagSelectBox}>

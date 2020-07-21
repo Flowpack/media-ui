@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { createContext, useCallback, useContext, useEffect } from 'react';
-import { useRecoilValue } from 'recoil';
+import { createContext, useCallback, useContext } from 'react';
 
 import { Asset } from '../interfaces';
-import { useDeleteAsset, useImportAsset } from '../hooks';
+import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
 import { useIntl, useNotify } from './index';
-import { selectedAssetState } from '../state';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
@@ -19,7 +17,10 @@ interface MediaUiProviderValues {
     containerRef: React.RefObject<HTMLDivElement>;
     dummyImage: string;
     handleDeleteAsset: (asset: Asset) => void;
+    handleSelectAsset: (asset: Asset) => void;
     selectionMode: boolean;
+    assets: Asset[];
+    refetchAssets: () => void;
 }
 
 export const MediaUiContext = createContext({} as MediaUiProviderValues);
@@ -38,9 +39,9 @@ export function MediaUiProvider({
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const selectedAsset = useRecoilValue(selectedAssetState);
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
+    const { assets, refetchAssets } = useAssetsQuery();
 
     const handleDeleteAsset = useCallback(
         (asset: Asset) => {
@@ -66,19 +67,21 @@ export function MediaUiProvider({
     );
 
     // Handle selection mode for the secondary Neos UI inspector
-    useEffect(() => {
-        if (!onAssetSelection || !selectedAsset) {
-            return;
-        }
-        if (selectedAsset.localId) {
-            onAssetSelection(selectedAsset.localId);
-        } else {
-            importAsset(selectedAsset, false).then(({ data }) => {
-                onAssetSelection(data.importAsset.localId);
-            });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedAsset]);
+    const handleSelectAsset = useCallback(
+        (asset: Asset) => {
+            if (!onAssetSelection || !asset) {
+                return;
+            }
+            if (asset.localId) {
+                onAssetSelection(asset.localId);
+            } else {
+                importAsset(asset, false).then(({ data }) => {
+                    onAssetSelection(data.importAsset.localId);
+                });
+            }
+        },
+        [importAsset, onAssetSelection]
+    );
 
     return (
         <MediaUiContext.Provider
@@ -86,7 +89,10 @@ export function MediaUiProvider({
                 containerRef,
                 dummyImage,
                 handleDeleteAsset,
-                selectionMode
+                handleSelectAsset,
+                selectionMode,
+                assets,
+                refetchAssets
             }}
         >
             {children}

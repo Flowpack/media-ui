@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
 
 import { Label, MultiSelectBox } from '@neos-project/react-ui-components';
 
-import { selectedAssetState } from '../../../state';
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { useAssetCollectionsQuery } from '../../../hooks';
+import { useAssetCollectionsQuery, useSelectedAsset } from '../../../hooks';
 import { Asset } from '../../../interfaces';
 import useSetAssetCollections from '../../../hooks/useSetAssetCollections';
 
@@ -31,12 +29,12 @@ const CollectionSelectBox: React.FC = () => {
     const { translate } = useIntl();
     const { assetCollections } = useAssetCollectionsQuery();
     const { setAssetCollections, loading } = useSetAssetCollections();
-    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
+    const selectedAsset = useSelectedAsset();
 
     const allCollections = useMemo(() => assetCollections.map(({ title }) => ({ label: title })), [assetCollections]);
 
-    const collections = useMemo(() => selectedAsset.collections.map(({ title }) => title).sort(), [
-        selectedAsset.collections
+    const collections = useMemo(() => selectedAsset?.collections.map(({ title }) => title).sort(), [
+        selectedAsset?.collections
     ]);
 
     const handleChange = useCallback(
@@ -46,8 +44,7 @@ const CollectionSelectBox: React.FC = () => {
                     asset: selectedAsset,
                     collectionNames: newCollections
                 })
-                    .then(({ data }) => {
-                        setSelectedAsset(data.setAssetCollections);
+                    .then(() => {
                         Notify.ok(
                             translate(
                                 'actions.setAssetCollections.success',
@@ -66,8 +63,10 @@ const CollectionSelectBox: React.FC = () => {
                     });
             }
         },
-        [Notify, selectedAsset, setAssetCollections, setSelectedAsset, translate]
+        [Notify, selectedAsset, setAssetCollections, translate]
     );
+
+    if (!selectedAsset) return null;
 
     return (
         <div className={classes.collectionSelectBox}>

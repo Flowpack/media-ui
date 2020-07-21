@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Icon, Dialog } from '@neos-project/react-ui-components';
 
-import { useAssetQuery, useConfigQuery, useUploadFiles } from '../../hooks';
+import { useConfigQuery, useUploadFiles } from '../../hooks';
 import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { humanFileSize } from '../../helper';
@@ -128,7 +128,7 @@ const UploadDialog: React.FC = () => {
     const { dummyImage } = useMediaUi();
     const { config } = useConfigQuery();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
-    const { refetchAssets } = useAssetQuery();
+    const { refetchAssets } = useMediaUi();
     const [files, setFiles] = useState<UploadedFile[]>([]);
     const uploadPossible = !loading && files.length > 0;
 
