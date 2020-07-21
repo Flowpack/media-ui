@@ -1,12 +1,13 @@
 import useAssetCollectionsQuery from './useAssetCollectionsQuery';
 import useAssetCountQuery from './useAssetCountQuery';
-import useAssetQuery from './useAssetQuery';
+import useAssetsQuery from './useAssetsQuery';
 import useAssetSourcesQuery from './useAssetSourcesQuery';
 import useConfigQuery from './useConfigQuery';
 import useCreateTag from './useCreateTag';
 import useDeleteAsset from './useDeleteAsset';
 import useDeleteTag from './useDeleteTag';
 import useImportAsset from './useImportAsset';
+import useSelectedAsset from './useSelectedAsset';
 import useSelectAssetSource from './useSelectAssetSource';
 import useSetAssetTags from './useSetAssetTags';
 import useTagAsset from './useTagAsset';
@@ -21,13 +22,14 @@ export {
     VIEW_MODES,
     useAssetCollectionsQuery,
     useAssetCountQuery,
-    useAssetQuery,
+    useAssetsQuery,
     useAssetSourcesQuery,
     useConfigQuery,
     useCreateTag,
     useDeleteAsset,
     useDeleteTag,
     useImportAsset,
+    useSelectedAsset,
     useSelectAssetSource,
     useSetAssetTags,
     useTagAsset,

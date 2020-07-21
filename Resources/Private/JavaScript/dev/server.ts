@@ -28,6 +28,8 @@ const filterAssets = (assetSourceId = '', tag = '', assetCollection = '', mediaT
 
 const resolvers = {
     Query: {
+        asset: ($_, { id, assetSourceId = 'neos' }) =>
+            assets.find(asset => asset.id === id && asset.assetSource.id === assetSourceId),
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         assets: (
             $_,

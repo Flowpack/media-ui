@@ -1,3 +1,4 @@
+import { ASSET } from './AssetQuery';
 import { ASSETS } from './AssetsQuery';
 import { SELECTED_ASSET_SOURCE_ID, SET_SELECTED_ASSET_SOURCE_ID } from './SelectedAssetSourceQuery';
 import ASSET_COLLECTIONS from './AssetCollectionQuery';
@@ -32,6 +33,7 @@ import { CONFIG } from './ConfigQuery';
 
 export {
     ADD_TAG_TO_ASSET_COLLECTION,
+    ASSET,
     ASSETS,
     ASSET_COLLECTIONS,
     ASSET_COLLECTION_FRAGMENT,
