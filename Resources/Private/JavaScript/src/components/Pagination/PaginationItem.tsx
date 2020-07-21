@@ -35,7 +35,7 @@ interface PaginationItemProps {
     title: string;
     label?: string;
     onClick: (page: number) => void;
-    page: number;
+    page?: number;
     selected?: boolean;
     icon?: string;
 }
@@ -44,7 +44,7 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
     title,
     label,
     onClick,
-    page,
+    page = null,
     selected = false,
     icon
 }: PaginationItemProps) => {
