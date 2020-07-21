@@ -4,7 +4,7 @@ import { Headline } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
-import { PropertyList, PropertyListItem } from '../../Presentation';
+import { IconLabel, PropertyList, PropertyListItem } from '../../Presentation';
 import { useSelectedAsset } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -23,10 +23,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 color: theme.colors.inactive
             }
         }
-    },
-    headline: {
-        fontWeight: 'bold',
-        lineHeight: theme.spacing.goldenUnit
     }
 }));
 
@@ -39,8 +35,8 @@ const IptcMetadataInspector: React.FC = () => {
 
     return (
         <div className={classes.iptcData}>
-            <Headline type="h2" className={classes.headline}>
-                {translate('inspector.iptcMetadata', 'IPTC Metadata')}
+            <Headline type="h2">
+                <IconLabel icon="camera" label={translate('inspector.iptcMetadata', 'IPTC Metadata')} />
             </Headline>
             <PropertyList>
                 {selectedAsset.iptcProperties.map(iptcProperty => (

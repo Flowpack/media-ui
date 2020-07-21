@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import { Label, MultiSelectBox } from '@neos-project/react-ui-components';
+import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { useAssetCollectionsQuery, useSelectedAsset } from '../../../hooks';
 import { Asset } from '../../../interfaces';
 import useSetAssetCollections from '../../../hooks/useSetAssetCollections';
+import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles({
     collectionSelectBox: {},
@@ -70,7 +71,9 @@ const CollectionSelectBox: React.FC = () => {
 
     return (
         <div className={classes.collectionSelectBox}>
-            <Label>{translate('inspector.assetCollections', 'Collections')}</Label>
+            <Headline type="h2">
+                <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Collections')} />
+            </Headline>
             <MultiSelectBox
                 className={classes.collectionSelection}
                 disabled={loading || selectedAsset.assetSource.readOnly}

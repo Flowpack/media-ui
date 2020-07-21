@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import { Label, MultiSelectBox } from '@neos-project/react-ui-components';
+import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { useSelectedAsset, useSetAssetTags, useTagsQuery } from '../../../hooks';
 import { Asset } from '../../../interfaces';
+import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles({
     tagSelectBox: {},
@@ -55,7 +56,9 @@ const TagSelectBox: React.FC = () => {
 
     return (
         <div className={classes.tagSelectBox}>
-            <Label>{translate('inspector.tags', 'Tags')}</Label>
+            <Headline type="h2">
+                <IconLabel icon="tags" label={translate('inspector.tags', 'Tags')} />
+            </Headline>
             <MultiSelectBox
                 className={classes.tagSelection}
                 disabled={loading || selectedAsset.assetSource.readOnly}
