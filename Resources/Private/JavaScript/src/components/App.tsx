@@ -13,7 +13,7 @@ import { TopBar } from './TopBar';
 import { ListView, ThumbnailView } from './Main';
 import { VIEW_MODES } from '../hooks';
 import AssetPreview from './AssetPreview';
-import { selectedAssetForPreviewState, uploadDialogState } from '../state';
+import { uploadDialogState } from '../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode }) => ({
@@ -75,7 +75,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 const App: React.FC = () => {
     const { selectionMode, containerRef } = useMediaUi();
-    const selectedAssetForPreview = useRecoilValue(selectedAssetForPreviewState);
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogState);
     const classes = useStyles({ selectionMode });
 
@@ -106,7 +105,7 @@ const App: React.FC = () => {
                 </div>
             )}
 
-            {selectedAssetForPreview && <AssetPreview />}
+            <AssetPreview />
             {showUploadDialog && <UploadDialog />}
         </div>
     );
