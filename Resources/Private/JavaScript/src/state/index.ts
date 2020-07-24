@@ -1,3 +1,4 @@
+import createTagDialogState from './createTagDialogState';
 import currentPageState from './currentPageState';
 import loadingState from './loadingState';
 import selectedMediaTypeState from './selectedMediaTypeState';
@@ -9,6 +10,7 @@ import selectedTagState from './selectedTagState';
 import uploadDialogState from './uploadDialogState';
 
 export {
+    createTagDialogState,
     currentPageState,
     loadingState,
     selectedMediaTypeState,

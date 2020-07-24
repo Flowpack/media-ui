@@ -185,9 +185,9 @@ const UploadDialog: React.FC = () => {
         <Dialog
             isOpen={dialogState.visible}
             title={translate('uploadDialog.title', 'Upload assets')}
-            onRequestClose={() => handleRequestClose()}
+            onRequestClose={handleRequestClose}
             actions={[
-                <Button key="cancel" style="neutral" hoverStyle="darken" onClick={() => handleRequestClose()}>
+                <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>
                     {translate('uploadDialog.cancel', 'Cancel')}
                 </Button>,
                 <Button

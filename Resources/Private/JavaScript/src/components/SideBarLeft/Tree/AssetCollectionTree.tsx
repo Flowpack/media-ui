@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { IconButton, Tree, Headline } from '@neos-project/react-ui-components';
 
@@ -9,7 +9,7 @@ import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
-import { selectedAssetCollectionState, selectedTagState } from '../../../state';
+import { createTagDialogState, selectedAssetCollectionState, selectedTagState } from '../../../state';
 import { useAssetCollectionsQuery, useDeleteTag, useSelectAssetSource, useTagsQuery } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -38,14 +38,15 @@ const AssetCollectionTree: React.FC = () => {
     const Notify = useNotify();
     const [selectedAssetCollection, setSelectedAssetCollection] = useRecoilState(selectedAssetCollectionState);
     const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
+    const setCreateTagDialogState = useSetRecoilState(createTagDialogState);
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAssetSource] = useSelectAssetSource();
     const { deleteTag } = useDeleteTag();
 
-    const onClickAdd = useCallback(() => {
-        Notify.info('This feature has not been implemented yet');
-    }, [Notify]);
+    const onClickCreate = useCallback(() => {
+        setCreateTagDialogState({ visible: true });
+    }, [setCreateTagDialogState]);
 
     const onClickDelete = useCallback(() => {
         const confirm = window.confirm(
@@ -94,7 +95,7 @@ const AssetCollectionTree: React.FC = () => {
                     hoverStyle="brand"
                     disabled={!selectedAssetCollection && !selectedTag}
                     title={translate('assetCollectionTree.toolbar.create', 'Create new')}
-                    onClick={onClickAdd}
+                    onClick={onClickCreate}
                 />
                 <IconButton
                     icon="trash-alt"
