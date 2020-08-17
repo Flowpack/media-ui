@@ -20,7 +20,9 @@ test('Tagging works', async t => {
         .click(firstThumbnail)
         .click(tagSelection)
         .click(tagSelection.find('span[title="Example tag 1"]'))
-        .click(actions.child().withText('Apply'))
+        .click(actions.child().withText('Apply'));
+
+    await t
         .getBrowserConsoleMessages()
-        .then(({ info }) => t.expect(info.includes('The asset has been tagged')).ok('', { timeoutSeconds: 1 }));
+        .then(({ log }) => t.expect(log.includes('The asset has been tagged')).ok('', { timeoutSeconds: 1 }));
 });

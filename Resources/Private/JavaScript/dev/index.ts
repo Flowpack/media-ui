@@ -21,8 +21,8 @@ setTimeout(() => {
             translate: (id, fallback: string, packageKey = null, source = null, args = []) => fallback
         },
         Notification: {
-            notice: title => console.debug(title),
-            ok: title => console.debug(title),
+            notice: title => console.log(title),
+            ok: title => console.log(title),
             error: (title, message) => console.error(message, title),
             warning: (title, message) => console.warn(message, title),
             info: title => console.info(title)

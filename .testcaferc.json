@@ -1,4 +1,5 @@
 {
   "browsers": "chromium",
-  "src": ["Resources/Private/JavaScript/tests/**/*.ts"]
+  "src": ["Resources/Private/JavaScript/tests/**/*.ts"],
+  "appCommand": "ts-node Resources/Private/JavaScript/dev/server.ts"
 }
