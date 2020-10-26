@@ -58,6 +58,7 @@ const tags: Tag[] = range(10).map(index => ({
 }));
 
 const assetCollections: AssetCollection[] = range(3).map(index => ({
+    id: `someId_${index}`,
     title: `Example collection ${index + 1}`,
     tags: range(index % 3).map(i => tags[(i * 3 + index) % tags.length])
 }));
