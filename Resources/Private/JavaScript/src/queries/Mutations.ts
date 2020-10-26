@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import { ASSET_FRAGMENT } from './Fragments';
+import { ASSET_COLLECTION_FRAGMENT, ASSET_FRAGMENT } from './Fragments';
 
 export const UPDATE_ASSET = gql`
     mutation UpdateAsset(
@@ -96,4 +96,21 @@ export const IMPORT_ASSET = gql`
         }
     }
     ${ASSET_FRAGMENT}
+`;
+
+export const CREATE_ASSET_COLLECTION = gql`
+    mutation CreateAssetCollection($title: String) {
+        createAssetCollection(title: $title) {
+            ...AssetCollectionProps
+        }
+    }
+    ${ASSET_COLLECTION_FRAGMENT}
+`;
+
+export const DELETE_ASSET_COLLECTION = gql`
+    mutation DeleteAssetCollection($id: AssetCollectionId) {
+        deleteAssetCollection(id: $id) {
+            success
+        }
+    }
 `;

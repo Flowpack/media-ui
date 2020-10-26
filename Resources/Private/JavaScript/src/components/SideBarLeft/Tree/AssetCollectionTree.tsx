@@ -10,7 +10,13 @@ import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
 import { selectedAssetCollectionState, selectedTagState } from '../../../state';
-import { useAssetCollectionsQuery, useSelectAssetSource, useTagsQuery } from '../../../hooks';
+import {
+    useAssetCollectionsQuery,
+    useCreateAssetCollection,
+    useDeleteAssetCollection,
+    useSelectAssetSource,
+    useTagsQuery
+} from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
@@ -44,9 +50,35 @@ const AssetCollectionTree: React.FC = () => {
     const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAssetSource] = useSelectAssetSource();
 
+    const { createAssetCollection } = useCreateAssetCollection();
+    const { deleteAssetCollection } = useDeleteAssetCollection();
+
     const onClickAdd = useCallback(() => {
-        Notify.info('This feature has not been implemented yet');
-    }, [Notify]);
+        createAssetCollection('testing...' + Math.random())
+            .then(() => {
+                Notify.ok(translate('assetCollectionActions.create.success', 'Asset collection was created'));
+            })
+            .catch(error => {
+                Notify.error(
+                    translate('assetCollectionActions.create.error', 'Failed to create asset collection'),
+                    error.message
+                );
+            });
+    }, [createAssetCollection, Notify, translate]);
+    const onClickDelete = useCallback(() => {
+        deleteAssetCollection(selectedAssetCollection.id)
+            .then(() => {
+                Notify.ok(
+                    translate('assetCollectionActions.delete.success', 'Asset collection was successfully deleted')
+                );
+            })
+            .catch(error => {
+                Notify.error(
+                    translate('assetCollectionActions.delete.error', 'Failed to delete asset collection'),
+                    error.message
+                );
+            });
+    }, [createAssetCollection, Notify, translate]);
 
     const selectTag = useCallback(
         (tag, assetCollection = null) => {
@@ -75,7 +107,6 @@ const AssetCollectionTree: React.FC = () => {
                             size="regular"
                             style="transparent"
                             hoverStyle="brand"
-                            disabled={!selectedAssetCollection && !selectedTag}
                             title={translate('assetCollectionTree.toolbar.create', 'Create new')}
                             onClick={onClickAdd}
                         />
@@ -86,7 +117,7 @@ const AssetCollectionTree: React.FC = () => {
                             hoverStyle="brand"
                             disabled={!selectedAssetCollection && !selectedTag}
                             title={translate('assetCollectionTree.toolbar.delete', 'Delete')}
-                            onClick={onClickAdd}
+                            onClick={onClickDelete}
                         />
                     </div>
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
@@ -22,11 +23,13 @@ use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
+use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Media\Exception\AssetServiceException;
+use Neos\Neos\Domain\Repository\SiteRepository;
 use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
 
@@ -76,6 +79,13 @@ class MutationResolver implements ResolverInterface
      * @var AssetCollectionRepository
      */
     protected $assetCollectionRepository;
+
+
+    /**
+     * @Flow\Inject
+     * @var SiteRepository
+     */
+    protected $siteRepository;
 
     /**
      * @param $_
@@ -424,5 +434,54 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Could not import asset', 1591972264);
         }
         return $importedAsset;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return AssetCollection
+     * @throws Exception
+     */
+    public function createAssetCollection($_, array $variables): AssetCollection
+    {
+        [
+            'title' => $title,
+        ] = $variables;
+
+        $newAssetCollection = new AssetCollection($title);
+
+        $this->assetCollectionRepository->add($newAssetCollection);
+
+        return $newAssetCollection;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return AssetCollection
+     * @throws Exception
+     */
+    public function deleteAssetCollection($_, array $variables): array
+    {
+        [
+            'id' => $id,
+        ] = $variables;
+
+        $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
+
+        if (!$assetCollection) {
+            throw new Exception('Asset collection not found', 1591972269);
+        }
+
+        foreach ($this->siteRepository->findByAssetCollection($assetCollection) as $site) {
+            $site->setAssetCollection(null);
+            $this->siteRepository->update($site);
+        }
+
+        $this->assetCollectionRepository->remove($assetCollection);
+
+        return [
+            'success' => true,
+        ];;
     }
 }
