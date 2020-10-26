@@ -161,6 +161,7 @@ type Tag {
 A collection of assets. One asset can belong to multiple collections
 """
 type AssetCollection {
+    id: AssetCollectionId
     title: AssetCollectionTitle!
     assets: [Asset!]!
     tags: [Tag!]!

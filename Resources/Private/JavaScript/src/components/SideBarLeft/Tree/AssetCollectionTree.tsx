@@ -116,7 +116,7 @@ const AssetCollectionTree: React.FC = () => {
                                 assetCollection={assetCollection}
                                 onClick={selectAssetCollection}
                                 level={1}
-                                isActive={assetCollection.title == selectedAssetCollection?.title && !selectedTag}
+                                isActive={assetCollection.id == selectedAssetCollection?.id && !selectedTag}
                             >
                                 {assetCollection.tags?.map(tag => (
                                     <TagTreeNode
@@ -124,7 +124,7 @@ const AssetCollectionTree: React.FC = () => {
                                         tag={tag}
                                         assetCollection={assetCollection}
                                         isActive={
-                                            assetCollection.title == selectedAssetCollection?.title &&
+                                            assetCollection.id == selectedAssetCollection?.id &&
                                             tag.label == selectedTag?.label
                                         }
                                         level={2}
