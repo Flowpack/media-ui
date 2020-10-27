@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 
-import { CREATE_ASSET_COLLECTION } from '../queries';
+import { ASSET_COLLECTIONS, CREATE_ASSET_COLLECTION } from '../queries';
 import { AssetCollection } from '../interfaces';
 
 interface CreateAssetCollectionVariables {
@@ -9,7 +9,7 @@ interface CreateAssetCollectionVariables {
 
 export default function useCreateAssetCollection() {
     const [action, { error, data, loading }] = useMutation<
-        { assetCollection: AssetCollection },
+        { createAssetCollection: AssetCollection },
         CreateAssetCollectionVariables
     >(CREATE_ASSET_COLLECTION);
 
@@ -17,14 +17,14 @@ export default function useCreateAssetCollection() {
         action({
             variables: {
                 title
+            },
+            update(cache, { data }) {
+                const { assetCollections } = cache.readQuery({ query: ASSET_COLLECTIONS });
+                cache.writeQuery({
+                    query: ASSET_COLLECTIONS,
+                    data: { assetCollections: assetCollections.concat([data?.createAssetCollection]) }
+                });
             }
-            // @TODO handle it optimistically?
-            // optimisticResponse: useOptimisticResponse && {
-            //     assetCollection: {
-            //         id: `local_${Math.random()}`,
-            //         title
-            //     }
-            // }
         });
 
     return { createAssetCollection, data, error, loading };

@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
 
-import { DELETE_ASSET_COLLECTION } from '../queries';
+import { ASSET_COLLECTIONS, DELETE_ASSET_COLLECTION } from '../queries';
 import { AssetCollection } from '../interfaces';
+import DeleteAssetCollectionResult from '../interfaces/DeleteAssetCollectionResult';
 
 interface DeleteAssetCollectionVariables {
     id: string;
@@ -9,7 +10,7 @@ interface DeleteAssetCollectionVariables {
 
 export default function useDeleteAssetCollection() {
     const [action, { error, data, loading }] = useMutation<
-        { assetCollection: AssetCollection },
+        { deleteAssetCollection: DeleteAssetCollectionResult },
         DeleteAssetCollectionVariables
     >(DELETE_ASSET_COLLECTION);
 
@@ -17,8 +18,20 @@ export default function useDeleteAssetCollection() {
         action({
             variables: {
                 id
+            },
+            optimisticResponse: {
+                deleteAssetCollection: {
+                    success: true,
+                    __typename: 'DeleteAssetCollectionResult'
+                }
+            },
+            update(cache) {
+                const { assetCollections } = cache.readQuery({ query: ASSET_COLLECTIONS });
+                cache.writeQuery({
+                    query: ASSET_COLLECTIONS,
+                    data: { assetCollections: assetCollections.filter((c: AssetCollection) => c.id !== id) }
+                });
             }
-            // @TODO optimistic?
         });
 
     return { deleteAssetCollection, data, error, loading };
