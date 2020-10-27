@@ -66,7 +66,7 @@ const AssetCollectionTree: React.FC = () => {
                     error.message
                 );
             });
-    }, [createAssetCollection, Notify, translate]);
+    }, [createAssetCollection, setSelectedAssetCollection, setSelectedTag, Notify, translate]);
     const onClickDelete = useCallback(() => {
         setSelectedTag(null);
         setSelectedAssetCollection(null);
@@ -82,7 +82,7 @@ const AssetCollectionTree: React.FC = () => {
                     error.message
                 );
             });
-    }, [createAssetCollection, Notify, translate]);
+    }, [selectedAssetCollection, deleteAssetCollection, setSelectedTag, setSelectedAssetCollection, Notify, translate]);
 
     const selectTag = useCallback(
         (tag, assetCollection = null) => {

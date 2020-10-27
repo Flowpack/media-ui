@@ -61,7 +61,7 @@ const CollectionSelectBox: React.FC = () => {
                     });
             }
         },
-        [Notify, selectedAsset, setAssetCollections, setSelectedAsset, translate]
+        [Notify, selectedAsset, setAssetCollections, setSelectedAsset, assetCollections, translate]
     );
 
     return (

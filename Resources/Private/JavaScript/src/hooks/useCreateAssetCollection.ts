@@ -13,7 +13,7 @@ export default function useCreateAssetCollection() {
         CreateAssetCollectionVariables
     >(CREATE_ASSET_COLLECTION);
 
-    const createAssetCollection = (title: string, useOptimisticResponse = true) =>
+    const createAssetCollection = (title: string) =>
         action({
             variables: {
                 title
