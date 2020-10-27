@@ -16,7 +16,6 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 // Media UI dependencies
 import { I18nRegistry, Notify } from '../../src/interfaces';
 import {
-    IdFromObjectResolver,
     IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,

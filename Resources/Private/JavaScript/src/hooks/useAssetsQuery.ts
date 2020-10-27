@@ -60,7 +60,7 @@ const useAssetsQuery = () => {
             query({
                 variables: {
                     searchTerm,
-                    assetCollection: selectedAssetCollection?.title,
+                    assetCollectionId: selectedAssetCollection?.id,
                     mediaType: mediaTypeFilter,
                     tag: selectedTag?.label,
                     limit,
