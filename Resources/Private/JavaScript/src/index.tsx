@@ -9,7 +9,13 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
-import { IntlProvider, MediaUiProvider, MediaUiThemeProvider, PersistentStateManager } from './core';
+import {
+    IntlProvider,
+    MediaUiProvider,
+    MediaUiThemeProvider,
+    PersistentStateManager,
+    IdFromObjectResolver
+} from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
@@ -36,7 +42,7 @@ window.onload = async (): Promise<void> => {
     Modal.setAppElement(root);
 
     // Cache for ApolloClient
-    const cache = new InMemoryCache();
+    const cache = new InMemoryCache({ dataIdFromObject: IdFromObjectResolver });
 
     // Restore state from last visit
     PersistentStateManager.restoreLocalState(cache);
