@@ -69,6 +69,7 @@ export const ASSET_FRAGMENT = gql`
             label
         }
         collections {
+            id
             title
         }
         copyrightNotice

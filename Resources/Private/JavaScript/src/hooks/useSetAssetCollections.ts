@@ -1,17 +1,17 @@
 import { useMutation } from '@apollo/react-hooks';
 
-import { Asset } from '../interfaces';
+import { Asset, AssetCollection } from '../interfaces';
 import { SET_ASSET_COLLECTIONS } from '../queries';
 
 interface SetAssetCollectionsProps {
     asset: Asset;
-    collectionNames: string[];
+    collections: AssetCollection[];
 }
 
 interface SetAssetCollectionsVariables {
     id: string;
     assetSourceId: string;
-    collections: string[];
+    collectionIds: string[];
 }
 
 export default function useSetAssetCollections() {
@@ -20,21 +20,17 @@ export default function useSetAssetCollections() {
         SetAssetCollectionsVariables
     >(SET_ASSET_COLLECTIONS);
 
-    const setAssetCollections = ({ asset, collectionNames }: SetAssetCollectionsProps) =>
+    const setAssetCollections = ({ asset, collections }: SetAssetCollectionsProps) =>
         action({
             variables: {
                 id: asset.id,
                 assetSourceId: asset.assetSource.id,
-                collections: collectionNames
+                collectionIds: collections.map(c => c.id)
             },
             optimisticResponse: {
                 setAssetCollections: {
                     ...asset,
-                    collections: collectionNames.map(title => ({
-                        __typename: 'AssetCollection',
-                        title,
-                        tags: []
-                    }))
+                    collections
                 }
             }
         });

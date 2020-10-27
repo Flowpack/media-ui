@@ -15,14 +15,8 @@ const useStyles = createUseMediaUiStyles({
     collectionSelection: {}
 });
 
-const collectionsMatchAsset = (collections: string[], asset: Asset) => {
-    return (
-        collections.join(',') ===
-        asset.collections
-            .map(collection => collection.title)
-            .sort()
-            .join(',')
-    );
+const collectionsMatchAsset = (collectionIds: string[], asset: Asset) => {
+    return collectionIds.join(',') === asset.collections.map(collection => collection.id).join(',');
 };
 
 const CollectionSelectBox: React.FC = () => {
@@ -33,18 +27,19 @@ const CollectionSelectBox: React.FC = () => {
     const { setAssetCollections, loading } = useSetAssetCollections();
     const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
 
-    const allCollections = useMemo(() => assetCollections.map(({ title }) => ({ label: title })), [assetCollections]);
+    const assetCollectionsWithLabel = useMemo(
+        () => assetCollections.map(({ title, ...rest }) => ({ label: title, ...rest })),
+        [assetCollections]
+    );
 
-    const collections = useMemo(() => selectedAsset.collections.map(({ title }) => title).sort(), [
-        selectedAsset.collections
-    ]);
+    const collectionIds = useMemo(() => selectedAsset.collections.map(({ id }) => id), [selectedAsset.collections]);
 
     const handleChange = useCallback(
-        newCollections => {
-            if (!collectionsMatchAsset(newCollections, selectedAsset)) {
+        newCollectionIds => {
+            if (!collectionsMatchAsset(newCollectionIds, selectedAsset)) {
                 setAssetCollections({
                     asset: selectedAsset,
-                    collectionNames: newCollections
+                    collections: assetCollections.filter(c => newCollectionIds.includes(c.id))
                 })
                     .then(({ data }) => {
                         setSelectedAsset(data.setAssetCollections);
@@ -76,10 +71,11 @@ const CollectionSelectBox: React.FC = () => {
                 className={classes.collectionSelection}
                 disabled={loading || selectedAsset.assetSource.readOnly}
                 placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                values={collections}
-                optionValueField="label"
-                options={allCollections}
-                searchOptions={allCollections}
+                values={collectionIds}
+                optionValueField="id"
+                options={assetCollectionsWithLabel}
+                searchOptions={assetCollectionsWithLabel}
+                noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
                 onValuesChange={handleChange}
             />
         </div>

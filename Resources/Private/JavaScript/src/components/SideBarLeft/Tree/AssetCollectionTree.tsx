@@ -55,7 +55,9 @@ const AssetCollectionTree: React.FC = () => {
 
     const onClickAdd = useCallback(() => {
         createAssetCollection('testing...' + Math.random())
-            .then(() => {
+            .then(({ data: { createAssetCollection: assetCollection } }) => {
+                setSelectedAssetCollection(assetCollection);
+                setSelectedTag(null);
                 Notify.ok(translate('assetCollectionActions.create.success', 'Asset collection was created'));
             })
             .catch(error => {
@@ -66,6 +68,8 @@ const AssetCollectionTree: React.FC = () => {
             });
     }, [createAssetCollection, Notify, translate]);
     const onClickDelete = useCallback(() => {
+        setSelectedTag(null);
+        setSelectedAssetCollection(null);
         deleteAssetCollection(selectedAssetCollection.id)
             .then(() => {
                 Notify.ok(

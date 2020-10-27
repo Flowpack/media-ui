@@ -24,7 +24,7 @@ interface AssetsQueryResult {
 
 interface AssetsQueryVariables {
     searchTerm: string;
-    assetCollection: string;
+    assetCollectionId: string;
     mediaType: string;
     tag: string;
     limit: number;
@@ -42,12 +42,13 @@ const useAssetQuery = () => {
 
     const limit = ASSETS_PER_PAGE;
     const offset = (currentPage - 1) * ASSETS_PER_PAGE;
+    console.log(selectedAssetCollection);
 
     const [query, { loading, error, data, refetch }] = useLazyQuery<AssetsQueryResult, AssetsQueryVariables>(ASSETS, {
         notifyOnNetworkStatusChange: false,
         variables: {
             searchTerm,
-            assetCollection: selectedAssetCollection?.title,
+            assetCollectionId: selectedAssetCollection?.id,
             mediaType: mediaTypeFilter,
             tag: selectedTag?.label,
             limit,

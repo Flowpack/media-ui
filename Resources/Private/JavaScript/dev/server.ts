@@ -79,7 +79,7 @@ const resolvers = {
             }: { id: string; assetSourceId: string; collections: string[] }
         ) => {
             const asset = assets.find(asset => asset.id === id && asset.assetSource.id === assetSourceId);
-            asset.collections = assetCollections.filter(collection => newCollections.includes(collection.title));
+            asset.collections = assetCollections.filter(collection => newCollections.includes(collection.id));
             return asset;
         }
     }

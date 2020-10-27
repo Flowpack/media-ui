@@ -63,7 +63,7 @@ type Mutation {
 
     setAssetTags(id: AssetId!, assetSourceId: AssetSourceId!, tags: [TagLabel!]!): Asset!
 
-    setAssetCollections(id: AssetId!, assetSourceId: AssetSourceId!, collections: [AssetCollectionTitle!]!): Asset!
+    setAssetCollections(id: AssetId!, assetSourceId: AssetSourceId!, collectionIds: [AssetCollectionId!]!): Asset!
 
     uploadFile(file: Upload!): FileUploadResult!
 
