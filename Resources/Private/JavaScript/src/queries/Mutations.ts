@@ -39,8 +39,12 @@ export const SET_ASSET_TAGS = gql`
 `;
 
 export const SET_ASSET_COLLECTIONS = gql`
-    mutation SetAssetCollections($id: AssetId!, $assetSourceId: AssetSourceId!, $collectionIds: [AssetCollectionId!]!) {
-        setAssetCollections(id: $id, assetSourceId: $assetSourceId, collectionIds: $collectionIds) {
+    mutation SetAssetCollections(
+        $id: AssetId!
+        $assetSourceId: AssetSourceId!
+        $assetCollectionIds: [AssetCollectionId!]!
+    ) {
+        setAssetCollections(id: $id, assetSourceId: $assetSourceId, assetCollectionIds: $assetCollectionIds) {
             ...AssetProps
         }
     }

@@ -15,8 +15,8 @@ const useStyles = createUseMediaUiStyles({
     collectionSelection: {}
 });
 
-const collectionsMatchAsset = (collectionIds: string[], asset: Asset) => {
-    return collectionIds.join(',') === asset.collections.map(collection => collection.id).join(',');
+const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
+    return assetCollectionIds.join(',') === asset.collections.map(collection => collection.id).join(',');
 };
 
 const CollectionSelectBox: React.FC = () => {
@@ -32,14 +32,16 @@ const CollectionSelectBox: React.FC = () => {
         [assetCollections]
     );
 
-    const collectionIds = useMemo(() => selectedAsset.collections.map(({ id }) => id), [selectedAsset.collections]);
+    const assetCollectionIds = useMemo(() => selectedAsset.collections.map(({ id }) => id), [
+        selectedAsset.collections
+    ]);
 
     const handleChange = useCallback(
-        newCollectionIds => {
-            if (!collectionsMatchAsset(newCollectionIds, selectedAsset)) {
+        newAssetCollectionIds => {
+            if (!collectionsMatchAsset(newAssetCollectionIds, selectedAsset)) {
                 setAssetCollections({
                     asset: selectedAsset,
-                    collections: assetCollections.filter(c => newCollectionIds.includes(c.id))
+                    assetCollections: assetCollections.filter(c => newAssetCollectionIds.includes(c.id))
                 })
                     .then(({ data }) => {
                         setSelectedAsset(data.setAssetCollections);
@@ -71,7 +73,7 @@ const CollectionSelectBox: React.FC = () => {
                 className={classes.collectionSelection}
                 disabled={loading || selectedAsset.assetSource.readOnly}
                 placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                values={collectionIds}
+                values={assetCollectionIds}
                 optionValueField="id"
                 options={assetCollectionsWithLabel}
                 searchOptions={assetCollectionsWithLabel}

@@ -5,13 +5,13 @@ import { SET_ASSET_COLLECTIONS } from '../queries';
 
 interface SetAssetCollectionsProps {
     asset: Asset;
-    collections: AssetCollection[];
+    assetCollections: AssetCollection[];
 }
 
 interface SetAssetCollectionsVariables {
     id: string;
     assetSourceId: string;
-    collectionIds: string[];
+    assetCollectionIds: string[];
 }
 
 export default function useSetAssetCollections() {
@@ -20,17 +20,17 @@ export default function useSetAssetCollections() {
         SetAssetCollectionsVariables
     >(SET_ASSET_COLLECTIONS);
 
-    const setAssetCollections = ({ asset, collections }: SetAssetCollectionsProps) =>
+    const setAssetCollections = ({ asset, assetCollections }: SetAssetCollectionsProps) =>
         action({
             variables: {
                 id: asset.id,
                 assetSourceId: asset.assetSource.id,
-                collectionIds: collections.map(c => c.id)
+                assetCollectionIds: assetCollections.map(c => c.id)
             },
             optimisticResponse: {
                 setAssetCollections: {
                     ...asset,
-                    collections
+                    collections: assetCollections
                 }
             }
         });
