@@ -39,31 +39,4 @@ class AssetCollectionResolver implements ResolverInterface
     {
         return $this->persistenceManager->getIdentifierByObject($assetCollection);
     }
-
-    /**
-     * @param AssetCollection $assetCollection
-     * @return string
-     */
-    public function title(AssetCollection $assetCollection): string
-    {
-        return $assetCollection->getTitle();
-    }
-
-    /**
-     * @param AssetCollection $assetCollection
-     * @return ArrayCollection
-     */
-    public function assets(AssetCollection $assetCollection): array
-    {
-        return $assetCollection->getAssets()->toArray();
-    }
-
-    /**
-     * @param AssetCollection $assetCollection
-     * @return ArrayCollection
-     */
-    public function tags(AssetCollection $assetCollection): array
-    {
-        return $assetCollection->getTags()->toArray();
-    }
 }
