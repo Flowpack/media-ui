@@ -183,24 +183,12 @@ const AssetCollectionTree: React.FC = () => {
                                 key={tag.label}
                                 tag={tag}
                                 assetCollection={assetCollection}
-                                onClick={selectAssetCollection}
-                                level={1}
-                                isActive={assetCollection.id == selectedAssetCollection?.id && !selectedTag}
-                            >
-                                {assetCollection.tags?.map(tag => (
-                                    <TagTreeNode
-                                        key={tag.label}
-                                        tag={tag}
-                                        assetCollection={assetCollection}
-                                        isActive={
-                                            assetCollection.id == selectedAssetCollection?.id &&
-                                            tag.label == selectedTag?.label
-                                        }
-                                        level={2}
-                                        onClick={selectTag}
-                                    />
-                                ))}
-                            </TagTreeNode>
+                                isActive={
+                                    assetCollection.id == selectedAssetCollection?.id && tag.label == selectedTag?.label
+                                }
+                                level={2}
+                                onClick={selectTag}
+                            />
                         ))}
                     </AssetCollectionTreeNode>
                 ))}
