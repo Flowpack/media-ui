@@ -1,36 +1,35 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import { IconButton, Tree } from '@neos-project/react-ui-components';
+import { IconButton, Tree, Headline } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
-import { selectedAssetCollectionState, selectedTagState } from '../../../state';
+import { selectedAssetCollectionState, selectedTagState, createTagDialogState } from '../../../state';
 import {
     useAssetCollectionsQuery,
     useCreateAssetCollection,
     useDeleteAssetCollection,
     useSelectAssetSource,
-    useTagsQuery
+    useTagsQuery,
+    useDeleteTag
 } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
         border: `1px solid ${theme.colors.border}`
     },
+    headline: {
+        padding: `0 ${theme.spacing.full}`
+    },
     iconWrap: {
         width: theme.spacing.goldenUnit,
         display: 'inline-flex',
         justifyContent: 'center'
-    },
-    headline: {
-        fontWeight: 'bold',
-        lineHeight: theme.spacing.goldenUnit,
-        paddingLeft: theme.spacing.half
     },
     toolbar: {
         borderTop: `1px solid ${theme.colors.border}`
@@ -46,9 +45,15 @@ const AssetCollectionTree: React.FC = () => {
     const Notify = useNotify();
     const [selectedAssetCollection, setSelectedAssetCollection] = useRecoilState(selectedAssetCollectionState);
     const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
+    const setCreateTagDialogState = useSetRecoilState(createTagDialogState);
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAssetSource] = useSelectAssetSource();
+    const { deleteTag } = useDeleteTag();
+
+    const onClickCreate = useCallback(() => {
+        setCreateTagDialogState({ visible: true });
+    }, [setCreateTagDialogState]);
 
     const { createAssetCollection } = useCreateAssetCollection();
     const { deleteAssetCollection } = useDeleteAssetCollection();
@@ -68,20 +73,38 @@ const AssetCollectionTree: React.FC = () => {
             });
     }, [createAssetCollection, setSelectedAssetCollection, setSelectedTag, Notify, translate]);
     const onClickDelete = useCallback(() => {
-        setSelectedTag(null);
-        setSelectedAssetCollection(null);
-        deleteAssetCollection(selectedAssetCollection.id)
-            .then(() => {
-                Notify.ok(
-                    translate('assetCollectionActions.delete.success', 'Asset collection was successfully deleted')
-                );
-            })
-            .catch(error => {
-                Notify.error(
-                    translate('assetCollectionActions.delete.error', 'Failed to delete asset collection'),
-                    error.message
-                );
-            });
+        if (selectedTag) {
+            const confirm = window.confirm(
+                translate('action.deleteTag.confirm', 'Do you really want to delete the tag ' + selectedTag.label, [
+                    selectedTag.label
+                ])
+            );
+            if (!confirm) return;
+            deleteTag(selectedTag)
+                .then(() => {
+                    Notify.ok(translate('action.deleteTag.success', 'The tag has been deleted'));
+                })
+                .catch(({ message }) => {
+                    Notify.error(translate('action.deleteTag.error', 'Error while trying to delete the tag'), message);
+                });
+            setSelectedTag(null);
+            setSelectedAssetCollection(null);
+        } else if (selectAssetCollection) {
+            deleteAssetCollection(selectedAssetCollection.id)
+                .then(() => {
+                    Notify.ok(
+                        translate('assetCollectionActions.delete.success', 'Asset collection was successfully deleted')
+                    );
+                })
+                .catch(error => {
+                    Notify.error(
+                        translate('assetCollectionActions.delete.error', 'Failed to delete asset collection'),
+                        error.message
+                    );
+                });
+            setSelectedTag(null);
+            setSelectedAssetCollection(null);
+        }
     }, [selectedAssetCollection, deleteAssetCollection, setSelectedTag, setSelectedAssetCollection, Notify, translate]);
 
     const selectTag = useCallback(
@@ -99,55 +122,66 @@ const AssetCollectionTree: React.FC = () => {
         [setSelectedTag, setSelectedAssetCollection]
     );
 
+    if (!selectedAssetSource?.supportsCollections) return null;
+
     return (
-        <>
-            {selectedAssetSource?.supportsCollections && (
-                <nav className={classes.assetCollectionTree}>
-                    <IconLabel icon="folder" label={translate('assetCollectionList.header', 'Collections')} />
+        <nav className={classes.assetCollectionTree}>
+            <Headline type="h2" className={classes.headline}>
+                <IconLabel icon="folder" label={translate('assetCollectionList.header', 'Collections')} />
+            </Headline>
 
-                    <div className={classes.toolbar}>
-                        <IconButton
-                            icon="plus"
-                            size="regular"
-                            style="transparent"
-                            hoverStyle="brand"
-                            title={translate('assetCollectionTree.toolbar.create', 'Create new')}
-                            onClick={onClickAdd}
-                        />
-                        <IconButton
-                            icon="trash-alt"
-                            size="regular"
-                            style="transparent"
-                            hoverStyle="brand"
-                            disabled={!selectedAssetCollection && !selectedTag}
-                            title={translate('assetCollectionTree.toolbar.delete', 'Delete')}
-                            onClick={onClickDelete}
-                        />
-                    </div>
+            <div className={classes.toolbar}>
+                <IconButton
+                    icon="plus"
+                    size="regular"
+                    style="transparent"
+                    hoverStyle="brand"
+                    title={translate('assetCollectionTree.toolbar.create', 'Create new')}
+                    onClick={onClickAdd}
+                />
+                <IconButton
+                    icon="trash-alt"
+                    size="regular"
+                    style="transparent"
+                    hoverStyle="brand"
+                    disabled={!selectedAssetCollection && !selectedTag}
+                    title={translate('assetCollectionTree.toolbar.delete', 'Delete')}
+                    onClick={onClickDelete}
+                />
+            </div>
 
-                    <Tree className={classes.tree}>
-                        <AssetCollectionTreeNode
-                            isActive={!selectedAssetCollection && !selectedTag}
-                            label={translate('assetCollectionList.showAll', 'All')}
-                            title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
-                            level={1}
-                            onClick={selectAssetCollection}
-                            assetCollection={null}
-                            collapsedByDefault={false}
-                        >
-                            {tags?.map(tag => (
-                                <TagTreeNode
-                                    key={tag.label}
-                                    tag={tag}
-                                    isActive={!selectedAssetCollection && tag.label == selectedTag?.label}
-                                    level={2}
-                                    onClick={selectTag}
-                                />
-                            ))}
-                        </AssetCollectionTreeNode>
-                        {assetCollections.map((assetCollection, index) => (
-                            <AssetCollectionTreeNode
-                                key={index}
+            <Tree className={classes.tree}>
+                <AssetCollectionTreeNode
+                    isActive={!selectedAssetCollection && !selectedTag}
+                    label={translate('assetCollectionList.showAll', 'All')}
+                    title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
+                    level={1}
+                    onClick={selectAssetCollection}
+                    assetCollection={null}
+                    collapsedByDefault={false}
+                >
+                    {tags?.map(tag => (
+                        <TagTreeNode
+                            key={tag.label}
+                            tag={tag}
+                            isActive={!selectedAssetCollection && tag.label == selectedTag?.label}
+                            level={2}
+                            onClick={selectTag}
+                        />
+                    ))}
+                </AssetCollectionTreeNode>
+                {assetCollections.map((assetCollection, index) => (
+                    <AssetCollectionTreeNode
+                        key={index}
+                        assetCollection={assetCollection}
+                        onClick={selectAssetCollection}
+                        level={1}
+                        isActive={assetCollection.title == selectedAssetCollection?.title && !selectedTag}
+                    >
+                        {assetCollection.tags?.map(tag => (
+                            <TagTreeNode
+                                key={tag.label}
+                                tag={tag}
                                 assetCollection={assetCollection}
                                 onClick={selectAssetCollection}
                                 level={1}
@@ -166,12 +200,12 @@ const AssetCollectionTree: React.FC = () => {
                                         onClick={selectTag}
                                     />
                                 ))}
-                            </AssetCollectionTreeNode>
+                            </TagTreeNode>
                         ))}
-                    </Tree>
-                </nav>
-            )}
-        </>
+                    </AssetCollectionTreeNode>
+                ))}
+            </Tree>
+        </nav>
     );
 };
 

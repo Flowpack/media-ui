@@ -65,6 +65,16 @@ type Mutation {
 
     setAssetCollections(id: AssetId!, assetSourceId: AssetSourceId!, assetCollectionIds: [AssetCollectionId!]!): Asset!
 
+    deleteTag(tag: TagLabel!): Boolean!
+
+    createTag(tag: TagLabel!): Tag!
+
+    addTagToAssetCollection(tag: TagLabel!, assetCollectionId: AssetCollectionId!): Boolean!
+
+    removeTagFromAssetCollection(tag: TagLabel!, assetCollectionId: AssetCollectionId!): Boolean!
+
+    deleteAssetCollection(assetCollection: AssetCollectionTitle!): Boolean!
+
     uploadFile(file: Upload!): FileUploadResult!
 
     uploadFiles(files: [Upload!]!): [FileUploadResult!]!
@@ -259,7 +269,7 @@ Name of an IPTC metadata property (e.g. "Creator", see https://www.iptc.org/)
 scalar IptcPropertyName
 
 """
-The title of an Asset collection
+The title of an Asset collection (e.g. "slideshows")
 """
 scalar AssetCollectionTitle
 

@@ -22,7 +22,8 @@ import {
     MediaUiThemeProvider,
     NotifyProvider,
     Resolvers,
-    PersistentStateManager
+    PersistentStateManager,
+    IdFromObjectResolver
 } from '../../src/core';
 import App from '../../src/components/App';
 import { createUploadLink } from 'apollo-upload-client';

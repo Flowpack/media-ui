@@ -10,11 +10,11 @@ import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
 import {
+    IdFromObjectResolver,
     IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,
-    PersistentStateManager,
-    IdFromObjectResolver
+    PersistentStateManager
 } from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';

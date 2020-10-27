@@ -20,6 +20,8 @@ export default function AssetPreview() {
     const { containerRef } = useMediaUi();
     const [selectedAssetForPreview, setSelectedAssetForPreview] = useRecoilState(selectedAssetForPreviewState);
 
+    if (!selectedAssetForPreview) return null;
+
     return (
         <Lightbox
             reactModalStyle={{ overlay: { zIndex: theme.lightboxZIndex } }}

@@ -46,10 +46,11 @@ const Pagination: React.FC = () => {
         pages: []
     });
 
-    const handlePageClick = useCallback(page => page != currentPage && setCurrentPage(page), [
-        currentPage,
-        setCurrentPage
-    ]);
+    const handlePageClick = useCallback(page => setCurrentPage(page), [setCurrentPage]);
+    const handleFirstPageClick = useCallback(() => setCurrentPage(1), [setCurrentPage]);
+    const handleLastPageClick = useCallback(() => setCurrentPage(numberOfPages), [setCurrentPage, numberOfPages]);
+    const handlePreviousPageClick = useCallback(() => setCurrentPage(prev => prev - 1), [setCurrentPage]);
+    const handleNextPageClick = useCallback(() => setCurrentPage(prev => prev + 1), [setCurrentPage]);
 
     // Calculates visible display range
     useMemo(() => {
@@ -89,15 +90,13 @@ const Pagination: React.FC = () => {
                         <PaginationItem
                             icon="angle-left"
                             title={translate('pagination.previousPageTitle', `Go to previous page`)}
-                            onClick={handlePageClick}
-                            page={currentPage - 1}
+                            onClick={handlePreviousPageClick}
                         />
                     )}
                     {displayRange.start > 1 && (
                         <PaginationItem
-                            onClick={handlePageClick}
                             title={translate('pagination.firstPageTitle', `Go to first page`)}
-                            page={1}
+                            onClick={handleFirstPageClick}
                         />
                     )}
                     {displayRange.hasLessPages && <li className={classes.ellipsis}>…</li>}
@@ -113,17 +112,15 @@ const Pagination: React.FC = () => {
                     {displayRange.hasMorePages && <li className={classes.ellipsis}>…</li>}
                     {displayRange.end < numberOfPages && (
                         <PaginationItem
-                            onClick={handlePageClick}
                             title={translate('pagination.lastPageTitle', `Go to last page`)}
-                            page={numberOfPages}
+                            onClick={handleLastPageClick}
                         />
                     )}
                     {currentPage < numberOfPages && (
                         <PaginationItem
                             icon="angle-right"
                             title={translate('pagination.nextPageTitle', `Go to next page`)}
-                            onClick={handlePageClick}
-                            page={currentPage + 1}
+                            onClick={handleNextPageClick}
                         />
                     )}
                 </ol>

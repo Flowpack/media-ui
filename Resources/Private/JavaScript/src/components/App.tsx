@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { useRecoilValue } from 'recoil';
 
-import { SideBarLeft, UploadDialog } from './SideBarLeft';
+import { SideBarLeft } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
 import { Pagination } from './Pagination';
 import { createUseMediaUiStyles, useMediaUi } from '../core';
@@ -13,7 +13,8 @@ import { TopBar } from './TopBar';
 import { ListView, ThumbnailView } from './Main';
 import { VIEW_MODES } from '../hooks';
 import AssetPreview from './AssetPreview';
-import { selectedAssetForPreviewState, uploadDialogState } from '../state';
+import { createTagDialogState, uploadDialogState } from '../state';
+import { CreateTagDialog, UploadDialog } from './Dialogs';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode }) => ({
@@ -75,8 +76,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 const App: React.FC = () => {
     const { selectionMode, containerRef } = useMediaUi();
-    const selectedAssetForPreview = useRecoilValue(selectedAssetForPreviewState);
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogState);
+    const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const classes = useStyles({ selectionMode });
 
     const viewModeSelectionQuery = useQuery(VIEW_MODE_SELECTION);
@@ -106,8 +107,9 @@ const App: React.FC = () => {
                 </div>
             )}
 
-            {selectedAssetForPreview && <AssetPreview />}
+            <AssetPreview />
             {showUploadDialog && <UploadDialog />}
+            {showCreateTagDialog && <CreateTagDialog />}
         </div>
     );
 };

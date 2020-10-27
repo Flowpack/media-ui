@@ -19,7 +19,10 @@ interface UpdateAssetVariables {
 }
 
 export default function useUpdateAsset() {
-    const [action, { error, data, loading }] = useMutation<{ updateAsset: Asset }, UpdateAssetVariables>(UPDATE_ASSET);
+    const [action, { error, data, loading }] = useMutation<
+        { __typename: string; updateAsset: Asset },
+        UpdateAssetVariables
+    >(UPDATE_ASSET);
 
     const updateAsset = ({ asset, label, caption, copyrightNotice }: UpdateAssetProps) =>
         action({
@@ -31,6 +34,7 @@ export default function useUpdateAsset() {
                 copyrightNotice
             },
             optimisticResponse: {
+                __typename: 'Mutation',
                 updateAsset: {
                     ...asset,
                     label,

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import { ASSET_COLLECTION_FRAGMENT, ASSET_FRAGMENT } from './Fragments';
+import { ASSET_COLLECTION_FRAGMENT, ASSET_FRAGMENT, TAG_FRAGMENT } from './Fragments';
 
 export const UPDATE_ASSET = gql`
     mutation UpdateAsset(
@@ -49,6 +49,33 @@ export const SET_ASSET_COLLECTIONS = gql`
         }
     }
     ${ASSET_FRAGMENT}
+`;
+
+export const DELETE_TAG = gql`
+    mutation DeleteTag($tag: TagLabel!) {
+        deleteTag(tag: $tag)
+    }
+`;
+
+export const CREATE_TAG = gql`
+    mutation CreateTag($tag: TagLabel!) {
+        createTag(tag: $tag) {
+            ...TagProps
+        }
+    }
+    ${TAG_FRAGMENT}
+`;
+
+export const REMOVE_TAG_FROM_ASSET_COLLECTION = gql`
+    mutation RemoveTagFromAssetCollection($tag: TagLabel!, $assetCollectionId: AssetCollectionId!) {
+        removeTagFromAssetCollection(tag: $tag, assetCollectionId: $assetCollectionId)
+    }
+`;
+
+export const ADD_TAG_TO_ASSET_COLLECTION = gql`
+    mutation AddTagToAssetCollection($tag: TagLabel!, $assetCollectionId: AssetCollectionId!) {
+        addTagToAssetCollection(tag: $tag, assetCollectionId: $assetCollectionId)
+    }
 `;
 
 export const TAG_ASSET = gql`

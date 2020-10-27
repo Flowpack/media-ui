@@ -16,7 +16,7 @@ interface SetAssetCollectionsVariables {
 
 export default function useSetAssetCollections() {
     const [action, { error, data, loading }] = useMutation<
-        { setAssetCollections: Asset },
+        { __typename: string; setAssetCollections: Asset },
         SetAssetCollectionsVariables
     >(SET_ASSET_COLLECTIONS);
 
@@ -28,6 +28,7 @@ export default function useSetAssetCollections() {
                 assetCollectionIds: assetCollections.map(c => c.id)
             },
             optimisticResponse: {
+                __typename: 'Mutation',
                 setAssetCollections: {
                     ...asset,
                     collections: assetCollections

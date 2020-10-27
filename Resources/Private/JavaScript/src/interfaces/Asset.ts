@@ -1,6 +1,10 @@
 import { AssetSource, IptcProperty, Tag, AssetCollection, AssetFile } from './index';
+import GraphQlEntity from './GraphQLEntity';
 
-export default interface Asset {
+type AssetType = 'Asset';
+
+export default interface Asset extends GraphQlEntity {
+    __typename: AssetType;
     readonly id: string;
     readonly localId: string;
     assetSource: AssetSource;

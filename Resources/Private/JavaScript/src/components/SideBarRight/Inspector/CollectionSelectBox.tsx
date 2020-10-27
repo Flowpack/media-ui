@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
 
-import { Label, MultiSelectBox } from '@neos-project/react-ui-components';
+import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
-import { selectedAssetState } from '../../../state';
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { useAssetCollectionsQuery } from '../../../hooks';
+import { useAssetCollectionsQuery, useSelectedAsset } from '../../../hooks';
 import { Asset } from '../../../interfaces';
 import useSetAssetCollections from '../../../hooks/useSetAssetCollections';
+import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles({
     collectionSelectBox: {},
@@ -25,14 +24,14 @@ const CollectionSelectBox: React.FC = () => {
     const { translate } = useIntl();
     const { assetCollections } = useAssetCollectionsQuery();
     const { setAssetCollections, loading } = useSetAssetCollections();
-    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
+    const selectedAsset = useSelectedAsset();
 
     const assetCollectionsWithLabel = useMemo(
         () => assetCollections.map(({ title, ...rest }) => ({ label: title, ...rest })),
         [assetCollections]
     );
 
-    const assetCollectionIds = useMemo(() => selectedAsset.collections.map(({ id }) => id), [
+    const assetCollectionIds = useMemo(() => selectedAsset?.collections.map(({ id }) => id), [
         selectedAsset.collections
     ]);
 
@@ -43,8 +42,7 @@ const CollectionSelectBox: React.FC = () => {
                     asset: selectedAsset,
                     assetCollections: assetCollections.filter(c => newAssetCollectionIds.includes(c.id))
                 })
-                    .then(({ data }) => {
-                        setSelectedAsset(data.setAssetCollections);
+                    .then(() => {
                         Notify.ok(
                             translate(
                                 'actions.setAssetCollections.success',
@@ -63,12 +61,16 @@ const CollectionSelectBox: React.FC = () => {
                     });
             }
         },
-        [Notify, selectedAsset, setAssetCollections, setSelectedAsset, assetCollections, translate]
+        [Notify, selectedAsset, setAssetCollections, assetCollections, translate]
     );
+
+    if (!selectedAsset) return null;
 
     return (
         <div className={classes.collectionSelectBox}>
-            <Label>{translate('inspector.assetCollections', 'Collections')}</Label>
+            <Headline type="h2">
+                <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Collections')} />
+            </Headline>
             <MultiSelectBox
                 className={classes.collectionSelection}
                 disabled={loading || selectedAsset.assetSource.readOnly}

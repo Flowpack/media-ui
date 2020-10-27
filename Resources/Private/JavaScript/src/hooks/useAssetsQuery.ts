@@ -31,7 +31,7 @@ interface AssetsQueryVariables {
     offset: number;
 }
 
-const useAssetQuery = () => {
+const useAssetsQuery = () => {
     const searchTerm = useRecoilValue(searchTermState);
     const selectedAssetCollection = useRecoilValue(selectedAssetCollectionState);
     const selectedTag = useRecoilValue(selectedTagState);
@@ -57,7 +57,16 @@ const useAssetQuery = () => {
 
     useEffect(() => {
         if (!loading && !isLoading) {
-            query();
+            query({
+                variables: {
+                    searchTerm,
+                    assetCollection: selectedAssetCollection?.title,
+                    mediaType: mediaTypeFilter,
+                    tag: selectedTag?.label,
+                    limit,
+                    offset
+                }
+            });
             setIsLoading(true);
         } else if (data && !loading && isLoading) {
             setIsLoading(false);
@@ -66,10 +75,22 @@ const useAssetQuery = () => {
             // Update currentPage if asset count changes and current page exceeds limit
             setCurrentPage(prev => ((prev - 1) * limit > data.assetCount ? 1 : prev));
         }
+        // Don't include `isLoading` to prevent constant reloads
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [query, data, loading, selectedAssetCollection, mediaTypeFilter, offset, searchTerm, selectedTag]);
+    }, [
+        query,
+        data,
+        loading,
+        setCurrentPage,
+        offset,
+        limit,
+        searchTerm,
+        selectedAssetCollection?.title,
+        mediaTypeFilter,
+        selectedTag?.label
+    ]);
 
     return { error, assets, refetchAssets: refetch };
 };
 
-export default useAssetQuery;
+export default useAssetsQuery;

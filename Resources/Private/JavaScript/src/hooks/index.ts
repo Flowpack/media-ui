@@ -1,11 +1,14 @@
-import useAssetCountQuery from './useAssetCountQuery';
-import useAssetQuery from './useAssetQuery';
-import useSelectAssetSource from './useSelectAssetSource';
-import useAssetSourcesQuery from './useAssetSourcesQuery';
 import useAssetCollectionsQuery from './useAssetCollectionsQuery';
+import useAssetCountQuery from './useAssetCountQuery';
+import useAssetsQuery from './useAssetsQuery';
+import useAssetSourcesQuery from './useAssetSourcesQuery';
 import useConfigQuery from './useConfigQuery';
+import useCreateTag from './useCreateTag';
 import useDeleteAsset from './useDeleteAsset';
+import useDeleteTag from './useDeleteTag';
 import useImportAsset from './useImportAsset';
+import useSelectedAsset from './useSelectedAsset';
+import useSelectAssetSource from './useSelectAssetSource';
 import useSetAssetTags from './useSetAssetTags';
 import useCreateAssetCollection from './useCreateAssetCollection';
 import useDeleteAssetCollection from './useDeleteAssetCollection';
@@ -19,22 +22,25 @@ import useViewModeSelection, { VIEW_MODES } from './useViewModeSelection';
 
 export {
     VIEW_MODES,
-    useAssetCountQuery,
     useAssetCollectionsQuery,
-    useAssetQuery,
-    useSelectAssetSource,
+    useAssetCountQuery,
+    useAssetsQuery,
     useAssetSourcesQuery,
     useConfigQuery,
     useCreateAssetCollection,
     useDeleteAssetCollection,
+    useCreateTag,
     useDeleteAsset,
+    useDeleteTag,
     useImportAsset,
+    useSelectedAsset,
+    useSelectAssetSource,
     useSetAssetTags,
     useTagAsset,
     useTagsQuery,
     useUntagAsset,
     useUpdateAsset,
-    useViewModeSelection,
+    useUploadFile,
     useUploadFiles,
-    useUploadFile
+    useViewModeSelection
 };

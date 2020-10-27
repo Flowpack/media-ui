@@ -1,9 +1,8 @@
 import * as React from 'react';
 
-import { createUseMediaUiStyles, useIntl } from '../../core';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { ListViewItem } from './index';
-import { useAssetQuery } from '../../hooks';
 import LoadingLabel from '../LoadingLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -31,7 +30,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 const ListView: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
-    const { assets } = useAssetQuery();
+    const { assets } = useMediaUi();
 
     return (
         <section className={classes.listView}>
