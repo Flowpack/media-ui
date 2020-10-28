@@ -126,7 +126,7 @@ export const IMPORT_ASSET = gql`
 `;
 
 export const CREATE_ASSET_COLLECTION = gql`
-    mutation CreateAssetCollection($title: String) {
+    mutation CreateAssetCollection($title: String!) {
         createAssetCollection(title: $title) {
             ...AssetCollectionProps
         }
@@ -135,7 +135,7 @@ export const CREATE_ASSET_COLLECTION = gql`
 `;
 
 export const DELETE_ASSET_COLLECTION = gql`
-    mutation DeleteAssetCollection($id: AssetCollectionId) {
+    mutation DeleteAssetCollection($id: AssetCollectionId!) {
         deleteAssetCollection(id: $id) {
             success
         }

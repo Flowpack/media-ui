@@ -4,7 +4,7 @@ const createTagDialogState = atom({
     key: 'createTagDialogState',
     default: {
         visible: false,
-        title: ''
+        label: ''
     }
 });
 

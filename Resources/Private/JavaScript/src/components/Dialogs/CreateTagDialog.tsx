@@ -23,10 +23,10 @@ const CreateTagDialog: React.FC = () => {
     const createPossible = true;
     const { createTag } = useCreateTag();
 
-    const handleRequestClose = useCallback(() => setDialogState({ visible: false, title: '' }), [setDialogState]);
+    const handleRequestClose = useCallback(() => setDialogState({ visible: false, label: '' }), [setDialogState]);
     const handleCreate = useCallback(() => {
         setDialogState(state => ({ ...state, visible: false }));
-        createTag(dialogState.title, selectedAssetCollection?.id)
+        createTag(dialogState.label, selectedAssetCollection?.id)
             .then(() => {
                 Notify.ok(translate('assetCollectionActions.create.success', 'Tag was created'));
             })
@@ -34,13 +34,13 @@ const CreateTagDialog: React.FC = () => {
                 Notify.error(translate('assetCollectionActions.create.error', 'Failed to create tag'), error.message);
             });
     }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetCollection]);
-    const setTitle = useCallback(title => setDialogState(state => ({ ...state, title })), [setDialogState]);
+    const setLabel = useCallback(label => setDialogState(state => ({ ...state, label })), [setDialogState]);
 
     return (
         <Dialog
             isOpen={dialogState.visible}
             title={translate('createTagDialog.title', 'Create tag')}
-            onRequestClose={() => handleRequestClose()}
+            onRequestClose={handleRequestClose}
             actions={[
                 <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>
                     {translate('general.cancel', 'Cancel')}
@@ -50,7 +50,7 @@ const CreateTagDialog: React.FC = () => {
                     style="success"
                     hoverStyle="success"
                     disabled={!createPossible}
-                    onClick={() => handleCreate()}
+                    onClick={handleCreate}
                 >
                     {translate('general.create', 'Create')}
                 </Button>
@@ -61,8 +61,8 @@ const CreateTagDialog: React.FC = () => {
                 <TextInput
                     setFocus
                     type="text"
-                    value={dialogState.title}
-                    onChange={setTitle}
+                    value={dialogState.label}
+                    onChange={setLabel}
                     onEnterKey={handleCreate}
                 />
             </div>

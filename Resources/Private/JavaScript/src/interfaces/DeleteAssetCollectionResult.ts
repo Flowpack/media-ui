@@ -1,4 +1,8 @@
-export default interface DeleteAssetCollectionResult {
+import { GraphQlEntity } from './index';
+
+type DeleteAssetCollectionResultType = 'DeleteAssetCollectionResult';
+
+export default interface DeleteAssetCollectionResult extends GraphQlEntity {
+    __typename: DeleteAssetCollectionResultType;
     readonly success: boolean;
-    readonly __typename: string;
 }

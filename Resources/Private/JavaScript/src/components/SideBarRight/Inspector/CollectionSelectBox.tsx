@@ -4,9 +4,8 @@ import { useCallback, useMemo } from 'react';
 import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { useAssetCollectionsQuery, useSelectedAsset } from '../../../hooks';
+import { useAssetCollectionsQuery, useSelectedAsset, useSetAssetCollections } from '../../../hooks';
 import { Asset } from '../../../interfaces';
-import useSetAssetCollections from '../../../hooks/useSetAssetCollections';
 import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles({

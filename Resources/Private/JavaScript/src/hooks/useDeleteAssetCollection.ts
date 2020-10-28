@@ -1,8 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 
 import { ASSET_COLLECTIONS, DELETE_ASSET_COLLECTION } from '../queries';
-import { AssetCollection } from '../interfaces';
-import DeleteAssetCollectionResult from '../interfaces/DeleteAssetCollectionResult';
+import { AssetCollection, DeleteAssetCollectionResult } from '../interfaces';
 
 interface DeleteAssetCollectionVariables {
     id: string;

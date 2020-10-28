@@ -42,7 +42,7 @@ const CreateAssetCollectionDialog = () => {
         <Dialog
             isOpen={dialogState.visible}
             title={translate('createAssetCollectionDialog.title', 'Create Asset Collection')}
-            onRequestClose={() => handleRequestClose()}
+            onRequestClose={handleRequestClose}
             actions={[
                 <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>
                     {translate('general.cancel', 'Cancel')}
@@ -52,7 +52,7 @@ const CreateAssetCollectionDialog = () => {
                     style="success"
                     hoverStyle="success"
                     disabled={!createPossible}
-                    onClick={() => handleCreate()}
+                    onClick={handleCreate}
                 >
                     {translate('general.create', 'Create')}
                 </Button>

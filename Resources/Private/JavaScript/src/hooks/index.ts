@@ -10,6 +10,7 @@ import useImportAsset from './useImportAsset';
 import useSelectedAsset from './useSelectedAsset';
 import useSelectAssetSource from './useSelectAssetSource';
 import useSetAssetTags from './useSetAssetTags';
+import useSetAssetCollections from './useSetAssetCollections';
 import useCreateAssetCollection from './useCreateAssetCollection';
 import useDeleteAssetCollection from './useDeleteAssetCollection';
 import useTagAsset from './useTagAsset';
@@ -36,6 +37,7 @@ export {
     useSelectedAsset,
     useSelectAssetSource,
     useSetAssetTags,
+    useSetAssetCollections,
     useTagAsset,
     useTagsQuery,
     useUntagAsset,

@@ -21,7 +21,7 @@ const AssetCollectionTree: React.FC = () => {
     const setCreateTagDialogState = useSetRecoilState(createTagDialogState);
 
     const onClickCreate = useCallback(() => {
-        setCreateTagDialogState({ title: '', visible: true });
+        setCreateTagDialogState({ label: '', visible: true });
     }, [setCreateTagDialogState]);
 
     return (
