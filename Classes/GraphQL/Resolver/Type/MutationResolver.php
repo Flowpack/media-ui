@@ -19,6 +19,7 @@ use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
+use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Http\Factories\FlowUploadedFile;
@@ -439,7 +440,7 @@ class MutationResolver implements ResolverInterface
      * @param $_
      * @param array $variables
      * @return AssetCollection
-     * @throws Exception
+     * @throws IllegalObjectTypeException
      */
     public function createAssetCollection($_, array $variables): AssetCollection
     {
@@ -449,6 +450,8 @@ class MutationResolver implements ResolverInterface
 
         $newAssetCollection = new AssetCollection($title);
 
+        // FIXME: Multiple asset collections with the same title can exist, but do we want that?
+
         $this->assetCollectionRepository->add($newAssetCollection);
 
         return $newAssetCollection;
@@ -457,8 +460,8 @@ class MutationResolver implements ResolverInterface
     /**
      * @param $_
      * @param array $variables
-     * @return AssetCollection
-     * @throws Exception
+     * @return array
+     * @throws Exception|IllegalObjectTypeException
      */
     public function deleteAssetCollection($_, array $variables): array
     {
@@ -472,6 +475,7 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Asset collection not found', 1591972269);
         }
 
+        /** @noinspection PhpUndefinedMethodInspection */
         foreach ($this->siteRepository->findByAssetCollection($assetCollection) as $site) {
             $site->setAssetCollection(null);
             $this->siteRepository->update($site);
@@ -481,14 +485,14 @@ class MutationResolver implements ResolverInterface
 
         return [
             'success' => true,
-        ];;
+        ];
     }
 
     /**
      * @param $_
      * @param array $variables
      * @return Tag
-     * @throws Exception
+     * @throws Exception|IllegalObjectTypeException
      */
     public function createTag($_, array $variables): Tag
     {
@@ -515,7 +519,7 @@ class MutationResolver implements ResolverInterface
      * @param $_
      * @param array $variables
      * @return bool
-     * @throws Exception
+     * @throws Exception|IllegalObjectTypeException|InvalidQueryException
      */
     public function deleteTag($_, array $variables): bool
     {

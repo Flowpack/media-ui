@@ -14,7 +14,6 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Neos\Flow\Annotations as Flow;
 use t3n\GraphQL\ResolverInterface;
 use Neos\Media\Domain\Model\AssetCollection;
