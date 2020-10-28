@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { IconButton, Tree, Headline } from '@neos-project/react-ui-components';
 
@@ -9,12 +9,7 @@ import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
-import {
-    selectedAssetCollectionState,
-    selectedTagState,
-    createTagDialogState,
-    createAssetCollectionDialogState
-} from '../../../state';
+import { selectedAssetCollectionState, selectedTagState } from '../../../state';
 import {
     useAssetCollectionsQuery,
     useDeleteAssetCollection,
@@ -22,6 +17,8 @@ import {
     useTagsQuery,
     useDeleteTag
 } from '../../../hooks';
+import AddAssetCollectionButton from './AddAssetCollectionButton';
+import AddTagButton from './AddTagButton';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
@@ -43,14 +40,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-const AssetCollectionTree: React.FC = () => {
+const AssetCollectionTree = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
     const [selectedAssetCollection, setSelectedAssetCollection] = useRecoilState(selectedAssetCollectionState);
     const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
-    const setCreateTagDialogState = useSetRecoilState(createTagDialogState);
-    const setCreateAssetCollectionDialogState = useSetRecoilState(createAssetCollectionDialogState);
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAssetSource] = useSelectAssetSource();
@@ -58,13 +53,6 @@ const AssetCollectionTree: React.FC = () => {
 
     const { deleteAssetCollection } = useDeleteAssetCollection();
 
-    const onClickCreate = useCallback(() => {
-        if (selectedTag) {
-            setCreateTagDialogState({ visible: true });
-        } else {
-            setCreateAssetCollectionDialogState(state => ({ ...state, visible: true }));
-        }
-    }, [setCreateAssetCollectionDialogState, setCreateTagDialogState, selectedTag]);
     const selectAssetCollection = useCallback(
         assetCollection => {
             setSelectedTag(null);
@@ -142,14 +130,8 @@ const AssetCollectionTree: React.FC = () => {
             </Headline>
 
             <div className={classes.toolbar}>
-                <IconButton
-                    icon="plus"
-                    size="regular"
-                    style="transparent"
-                    hoverStyle="brand"
-                    title={translate('assetCollectionTree.toolbar.create', 'Create new')}
-                    onClick={onClickCreate}
-                />
+                <AddAssetCollectionButton />
+                <AddTagButton />
                 <IconButton
                     icon="trash-alt"
                     size="regular"

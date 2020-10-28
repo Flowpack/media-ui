@@ -24,6 +24,7 @@ use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
@@ -225,7 +226,6 @@ class MutationResolver implements ResolverInterface
             'assetSourceId' => $assetSourceId,
             'tags' => $tagNames
         ] = $variables;
-
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
             return null;
@@ -269,7 +269,6 @@ class MutationResolver implements ResolverInterface
             'assetSourceId' => $assetSourceId,
             'assetCollectionIds' => $assetCollectionIds
         ] = $variables;
-
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
             return null;
@@ -483,5 +482,32 @@ class MutationResolver implements ResolverInterface
         return [
             'success' => true,
         ];;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return Tag
+     * @throws Exception
+     */
+    public function createTag($_, array $variables): Tag
+    {
+        [
+            'tag' => $label,
+            'assetCollectionId' => $assetCollectionId
+        ] = $variables + ['assetCollectionId' => null];
+
+        $tag = $this->tagRepository->findOneByLabel($label);
+        if ($tag === null) {
+            $tag = new Tag($label);
+            $this->tagRepository->add($tag);
+        }
+
+        if ($assetCollectionId) {
+            $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
+            $assetCollection->addTag($tag);
+            $this->assetCollectionRepository->update($assetCollection);
+        }
+        return $tag;
     }
 }

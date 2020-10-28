@@ -58,8 +58,8 @@ export const DELETE_TAG = gql`
 `;
 
 export const CREATE_TAG = gql`
-    mutation CreateTag($tag: TagLabel!) {
-        createTag(tag: $tag) {
+    mutation CreateTag($tag: TagLabel!, $assetCollectionId: AssetCollectionId) {
+        createTag(tag: $tag, assetCollectionId: $assetCollectionId) {
             ...TagProps
         }
     }

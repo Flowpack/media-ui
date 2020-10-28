@@ -67,7 +67,7 @@ type Mutation {
 
     deleteTag(tag: TagLabel!): Boolean!
 
-    createTag(tag: TagLabel!): Tag!
+    createTag(tag: TagLabel!, assetCollectionId: AssetCollectionId): Tag!
 
     addTagToAssetCollection(tag: TagLabel!, assetCollectionId: AssetCollectionId!): Boolean!
 

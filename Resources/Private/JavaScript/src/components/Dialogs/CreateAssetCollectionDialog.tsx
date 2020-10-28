@@ -22,9 +22,7 @@ const CreateAssetCollectionDialog = () => {
     const createPossible = true;
     const { createAssetCollection } = useCreateAssetCollection();
 
-    const handleRequestClose = useCallback(() => setDialogState(state => ({ ...state, visible: false })), [
-        setDialogState
-    ]);
+    const handleRequestClose = useCallback(() => setDialogState({ title: '', visible: false }), [setDialogState]);
     const handleCreate = useCallback(() => {
         setDialogState(state => ({ ...state, visible: false }));
         createAssetCollection(dialogState.title)
@@ -59,11 +57,16 @@ const CreateAssetCollectionDialog = () => {
                     {translate('general.create', 'Create')}
                 </Button>
             ]}
-            style="wide"
         >
             <div className={classes.formBody}>
-                <Label>{translate('inspector.title', 'Title')}</Label>
-                <TextInput type="text" value={dialogState.title} onChange={setTitle} onEnterKey={handleCreate} />
+                <Label>{translate('general.title', 'Title')}</Label>
+                <TextInput
+                    setFocus
+                    type="text"
+                    value={dialogState.title}
+                    onChange={setTitle}
+                    onEnterKey={handleCreate}
+                />
             </div>
         </Dialog>
     );

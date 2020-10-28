@@ -1,36 +1,49 @@
 import * as React from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { Button, Dialog } from '@neos-project/react-ui-components';
+import { Button, Dialog, Label, TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../core';
 import { useCallback } from 'react';
-import { createTagDialogState } from '../../state';
+import { createTagDialogState, selectedAssetCollectionState } from '../../state';
+import { useCreateTag } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles(() => ({
-    createTagForm: {}
+    formBody: {
+        padding: 16
+    }
 }));
 
 const CreateTagDialog: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
+    const selectedAssetCollection = useRecoilValue(selectedAssetCollectionState);
     const [dialogState, setDialogState] = useRecoilState(createTagDialogState);
     const createPossible = true;
+    const { createTag } = useCreateTag();
 
-    const handleRequestClose = useCallback(() => setDialogState({ visible: false }), [setDialogState]);
+    const handleRequestClose = useCallback(() => setDialogState({ visible: false, title: '' }), [setDialogState]);
     const handleCreate = useCallback(() => {
-        Notify.warning('Not implemented, fool!');
-    }, [Notify]);
+        setDialogState(state => ({ ...state, visible: false }));
+        createTag(dialogState.title, selectedAssetCollection?.id)
+            .then(() => {
+                Notify.ok(translate('assetCollectionActions.create.success', 'Tag was created'));
+            })
+            .catch(error => {
+                Notify.error(translate('assetCollectionActions.create.error', 'Failed to create tag'), error.message);
+            });
+    }, [Notify, setDialogState, createTag, dialogState, translate]);
+    const setTitle = useCallback(title => setDialogState(state => ({ ...state, title })), [setDialogState]);
 
     return (
         <Dialog
             isOpen={dialogState.visible}
-            title={translate('uploadDialog.title', 'Upload assets')}
+            title={translate('createTagDialog.title', 'Create tag')}
             onRequestClose={() => handleRequestClose()}
             actions={[
                 <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>
-                    {translate('uploadDialog.cancel', 'Cancel')}
+                    {translate('general.cancel', 'Cancel')}
                 </Button>,
                 <Button
                     key="upload"
@@ -39,12 +52,20 @@ const CreateTagDialog: React.FC = () => {
                     disabled={!createPossible}
                     onClick={() => handleCreate()}
                 >
-                    {translate('createTagDialog.create', 'Create')}
+                    {translate('general.create', 'Create')}
                 </Button>
             ]}
-            style="wide"
         >
-            <section className={classes.createTagForm}>New tag?</section>
+            <div className={classes.formBody}>
+                <Label>{translate('general.label', 'Label')}</Label>
+                <TextInput
+                    setFocus
+                    type="text"
+                    value={dialogState.title}
+                    onChange={setTitle}
+                    onEnterKey={handleCreate}
+                />
+            </div>
         </Dialog>
     );
 };
