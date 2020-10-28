@@ -11,11 +11,14 @@ const useSelectedAsset = (): Asset => {
 
     // Read asset selection from cache as we can only select assets that have been queries before
     try {
-        return client.readFragment({
-            id: `Asset_${selectedAssetId}`,
-            fragment: ASSET_FRAGMENT,
-            fragmentName: 'AssetProps'
-        });
+        return client.readFragment(
+            {
+                id: `Asset_${selectedAssetId}`,
+                fragment: ASSET_FRAGMENT,
+                fragmentName: 'AssetProps'
+            },
+            true
+        );
     } catch (e) {
         // TODO: Run query to get the asset when its not found
         console.error(e, 'selected asset missing in cache');

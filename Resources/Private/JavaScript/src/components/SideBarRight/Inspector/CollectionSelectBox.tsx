@@ -18,7 +18,7 @@ const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
     return assetCollectionIds.join(',') === asset.collections.map(collection => collection.id).join(',');
 };
 
-const CollectionSelectBox: React.FC = () => {
+const CollectionSelectBox = () => {
     const classes = useStyles();
     const Notify = useNotify();
     const { translate } = useIntl();
