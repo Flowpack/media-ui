@@ -491,6 +491,34 @@ class MutationResolver implements ResolverInterface
     /**
      * @param $_
      * @param array $variables
+     * @return AssetCollection|null
+     * @throws Exception
+     */
+    public function updateAssetCollection($_, array $variables): AssetCollection
+    {
+        [
+            'id' => $id,
+            'title' => $title
+        ] = $variables + ['title' => null];
+
+        $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
+
+        if (!$assetCollection) {
+            throw new Exception('Asset collection not found', 1590659045);
+        }
+
+        if ($title !== null) {
+            $assetCollection->setTitle($title);
+        }
+
+        $this->assetCollectionRepository->update($assetCollection);
+
+        return $assetCollection;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
      * @return Tag
      * @throws Exception|IllegalObjectTypeException
      */

@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { AssetInspector, IptcMetadataInspector } from './Inspector';
+import { AssetInspector, AssetCollectionInspector, IptcMetadataInspector } from './Inspector';
 import CurrentSelection from './CurrentSelection';
 import { Column } from '../Presentation';
 
-const SideBarRight: React.FC = () => {
+const SideBarRight = () => {
     // TODO: Read from component store
-    const components = [CurrentSelection, AssetInspector, IptcMetadataInspector];
+    const components = [CurrentSelection, AssetInspector, AssetCollectionInspector, IptcMetadataInspector];
 
     return (
         <Column>

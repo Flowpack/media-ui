@@ -35,7 +35,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-const AssetInspector: React.FC = () => {
+const AssetInspector = () => {
     const classes = useStyles();
     const selectedAsset = useSelectedAsset();
     const Notify = useNotify();

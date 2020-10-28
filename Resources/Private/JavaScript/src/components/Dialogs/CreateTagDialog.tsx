@@ -5,8 +5,9 @@ import { Button, Dialog, Label, TextInput } from '@neos-project/react-ui-compone
 
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../core';
 import { useCallback } from 'react';
-import { createTagDialogState, selectedAssetCollectionState } from '../../state';
+import { createTagDialogState } from '../../state';
 import { useCreateTag } from '../../hooks';
+import useSelectedAssetCollection from '../../hooks/useSelectedAssetCollection';
 
 const useStyles = createUseMediaUiStyles(() => ({
     formBody: {
@@ -18,7 +19,7 @@ const CreateTagDialog: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
-    const selectedAssetCollection = useRecoilValue(selectedAssetCollectionState);
+    const selectedAssetCollection = useSelectedAssetCollection();
     const [dialogState, setDialogState] = useRecoilState(createTagDialogState);
     const createPossible = true;
     const { createTag } = useCreateTag();

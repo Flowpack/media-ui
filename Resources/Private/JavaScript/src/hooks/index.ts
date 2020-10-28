@@ -17,6 +17,7 @@ import useTagAsset from './useTagAsset';
 import useTagsQuery from './useTagsQuery';
 import useUntagAsset from './useUntagAsset';
 import useUpdateAsset from './useUpdateAsset';
+import useUpdateAssetCollection from './useUpdateAssetCollection';
 import useUploadFile from './useUploadFile';
 import useUploadFiles from './useUploadFiles';
 import useViewModeSelection, { VIEW_MODES } from './useViewModeSelection';
@@ -42,6 +43,7 @@ export {
     useTagsQuery,
     useUntagAsset,
     useUpdateAsset,
+    useUpdateAssetCollection,
     useUploadFile,
     useUploadFiles,
     useViewModeSelection

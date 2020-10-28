@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { IconButton, Tree, Headline } from '@neos-project/react-ui-components';
 
@@ -9,7 +9,7 @@ import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
-import { selectedAssetCollectionState, selectedTagState } from '../../../state';
+import { selectedAssetCollectionIdState, selectedTagState } from '../../../state';
 import {
     useAssetCollectionsQuery,
     useDeleteAssetCollection,
@@ -19,6 +19,7 @@ import {
 } from '../../../hooks';
 import AddAssetCollectionButton from './AddAssetCollectionButton';
 import AddTagButton from './AddTagButton';
+import useSelectedAssetCollection from '../../../hooks/useSelectedAssetCollection';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
@@ -44,7 +45,8 @@ const AssetCollectionTree = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
-    const [selectedAssetCollection, setSelectedAssetCollection] = useRecoilState(selectedAssetCollectionState);
+    const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
+    const selectedAssetCollection = useSelectedAssetCollection();
     const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
@@ -56,9 +58,9 @@ const AssetCollectionTree = () => {
     const selectAssetCollection = useCallback(
         assetCollection => {
             setSelectedTag(null);
-            setSelectedAssetCollection(assetCollection);
+            setSelectedAssetCollectionId(assetCollection.id);
         },
-        [setSelectedTag, setSelectedAssetCollection]
+        [setSelectedTag, setSelectedAssetCollectionId]
     );
     const onClickDelete = useCallback(() => {
         if (selectedTag) {
@@ -76,7 +78,7 @@ const AssetCollectionTree = () => {
                     Notify.error(translate('action.deleteTag.error', 'Error while trying to delete the tag'), message);
                 });
             setSelectedTag(null);
-            setSelectedAssetCollection(null);
+            setSelectedAssetCollectionId(null);
         } else if (selectAssetCollection) {
             const confirm = window.confirm(
                 translate(
@@ -99,7 +101,7 @@ const AssetCollectionTree = () => {
                     );
                 });
             setSelectedTag(null);
-            setSelectedAssetCollection(null);
+            setSelectedAssetCollectionId(null);
         }
     }, [
         deleteTag,
@@ -108,17 +110,17 @@ const AssetCollectionTree = () => {
         selectedAssetCollection,
         deleteAssetCollection,
         setSelectedTag,
-        setSelectedAssetCollection,
+        setSelectedAssetCollectionId,
         Notify,
         translate
     ]);
 
     const selectTag = useCallback(
         (tag, assetCollection = null) => {
-            setSelectedAssetCollection(assetCollection);
+            setSelectedAssetCollectionId(assetCollection);
             setSelectedTag(tag);
         },
-        [setSelectedTag, setSelectedAssetCollection]
+        [setSelectedTag, setSelectedAssetCollectionId]
     );
 
     if (!selectedAssetSource?.supportsCollections) return null;

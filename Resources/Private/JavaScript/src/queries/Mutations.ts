@@ -66,18 +66,6 @@ export const CREATE_TAG = gql`
     ${TAG_FRAGMENT}
 `;
 
-export const REMOVE_TAG_FROM_ASSET_COLLECTION = gql`
-    mutation RemoveTagFromAssetCollection($tag: TagLabel!, $assetCollectionId: AssetCollectionId!) {
-        removeTagFromAssetCollection(tag: $tag, assetCollectionId: $assetCollectionId)
-    }
-`;
-
-export const ADD_TAG_TO_ASSET_COLLECTION = gql`
-    mutation AddTagToAssetCollection($tag: TagLabel!, $assetCollectionId: AssetCollectionId!) {
-        addTagToAssetCollection(tag: $tag, assetCollectionId: $assetCollectionId)
-    }
-`;
-
 export const TAG_ASSET = gql`
     mutation TagAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tag: TagLabel!) {
         tagAsset(id: $id, assetSourceId: $assetSourceId, tag: $tag) {
@@ -140,4 +128,13 @@ export const DELETE_ASSET_COLLECTION = gql`
             success
         }
     }
+`;
+
+export const UPDATE_ASSET_COLLECTION = gql`
+    mutation UpdateAssetCollection($id: AssetCollectionId!, $title: String) {
+        updateAssetCollection(id: $id, title: $title) {
+            ...AssetCollectionProps
+        }
+    }
+    ${ASSET_COLLECTION_FRAGMENT}
 `;
