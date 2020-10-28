@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 
 import { selectedTagState } from '../state';
 import { Tag } from '../interfaces';
-import { DELETE_TAG, TAGS } from '../queries';
+import { ASSET_COLLECTIONS, DELETE_TAG, TAGS } from '../queries';
 
 interface DeleteTagVariables {
     tag: string;
@@ -24,6 +24,15 @@ export default function useDeleteTag() {
             },
             update: (proxy, { data: { deleteTag: success } }) => {
                 if (!success) return;
+                const { assetCollections } = proxy.readQuery({ query: ASSET_COLLECTIONS });
+                const updatedAssetCollections = assetCollections.map(assetCollection => {
+                    return { ...assetCollection, tags: assetCollection.tags.filter(tag => tag?.label !== label) };
+                });
+                proxy.writeQuery({
+                    query: ASSET_COLLECTIONS,
+                    data: { assetCollections: updatedAssetCollections }
+                });
+
                 const { tags }: { tags: Tag[] } = proxy.readQuery({ query: TAGS });
                 proxy.writeQuery({
                     query: TAGS,
@@ -33,7 +42,6 @@ export default function useDeleteTag() {
                 });
             }
         }).then(success => {
-            console.log(success, 'delete tag result');
             // Unselect currently selected tag if it was just deleted
             if (success && label === selectedTag?.label) {
                 setSelectedTag(null);

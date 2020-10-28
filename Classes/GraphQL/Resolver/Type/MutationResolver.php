@@ -510,4 +510,32 @@ class MutationResolver implements ResolverInterface
         }
         return $tag;
     }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return bool
+     * @throws Exception
+     */
+    public function deleteTag($_, array $variables): bool
+    {
+        [
+            'tag' => $label,
+        ] = $variables;
+
+        $tag = $this->tagRepository->findOneByLabel($label);
+
+        if (!$tag) {
+            throw new Exception('Tag not found', 1591553709);
+        }
+
+        $taggedAssets = $this->assetRepository->findByTag($tag);
+        foreach ($taggedAssets as $asset) {
+            $asset->removeTag($tag);
+            $this->assetRepository->update($asset);
+        }
+        $this->tagRepository->remove($tag);
+
+        return true;
+    }
 }
