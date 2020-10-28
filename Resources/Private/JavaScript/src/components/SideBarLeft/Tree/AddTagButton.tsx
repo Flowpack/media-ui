@@ -5,10 +5,9 @@ import { useSetRecoilState } from 'recoil';
 import { Button, Icon } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../../core';
-import { MediaUiTheme } from '../../../interfaces';
 import { createTagDialogState } from '../../../state';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+const useStyles = createUseMediaUiStyles(() => ({
     plusIcon: {
         top: '13px !important',
         left: '11px !important',

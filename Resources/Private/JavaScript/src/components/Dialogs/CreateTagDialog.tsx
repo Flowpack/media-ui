@@ -33,7 +33,7 @@ const CreateTagDialog: React.FC = () => {
             .catch(error => {
                 Notify.error(translate('assetCollectionActions.create.error', 'Failed to create tag'), error.message);
             });
-    }, [Notify, setDialogState, createTag, dialogState, translate]);
+    }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetCollection]);
     const setTitle = useCallback(title => setDialogState(state => ({ ...state, title })), [setDialogState]);
 
     return (
