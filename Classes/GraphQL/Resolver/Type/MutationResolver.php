@@ -505,12 +505,18 @@ class MutationResolver implements ResolverInterface
         if ($tag === null) {
             $tag = new Tag($label);
             $this->tagRepository->add($tag);
+        } else {
+            throw new Exception('Tag already exists', 1603921233);
         }
 
         if ($assetCollectionId) {
             $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
-            $assetCollection->addTag($tag);
-            $this->assetCollectionRepository->update($assetCollection);
+            if ($assetCollection) {
+                $assetCollection->addTag($tag);
+                $this->assetCollectionRepository->update($assetCollection);
+            } else {
+                throw new Exception('Asset collection not found', 1603921193);
+            }
         }
         return $tag;
     }
