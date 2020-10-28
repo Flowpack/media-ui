@@ -81,9 +81,9 @@ type Mutation {
 
     importAsset(id: AssetId!, assetSourceId: AssetSourceId!): Asset!
 
-    createAssetCollection(title: String): AssetCollection
+    createAssetCollection(title: String!): AssetCollection!
 
-    deleteAssetCollection(id: AssetCollectionId): DeleteAssetCollectionResult
+    deleteAssetCollection(id: AssetCollectionId!): DeleteAssetCollectionResult!
 }
 
 """
