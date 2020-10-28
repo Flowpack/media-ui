@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { useRecoilState } from 'recoil';
 
-import { Button, Icon, Dialog } from '@neos-project/react-ui-components';
+import { Button, Dialog } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../core';
 import { useCallback } from 'react';
 import { createTagDialogState } from '../../state';
-import { MediaUiTheme } from '../../interfaces';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+const useStyles = createUseMediaUiStyles(() => ({
     createTagForm: {}
 }));
 
@@ -19,7 +18,7 @@ const CreateTagDialog: React.FC = () => {
     const [dialogState, setDialogState] = useRecoilState(createTagDialogState);
     const createPossible = true;
 
-    const handleRequestClose = useCallback(() => setDialogState({ visible: false }), []);
+    const handleRequestClose = useCallback(() => setDialogState({ visible: false }), [setDialogState]);
     const handleCreate = useCallback(() => {
         Notify.warning('Not implemented, fool!');
     }, [Notify]);

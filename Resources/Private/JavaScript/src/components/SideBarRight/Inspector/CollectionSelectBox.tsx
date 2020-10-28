@@ -31,9 +31,7 @@ const CollectionSelectBox: React.FC = () => {
         [assetCollections]
     );
 
-    const assetCollectionIds = useMemo(() => selectedAsset?.collections.map(({ id }) => id), [
-        selectedAsset.collections
-    ]);
+    const assetCollectionIds = useMemo(() => selectedAsset?.collections.map(({ id }) => id), [selectedAsset]);
 
     const handleChange = useCallback(
         newAssetCollectionIds => {

@@ -15,6 +15,7 @@ import { VIEW_MODES } from '../hooks';
 import AssetPreview from './AssetPreview';
 import { createTagDialogState, uploadDialogState } from '../state';
 import { CreateTagDialog, UploadDialog } from './Dialogs';
+import CreateAssetCollectionDialog from './Dialogs/CreateAssetCollectionDialog';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode }) => ({
@@ -110,6 +111,7 @@ const App: React.FC = () => {
             <AssetPreview />
             {showUploadDialog && <UploadDialog />}
             {showCreateTagDialog && <CreateTagDialog />}
+            <CreateAssetCollectionDialog />
         </div>
     );
 };

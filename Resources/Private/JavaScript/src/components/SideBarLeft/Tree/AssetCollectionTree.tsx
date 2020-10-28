@@ -9,10 +9,14 @@ import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
-import { selectedAssetCollectionState, selectedTagState, createTagDialogState } from '../../../state';
+import {
+    selectedAssetCollectionState,
+    selectedTagState,
+    createTagDialogState,
+    createAssetCollectionDialogState
+} from '../../../state';
 import {
     useAssetCollectionsQuery,
-    useCreateAssetCollection,
     useDeleteAssetCollection,
     useSelectAssetSource,
     useTagsQuery,
@@ -46,32 +50,28 @@ const AssetCollectionTree: React.FC = () => {
     const [selectedAssetCollection, setSelectedAssetCollection] = useRecoilState(selectedAssetCollectionState);
     const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
     const setCreateTagDialogState = useSetRecoilState(createTagDialogState);
+    const setCreateAssetCollectionDialogState = useSetRecoilState(createAssetCollectionDialogState);
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAssetSource] = useSelectAssetSource();
     const { deleteTag } = useDeleteTag();
 
-    const onClickCreate = useCallback(() => {
-        setCreateTagDialogState({ visible: true });
-    }, [setCreateTagDialogState]);
-
-    const { createAssetCollection } = useCreateAssetCollection();
     const { deleteAssetCollection } = useDeleteAssetCollection();
 
-    const onClickAdd = useCallback(() => {
-        createAssetCollection('testing...' + Math.random())
-            .then(({ data: { createAssetCollection: assetCollection } }) => {
-                setSelectedAssetCollection(assetCollection);
-                setSelectedTag(null);
-                Notify.ok(translate('assetCollectionActions.create.success', 'Asset collection was created'));
-            })
-            .catch(error => {
-                Notify.error(
-                    translate('assetCollectionActions.create.error', 'Failed to create asset collection'),
-                    error.message
-                );
-            });
-    }, [createAssetCollection, setSelectedAssetCollection, setSelectedTag, Notify, translate]);
+    const onClickCreate = useCallback(() => {
+        if (selectedTag) {
+            setCreateTagDialogState({ visible: true });
+        } else {
+            setCreateAssetCollectionDialogState(state => ({ ...state, visible: true }));
+        }
+    }, [setCreateAssetCollectionDialogState, setCreateTagDialogState, selectedTag]);
+    const selectAssetCollection = useCallback(
+        assetCollection => {
+            setSelectedTag(null);
+            setSelectedAssetCollection(assetCollection);
+        },
+        [setSelectedTag, setSelectedAssetCollection]
+    );
     const onClickDelete = useCallback(() => {
         if (selectedTag) {
             const confirm = window.confirm(
@@ -90,6 +90,14 @@ const AssetCollectionTree: React.FC = () => {
             setSelectedTag(null);
             setSelectedAssetCollection(null);
         } else if (selectAssetCollection) {
+            const confirm = window.confirm(
+                translate(
+                    'action.deleteAssetCollection.confirm',
+                    'Do you really want to delete the asset collection ' + selectedAssetCollection.title,
+                    [selectedAssetCollection.title]
+                )
+            );
+            if (!confirm) return;
             deleteAssetCollection(selectedAssetCollection.id)
                 .then(() => {
                     Notify.ok(
@@ -105,19 +113,22 @@ const AssetCollectionTree: React.FC = () => {
             setSelectedTag(null);
             setSelectedAssetCollection(null);
         }
-    }, [selectedAssetCollection, deleteAssetCollection, setSelectedTag, setSelectedAssetCollection, Notify, translate]);
+    }, [
+        deleteTag,
+        selectAssetCollection,
+        selectedTag,
+        selectedAssetCollection,
+        deleteAssetCollection,
+        setSelectedTag,
+        setSelectedAssetCollection,
+        Notify,
+        translate
+    ]);
 
     const selectTag = useCallback(
         (tag, assetCollection = null) => {
             setSelectedAssetCollection(assetCollection);
             setSelectedTag(tag);
-        },
-        [setSelectedTag, setSelectedAssetCollection]
-    );
-    const selectAssetCollection = useCallback(
-        assetCollection => {
-            setSelectedTag(null);
-            setSelectedAssetCollection(assetCollection);
         },
         [setSelectedTag, setSelectedAssetCollection]
     );
@@ -137,7 +148,7 @@ const AssetCollectionTree: React.FC = () => {
                     style="transparent"
                     hoverStyle="brand"
                     title={translate('assetCollectionTree.toolbar.create', 'Create new')}
-                    onClick={onClickAdd}
+                    onClick={onClickCreate}
                 />
                 <IconButton
                     icon="trash-alt"
