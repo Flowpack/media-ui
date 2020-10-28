@@ -13,9 +13,8 @@ import { TopBar } from './TopBar';
 import { ListView, ThumbnailView } from './Main';
 import { VIEW_MODES } from '../hooks';
 import AssetPreview from './AssetPreview';
-import { createTagDialogState, uploadDialogState } from '../state';
-import { CreateTagDialog, UploadDialog } from './Dialogs';
-import CreateAssetCollectionDialog from './Dialogs/CreateAssetCollectionDialog';
+import { createAssetCollectionDialogState, createTagDialogState, uploadDialogState } from '../state';
+import { CreateTagDialog, UploadDialog, CreateAssetCollectionDialog } from './Dialogs';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode }) => ({
@@ -79,6 +78,7 @@ const App: React.FC = () => {
     const { selectionMode, containerRef } = useMediaUi();
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
+    const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
     const classes = useStyles({ selectionMode });
 
     const viewModeSelectionQuery = useQuery(VIEW_MODE_SELECTION);
@@ -111,7 +111,7 @@ const App: React.FC = () => {
             <AssetPreview />
             {showUploadDialog && <UploadDialog />}
             {showCreateTagDialog && <CreateTagDialog />}
-            <CreateAssetCollectionDialog />
+            {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
         </div>
     );
 };
