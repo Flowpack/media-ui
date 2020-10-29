@@ -9,7 +9,7 @@ import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
-import { selectedAssetCollectionIdState, selectedTagState } from '../../../state';
+import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagState } from '../../../state';
 import {
     useAssetCollectionsQuery,
     useDeleteAssetCollection,
@@ -47,6 +47,7 @@ const AssetCollectionTree = () => {
     const Notify = useNotify();
     const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
     const selectedAssetCollection = useSelectedAssetCollection();
+    const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
     const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
@@ -59,8 +60,9 @@ const AssetCollectionTree = () => {
         assetCollection => {
             setSelectedTag(null);
             setSelectedAssetCollectionId(assetCollection.id);
+            setSelectedAssetId(null);
         },
-        [setSelectedTag, setSelectedAssetCollectionId]
+        [setSelectedTag, setSelectedAssetCollectionId, setSelectedAssetId]
     );
     const onClickDelete = useCallback(() => {
         if (selectedTag) {
@@ -79,6 +81,7 @@ const AssetCollectionTree = () => {
                 });
             setSelectedTag(null);
             setSelectedAssetCollectionId(null);
+            setSelectedAssetId(null);
         } else if (selectAssetCollection) {
             const confirm = window.confirm(
                 translate(
@@ -102,6 +105,7 @@ const AssetCollectionTree = () => {
                 });
             setSelectedTag(null);
             setSelectedAssetCollectionId(null);
+            setSelectedAssetId(null);
         }
     }, [
         deleteTag,
@@ -111,6 +115,7 @@ const AssetCollectionTree = () => {
         deleteAssetCollection,
         setSelectedTag,
         setSelectedAssetCollectionId,
+        setSelectedAssetId,
         Notify,
         translate
     ]);
@@ -119,8 +124,9 @@ const AssetCollectionTree = () => {
         (tag, assetCollection = null) => {
             setSelectedAssetCollectionId(assetCollection?.id);
             setSelectedTag(tag);
+            setSelectedAssetId(null);
         },
-        [setSelectedTag, setSelectedAssetCollectionId]
+        [setSelectedTag, setSelectedAssetCollectionId, setSelectedAssetId]
     );
 
     if (!selectedAssetSource?.supportsCollections) return null;
