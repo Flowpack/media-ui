@@ -7,6 +7,8 @@ import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
 import { useSelectedAsset, useUpdateAsset } from '../../../hooks';
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
+import { useRecoilValue } from 'recoil';
+import selectedInspectorViewState from '../../../state/selectedInspectorViewState';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
@@ -43,6 +45,7 @@ const AssetInspector = () => {
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
     const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
+    const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
 
     const { updateAsset, loading } = useUpdateAsset();
 
@@ -87,7 +90,7 @@ const AssetInspector = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAsset?.id]);
 
-    if (!selectedAsset) return null;
+    if (!selectedAsset || selectedInspectorView !== 'asset') return null;
 
     // TODO: Refactor parts into separate components
     return (

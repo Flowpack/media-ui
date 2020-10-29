@@ -5,11 +5,11 @@ import { Button, Label, TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
-import { useSelectedAsset, useUpdateAssetCollection } from '../../../hooks';
+import { useUpdateAssetCollection } from '../../../hooks';
 import useSelectedAssetCollection from '../../../hooks/useSelectedAssetCollection';
 import { TagSelectBoxAssetCollection } from '.';
 import { useRecoilValue } from 'recoil';
-import { selectedTagState } from '../../../state';
+import selectedInspectorViewState from '../../../state/selectedInspectorViewState';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
@@ -41,8 +41,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 const AssetCollectionInspector = () => {
     const classes = useStyles();
     const selectedAssetCollection = useSelectedAssetCollection();
-    const selectedAsset = useSelectedAsset();
-    const selectedTag = useRecoilValue(selectedTagState);
+    const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();
     const { translate } = useIntl();
     const [title, setTitle] = useState<string>(null);
@@ -82,7 +81,7 @@ const AssetCollectionInspector = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAssetCollection?.id]);
 
-    if (!selectedAssetCollection || selectedAsset || selectedTag) return null;
+    if (!selectedAssetCollection || selectedInspectorView !== 'assetCollection') return null;
 
     return (
         <div className={classes.inspector}>
