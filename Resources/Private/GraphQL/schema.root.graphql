@@ -83,9 +83,9 @@ type Mutation {
 
     createAssetCollection(title: String!): AssetCollection!
 
-    deleteAssetCollection(id: AssetCollectionId): DeleteAssetCollectionResult
+    deleteAssetCollection(id: AssetCollectionId!): DeleteAssetCollectionResult!
 
-    updateAssetCollection(id: AssetCollectionId, title: String): AssetCollection
+    updateAssetCollection(id: AssetCollectionId!, title: String): AssetCollection!
 }
 
 """
