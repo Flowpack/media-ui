@@ -1,53 +1,45 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
 
-import { Label, MultiSelectBox } from '@neos-project/react-ui-components';
+import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
-import { selectedAssetState } from '../../../state';
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { useAssetCollectionsQuery } from '../../../hooks';
+import { useAssetCollectionsQuery, useSelectedAsset, useSetAssetCollections } from '../../../hooks';
 import { Asset } from '../../../interfaces';
-import useSetAssetCollections from '../../../hooks/useSetAssetCollections';
+import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles({
     collectionSelectBox: {},
     collectionSelection: {}
 });
 
-const collectionsMatchAsset = (collections: string[], asset: Asset) => {
-    return (
-        collections.join(',') ===
-        asset.collections
-            .map(collection => collection.title)
-            .sort()
-            .join(',')
-    );
+const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
+    return assetCollectionIds.join(',') === asset.collections.map(collection => collection.id).join(',');
 };
 
-const CollectionSelectBox: React.FC = () => {
+const CollectionSelectBox = () => {
     const classes = useStyles();
     const Notify = useNotify();
     const { translate } = useIntl();
     const { assetCollections } = useAssetCollectionsQuery();
     const { setAssetCollections, loading } = useSetAssetCollections();
-    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
+    const selectedAsset = useSelectedAsset();
 
-    const allCollections = useMemo(() => assetCollections.map(({ title }) => ({ label: title })), [assetCollections]);
+    const assetCollectionsWithLabel = useMemo(
+        () => assetCollections.map(({ title, ...rest }) => ({ label: title, ...rest })),
+        [assetCollections]
+    );
 
-    const collections = useMemo(() => selectedAsset.collections.map(({ title }) => title).sort(), [
-        selectedAsset.collections
-    ]);
+    const assetCollectionIds = useMemo(() => selectedAsset?.collections.map(({ id }) => id), [selectedAsset]);
 
     const handleChange = useCallback(
-        newCollections => {
-            if (!collectionsMatchAsset(newCollections, selectedAsset)) {
+        newAssetCollectionIds => {
+            if (!collectionsMatchAsset(newAssetCollectionIds, selectedAsset)) {
                 setAssetCollections({
                     asset: selectedAsset,
-                    collectionNames: newCollections
+                    assetCollections: assetCollections.filter(c => newAssetCollectionIds.includes(c.id))
                 })
-                    .then(({ data }) => {
-                        setSelectedAsset(data.setAssetCollections);
+                    .then(() => {
                         Notify.ok(
                             translate(
                                 'actions.setAssetCollections.success',
@@ -66,20 +58,25 @@ const CollectionSelectBox: React.FC = () => {
                     });
             }
         },
-        [Notify, selectedAsset, setAssetCollections, setSelectedAsset, translate]
+        [Notify, selectedAsset, setAssetCollections, assetCollections, translate]
     );
+
+    if (!selectedAsset) return null;
 
     return (
         <div className={classes.collectionSelectBox}>
-            <Label>{translate('inspector.assetCollections', 'Collections')}</Label>
+            <Headline type="h2">
+                <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Collections')} />
+            </Headline>
             <MultiSelectBox
                 className={classes.collectionSelection}
                 disabled={loading || selectedAsset.assetSource.readOnly}
                 placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                values={collections}
-                optionValueField="label"
-                options={allCollections}
-                searchOptions={allCollections}
+                values={assetCollectionIds}
+                optionValueField="id"
+                options={assetCollectionsWithLabel}
+                searchOptions={assetCollectionsWithLabel}
+                noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
                 onValuesChange={handleChange}
             />
         </div>

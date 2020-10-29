@@ -10,6 +10,8 @@ import MediaUiTheme from './MediaUiTheme';
 import Notify from './Notify';
 import Tag from './Tag';
 import AbstractTreeNodeProps from './TreeNode';
+import GraphQlEntity from './GraphQLEntity';
+import DeleteAssetCollectionResult from './DeleteAssetCollectionResult';
 
 export {
     AbstractTreeNodeProps,
@@ -17,7 +19,9 @@ export {
     AssetCollection,
     AssetFile,
     AssetSource,
+    DeleteAssetCollectionResult,
     FileUploadResult,
+    GraphQlEntity,
     I18nRegistry,
     Image,
     IptcProperty,

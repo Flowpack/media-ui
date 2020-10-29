@@ -6,7 +6,7 @@ import { Asset, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
-import { selectedAssetForPreviewState, selectedAssetState } from '../../state';
+import { selectedAssetForPreviewState, selectedAssetIdState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnail: {
@@ -72,19 +72,20 @@ interface ThumbnailProps {
 const Thumbnail: React.FC<ThumbnailProps> = ({ asset }: ThumbnailProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
-    const { dummyImage } = useMediaUi();
-    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
+    const { dummyImage, handleSelectAsset } = useMediaUi();
+    const [selectedAssetId, setSelectedAssetId] = useRecoilState(selectedAssetIdState);
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { label, thumbnailUrl, file } = asset;
-    const isSelected = selectedAsset?.id === asset.id;
+    const isSelected = selectedAssetId === asset.id;
 
     const onSelect = useCallback(() => {
         if (isSelected) {
             setSelectedAssetForPreview(asset);
         } else {
-            setSelectedAsset(asset);
+            setSelectedAssetId(asset.id);
+            handleSelectAsset(asset);
         }
-    }, [isSelected, asset, setSelectedAssetForPreview, setSelectedAsset]);
+    }, [isSelected, setSelectedAssetForPreview, asset, setSelectedAssetId, handleSelectAsset]);
 
     return (
         <figure className={classes.thumbnail}>

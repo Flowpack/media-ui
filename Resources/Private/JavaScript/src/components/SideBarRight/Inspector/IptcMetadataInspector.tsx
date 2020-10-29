@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { Headline } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
-import { PropertyList, PropertyListItem } from '../../Presentation';
-import { selectedAssetState } from '../../../state';
+import { IconLabel, PropertyList, PropertyListItem } from '../../Presentation';
+import { useSelectedAsset } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iptcData: {
@@ -24,36 +23,32 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 color: theme.colors.inactive
             }
         }
-    },
-    headline: {
-        fontWeight: 'bold',
-        lineHeight: theme.spacing.goldenUnit
     }
 }));
 
-export default function IptcMetadataInspector() {
+const IptcMetadataInspector: React.FC = () => {
     const classes = useStyles();
-    const selectedAsset = useRecoilValue(selectedAssetState);
+    const selectedAsset = useSelectedAsset();
     const { translate } = useIntl();
 
+    if (!selectedAsset?.iptcProperties?.length) return null;
+
     return (
-        <>
-            {selectedAsset?.iptcProperties.length ? (
-                <div className={classes.iptcData}>
-                    <Headline type="h2" className={classes.headline}>
-                        {translate('inspector.iptcMetadata', 'IPTC Metadata')}
-                    </Headline>
-                    <PropertyList>
-                        {selectedAsset.iptcProperties.map(iptcProperty => (
-                            <PropertyListItem
-                                key={iptcProperty.propertyName}
-                                label={iptcProperty.propertyName}
-                                value={iptcProperty.value}
-                            />
-                        ))}
-                    </PropertyList>
-                </div>
-            ) : null}
-        </>
+        <div className={classes.iptcData}>
+            <Headline type="h2">
+                <IconLabel icon="camera" label={translate('inspector.iptcMetadata', 'IPTC Metadata')} />
+            </Headline>
+            <PropertyList>
+                {selectedAsset.iptcProperties.map(iptcProperty => (
+                    <PropertyListItem
+                        key={iptcProperty.propertyName}
+                        label={iptcProperty.propertyName}
+                        value={iptcProperty.value}
+                    />
+                ))}
+            </PropertyList>
+        </div>
     );
-}
+};
+
+export default React.memo(IptcMetadataInspector);

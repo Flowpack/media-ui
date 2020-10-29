@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 import { fromString as getMediaTypeFromString } from 'media-type';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
-import { selectedAssetState } from '../../state';
+import { useSelectedAsset } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     currentSelection: {},
@@ -17,9 +16,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-export default function CurrentSelection() {
+const CurrentSelection: React.FC = () => {
     const classes = useStyles();
-    const selectedAsset = useRecoilValue(selectedAssetState);
+    const selectedAsset = useSelectedAsset();
     const { translate } = useIntl();
 
     const assetIcon = useMemo(() => {
@@ -32,20 +31,20 @@ export default function CurrentSelection() {
         return 'file';
     }, [selectedAsset?.file.mediaType]);
 
+    if (!selectedAsset) return null;
+
     return (
-        <>
-            {selectedAsset && (
-                <div className={classes.currentSelection}>
-                    <Headline type="h2" className={classes.headline}>
-                        {translate('currentSelection.headline', 'Selected asset')}
-                    </Headline>
-                    <SelectBox
-                        options={[{ value: selectedAsset.filename, label: selectedAsset.label, icon: assetIcon }]}
-                        onValueChange={() => null}
-                        value={selectedAsset.filename}
-                    />
-                </div>
-            )}
-        </>
+        <div className={classes.currentSelection}>
+            <Headline type="h2" className={classes.headline}>
+                {translate('currentSelection.headline', 'Selected asset')}
+            </Headline>
+            <SelectBox
+                options={[{ value: selectedAsset.filename, label: selectedAsset.label, icon: assetIcon }]}
+                onValueChange={() => null}
+                value={selectedAsset.filename}
+            />
+        </div>
     );
-}
+};
+
+export default React.memo(CurrentSelection);

@@ -6,6 +6,7 @@ import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 
 import { assetCollections, assets, assetSources, tags } from './fixtures';
+import { Tag } from '../src/interfaces';
 
 const PORT = 8000;
 
@@ -13,12 +14,12 @@ const bundler = new Bundler(__dirname + '/index.html', {
     outDir: __dirname + '/dist'
 });
 
-const filterAssets = (assetSourceId, tag, assetCollectionId, mediaType, searchTerm) => {
+const filterAssets = (assetSourceId = '', tag = '', assetCollection = '', mediaType = '', searchTerm = '') => {
     return assets.filter(asset => {
         return (
             (!assetSourceId || asset.assetSource.id === assetSourceId) &&
             (!tag || asset.tags.find(({ label }) => label === tag)) &&
-            (!assetCollectionId || asset.collections.find(({ title }) => title === assetCollectionId)) &&
+            (!assetCollection || asset.collections.find(({ title }) => title === assetCollection)) &&
             (!searchTerm || asset.label.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0) &&
             (!mediaType || asset.file.mediaType.indexOf(mediaType) >= 0)
         );
@@ -27,25 +28,27 @@ const filterAssets = (assetSourceId, tag, assetCollectionId, mediaType, searchTe
 
 const resolvers = {
     Query: {
+        asset: ($_, { id, assetSourceId = 'neos' }) =>
+            assets.find(asset => asset.id === id && asset.assetSource.id === assetSourceId),
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         assets: (
             $_,
             {
                 assetSourceId = 'neos',
                 tag = null,
-                assetCollectionId = null,
+                assetCollection = null,
                 mediaType = '',
                 searchTerm = '',
                 limit = 20,
                 offset = 0
             }
-        ) => filterAssets(assetSourceId, tag, assetCollectionId, mediaType, searchTerm).slice(offset, offset + limit),
+        ) => filterAssets(assetSourceId, tag, assetCollection, mediaType, searchTerm).slice(offset, offset + limit),
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         assetCount: (
             $_,
-            { assetSourceId = 'neos', tag = null, assetCollectionId = null, mediaType = '', searchTerm = '' }
+            { assetSourceId = 'neos', tag = null, assetCollection = null, mediaType = '', searchTerm = '' }
         ) => {
-            return filterAssets(assetSourceId, tag, assetCollectionId, mediaType, searchTerm).length;
+            return filterAssets(assetSourceId, tag, assetCollection, mediaType, searchTerm).length;
         },
         assetSources: () => assetSources,
         assetCollections: () => assetCollections,
@@ -75,12 +78,26 @@ const resolvers = {
             {
                 id,
                 assetSourceId,
-                collections: newCollections
-            }: { id: string; assetSourceId: string; collections: string[] }
+                assetCollectionIds: newAssetCollectionIds
+            }: { id: string; assetSourceId: string; assetCollectionIds: string[] }
         ) => {
             const asset = assets.find(asset => asset.id === id && asset.assetSource.id === assetSourceId);
-            asset.collections = assetCollections.filter(collection => newCollections.includes(collection.title));
+            asset.collections = assetCollections.filter(collection => newAssetCollectionIds.includes(collection.id));
             return asset;
+        },
+        deleteTag: ($_, { tag: tagLabel }) => {
+            tags.splice(
+                tags.findIndex(tag => tag.label === tagLabel),
+                1
+            );
+            return true;
+        },
+        createTag: ($_, { tag: newTag }: { tag: Tag }) => {
+            if (!tags.find(tag => tag === newTag)) {
+                tags.push(newTag);
+                return newTag;
+            }
+            return null;
         }
     }
 };

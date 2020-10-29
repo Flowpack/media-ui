@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 
-import { useIntl, createUseMediaUiStyles } from '../../core';
+import { useIntl, createUseMediaUiStyles, useMediaUi } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { Thumbnail } from './index';
-import { useAssetQuery } from '../../hooks';
 import LoadingLabel from '../LoadingLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -17,7 +16,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 const ThumbnailView: React.FC = () => {
     const classes = useStyles();
-    const { assets } = useAssetQuery();
+    const { assets } = useMediaUi();
     const { translate } = useIntl();
 
     const thumbnails = useMemo(() => assets.map((asset, index) => <Thumbnail key={index} asset={asset} />), [assets]);

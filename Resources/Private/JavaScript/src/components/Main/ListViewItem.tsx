@@ -7,7 +7,7 @@ import { createUseMediaUiStyles, useMediaUi } from '../../core';
 import { humanFileSize } from '../../helper';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
-import { selectedAssetForPreviewState, selectedAssetState } from '../../state';
+import { selectedAssetForPreviewState, selectedAssetIdState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {
@@ -84,20 +84,24 @@ const dateFormatOptions = {
 
 const ListViewItem: React.FC<ListViewItemProps> = ({ asset }: ListViewItemProps) => {
     const classes = useStyles();
-    const { dummyImage } = useMediaUi();
-    const [selectedAsset, setSelectedAsset] = useRecoilState(selectedAssetState);
+    const { dummyImage, handleSelectAsset } = useMediaUi();
+    const [selectedAssetId, setSelectedAssetId] = useRecoilState(selectedAssetIdState);
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { label, thumbnailUrl, file, lastModified } = asset;
 
-    const onSelect = useCallback(
-        () => (selectedAsset?.id === asset.id ? setSelectedAssetForPreview(asset) : setSelectedAsset(asset)),
-        [selectedAsset?.id, setSelectedAsset, setSelectedAssetForPreview, asset]
-    );
+    const onSelect = useCallback(() => {
+        if (selectedAssetId === asset.id) {
+            setSelectedAssetForPreview(asset);
+        } else {
+            setSelectedAssetId(asset.id);
+            handleSelectAsset(asset);
+        }
+    }, [selectedAssetId, asset, setSelectedAssetForPreview, setSelectedAssetId, handleSelectAsset]);
 
     return (
         <tr
             onClick={onSelect}
-            className={[classes.listViewItem, selectedAsset?.id === asset.id ? classes.selected : ''].join(' ')}
+            className={[classes.listViewItem, selectedAssetId === asset.id ? classes.selected : ''].join(' ')}
         >
             <td className={classes.previewColumn}>
                 <picture>

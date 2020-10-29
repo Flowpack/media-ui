@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { Headline } from '@neos-project/react-ui-components';
+
 import { useIntl, createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { useSelectAssetSource, useAssetSourcesQuery } from '../../hooks';
@@ -7,7 +9,8 @@ import { IconLabel } from '../Presentation';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceList: {
-        border: `1px solid ${theme.colors.border}`
+        border: `1px solid ${theme.colors.border}`,
+        padding: `0 ${theme.spacing.full}`
     },
     item: {
         display: 'flex',
@@ -15,7 +18,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '& a': {
             fontWeight: 'normal',
             cursor: 'pointer',
-            userSelect: 'none'
+            userSelect: 'none',
+            '&:hover': {
+                color: theme.colors.primary
+            }
         }
     },
     itemSelected: {
@@ -31,30 +37,28 @@ export default function AssetSourceList() {
     const { translate } = useIntl();
     const [selectedAssetSource, setSelectedAssetSource] = useSelectAssetSource();
 
+    if (!assetSources?.length) return null;
+
     return (
-        <>
-            {assetSources?.length > 1 && (
-                <nav className={classes.assetSourceList}>
-                    <IconLabel icon="box" label={translate('assetSourceList.header', 'Media sources')} />
-                    {assetSources?.map(assetSource => (
-                        <IconLabel
-                            key={assetSource.id}
-                            label={assetSource.label}
-                            iconUri={assetSource.iconUri}
-                            className={classes.item}
-                        >
-                            <a
-                                className={selectedAssetSource?.id === assetSource.id ? classes.itemSelected : null}
-                                onClick={() => setSelectedAssetSource(assetSource)}
-                            >
-                                {assetSource.id === 'neos'
-                                    ? translate('assetsource.local', 'Local')
-                                    : assetSource.label}
-                            </a>
-                        </IconLabel>
-                    ))}
-                </nav>
-            )}
-        </>
+        <nav className={classes.assetSourceList}>
+            <Headline type="h2">
+                <IconLabel icon="box" label={translate('assetSourceList.header', 'Media sources')} />
+            </Headline>
+            {assetSources?.map(assetSource => (
+                <IconLabel
+                    key={assetSource.id}
+                    label={assetSource.label}
+                    iconUri={assetSource.iconUri}
+                    className={classes.item}
+                >
+                    <a
+                        className={selectedAssetSource?.id === assetSource.id ? classes.itemSelected : null}
+                        onClick={() => setSelectedAssetSource(assetSource)}
+                    >
+                        {assetSource.id === 'neos' ? translate('assetsource.local', 'Local') : assetSource.label}
+                    </a>
+                </IconLabel>
+            ))}
+        </nav>
     );
 }

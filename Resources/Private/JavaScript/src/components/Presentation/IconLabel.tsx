@@ -5,9 +5,7 @@ import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iconWrap: {
-        width: theme.spacing.goldenUnit,
-        display: 'inline-flex',
-        justifyContent: 'center'
+        verticalAlign: 'middle'
     },
     label: {
         fontWeight: 'bold',

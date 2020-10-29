@@ -46,6 +46,7 @@ export const IPTC_PROPERTY_FRAGMENT = gql`
 
 export const ASSET_COLLECTION_FRAGMENT = gql`
     fragment AssetCollectionProps on AssetCollection {
+        id
         title
         tags {
             label
@@ -68,6 +69,7 @@ export const ASSET_FRAGMENT = gql`
             label
         }
         collections {
+            id
             title
         }
         copyrightNotice

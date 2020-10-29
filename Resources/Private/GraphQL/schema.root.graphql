@@ -8,12 +8,12 @@ type Query {
     all assets that match the given criteria
     """
     assets(
-        assetSourceId: AssetSourceId,
-        tag: TagLabel,
-        assetCollectionId: AssetCollectionId,
-        mediaType: MediaType,
-        searchTerm: String,
-        limit: Int,
+        assetSourceId: AssetSourceId
+        tag: TagLabel
+        assetCollectionId: AssetCollectionId
+        mediaType: MediaType
+        searchTerm: String
+        limit: Int
         offset: Int
     ): [Asset!]!
 
@@ -21,10 +21,10 @@ type Query {
     number of assets matching the given criteria
     """
     assetCount(
-        assetSourceId: AssetSourceId,
-        tag: TagLabel,
-        assetCollectionId: AssetCollectionId,
-        mediaType: MediaType,
+        assetSourceId: AssetSourceId
+        tag: TagLabel
+        assetCollectionId: AssetCollectionId
+        mediaType: MediaType
         searchTerm: String
     ): Int!
 
@@ -48,54 +48,42 @@ type Query {
 
 type Mutation {
     updateAsset(
-        id: AssetId!,
-        assetSourceId: AssetSourceId!,
-        label: String,
-        caption: String,
+        id: AssetId!
+        assetSourceId: AssetSourceId!
+        label: String
+        caption: String
         copyrightNotice: String
     ): Asset!
 
-    deleteAsset(
-        id: AssetId!,
-        assetSourceId: AssetSourceId!
-    ): Boolean!
+    deleteAsset(id: AssetId!, assetSourceId: AssetSourceId!): Boolean!
 
-    tagAsset(
-        id: AssetId!,
-        assetSourceId: AssetSourceId!,
-        tag: TagLabel!
-    ): Asset!
+    tagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tag: TagLabel!): Asset!
 
-    untagAsset(
-        id: AssetId!,
-        assetSourceId: AssetSourceId!,
-        tag: TagLabel!
-    ): Asset!
+    untagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tag: TagLabel!): Asset!
 
-    setAssetTags(
-        id: AssetId!,
-        assetSourceId: AssetSourceId!,
-        tags: [TagLabel!]!
-    ): Asset!
+    setAssetTags(id: AssetId!, assetSourceId: AssetSourceId!, tags: [TagLabel!]!): Asset!
 
-    setAssetCollections(
-        id: AssetId!,
-        assetSourceId: AssetSourceId!,
-        collections: [AssetCollectionTitle!]!
-    ): Asset!
+    setAssetCollections(id: AssetId!, assetSourceId: AssetSourceId!, assetCollectionIds: [AssetCollectionId!]!): Asset!
 
-    uploadFile(
-        file: Upload!
-    ): FileUploadResult!
+    deleteTag(tag: TagLabel!): Boolean!
 
-    uploadFiles(
-        files: [Upload!]!
-    ): [FileUploadResult!]!
+    createTag(tag: TagLabel!, assetCollectionId: AssetCollectionId): Tag!
 
-    importAsset(
-        id: AssetId!,
-        assetSourceId: AssetSourceId!
-    ): Asset!
+    addTagToAssetCollection(tag: TagLabel!, assetCollectionId: AssetCollectionId!): Boolean!
+
+    removeTagFromAssetCollection(tag: TagLabel!, assetCollectionId: AssetCollectionId!): Boolean!
+
+    deleteAssetCollection(assetCollection: AssetCollectionTitle!): Boolean!
+
+    uploadFile(file: Upload!): FileUploadResult!
+
+    uploadFiles(files: [Upload!]!): [FileUploadResult!]!
+
+    importAsset(id: AssetId!, assetSourceId: AssetSourceId!): Asset!
+
+    createAssetCollection(title: String!): AssetCollection!
+
+    deleteAssetCollection(id: AssetCollectionId!): DeleteAssetCollectionResult!
 }
 
 """
@@ -161,6 +149,7 @@ type Tag {
 A collection of assets. One asset can belong to multiple collections
 """
 type AssetCollection {
+    id: AssetCollectionId
     title: AssetCollectionTitle!
     assets: [Asset!]!
     tags: [Tag!]!
@@ -204,6 +193,13 @@ type FileUploadResult {
     filename: Filename!
     success: Boolean!
     result: String!
+}
+
+"""
+The result of asset collection deletion
+"""
+type DeleteAssetCollectionResult {
+    success: Boolean!
 }
 
 """
@@ -273,7 +269,7 @@ Name of an IPTC metadata property (e.g. "Creator", see https://www.iptc.org/)
 scalar IptcPropertyName
 
 """
-The title of an Asset collection
+The title of an Asset collection (e.g. "slideshows")
 """
 scalar AssetCollectionTitle
 

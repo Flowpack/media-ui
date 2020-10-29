@@ -8,6 +8,7 @@ import { faAngleLeft } from '@fortawesome/free-solid-svg-icons/faAngleLeft';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons/faAngleRight';
 import { faBan } from '@fortawesome/free-solid-svg-icons/faBan';
 import { faBox } from '@fortawesome/free-solid-svg-icons/faBox';
+import { faCamera } from '@fortawesome/free-solid-svg-icons/faCamera';
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { faChevronCircleDown } from '@fortawesome/free-solid-svg-icons/faChevronCircleDown';
 import { faChevronCircleUp } from '@fortawesome/free-solid-svg-icons/faChevronCircleUp';
@@ -49,6 +50,7 @@ export default function loadIconLibrary() {
         faAngleRight,
         faBan,
         faBox,
+        faCamera,
         faCheck,
         faChevronCircleDown,
         faChevronCircleUp,

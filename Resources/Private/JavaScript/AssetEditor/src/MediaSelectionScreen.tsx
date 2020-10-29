@@ -21,7 +21,8 @@ import {
     MediaUiThemeProvider,
     NotifyProvider,
     Resolvers,
-    PersistentStateManager
+    PersistentStateManager,
+    IdFromObjectResolver
 } from '../../src/core';
 import App from '../../src/components/App';
 import { createUploadLink } from 'apollo-upload-client';
@@ -57,7 +58,10 @@ interface MediaSelectionScreenState {
     i18nRegistry: globalRegistry.get('i18n')
 }))
 // eslint-disable-next-line prettier/prettier
-export default class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps, MediaSelectionScreenState> {
+export default class MediaSelectionScreen extends React.PureComponent<
+    MediaSelectionScreenProps,
+    MediaSelectionScreenState
+> {
     constructor(props: MediaSelectionScreenProps) {
         super(props);
         this.state = {
@@ -98,7 +102,7 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
     getApolloClient() {
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
-            const cache = new InMemoryCache();
+            const cache = new InMemoryCache({ dataIdFromObject: IdFromObjectResolver });
             PersistentStateManager.restoreLocalState(cache);
 
             apolloClient = new ApolloClient({
