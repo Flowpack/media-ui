@@ -3,6 +3,8 @@ import AssetCollectionInspector from './AssetCollectionInspector';
 import IptcMetadataInspector from './IptcMetadataInspector';
 import MetadataView from './MetadataView';
 import TagSelectBox from './TagSelectBox';
+import TagSelectBoxAsset from './TagSelectBoxAsset';
+import TagSelectBoxAssetCollection from './TagSelectBoxAssetCollection';
 import CollectionSelectBox from './CollectionSelectBox';
 
 export {
@@ -11,5 +13,7 @@ export {
     CollectionSelectBox,
     IptcMetadataInspector,
     MetadataView,
-    TagSelectBox
+    TagSelectBox,
+    TagSelectBoxAsset,
+    TagSelectBoxAssetCollection
 };

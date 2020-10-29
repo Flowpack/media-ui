@@ -117,7 +117,7 @@ const AssetCollectionTree = () => {
 
     const selectTag = useCallback(
         (tag, assetCollection = null) => {
-            setSelectedAssetCollectionId(assetCollection);
+            setSelectedAssetCollectionId(assetCollection?.id);
             setSelectedTag(tag);
         },
         [setSelectedTag, setSelectedAssetCollectionId]

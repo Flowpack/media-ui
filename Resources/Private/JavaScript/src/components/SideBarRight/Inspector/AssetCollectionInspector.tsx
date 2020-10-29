@@ -7,6 +7,9 @@ import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
 import { useSelectedAsset, useUpdateAssetCollection } from '../../../hooks';
 import useSelectedAssetCollection from '../../../hooks/useSelectedAssetCollection';
+import { TagSelectBoxAssetCollection } from '.';
+import { useRecoilValue } from 'recoil';
+import { selectedTagState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
@@ -39,6 +42,7 @@ const AssetCollectionInspector = () => {
     const classes = useStyles();
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedAsset = useSelectedAsset();
+    const selectedTag = useRecoilValue(selectedTagState);
     const Notify = useNotify();
     const { translate } = useIntl();
     const [title, setTitle] = useState<string>(null);
@@ -78,7 +82,7 @@ const AssetCollectionInspector = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAssetCollection?.id]);
 
-    if (!selectedAssetCollection || selectedAsset) return null;
+    if (!selectedAssetCollection || selectedAsset || selectedTag) return null;
 
     return (
         <div className={classes.inspector}>
@@ -107,6 +111,8 @@ const AssetCollectionInspector = () => {
                     {translate('inspector.actions.apply', 'Apply')}
                 </Button>
             </div>
+
+            <TagSelectBoxAssetCollection />
         </div>
     );
 };

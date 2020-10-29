@@ -6,11 +6,13 @@ import { AssetCollection } from '../interfaces';
 interface UpdateAssetCollectionProps {
     assetCollection: AssetCollection;
     title?: string;
+    tagNames?: string[];
 }
 
 interface UpdateAssetCollectionVariables {
     id: string;
     title?: string;
+    tagNames?: string[];
 }
 
 export default function useUpdateAssetCollection() {
@@ -19,16 +21,27 @@ export default function useUpdateAssetCollection() {
         UpdateAssetCollectionVariables
     >(UPDATE_ASSET_COLLECTION);
 
-    const updateAssetCollection = ({ assetCollection, title }: UpdateAssetCollectionProps) =>
+    const updateAssetCollection = ({ assetCollection, title, tagNames }: UpdateAssetCollectionProps) =>
         action({
             variables: {
                 id: assetCollection.id,
-                title
+                title,
+                tagNames
             },
             optimisticResponse: {
                 updateAssetCollection: {
                     ...assetCollection,
-                    title
+                    title,
+                    ...(title
+                        ? {
+                              title
+                          }
+                        : {}),
+                    ...(tagNames
+                        ? {
+                              tags: tagNames.map(tagName => ({ label: tagName, __typename: 'Tag', children: [] }))
+                          }
+                        : {})
                 }
             }
         });

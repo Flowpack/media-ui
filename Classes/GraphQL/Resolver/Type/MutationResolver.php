@@ -498,8 +498,9 @@ class MutationResolver implements ResolverInterface
     {
         [
             'id' => $id,
-            'title' => $title
-        ] = $variables + ['title' => null];
+            'title' => $title,
+            'tagNames' => $tagNames
+        ] = $variables + ['title' => null, 'tagNames' => null];
 
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
 
@@ -509,6 +510,18 @@ class MutationResolver implements ResolverInterface
 
         if ($title !== null) {
             $assetCollection->setTitle($title);
+        }
+
+        if ($tagNames !== null) {
+            $tags = new ArrayCollection();
+            foreach ($tagNames as $tagName) {
+                $tag = $this->tagRepository->findOneByLabel($tagName);
+                if (!$tag) {
+                    throw new Exception('Cannot tag asset collection with tag that does not exist', 1594621319);
+                }
+                $tags->add($tag);
+            }
+            $assetCollection->setTags($tags);
         }
 
         $this->assetCollectionRepository->update($assetCollection);

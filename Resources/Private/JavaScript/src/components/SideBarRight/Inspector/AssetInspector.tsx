@@ -6,7 +6,7 @@ import { Button, Label, TextArea, TextInput } from '@neos-project/react-ui-compo
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
 import { useSelectedAsset, useUpdateAsset } from '../../../hooks';
-import { CollectionSelectBox, MetadataView, TagSelectBox } from './index';
+import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
@@ -150,7 +150,7 @@ const AssetInspector = () => {
                 )}
 
                 {selectedAsset.assetSource.supportsCollections && <CollectionSelectBox />}
-                {selectedAsset.assetSource.supportsTagging && <TagSelectBox />}
+                {selectedAsset.assetSource.supportsTagging && <TagSelectBoxAsset />}
 
                 <MetadataView />
             </>

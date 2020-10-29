@@ -131,8 +131,8 @@ export const DELETE_ASSET_COLLECTION = gql`
 `;
 
 export const UPDATE_ASSET_COLLECTION = gql`
-    mutation UpdateAssetCollection($id: AssetCollectionId!, $title: String) {
-        updateAssetCollection(id: $id, title: $title) {
+    mutation UpdateAssetCollection($id: AssetCollectionId!, $title: String, $tagNames: [String]) {
+        updateAssetCollection(id: $id, title: $title, tagNames: $tagNames) {
             ...AssetCollectionProps
         }
     }

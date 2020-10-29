@@ -74,7 +74,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-const App: React.FC = () => {
+const App = () => {
     const { selectionMode, containerRef } = useMediaUi();
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
