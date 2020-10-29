@@ -494,7 +494,7 @@ class MutationResolver implements ResolverInterface
      * @return AssetCollection|null
      * @throws Exception
      */
-    public function updateAssetCollection($_, array $variables): AssetCollection
+    public function updateAssetCollection($_, array $variables): ?AssetCollection
     {
         [
             'id' => $id,
