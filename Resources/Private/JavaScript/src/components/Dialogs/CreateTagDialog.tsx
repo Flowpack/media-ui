@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { Button, Dialog, Label, TextInput } from '@neos-project/react-ui-components';
 

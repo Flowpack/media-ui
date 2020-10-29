@@ -75,7 +75,7 @@ const AssetCollectionInspector = () => {
                     );
                 });
         }
-    }, [Notify, translate, selectedAssetCollection, updateAssetCollection]);
+    }, [Notify, translate, selectedAssetCollection, updateAssetCollection, title]);
 
     useEffect(() => {
         handleDiscard();
