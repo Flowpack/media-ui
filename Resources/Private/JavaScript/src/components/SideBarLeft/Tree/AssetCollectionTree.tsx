@@ -15,11 +15,13 @@ import {
     useDeleteAssetCollection,
     useSelectAssetSource,
     useTagsQuery,
-    useDeleteTag
+    useDeleteTag,
+    useSelectedAssetCollection,
+    useSelectAssetCollection,
+    useSelectTag
 } from '../../../hooks';
 import AddAssetCollectionButton from './AddAssetCollectionButton';
 import AddTagButton from './AddTagButton';
-import useSelectedAssetCollection from '../../../hooks/useSelectedAssetCollection';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
@@ -45,6 +47,8 @@ const AssetCollectionTree = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
+    const selectAssetCollection = useSelectAssetCollection();
+    const selectTag = useSelectTag();
     const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
@@ -56,14 +60,6 @@ const AssetCollectionTree = () => {
 
     const { deleteAssetCollection } = useDeleteAssetCollection();
 
-    const selectAssetCollection = useCallback(
-        assetCollection => {
-            setSelectedTag(null);
-            setSelectedAssetCollectionId(assetCollection.id);
-            setSelectedAssetId(null);
-        },
-        [setSelectedTag, setSelectedAssetCollectionId, setSelectedAssetId]
-    );
     const onClickDelete = useCallback(() => {
         if (selectedTag) {
             const confirm = window.confirm(
@@ -82,7 +78,7 @@ const AssetCollectionTree = () => {
             setSelectedTag(null);
             setSelectedAssetCollectionId(null);
             setSelectedAssetId(null);
-        } else if (selectAssetCollection) {
+        } else if (selectedAssetCollection) {
             const confirm = window.confirm(
                 translate(
                     'action.deleteAssetCollection.confirm',
@@ -108,26 +104,16 @@ const AssetCollectionTree = () => {
             setSelectedAssetId(null);
         }
     }, [
-        deleteTag,
-        selectAssetCollection,
         selectedTag,
         selectedAssetCollection,
-        deleteAssetCollection,
+        translate,
+        deleteTag,
         setSelectedTag,
         setSelectedAssetCollectionId,
         setSelectedAssetId,
         Notify,
-        translate
+        deleteAssetCollection
     ]);
-
-    const selectTag = useCallback(
-        (tag, assetCollection = null) => {
-            setSelectedAssetCollectionId(assetCollection?.id);
-            setSelectedTag(tag);
-            setSelectedAssetId(null);
-        },
-        [setSelectedTag, setSelectedAssetCollectionId, setSelectedAssetId]
-    );
 
     if (!selectedAssetSource?.supportsCollections) return null;
 

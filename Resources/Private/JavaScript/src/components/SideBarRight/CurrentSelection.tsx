@@ -19,7 +19,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-const CurrentSelection: React.FC = () => {
+const CurrentSelection = () => {
     const classes = useStyles();
     const selectedAsset = useSelectedAsset();
     const selectedAssetCollection = useSelectedAssetCollection();
@@ -52,7 +52,7 @@ const CurrentSelection: React.FC = () => {
         if (!selectedOption) {
             const firstValue = options[0]?.value;
             if (firstValue) {
-                setSelectedInspectorView(firstValue as 'asset' | 'assetCollection');
+                setSelectedInspectorView(firstValue as 'asset' | 'assetCollection' | 'tag');
             }
         }
     });

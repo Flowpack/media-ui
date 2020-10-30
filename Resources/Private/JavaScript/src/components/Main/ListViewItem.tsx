@@ -8,6 +8,7 @@ import { humanFileSize } from '../../helper';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
 import { selectedAssetForPreviewState, selectedAssetIdState } from '../../state';
+import { useSelectAsset } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {
@@ -84,19 +85,19 @@ const dateFormatOptions = {
 
 const ListViewItem: React.FC<ListViewItemProps> = ({ asset }: ListViewItemProps) => {
     const classes = useStyles();
-    const { dummyImage, handleSelectAsset } = useMediaUi();
-    const [selectedAssetId, setSelectedAssetId] = useRecoilState(selectedAssetIdState);
+    const { dummyImage } = useMediaUi();
+    const [selectedAssetId] = useRecoilState(selectedAssetIdState);
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
+    const selectAsset = useSelectAsset();
     const { label, thumbnailUrl, file, lastModified } = asset;
 
     const onSelect = useCallback(() => {
         if (selectedAssetId === asset.id) {
             setSelectedAssetForPreview(asset);
         } else {
-            setSelectedAssetId(asset.id);
-            handleSelectAsset(asset);
+            selectAsset(asset);
         }
-    }, [selectedAssetId, asset, setSelectedAssetForPreview, setSelectedAssetId, handleSelectAsset]);
+    }, [selectedAssetId, asset, setSelectedAssetForPreview, selectAsset]);
 
     return (
         <tr

@@ -7,7 +7,11 @@ import useCreateTag from './useCreateTag';
 import useDeleteAsset from './useDeleteAsset';
 import useDeleteTag from './useDeleteTag';
 import useImportAsset from './useImportAsset';
+import useSelectAsset from './useSelectAsset';
+import useSelectAssetCollection from './useSelectAssetCollection';
+import useSelectTag from './useSelectTag';
 import useSelectedAsset from './useSelectedAsset';
+import useSelectedAssetCollection from './useSelectedAssetCollection';
 import useSelectAssetSource from './useSelectAssetSource';
 import useSetAssetTags from './useSetAssetTags';
 import useSetAssetCollections from './useSetAssetCollections';
@@ -35,8 +39,12 @@ export {
     useDeleteAsset,
     useDeleteTag,
     useImportAsset,
-    useSelectedAsset,
+    useSelectAsset,
+    useSelectAssetCollection,
+    useSelectTag,
     useSelectAssetSource,
+    useSelectedAsset,
+    useSelectedAssetCollection,
     useSetAssetTags,
     useSetAssetCollections,
     useTagAsset,

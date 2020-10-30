@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Asset, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
 import { selectedAssetForPreviewState, selectedAssetIdState } from '../../state';
+import { useSelectAsset } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnail: {
@@ -72,20 +73,20 @@ interface ThumbnailProps {
 const Thumbnail: React.FC<ThumbnailProps> = ({ asset }: ThumbnailProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
-    const { dummyImage, handleSelectAsset } = useMediaUi();
-    const [selectedAssetId, setSelectedAssetId] = useRecoilState(selectedAssetIdState);
+    const { dummyImage } = useMediaUi();
+    const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { label, thumbnailUrl, file } = asset;
     const isSelected = selectedAssetId === asset.id;
+    const selectAsset = useSelectAsset();
 
     const onSelect = useCallback(() => {
         if (isSelected) {
             setSelectedAssetForPreview(asset);
         } else {
-            setSelectedAssetId(asset.id);
-            handleSelectAsset(asset);
+            selectAsset(asset);
         }
-    }, [isSelected, setSelectedAssetForPreview, asset, setSelectedAssetId, handleSelectAsset]);
+    }, [isSelected, setSelectedAssetForPreview, selectAsset, asset]);
 
     return (
         <figure className={classes.thumbnail}>
