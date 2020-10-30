@@ -1,45 +1,19 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Label, TextInput } from '@neos-project/react-ui-components';
+import { TextInput } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { MediaUiTheme } from '../../../interfaces';
+import { useIntl, useNotify } from '../../../core';
 import { useUpdateAssetCollection } from '../../../hooks';
 import useSelectedAssetCollection from '../../../hooks/useSelectedAssetCollection';
 import { TagSelectBoxAssetCollection } from '.';
 import { useRecoilValue } from 'recoil';
 import selectedInspectorViewState from '../../../state/selectedInspectorViewState';
-
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    inspector: {
-        display: 'grid',
-        gridAutoRows: 'auto',
-        gridGap: theme.spacing.full,
-        '& input, & textarea': {
-            width: '100%'
-        }
-    },
-    propertyGroup: {},
-    actions: {
-        display: 'flex',
-        position: 'sticky',
-        backgroundColor: theme.colors.mainBackground,
-        bottom: 0,
-        '& > *': {
-            flex: 1
-        }
-    },
-    textArea: {
-        // TODO: Remove when overriding rule is removed from Minimal Module Style in Neos
-        '.neos textarea&': {
-            padding: theme.spacing.half
-        }
-    }
-}));
+import Actions from './Actions';
+import Property from './Property';
+import InspectorContainer from './InspectorContainer';
 
 const AssetCollectionInspector = () => {
-    const classes = useStyles();
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();
@@ -84,35 +58,19 @@ const AssetCollectionInspector = () => {
     if (!selectedAssetCollection || selectedInspectorView !== 'assetCollection') return null;
 
     return (
-        <div className={classes.inspector}>
-            <div className={classes.propertyGroup}>
-                <Label>{translate('inspector.title', 'Title')}</Label>
+        <InspectorContainer>
+            <Property label={translate('inspector.title', 'Title')}>
                 <TextInput type="text" value={title || ''} onChange={setTitle} onEnterKey={handleApply} />
-            </div>
+            </Property>
 
-            <div className={classes.actions}>
-                <Button
-                    disabled={!hasUnpublishedChanges}
-                    size="regular"
-                    style="lighter"
-                    hoverStyle="brand"
-                    onClick={handleDiscard}
-                >
-                    {translate('inspector.actions.discard', 'Discard')}
-                </Button>
-                <Button
-                    disabled={!hasUnpublishedChanges}
-                    size="regular"
-                    style="success"
-                    hoverStyle="success"
-                    onClick={handleApply}
-                >
-                    {translate('inspector.actions.apply', 'Apply')}
-                </Button>
-            </div>
+            <Actions
+                handleApply={handleApply}
+                handleDiscard={handleDiscard}
+                hasUnpublishedChanges={hasUnpublishedChanges}
+            />
 
             <TagSelectBoxAssetCollection />
-        </div>
+        </InspectorContainer>
     );
 };
 
