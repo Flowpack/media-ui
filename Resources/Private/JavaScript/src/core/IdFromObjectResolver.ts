@@ -9,7 +9,7 @@ export default function IdFromObjectResolver(object) {
     const id = `${object.__typename}_`;
     switch (object.__typename) {
         case 'Tag':
-            return id + (object as Tag).label;
+            return id + (object as Tag).id;
         case 'Asset':
             return id + (object as Asset).id;
         case 'AssetCollection':

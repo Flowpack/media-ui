@@ -14,6 +14,7 @@ export const ASSET_SOURCE_FRAGMENT = gql`
 
 export const TAG_FRAGMENT = gql`
     fragment TagProps on Tag {
+        id
         label
         parent {
             label
@@ -49,9 +50,10 @@ export const ASSET_COLLECTION_FRAGMENT = gql`
         id
         title
         tags {
-            label
+            ...TagProps
         }
     }
+    ${TAG_FRAGMENT}
 `;
 
 export const ASSET_FRAGMENT = gql`
@@ -66,7 +68,7 @@ export const ASSET_FRAGMENT = gql`
         caption
         filename
         tags {
-            label
+            ...TagProps
         }
         collections {
             id
@@ -88,4 +90,5 @@ export const ASSET_FRAGMENT = gql`
     ${ASSET_SOURCE_FRAGMENT}
     ${IPTC_PROPERTY_FRAGMENT}
     ${FILE_FRAGMENT}
+    ${TAG_FRAGMENT}
 `;

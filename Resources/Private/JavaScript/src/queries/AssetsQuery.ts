@@ -8,7 +8,7 @@ export const ASSETS = gql`
         $assetSourceId: AssetSourceId
         $assetCollectionId: AssetCollectionId
         $mediaType: MediaType
-        $tag: TagLabel
+        $tagId: TagId
         $limit: Int
         $offset: Int
     ) {
@@ -18,7 +18,7 @@ export const ASSETS = gql`
             assetSourceId: $assetSourceId
             assetCollectionId: $assetCollectionId
             mediaType: $mediaType
-            tag: $tag
+            tagId: $tagId
             limit: $limit
             offset: $offset
         ) {

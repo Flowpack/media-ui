@@ -1,17 +1,17 @@
 import { useMutation } from '@apollo/react-hooks';
 
-import { Asset } from '../interfaces';
+import { Asset, Tag } from '../interfaces';
 import { SET_ASSET_TAGS } from '../queries';
 
 interface SetAssetTagsProps {
     asset: Asset;
-    tagNames: string[];
+    tags: Tag[];
 }
 
 interface SetAssetTagsVariables {
     id: string;
     assetSourceId: string;
-    tags: string[];
+    tagIds: string[];
 }
 
 export default function useSetAssetTags() {
@@ -20,23 +20,18 @@ export default function useSetAssetTags() {
         SetAssetTagsVariables
     >(SET_ASSET_TAGS);
 
-    const setAssetTags = ({ asset, tagNames }: SetAssetTagsProps) =>
+    const setAssetTags = ({ asset, tags }: SetAssetTagsProps) =>
         action({
             variables: {
                 id: asset.id,
                 assetSourceId: asset.assetSource.id,
-                tags: tagNames
+                tagIds: tags.map(tag => tag.id)
             },
             optimisticResponse: {
                 __typename: 'Mutation',
                 setAssetTags: {
                     ...asset,
-                    tags: tagNames.map(tagName => ({
-                        __typename: 'Tag',
-                        label: tagName,
-                        parent: null,
-                        children: []
-                    }))
+                    tags
                 }
             }
         });

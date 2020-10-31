@@ -1,18 +1,18 @@
 import { useMutation } from '@apollo/react-hooks';
 
 import { UPDATE_ASSET_COLLECTION } from '../queries';
-import { AssetCollection } from '../interfaces';
+import { AssetCollection, Tag } from '../interfaces';
 
 interface UpdateAssetCollectionProps {
     assetCollection: AssetCollection;
     title?: string;
-    tagNames?: string[];
+    tags?: Tag[];
 }
 
 interface UpdateAssetCollectionVariables {
     id: string;
     title?: string;
-    tagNames?: string[];
+    tagIds?: string[];
 }
 
 export default function useUpdateAssetCollection() {
@@ -21,12 +21,12 @@ export default function useUpdateAssetCollection() {
         UpdateAssetCollectionVariables
     >(UPDATE_ASSET_COLLECTION);
 
-    const updateAssetCollection = ({ assetCollection, title, tagNames }: UpdateAssetCollectionProps) =>
+    const updateAssetCollection = ({ assetCollection, title, tags }: UpdateAssetCollectionProps) =>
         action({
             variables: {
                 id: assetCollection.id,
                 title,
-                tagNames
+                tagIds: tags.map(tag => tag.id)
             },
             optimisticResponse: {
                 updateAssetCollection: {
@@ -37,9 +37,9 @@ export default function useUpdateAssetCollection() {
                               title
                           }
                         : {}),
-                    ...(tagNames
+                    ...(tags
                         ? {
-                              tags: tagNames.map(tagName => ({ label: tagName, __typename: 'Tag', children: [] }))
+                              tags
                           }
                         : {})
                 }

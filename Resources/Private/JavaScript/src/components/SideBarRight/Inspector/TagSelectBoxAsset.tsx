@@ -3,14 +3,17 @@ import { useCallback, useMemo } from 'react';
 
 import { useIntl, useNotify } from '../../../core';
 import { useSelectedAsset, useSetAssetTags, useTagsQuery } from '../../../hooks';
-import { Asset } from '../../../interfaces';
+import { Asset, Tag } from '../../../interfaces';
 import { TagSelectBox } from '.';
 
-const tagsMatchAsset = (tags: string[], asset: Asset) => {
+const tagsMatchAsset = (tags: Tag[], asset: Asset) => {
     return (
-        tags.join(',') ===
+        tags
+            .map(tag => tag.id)
+            .sort()
+            .join(',') ===
         asset.tags
-            .map(tag => tag.label)
+            .map(tag => tag.id)
             .sort()
             .join(',')
     );
@@ -30,7 +33,7 @@ const TagSelectBoxAsset = () => {
             if (!tagsMatchAsset(newTags, selectedAsset)) {
                 setAssetTags({
                     asset: selectedAsset,
-                    tagNames: newTags
+                    tags: newTags
                 })
                     .then(() => {
                         Notify.ok(translate('actions.setAssetTags.success', 'The asset has been tagged'));

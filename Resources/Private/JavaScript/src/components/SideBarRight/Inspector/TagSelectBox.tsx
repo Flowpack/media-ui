@@ -4,6 +4,7 @@ import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../../core';
 import { IconLabel } from '../../Presentation';
+import { Tag } from '../../../interfaces';
 
 const useStyles = createUseMediaUiStyles({
     tagSelectBox: {},
@@ -12,14 +13,16 @@ const useStyles = createUseMediaUiStyles({
 
 interface TagSelectBoxProps {
     values: string[];
-    options: { label: string }[];
-    onChange: (tagNames: string[]) => void;
+    options: Tag[];
+    onChange: (tags: Tag[]) => void;
     disabled?: boolean;
 }
 
 const TagSelectBox = ({ values, options, onChange, disabled = false }: TagSelectBoxProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
+
+    const handleChange = tagIds => onChange(tagIds.map(tagId => options.map(o => o.id === tagId)));
 
     return (
         <div className={classes.tagSelectBox}>
@@ -32,10 +35,10 @@ const TagSelectBox = ({ values, options, onChange, disabled = false }: TagSelect
                 placeholder={translate('inspector.tags.placeholder', 'Select a tag')}
                 noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
                 values={values}
-                optionValueField="label"
+                optionValueField="id"
                 options={options}
                 searchOptions={options}
-                onValuesChange={onChange}
+                onValuesChange={handleChange}
             />
         </div>
     );

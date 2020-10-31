@@ -4,9 +4,11 @@ import { useLazyQuery } from '@apollo/react-hooks';
 
 import { ASSETS } from '../queries';
 import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
-import { currentPageState, loadingState, searchTermState, selectedMediaTypeState, selectedTagState } from '../state';
+import { currentPageState, loadingState, searchTermState, selectedMediaTypeState } from '../state';
 import { ASSETS_PER_PAGE } from '../core';
 import useSelectedAssetCollection from './useSelectedAssetCollection';
+import useSelectedTag from './useSelectedTag';
+import { tags } from '../../dev/fixtures';
 
 interface AssetsQueryResult {
     assets: Asset[];
@@ -20,7 +22,7 @@ interface AssetsQueryVariables {
     searchTerm: string;
     assetCollectionId: string;
     mediaType: string;
-    tag: string;
+    tagId: string;
     limit: number;
     offset: number;
 }
@@ -28,7 +30,7 @@ interface AssetsQueryVariables {
 const useAssetsQuery = () => {
     const searchTerm = useRecoilValue(searchTermState);
     const selectedAssetCollection = useSelectedAssetCollection();
-    const selectedTag = useRecoilValue(selectedTagState);
+    const selectedTag = useSelectedTag();
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
@@ -43,7 +45,7 @@ const useAssetsQuery = () => {
             searchTerm,
             assetCollectionId: selectedAssetCollection?.id,
             mediaType: mediaTypeFilter,
-            tag: selectedTag?.label,
+            tagId: selectedTag?.id,
             limit,
             offset
         }
@@ -56,7 +58,7 @@ const useAssetsQuery = () => {
                     searchTerm,
                     assetCollectionId: selectedAssetCollection?.id,
                     mediaType: mediaTypeFilter,
-                    tag: selectedTag?.label,
+                    tagId: selectedTag?.id,
                     limit,
                     offset
                 }
@@ -81,7 +83,7 @@ const useAssetsQuery = () => {
         searchTerm,
         selectedAssetCollection?.title,
         mediaTypeFilter,
-        selectedTag?.label
+        selectedTag?.id
     ]);
 
     return { error, assets, refetchAssets: refetch };

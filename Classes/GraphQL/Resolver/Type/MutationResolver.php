@@ -183,7 +183,7 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'assetSourceId' => $assetSourceId,
-            'tag' => $tagName
+            'tagId' => $tagId
         ] = $variables;
 
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
@@ -196,7 +196,7 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Cannot tag asset that was never imported', 1591561758);
         }
 
-        $tag = $this->tagRepository->findOneByLabel($tagName);
+        $tag = $this->tagRepository->findByIdentifier($tagId);
 
         if (!$tag) {
             throw new Exception('Cannot tag asset with tag that does not exist', 1591561845);
@@ -225,7 +225,7 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'assetSourceId' => $assetSourceId,
-            'tags' => $tagNames
+            'tagIds' => $tagIds
         ] = $variables;
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
@@ -238,8 +238,8 @@ class MutationResolver implements ResolverInterface
         }
 
         $tags = new ArrayCollection();
-        foreach ($tagNames as $tagName) {
-            $tag = $this->tagRepository->findOneByLabel($tagName);
+        foreach ($tagIds as $tagId) {
+            $tag = $this->tagRepository->findByIdentifier($tagId);
             if (!$tag) {
                 throw new Exception('Cannot tag asset with tag that does not exist', 1594621318);
             }
@@ -311,7 +311,7 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'assetSourceId' => $assetSourceId,
-            'tag' => $tagName
+            'tagId' => $tagId
         ] = $variables;
 
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
@@ -324,7 +324,7 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Cannot untag asset that was never imported', 1591561930);
         }
 
-        $tag = $this->tagRepository->findOneByLabel($tagName);
+        $tag = $this->tagRepository->findByIdentifier($tagId);
 
         if (!$tag) {
             throw new Exception('Cannot untag asset from tag that does not exist', 1591561934);
@@ -499,8 +499,8 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'title' => $title,
-            'tagNames' => $tagNames
-        ] = $variables + ['title' => null, 'tagNames' => null];
+            'tagIds' => $tagIds
+        ] = $variables + ['title' => null, 'tagIds' => null];
 
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
 
@@ -512,10 +512,10 @@ class MutationResolver implements ResolverInterface
             $assetCollection->setTitle($title);
         }
 
-        if ($tagNames !== null) {
+        if ($tagIds !== null) {
             $tags = new ArrayCollection();
-            foreach ($tagNames as $tagName) {
-                $tag = $this->tagRepository->findOneByLabel($tagName);
+            foreach ($tagIds as $tagId) {
+                $tag = $this->tagRepository->findByIdentifier($tagId);
                 if (!$tag) {
                     throw new Exception('Cannot tag asset collection with tag that does not exist', 1594621319);
                 }
@@ -538,7 +538,7 @@ class MutationResolver implements ResolverInterface
     public function createTag($_, array $variables): Tag
     {
         [
-            'tag' => $label,
+            'label' => $label,
             'assetCollectionId' => $assetCollectionId
         ] = $variables + ['assetCollectionId' => null];
 
@@ -565,16 +565,44 @@ class MutationResolver implements ResolverInterface
     /**
      * @param $_
      * @param array $variables
+     * @return Tag
+     * @throws Exception
+     */
+    public function updateTag($_, array $variables): ?Tag
+    {
+        [
+            'id' => $id,
+            'label' => $label,
+        ] = $variables + ['label' => null];
+
+        $tag = $this->tagRepository->findByIdentifier($id);
+
+        if (!$tag) {
+            throw new Exception('Tag not found', 1590659046);
+        }
+
+        if ($label !== null) {
+            $tag->setLabel($label);
+        }
+
+        $this->tagRepository->update($tag);
+
+        return $tag;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
      * @return bool
      * @throws Exception|IllegalObjectTypeException|InvalidQueryException
      */
     public function deleteTag($_, array $variables): bool
     {
         [
-            'tag' => $label,
+            'id' => $id,
         ] = $variables;
 
-        $tag = $this->tagRepository->findOneByLabel($label);
+        $tag = $this->tagRepository->findByIdentifier($id);
 
         if (!$tag) {
             throw new Exception('Tag not found', 1591553709);

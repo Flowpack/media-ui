@@ -30,8 +30,8 @@ export const DELETE_ASSET = gql`
 `;
 
 export const SET_ASSET_TAGS = gql`
-    mutation SetAssetTags($id: AssetId!, $assetSourceId: AssetSourceId!, $tags: [TagLabel!]!) {
-        setAssetTags(id: $id, assetSourceId: $assetSourceId, tags: $tags) {
+    mutation SetAssetTags($id: AssetId!, $assetSourceId: AssetSourceId!, $tagIds: [TagId!]!) {
+        setAssetTags(id: $id, assetSourceId: $assetSourceId, tagIds: $tagIds) {
             ...AssetProps
         }
     }
@@ -52,14 +52,14 @@ export const SET_ASSET_COLLECTIONS = gql`
 `;
 
 export const DELETE_TAG = gql`
-    mutation DeleteTag($tag: TagLabel!) {
-        deleteTag(tag: $tag)
+    mutation DeleteTag($id: TagId!) {
+        deleteTag(id: $id)
     }
 `;
 
 export const CREATE_TAG = gql`
-    mutation CreateTag($tag: TagLabel!, $assetCollectionId: AssetCollectionId) {
-        createTag(tag: $tag, assetCollectionId: $assetCollectionId) {
+    mutation CreateTag($label: TagLabel!, $assetCollectionId: AssetCollectionId) {
+        createTag(label: $label, assetCollectionId: $assetCollectionId) {
             ...TagProps
         }
     }
@@ -67,8 +67,8 @@ export const CREATE_TAG = gql`
 `;
 
 export const TAG_ASSET = gql`
-    mutation TagAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tag: TagLabel!) {
-        tagAsset(id: $id, assetSourceId: $assetSourceId, tag: $tag) {
+    mutation TagAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tagId: TagId!) {
+        tagAsset(id: $id, assetSourceId: $assetSourceId, tagId: $tagId) {
             ...AssetProps
         }
     }
@@ -76,8 +76,8 @@ export const TAG_ASSET = gql`
 `;
 
 export const UNTAG_ASSET = gql`
-    mutation UntagAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tag: TagLabel!) {
-        untagAsset(id: $id, assetSourceId: $assetSourceId, tag: $tag) {
+    mutation UntagAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tagId: TagId!) {
+        untagAsset(id: $id, assetSourceId: $assetSourceId, tagId: $tagId) {
             ...AssetProps
         }
     }
@@ -131,10 +131,19 @@ export const DELETE_ASSET_COLLECTION = gql`
 `;
 
 export const UPDATE_ASSET_COLLECTION = gql`
-    mutation UpdateAssetCollection($id: AssetCollectionId!, $title: String, $tagNames: [String]) {
-        updateAssetCollection(id: $id, title: $title, tagNames: $tagNames) {
+    mutation UpdateAssetCollection($id: AssetCollectionId!, $title: String, $tagIds: [TagId]) {
+        updateAssetCollection(id: $id, title: $title, tagIds: $tagIds) {
             ...AssetCollectionProps
         }
     }
     ${ASSET_COLLECTION_FRAGMENT}
+`;
+
+export const UPDATE_TAG = gql`
+    mutation UpdateTag($id: TagId!, $label: String) {
+        updateTag(id: $id, label: $label) {
+            ...TagProps
+        }
+    }
+    ${TAG_FRAGMENT}
 `;

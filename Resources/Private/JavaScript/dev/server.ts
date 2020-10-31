@@ -65,12 +65,9 @@ const resolvers = {
             asset.copyrightNotice = copyrightNotice;
             return asset;
         },
-        setAssetTags: (
-            $_,
-            { id, assetSourceId, tags: newTags }: { id: string; assetSourceId: string; tags: string[] }
-        ) => {
+        setAssetTags: ($_, { id, assetSourceId, tagIds }: { id: string; assetSourceId: string; tagIds: string[] }) => {
             const asset = assets.find(asset => asset.id === id && asset.assetSource.id === assetSourceId);
-            asset.tags = tags.filter(tag => newTags.includes(tag.label));
+            asset.tags = tags.filter(tag => tagIds.includes(tag.id));
             return asset;
         },
         setAssetCollections: (
@@ -85,9 +82,9 @@ const resolvers = {
             asset.collections = assetCollections.filter(collection => newAssetCollectionIds.includes(collection.id));
             return asset;
         },
-        deleteTag: ($_, { tag: tagLabel }) => {
+        deleteTag: ($_, { id: id }) => {
             tags.splice(
-                tags.findIndex(tag => tag.label === tagLabel),
+                tags.findIndex(tag => tag.id === id),
                 1
             );
             return true;

@@ -9,7 +9,7 @@ type Query {
     """
     assets(
         assetSourceId: AssetSourceId
-        tag: TagLabel
+        tagId: TagId
         assetCollectionId: AssetCollectionId
         mediaType: MediaType
         searchTerm: String
@@ -22,7 +22,7 @@ type Query {
     """
     assetCount(
         assetSourceId: AssetSourceId
-        tag: TagLabel
+        tagId: TagId
         assetCollectionId: AssetCollectionId
         mediaType: MediaType
         searchTerm: String
@@ -57,23 +57,17 @@ type Mutation {
 
     deleteAsset(id: AssetId!, assetSourceId: AssetSourceId!): Boolean!
 
-    tagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tag: TagLabel!): Asset!
+    tagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tagId: TagId!): Asset!
 
-    untagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tag: TagLabel!): Asset!
+    untagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tagId: TagId!): Asset!
 
-    setAssetTags(id: AssetId!, assetSourceId: AssetSourceId!, tags: [TagLabel!]!): Asset!
+    setAssetTags(id: AssetId!, assetSourceId: AssetSourceId!, tagIds: [TagId!]!): Asset!
 
     setAssetCollections(id: AssetId!, assetSourceId: AssetSourceId!, assetCollectionIds: [AssetCollectionId!]!): Asset!
 
-    deleteTag(tag: TagLabel!): Boolean!
+    deleteTag(id: TagId!): Boolean!
 
-    createTag(tag: TagLabel!, assetCollectionId: AssetCollectionId): Tag!
-
-    addTagToAssetCollection(tag: TagLabel!, assetCollectionId: AssetCollectionId!): Boolean!
-
-    removeTagFromAssetCollection(tag: TagLabel!, assetCollectionId: AssetCollectionId!): Boolean!
-
-    deleteAssetCollection(assetCollection: AssetCollectionTitle!): Boolean!
+    createTag(label: TagLabel!, assetCollectionId: AssetCollectionId): Tag!
 
     uploadFile(file: Upload!): FileUploadResult!
 
@@ -85,7 +79,9 @@ type Mutation {
 
     deleteAssetCollection(id: AssetCollectionId!): DeleteAssetCollectionResult!
 
-    updateAssetCollection(id: AssetCollectionId!, title: String, tagNames: [String]): AssetCollection!
+    updateAssetCollection(id: AssetCollectionId!, title: String, tagIds: [TagId]): AssetCollection!
+
+    updateTag(id: TagId!, label: String): Tag!
 }
 
 """
@@ -142,6 +138,7 @@ type File {
 A tag to which assets can be assigned. Can have parent and child tags
 """
 type Tag {
+    id: TagId!
     label: TagLabel!
     parent: Tag
     children: [Tag!]!
@@ -279,6 +276,11 @@ scalar AssetCollectionTitle
 An absolute or relative URL
 """
 scalar Url
+
+"""
+The id of a tag
+"""
+scalar TagId
 
 """
 The label of a tag

@@ -3,15 +3,18 @@ import { useCallback, useMemo } from 'react';
 
 import { useIntl, useNotify } from '../../../core';
 import { useTagsQuery, useUpdateAssetCollection } from '../../../hooks';
-import { AssetCollection } from '../../../interfaces';
+import { AssetCollection, Tag } from '../../../interfaces';
 import { TagSelectBox } from '.';
 import useSelectedAssetCollection from '../../../hooks/useSelectedAssetCollection';
 
-const tagsMatchAssetCollection = (tags: string[], assetCollection: AssetCollection) => {
+const tagsMatchAssetCollection = (tags: Tag[], assetCollection: AssetCollection) => {
     return (
-        tags.join(',') ===
+        tags
+            .map(tag => tag.id)
+            .sort()
+            .join(',') ===
         assetCollection.tags
-            .map(tag => tag.label)
+            .map(tag => tag.id)
             .sort()
             .join(',')
     );
@@ -24,16 +27,16 @@ const TagSelectBoxAsset = () => {
     const { updateAssetCollection } = useUpdateAssetCollection();
     const selectedAssetCollection = useSelectedAssetCollection();
 
-    const tags = useMemo(() => selectedAssetCollection?.tags.map(({ label }) => label).sort(), [
+    const tagIds = useMemo(() => selectedAssetCollection?.tags.map(({ id }) => id).sort(), [
         selectedAssetCollection?.tags
     ]);
 
     const handleChange = useCallback(
-        newTags => {
+        (newTags: Tag[]) => {
             if (!tagsMatchAssetCollection(newTags, selectedAssetCollection)) {
                 updateAssetCollection({
                     assetCollection: selectedAssetCollection,
-                    tagNames: newTags
+                    tags: newTags
                 })
                     .then(() => {
                         Notify.ok(translate('actions.updateAssetCollection.success', 'The asset has been tagged'));
@@ -51,7 +54,7 @@ const TagSelectBoxAsset = () => {
 
     if (!selectedAssetCollection) return null;
 
-    return <TagSelectBox values={tags} options={allTags} onChange={handleChange} />;
+    return <TagSelectBox values={tagIds} options={allTags} onChange={handleChange} />;
 };
 
 export default React.memo(TagSelectBoxAsset);
