@@ -5,3 +5,4 @@ parameters:
     ignoreErrors:
         - '#PHPDoc tag @param has invalid value \(\$_\).*#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOne[a-zA-Z]+\(\)#'
+        - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findBy[a-zA-Z]+\(\)#'
