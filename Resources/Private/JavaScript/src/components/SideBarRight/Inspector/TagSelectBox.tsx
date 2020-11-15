@@ -22,7 +22,7 @@ const TagSelectBox = ({ values, options, onChange, disabled = false }: TagSelect
     const classes = useStyles();
     const { translate } = useIntl();
 
-    const handleChange = tagIds => onChange(tagIds.map(tagId => options.map(o => o.id === tagId)));
+    const handleChange = tagIds => onChange(tagIds.map(tagId => options.find(o => o.id === tagId)));
 
     return (
         <div className={classes.tagSelectBox}>
