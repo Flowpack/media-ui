@@ -1,5 +1,5 @@
 import { useSetRecoilState } from 'recoil';
-import { Tag } from '../interfaces';
+import { AssetCollection, Tag } from '../interfaces';
 import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagState } from '../state';
 import selectedInspectorViewState from '../state/selectedInspectorViewState';
 
@@ -9,7 +9,7 @@ const useSelectTag = () => {
     const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
     const setSelectedInspectorView = useSetRecoilState(selectedInspectorViewState);
 
-    return (tag: Tag, assetCollection = null) => {
+    return (tag: Tag, assetCollection: AssetCollection = null) => {
         setSelectedInspectorView('tag');
         setSelectedAssetCollectionId(assetCollection?.id);
         setSelectedTag(tag);
