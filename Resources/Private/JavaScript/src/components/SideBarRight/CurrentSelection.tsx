@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useRecoilState } from 'recoil';
 import { fromString as getMediaTypeFromString } from 'media-type';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
@@ -8,7 +9,6 @@ import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { useSelectedAsset } from '../../hooks';
 import useSelectedAssetCollection from '../../hooks/useSelectedAssetCollection';
-import { useRecoilState } from 'recoil';
 import selectedInspectorViewState from '../../state/selectedInspectorViewState';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -48,7 +48,7 @@ const CurrentSelection = () => {
     const value = options.find(o => o.value === selectedInspectorView) ? selectedInspectorView : options[0]?.value;
 
     // @TODO get rid of this junk code in favour of something like this https://neos-project.slack.com/archives/CUEUD49ED/p1604002816009700
-    React.useEffect(() => {
+    useEffect(() => {
         if (!selectedOption) {
             const firstValue = options[0]?.value;
             if (firstValue) {
