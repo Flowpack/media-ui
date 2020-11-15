@@ -19,6 +19,7 @@ use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
+use Neos\Media\Domain\Model\AssetSource\AssetProxy\ProvidesOriginalUriInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\SupportsIptcMetadataInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetRepository;
@@ -143,6 +144,12 @@ class AssetResolver implements ResolverInterface
     {
         $icon = $this->fileTypeIconService::getIcon($assetProxy->getFilename());
 
+        if ($assetProxy instanceof ProvidesOriginalUriInterface) {
+            $url = (string)$assetProxy->getOriginalUri();
+        } else {
+            $url = (string)$assetProxy->getPreviewUri();
+        }
+
         return [
             'extension' => $icon['alt'],
             'mediaType' => $assetProxy->getMediaType(),
@@ -153,7 +160,7 @@ class AssetResolver implements ResolverInterface
                 'alt' => $icon['alt'],
             ],
             'size' => $assetProxy->getFileSize(),
-            'url' => $assetProxy->getPreviewUri(),
+            'url' => $url,
         ];
     }
 
