@@ -4,15 +4,9 @@ import { useLazyQuery } from '@apollo/react-hooks';
 
 import { ASSETS } from '../queries';
 import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
-import {
-    currentPageState,
-    loadingState,
-    searchTermState,
-    selectedAssetCollectionState,
-    selectedMediaTypeState,
-    selectedTagState
-} from '../state';
+import { currentPageState, loadingState, searchTermState, selectedMediaTypeState, selectedTagState } from '../state';
 import { ASSETS_PER_PAGE } from '../core';
+import useSelectedAssetCollection from './useSelectedAssetCollection';
 
 interface AssetsQueryResult {
     assets: Asset[];
@@ -33,7 +27,7 @@ interface AssetsQueryVariables {
 
 const useAssetsQuery = () => {
     const searchTerm = useRecoilValue(searchTermState);
-    const selectedAssetCollection = useRecoilValue(selectedAssetCollectionState);
+    const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useRecoilValue(selectedTagState);
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);

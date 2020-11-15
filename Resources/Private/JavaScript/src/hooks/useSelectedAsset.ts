@@ -9,7 +9,7 @@ const useSelectedAsset = (): Asset => {
     const client = useApolloClient();
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
 
-    // Read asset selection from cache as we can only select assets that have been queries before
+    // Read asset selection from cache as we can only select assets that have been queried before
     try {
         return client.readFragment(
             {

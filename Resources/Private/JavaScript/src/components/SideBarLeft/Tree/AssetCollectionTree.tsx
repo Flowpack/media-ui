@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { IconButton, Tree, Headline } from '@neos-project/react-ui-components';
 
@@ -9,13 +9,16 @@ import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
-import { selectedAssetCollectionState, selectedTagState } from '../../../state';
+import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagState } from '../../../state';
 import {
     useAssetCollectionsQuery,
     useDeleteAssetCollection,
     useSelectAssetSource,
     useTagsQuery,
-    useDeleteTag
+    useDeleteTag,
+    useSelectedAssetCollection,
+    useSelectAssetCollection,
+    useSelectTag
 } from '../../../hooks';
 import AddAssetCollectionButton from './AddAssetCollectionButton';
 import AddTagButton from './AddTagButton';
@@ -44,7 +47,11 @@ const AssetCollectionTree = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
-    const [selectedAssetCollection, setSelectedAssetCollection] = useRecoilState(selectedAssetCollectionState);
+    const selectAssetCollection = useSelectAssetCollection();
+    const selectTag = useSelectTag();
+    const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
+    const selectedAssetCollection = useSelectedAssetCollection();
+    const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
     const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
@@ -53,13 +60,6 @@ const AssetCollectionTree = () => {
 
     const { deleteAssetCollection } = useDeleteAssetCollection();
 
-    const selectAssetCollection = useCallback(
-        assetCollection => {
-            setSelectedTag(null);
-            setSelectedAssetCollection(assetCollection);
-        },
-        [setSelectedTag, setSelectedAssetCollection]
-    );
     const onClickDelete = useCallback(() => {
         if (selectedTag) {
             const confirm = window.confirm(
@@ -76,8 +76,9 @@ const AssetCollectionTree = () => {
                     Notify.error(translate('action.deleteTag.error', 'Error while trying to delete the tag'), message);
                 });
             setSelectedTag(null);
-            setSelectedAssetCollection(null);
-        } else if (selectAssetCollection) {
+            setSelectedAssetCollectionId(null);
+            setSelectedAssetId(null);
+        } else if (selectedAssetCollection) {
             const confirm = window.confirm(
                 translate(
                     'action.deleteAssetCollection.confirm',
@@ -99,27 +100,20 @@ const AssetCollectionTree = () => {
                     );
                 });
             setSelectedTag(null);
-            setSelectedAssetCollection(null);
+            setSelectedAssetCollectionId(null);
+            setSelectedAssetId(null);
         }
     }, [
-        deleteTag,
-        selectAssetCollection,
         selectedTag,
         selectedAssetCollection,
-        deleteAssetCollection,
+        translate,
+        deleteTag,
         setSelectedTag,
-        setSelectedAssetCollection,
+        setSelectedAssetCollectionId,
+        setSelectedAssetId,
         Notify,
-        translate
+        deleteAssetCollection
     ]);
-
-    const selectTag = useCallback(
-        (tag, assetCollection = null) => {
-            setSelectedAssetCollection(assetCollection);
-            setSelectedTag(tag);
-        },
-        [setSelectedTag, setSelectedAssetCollection]
-    );
 
     if (!selectedAssetSource?.supportsCollections) return null;
 

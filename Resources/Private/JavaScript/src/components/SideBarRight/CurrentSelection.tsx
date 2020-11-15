@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useRecoilState } from 'recoil';
 import { fromString as getMediaTypeFromString } from 'media-type';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
@@ -7,6 +8,8 @@ import { Headline, SelectBox } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
 import { useSelectedAsset } from '../../hooks';
+import useSelectedAssetCollection from '../../hooks/useSelectedAssetCollection';
+import selectedInspectorViewState from '../../state/selectedInspectorViewState';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     currentSelection: {},
@@ -16,9 +19,11 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-const CurrentSelection: React.FC = () => {
+const CurrentSelection = () => {
     const classes = useStyles();
     const selectedAsset = useSelectedAsset();
+    const selectedAssetCollection = useSelectedAssetCollection();
+    const [selectedInspectorView, setSelectedInspectorView] = useRecoilState(selectedInspectorViewState);
     const { translate } = useIntl();
 
     const assetIcon = useMemo(() => {
@@ -31,18 +36,35 @@ const CurrentSelection: React.FC = () => {
         return 'file';
     }, [selectedAsset?.file.mediaType]);
 
-    if (!selectedAsset) return null;
+    const options = [
+        selectedAssetCollection && {
+            value: 'assetCollection',
+            label: selectedAssetCollection.title,
+            icon: 'folder'
+        },
+        selectedAsset && { value: 'asset', label: selectedAsset.label, icon: assetIcon }
+    ].filter(Boolean);
+    const selectedOption = options.find(o => o.value === selectedInspectorView);
+    const value = options.find(o => o.value === selectedInspectorView) ? selectedInspectorView : options[0]?.value;
+
+    // @TODO get rid of this junk code in favour of something like this https://neos-project.slack.com/archives/CUEUD49ED/p1604002816009700
+    useEffect(() => {
+        if (!selectedOption) {
+            const firstValue = options[0]?.value;
+            if (firstValue) {
+                setSelectedInspectorView(firstValue as 'asset' | 'assetCollection' | 'tag');
+            }
+        }
+    });
+
+    if (!selectedAsset && !selectedAssetCollection) return null;
 
     return (
         <div className={classes.currentSelection}>
             <Headline type="h2" className={classes.headline}>
-                {translate('currentSelection.headline', 'Selected asset')}
+                {translate('currentSelection.headline', 'Selected element')}
             </Headline>
-            <SelectBox
-                options={[{ value: selectedAsset.filename, label: selectedAsset.label, icon: assetIcon }]}
-                onValueChange={() => null}
-                value={selectedAsset.filename}
-            />
+            <SelectBox options={options} onValueChange={setSelectedInspectorView} value={value} />
         </div>
     );
 };

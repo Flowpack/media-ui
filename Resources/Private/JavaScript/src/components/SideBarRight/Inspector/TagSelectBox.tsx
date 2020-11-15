@@ -1,11 +1,8 @@
 import * as React from 'react';
-import { useCallback, useMemo } from 'react';
 
 import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { useSelectedAsset, useSetAssetTags, useTagsQuery } from '../../../hooks';
-import { Asset } from '../../../interfaces';
+import { createUseMediaUiStyles, useIntl } from '../../../core';
 import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles({
@@ -13,46 +10,16 @@ const useStyles = createUseMediaUiStyles({
     tagSelection: {}
 });
 
-const tagsMatchAsset = (tags: string[], asset: Asset) => {
-    return (
-        tags.join(',') ===
-        asset.tags
-            .map(tag => tag.label)
-            .sort()
-            .join(',')
-    );
-};
+interface TagSelectBoxProps {
+    values: string[];
+    options: { label: string }[];
+    onChange: (tagNames: string[]) => void;
+    disabled?: boolean;
+}
 
-const TagSelectBox: React.FC = () => {
+const TagSelectBox = ({ values, options, onChange, disabled = false }: TagSelectBoxProps) => {
     const classes = useStyles();
-    const Notify = useNotify();
     const { translate } = useIntl();
-    const { tags: allTags } = useTagsQuery();
-    const { setAssetTags, loading } = useSetAssetTags();
-    const selectedAsset = useSelectedAsset();
-
-    const tags = useMemo(() => selectedAsset?.tags.map(({ label }) => label).sort(), [selectedAsset?.tags]);
-
-    const handleChange = useCallback(
-        newTags => {
-            if (!tagsMatchAsset(newTags, selectedAsset)) {
-                setAssetTags({
-                    asset: selectedAsset,
-                    tagNames: newTags
-                })
-                    .then(() => {
-                        // setSelectedAssetI(data.setAssetTags);
-                        Notify.ok(translate('actions.setAssetTags.success', 'The asset has been tagged'));
-                    })
-                    .catch(({ message }) => {
-                        Notify.error(translate('actions.setAssetTags.error', 'Error while tagging the asset'), message);
-                    });
-            }
-        },
-        [Notify, selectedAsset, setAssetTags, translate]
-    );
-
-    if (!selectedAsset) return null;
 
     return (
         <div className={classes.tagSelectBox}>
@@ -61,13 +28,14 @@ const TagSelectBox: React.FC = () => {
             </Headline>
             <MultiSelectBox
                 className={classes.tagSelection}
-                disabled={loading || selectedAsset.assetSource.readOnly}
+                disabled={disabled}
                 placeholder={translate('inspector.tags.placeholder', 'Select a tag')}
-                values={tags}
+                noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
+                values={values}
                 optionValueField="label"
-                options={allTags}
-                searchOptions={allTags}
-                onValuesChange={handleChange}
+                options={options}
+                searchOptions={options}
+                onValuesChange={onChange}
             />
         </div>
     );

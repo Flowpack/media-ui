@@ -10,7 +10,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         gridAutoRows: 'min-content',
         gridGap: theme.spacing.full,
         overflowY: 'auto',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
+        height: '100%'
     }
 }));
 

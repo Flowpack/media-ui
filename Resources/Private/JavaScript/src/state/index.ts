@@ -4,7 +4,7 @@ import currentPageState from './currentPageState';
 import loadingState from './loadingState';
 import selectedMediaTypeState from './selectedMediaTypeState';
 import searchTermState from './searchTermState';
-import selectedAssetCollectionState from './selectedAssetCollectionState';
+import selectedAssetCollectionIdState from './selectedAssetCollectionIdState';
 import selectedAssetForPreviewState from './selectedAssetForPreviewState';
 import selectedAssetIdState from './selectedAssetIdState';
 import selectedTagState from './selectedTagState';
@@ -17,7 +17,7 @@ export {
     loadingState,
     selectedMediaTypeState,
     searchTermState,
-    selectedAssetCollectionState,
+    selectedAssetCollectionIdState,
     selectedAssetForPreviewState,
     selectedAssetIdState,
     selectedTagState,

@@ -7,7 +7,11 @@ import useCreateTag from './useCreateTag';
 import useDeleteAsset from './useDeleteAsset';
 import useDeleteTag from './useDeleteTag';
 import useImportAsset from './useImportAsset';
+import useSelectAsset from './useSelectAsset';
+import useSelectAssetCollection from './useSelectAssetCollection';
+import useSelectTag from './useSelectTag';
 import useSelectedAsset from './useSelectedAsset';
+import useSelectedAssetCollection from './useSelectedAssetCollection';
 import useSelectAssetSource from './useSelectAssetSource';
 import useSetAssetTags from './useSetAssetTags';
 import useSetAssetCollections from './useSetAssetCollections';
@@ -17,6 +21,7 @@ import useTagAsset from './useTagAsset';
 import useTagsQuery from './useTagsQuery';
 import useUntagAsset from './useUntagAsset';
 import useUpdateAsset from './useUpdateAsset';
+import useUpdateAssetCollection from './useUpdateAssetCollection';
 import useUploadFile from './useUploadFile';
 import useUploadFiles from './useUploadFiles';
 import useViewModeSelection, { VIEW_MODES } from './useViewModeSelection';
@@ -34,14 +39,19 @@ export {
     useDeleteAsset,
     useDeleteTag,
     useImportAsset,
-    useSelectedAsset,
+    useSelectAsset,
+    useSelectAssetCollection,
+    useSelectTag,
     useSelectAssetSource,
+    useSelectedAsset,
+    useSelectedAssetCollection,
     useSetAssetTags,
     useSetAssetCollections,
     useTagAsset,
     useTagsQuery,
     useUntagAsset,
     useUpdateAsset,
+    useUpdateAssetCollection,
     useUploadFile,
     useUploadFiles,
     useViewModeSelection

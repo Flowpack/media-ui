@@ -1,32 +1,19 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Label, TextArea, TextInput } from '@neos-project/react-ui-components';
+import { TextArea, TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
 import { useSelectedAsset, useUpdateAsset } from '../../../hooks';
-import { CollectionSelectBox, MetadataView, TagSelectBox } from './index';
+import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
+import { useRecoilValue } from 'recoil';
+import selectedInspectorViewState from '../../../state/selectedInspectorViewState';
+import Property from './Property';
+import Actions from './Actions';
+import InspectorContainer from './InspectorContainer';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    inspector: {
-        display: 'grid',
-        gridAutoRows: 'auto',
-        gridGap: theme.spacing.full,
-        '& input, & textarea': {
-            width: '100%'
-        }
-    },
-    propertyGroup: {},
-    actions: {
-        display: 'flex',
-        position: 'sticky',
-        backgroundColor: theme.colors.mainBackground,
-        bottom: 0,
-        '& > *': {
-            flex: 1
-        }
-    },
     textArea: {
         // TODO: Remove when overriding rule is removed from Minimal Module Style in Neos
         '.neos textarea&': {
@@ -35,7 +22,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     }
 }));
 
-const AssetInspector: React.FC = () => {
+const AssetInspector = () => {
     const classes = useStyles();
     const selectedAsset = useSelectedAsset();
     const Notify = useNotify();
@@ -43,6 +30,7 @@ const AssetInspector: React.FC = () => {
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
     const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
+    const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
 
     const { updateAsset, loading } = useUpdateAsset();
 
@@ -87,74 +75,53 @@ const AssetInspector: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAsset?.id]);
 
-    if (!selectedAsset) return null;
+    if (!selectedAsset || selectedInspectorView !== 'asset') return null;
 
-    // TODO: Refactor parts into separate components
     return (
-        <div className={classes.inspector}>
-            <>
-                <div className={classes.propertyGroup}>
-                    <Label>{translate('inspector.title', 'Title')}</Label>
-                    <TextInput
-                        disabled={!isEditable}
-                        type="text"
-                        value={label || ''}
-                        onChange={setLabel}
-                        onEnterKey={handleApply}
-                    />
-                </div>
-                <div className={classes.propertyGroup}>
-                    <Label>{translate('inspector.caption', 'Caption')}</Label>
-                    <TextArea
-                        className={classes.textArea}
-                        disabled={!isEditable}
-                        minRows={3}
-                        expandedRows={6}
-                        value={caption || ''}
-                        onChange={setCaption}
-                    />
-                </div>
-                <div className={classes.propertyGroup}>
-                    <Label>{translate('inspector.copyrightNotice', 'Copyright notice')}</Label>
-                    <TextArea
-                        className={classes.textArea}
-                        disabled={!isEditable}
-                        minRows={2}
-                        expandedRows={4}
-                        value={copyrightNotice || ''}
-                        onChange={setCopyrightNotice}
-                    />
-                </div>
+        <InspectorContainer>
+            <Property label={translate('inspector.title', 'Title')}>
+                <TextInput
+                    disabled={!isEditable}
+                    type="text"
+                    value={label || ''}
+                    onChange={setLabel}
+                    onEnterKey={handleApply}
+                />
+            </Property>
+            <Property label={translate('inspector.caption', 'Caption')}>
+                <TextArea
+                    className={classes.textArea}
+                    disabled={!isEditable}
+                    minRows={3}
+                    expandedRows={6}
+                    value={caption || ''}
+                    onChange={setCaption}
+                />
+            </Property>
+            <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
+                <TextArea
+                    className={classes.textArea}
+                    disabled={!isEditable}
+                    minRows={2}
+                    expandedRows={4}
+                    value={copyrightNotice || ''}
+                    onChange={setCopyrightNotice}
+                />
+            </Property>
 
-                {isEditable && (
-                    <div className={classes.actions}>
-                        <Button
-                            disabled={!hasUnpublishedChanges}
-                            size="regular"
-                            style="lighter"
-                            hoverStyle="brand"
-                            onClick={handleDiscard}
-                        >
-                            {translate('inspector.actions.discard', 'Discard')}
-                        </Button>
-                        <Button
-                            disabled={!hasUnpublishedChanges}
-                            size="regular"
-                            style="success"
-                            hoverStyle="success"
-                            onClick={handleApply}
-                        >
-                            {translate('inspector.actions.apply', 'Apply')}
-                        </Button>
-                    </div>
-                )}
+            {isEditable && (
+                <Actions
+                    handleApply={handleApply}
+                    handleDiscard={handleDiscard}
+                    hasUnpublishedChanges={hasUnpublishedChanges}
+                />
+            )}
 
-                {selectedAsset.assetSource.supportsCollections && <CollectionSelectBox />}
-                {selectedAsset.assetSource.supportsTagging && <TagSelectBox />}
+            {selectedAsset.assetSource.supportsCollections && <CollectionSelectBox />}
+            {selectedAsset.assetSource.supportsTagging && <TagSelectBoxAsset />}
 
-                <MetadataView />
-            </>
-        </div>
+            <MetadataView />
+        </InspectorContainer>
     );
 };
 
