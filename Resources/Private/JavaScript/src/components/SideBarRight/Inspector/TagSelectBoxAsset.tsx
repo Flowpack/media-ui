@@ -26,7 +26,7 @@ const TagSelectBoxAsset = () => {
     const { setAssetTags, loading } = useSetAssetTags();
     const selectedAsset = useSelectedAsset();
 
-    const tags = useMemo(() => selectedAsset?.tags.map(({ label }) => label).sort(), [selectedAsset?.tags]);
+    const selectedTagIds = useMemo(() => selectedAsset?.tags.map(({ id }) => id).sort(), [selectedAsset?.tags]);
 
     const handleChange = useCallback(
         newTags => {
@@ -50,7 +50,7 @@ const TagSelectBoxAsset = () => {
 
     return (
         <TagSelectBox
-            values={tags}
+            values={selectedTagIds}
             options={allTags}
             onChange={handleChange}
             disabled={loading || selectedAsset.assetSource.readOnly}
