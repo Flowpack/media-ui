@@ -36,11 +36,13 @@ const TagSelectBoxAsset = () => {
                     tagNames: newTags
                 })
                     .then(() => {
-                        Notify.ok(translate('actions.updateAssetCollection.success', 'The asset has been tagged'));
+                        Notify.ok(
+                            translate('actions.tagAssetCollection.success', 'The asset collection has been tagged')
+                        );
                     })
                     .catch(({ message }) => {
                         Notify.error(
-                            translate('actions.updateAssetCollection.error', 'Error while tagging the asset'),
+                            translate('actions.tagAssetCollection.error', 'Error while tagging the asset collection'),
                             message
                         );
                     });
