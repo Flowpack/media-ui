@@ -5,7 +5,6 @@ import { useRecoilValue } from 'recoil';
 import { TextInput } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify } from '../../../core';
-import { TagSelectBoxAssetCollection } from '.';
 import selectedInspectorViewState from '../../../state/selectedInspectorViewState';
 import Actions from './Actions';
 import Property from './Property';

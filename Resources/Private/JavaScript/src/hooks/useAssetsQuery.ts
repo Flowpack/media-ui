@@ -8,7 +8,6 @@ import { currentPageState, loadingState, searchTermState, selectedMediaTypeState
 import { ASSETS_PER_PAGE } from '../core';
 import useSelectedAssetCollection from './useSelectedAssetCollection';
 import useSelectedTag from './useSelectedTag';
-import { tags } from '../../dev/fixtures';
 
 interface AssetsQueryResult {
     assets: Asset[];
