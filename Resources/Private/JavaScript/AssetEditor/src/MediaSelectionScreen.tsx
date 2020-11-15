@@ -5,6 +5,8 @@ import { RecoilRoot } from 'recoil';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
+import { createUploadLink } from 'apollo-upload-client';
+import { ApolloLink } from 'apollo-link';
 import { $get, $transform } from 'plow-js';
 
 // Neos dependencies are provided by the UI
@@ -22,10 +24,10 @@ import {
     NotifyProvider,
     Resolvers,
     PersistentStateManager,
-    IdFromObjectResolver
+    IdFromObjectResolver,
+    ApolloErrorHandler
 } from '../../src/core';
 import App from '../../src/components/App';
-import { createUploadLink } from 'apollo-upload-client';
 
 let apolloClient = null;
 
@@ -107,10 +109,13 @@ export default class MediaSelectionScreen extends React.PureComponent<
 
             apolloClient = new ApolloClient({
                 cache,
-                link: createUploadLink({
-                    uri: endpoints.graphql,
-                    credentials: 'same-origin'
-                }),
+                link: ApolloLink.from([
+                    ApolloErrorHandler,
+                    createUploadLink({
+                        uri: endpoints.graphql,
+                        credentials: 'same-origin'
+                    })
+                ]),
                 typeDefs: Resolvers.typeDefs,
                 resolvers: Resolvers.resolvers
             });

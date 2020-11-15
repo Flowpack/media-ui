@@ -1,26 +1,28 @@
 import * as React from 'react';
+import { createRef } from 'react';
 import { render } from 'react-dom';
 import Modal from 'react-modal';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
 import {
+    ApolloErrorHandler,
     IdFromObjectResolver,
     IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,
+    NotifyProvider,
     PersistentStateManager
 } from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
-import { createRef } from 'react';
-import { NotifyProvider } from './core';
 import { RecoilRoot } from 'recoil';
 
 loadIconLibrary();
@@ -49,10 +51,13 @@ window.onload = async (): Promise<void> => {
 
     const client = new ApolloClient({
         cache,
-        link: createUploadLink({
-            uri: endpoints.graphql,
-            credentials: 'same-origin'
-        }),
+        link: ApolloLink.from([
+            ApolloErrorHandler,
+            createUploadLink({
+                uri: endpoints.graphql,
+                credentials: 'same-origin'
+            })
+        ]),
         typeDefs,
         resolvers
     });
