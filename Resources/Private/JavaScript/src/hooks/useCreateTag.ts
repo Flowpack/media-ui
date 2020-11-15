@@ -4,7 +4,7 @@ import { Tag } from '../interfaces';
 import { ASSET_COLLECTIONS, CREATE_TAG, TAGS } from '../queries';
 
 interface CreateTagVariables {
-    tag: string;
+    label: string;
     assetCollectionId?: string;
 }
 
@@ -15,7 +15,7 @@ export default function useCreateTag() {
 
     const createTag = (label: string, assetCollectionId?: string) =>
         action({
-            variables: { tag: label, assetCollectionId },
+            variables: { label, assetCollectionId },
             // FIXME: Optimistic response has to be adjusted as we don't know the id of the created tag
             // optimisticResponse: {
             //     __typename: 'Mutation',
