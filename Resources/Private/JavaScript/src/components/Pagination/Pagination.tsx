@@ -47,8 +47,6 @@ const Pagination: React.FC = () => {
     });
 
     const handlePageClick = useCallback(page => setCurrentPage(page), [setCurrentPage]);
-    const handleFirstPageClick = useCallback(() => setCurrentPage(1), [setCurrentPage]);
-    const handleLastPageClick = useCallback(() => setCurrentPage(numberOfPages), [setCurrentPage, numberOfPages]);
     const handlePreviousPageClick = useCallback(() => setCurrentPage(prev => prev - 1), [setCurrentPage]);
     const handleNextPageClick = useCallback(() => setCurrentPage(prev => prev + 1), [setCurrentPage]);
 
@@ -96,7 +94,8 @@ const Pagination: React.FC = () => {
                     {displayRange.start > 1 && (
                         <PaginationItem
                             title={translate('pagination.firstPageTitle', `Go to first page`)}
-                            onClick={handleFirstPageClick}
+                            onClick={handlePageClick}
+                            page={1}
                         />
                     )}
                     {displayRange.hasLessPages && <li className={classes.ellipsis}>…</li>}
@@ -113,7 +112,8 @@ const Pagination: React.FC = () => {
                     {displayRange.end < numberOfPages && (
                         <PaginationItem
                             title={translate('pagination.lastPageTitle', `Go to last page`)}
-                            onClick={handleLastPageClick}
+                            onClick={handlePageClick}
+                            page={numberOfPages}
                         />
                     )}
                     {currentPage < numberOfPages && (
