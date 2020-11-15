@@ -7,15 +7,15 @@ import { Button, Icon } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, useIntl } from '../../../core';
 import { createAssetCollectionDialogState } from '../../../state';
 
-const useStyles = createUseMediaUiStyles(() => ({
+const useStyles = createUseMediaUiStyles({
     plusIcon: {
         top: '15px !important',
         left: '13px !important',
         width: '9px !important'
     }
-}));
+});
 
-const AssetCollectionTree: React.FC = () => {
+const AddAssetCollectionButton: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const setCreateAssetCollectionDialogState = useSetRecoilState(createAssetCollectionDialogState);
@@ -40,4 +40,4 @@ const AssetCollectionTree: React.FC = () => {
     );
 };
 
-export default React.memo(AssetCollectionTree);
+export default React.memo(AddAssetCollectionButton);

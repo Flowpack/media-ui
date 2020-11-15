@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify } from '../../../core';
 import { TagSelectBoxAssetCollection } from '.';
-import { useRecoilValue } from 'recoil';
 import selectedInspectorViewState from '../../../state/selectedInspectorViewState';
 import Actions from './Actions';
 import Property from './Property';
@@ -40,7 +40,7 @@ const TagInspector = () => {
                     Notify.ok(translate('actions.updateTag.success', 'The tag has been updated'));
                 })
                 .catch(({ message }) => {
-                    Notify.error(translate('actions.deleteTag.error', 'Error while updating the tag'), message);
+                    Notify.error(translate('actions.updateTag.error', 'Error while updating the tag'), message);
                 });
         }
     }, [Notify, translate, selectedTag, updateTag, label]);

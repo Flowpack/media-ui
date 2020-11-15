@@ -9,7 +9,7 @@ const useSelectedTag = (): Tag => {
     const client = useApolloClient();
     const selectedTagId = useRecoilValue(selectedTagIdState);
 
-    // Read asset selection from cache as we can only select tags that have been queries before
+    // Read selection from cache as we can only select tags that have been queried before
     try {
         return client.readFragment(
             {
@@ -21,7 +21,7 @@ const useSelectedTag = (): Tag => {
         );
     } catch (e) {
         // TODO: Run query to get the tag when its not found
-        console.error(e, 'selected asset collecion missing in cache');
+        console.error(e, 'Selected tag missing in cache');
     }
 
     return null;
