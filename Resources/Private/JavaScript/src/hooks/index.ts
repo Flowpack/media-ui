@@ -17,7 +17,6 @@ import useSetAssetTags from './useSetAssetTags';
 import useSetAssetCollections from './useSetAssetCollections';
 import useCreateAssetCollection from './useCreateAssetCollection';
 import useDeleteAssetCollection from './useDeleteAssetCollection';
-import useTagAsset from './useTagAsset';
 import useTagsQuery from './useTagsQuery';
 import useUntagAsset from './useUntagAsset';
 import useUpdateAsset from './useUpdateAsset';
@@ -47,7 +46,6 @@ export {
     useSelectedAssetCollection,
     useSetAssetTags,
     useSetAssetCollections,
-    useTagAsset,
     useTagsQuery,
     useUntagAsset,
     useUpdateAsset,
