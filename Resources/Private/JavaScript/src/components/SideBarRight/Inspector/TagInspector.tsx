@@ -63,8 +63,6 @@ const TagInspector = () => {
                 handleDiscard={handleDiscard}
                 hasUnpublishedChanges={hasUnpublishedChanges}
             />
-
-            <TagSelectBoxAssetCollection />
         </InspectorContainer>
     );
 };
