@@ -20,7 +20,7 @@ const tagsMatchAssetCollection = (tags: Tag[], assetCollection: AssetCollection)
     );
 };
 
-const TagSelectBoxAsset = () => {
+const TagSelectBoxAssetCollection = () => {
     const Notify = useNotify();
     const { translate } = useIntl();
     const { tags: allTags } = useTagsQuery();
@@ -57,4 +57,4 @@ const TagSelectBoxAsset = () => {
     return <TagSelectBox values={tagIds} options={allTags} onChange={handleChange} />;
 };
 
-export default React.memo(TagSelectBoxAsset);
+export default React.memo(TagSelectBoxAssetCollection);
