@@ -16,15 +16,16 @@ export default function useCreateTag() {
     const createTag = (label: string, assetCollectionId?: string) =>
         action({
             variables: { tag: label, assetCollectionId },
-            optimisticResponse: {
-                __typename: 'Mutation',
-                createTag: {
-                    __typename: 'Tag',
-                    label: label,
-                    parent: null,
-                    children: []
-                }
-            },
+            // FIXME: Optimistic response has to be adjusted as we don't know the id of the created tag
+            // optimisticResponse: {
+            //     __typename: 'Mutation',
+            //     createTag: {
+            //         __typename: 'Tag',
+            //         label: label,
+            //         parent: null,
+            //         children: []
+            //     }
+            // },
             update: (proxy, { data: { createTag: newTag } }) => {
                 const { assetCollections } = proxy.readQuery({ query: ASSET_COLLECTIONS });
                 const updatedAssetCollections = assetCollections.map(assetCollection => {
