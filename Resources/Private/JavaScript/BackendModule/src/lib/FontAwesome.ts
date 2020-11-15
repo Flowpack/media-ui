@@ -15,6 +15,7 @@ import { faChevronCircleUp } from '@fortawesome/free-solid-svg-icons/faChevronCi
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons/faChevronDown';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons/faChevronUp';
 import { faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons/faCloudDownloadAlt';
+import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons/faExpandAlt';
 import { faFile } from '@fortawesome/free-solid-svg-icons/faFile';
@@ -57,6 +58,7 @@ export default function loadIconLibrary() {
         faChevronDown,
         faChevronUp,
         faCloudDownloadAlt,
+        faDownload,
         faExclamationCircle,
         faExpandAlt,
         faFile,

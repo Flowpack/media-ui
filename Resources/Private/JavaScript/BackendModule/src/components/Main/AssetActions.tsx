@@ -68,6 +68,11 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     onClick={onDeleteAsset}
                 />
             )}
+            {asset.file?.url && (
+                <a href={asset.file.url} download title={translate('itemActions.download', 'Download asset')}>
+                    <IconButton icon="download" size="regular" style="transparent" hoverStyle="warn" />
+                </a>
+            )}
         </>
     );
 };
