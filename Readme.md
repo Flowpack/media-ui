@@ -97,6 +97,8 @@ The dev server allows to run the module without a Neos instance.
 This is also the basis for running most tests and implementing new features.
 
     yarn dev
+    
+Enter `localhost:8000` in your browser and you will have a running media ui instance without neos.
 
 ### Building the module assets
 
