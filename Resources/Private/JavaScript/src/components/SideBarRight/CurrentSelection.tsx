@@ -7,8 +7,7 @@ import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
-import { useSelectedAsset } from '../../hooks';
-import useSelectedAssetCollection from '../../hooks/useSelectedAssetCollection';
+import { useSelectedAsset, useSelectedAssetCollection, useSelectedTag } from '../../hooks';
 import selectedInspectorViewState from '../../state/selectedInspectorViewState';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -23,6 +22,7 @@ const CurrentSelection = () => {
     const classes = useStyles();
     const selectedAsset = useSelectedAsset();
     const selectedAssetCollection = useSelectedAssetCollection();
+    const selectedTag = useSelectedTag();
     const [selectedInspectorView, setSelectedInspectorView] = useRecoilState(selectedInspectorViewState);
     const { translate } = useIntl();
 
@@ -36,11 +36,17 @@ const CurrentSelection = () => {
         return 'file';
     }, [selectedAsset?.file.mediaType]);
 
+    // Create selection options for parent tag/collection
     const options = [
         selectedAssetCollection && {
             value: 'assetCollection',
             label: selectedAssetCollection.title,
             icon: 'folder'
+        },
+        selectedTag && {
+            value: 'tag',
+            label: selectedTag.label,
+            icon: 'tag'
         },
         selectedAsset && { value: 'asset', label: selectedAsset.label, icon: assetIcon }
     ].filter(Boolean);

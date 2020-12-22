@@ -7,7 +7,7 @@ import searchTermState from './searchTermState';
 import selectedAssetCollectionIdState from './selectedAssetCollectionIdState';
 import selectedAssetForPreviewState from './selectedAssetForPreviewState';
 import selectedAssetIdState from './selectedAssetIdState';
-import selectedTagState from './selectedTagState';
+import selectedTagIdState from './selectedTagIdState';
 import uploadDialogState from './uploadDialogState';
 
 export {
@@ -20,6 +20,6 @@ export {
     selectedAssetCollectionIdState,
     selectedAssetForPreviewState,
     selectedAssetIdState,
-    selectedTagState,
+    selectedTagIdState,
     uploadDialogState
 };

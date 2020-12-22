@@ -5,8 +5,10 @@ import * as PersistentStateManager from './PersistentStateManager';
 import * as Resolvers from './Resolvers';
 import { useNotify, NotifyProvider } from './Notify';
 import IdFromObjectResolver from './IdFromObjectResolver';
+import ApolloErrorHandler from './ApolloErrorHandler';
 
 export {
+    ApolloErrorHandler,
     ASSETS_PER_PAGE,
     IntlProvider,
     MediaUiProvider,

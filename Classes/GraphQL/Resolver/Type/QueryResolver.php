@@ -101,13 +101,13 @@ class QueryResolver implements ResolverInterface
     ): ?AssetProxyQueryInterface {
         [
             'assetSourceId' => $assetSourceId,
-            'tag' => $tag,
+            'tagId' => $tagId,
             'assetCollectionId' => $assetCollectionId,
             'mediaType' => $mediaType,
             'searchTerm' => $searchTerm,
         ] = $variables + [
             'assetSourceId' => 'neos',
-            'tag' => null,
+            'tagId' => null,
             'assetCollectionId' => null,
             'mediaType' => null,
             'searchTerm' => null
@@ -139,8 +139,8 @@ class QueryResolver implements ResolverInterface
 
         // TODO: Implement sorting via `SupportsSortingInterface`
 
-        if ($tag && $assetProxyRepository instanceof SupportsTaggingInterface) {
-            $tag = $this->tagRepository->findOneByLabel($tag);
+        if ($tagId && $assetProxyRepository instanceof SupportsTaggingInterface) {
+            $tag = $this->tagRepository->findByIdentifier($tagId);
             if ($tag) {
                 return $assetProxyRepository->findByTag($tag)->getQuery();
             }

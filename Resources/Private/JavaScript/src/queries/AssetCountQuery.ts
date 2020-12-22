@@ -6,7 +6,7 @@ const ASSET_COUNT = gql`
         $assetSourceId: AssetSourceId
         $assetCollectionId: AssetCollectionId
         $mediaType: MediaType
-        $tag: TagLabel
+        $tagId: TagId
     ) {
         selectedAssetSourceId @client(always: true) @export(as: "assetSourceId")
         assetCount(
@@ -14,7 +14,7 @@ const ASSET_COUNT = gql`
             assetSourceId: $assetSourceId
             assetCollectionId: $assetCollectionId
             mediaType: $mediaType
-            tag: $tag
+            tagId: $tagId
         )
     }
 `;

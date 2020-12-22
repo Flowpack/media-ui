@@ -1,18 +1,18 @@
 import { useSetRecoilState } from 'recoil';
 import { AssetCollection, Tag } from '../interfaces';
-import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagState } from '../state';
+import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagIdState } from '../state';
 import selectedInspectorViewState from '../state/selectedInspectorViewState';
 
 const useSelectTag = () => {
     const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
-    const setSelectedTag = useSetRecoilState(selectedTagState);
+    const setSelectedTagId = useSetRecoilState(selectedTagIdState);
     const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
     const setSelectedInspectorView = useSetRecoilState(selectedInspectorViewState);
 
     return (tag: Tag, assetCollection: AssetCollection = null) => {
         setSelectedInspectorView('tag');
         setSelectedAssetCollectionId(assetCollection?.id);
-        setSelectedTag(tag);
+        setSelectedTagId(tag?.id);
         setSelectedAssetId(null);
     };
 };

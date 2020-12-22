@@ -59,6 +59,7 @@ const assetSources: AssetSource[] = [
 
 const tags: Tag[] = range(10).map(index => ({
     __typename: 'Tag',
+    id: `index ${index + 1}`,
     label: `Example tag ${index + 1}`,
     parent: null,
     children: []

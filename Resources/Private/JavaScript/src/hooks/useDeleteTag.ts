@@ -1,23 +1,23 @@
 import { useMutation } from '@apollo/react-hooks';
 import { useRecoilState } from 'recoil';
 
-import { selectedTagState } from '../state';
+import { selectedTagIdState } from '../state';
 import { Tag } from '../interfaces';
 import { ASSET_COLLECTIONS, DELETE_TAG, TAGS } from '../queries';
 
 interface DeleteTagVariables {
-    tag: string;
+    id: string;
 }
 
 export default function useDeleteTag() {
     const [action, { error, data }] = useMutation<{ __typename: string; deleteTag: boolean }, DeleteTagVariables>(
         DELETE_TAG
     );
-    const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
+    const [selectedTagId, setSelectedTagId] = useRecoilState(selectedTagIdState);
 
-    const deleteTag = ({ label }: Tag) =>
+    const deleteTag = (id: string) =>
         action({
-            variables: { tag: label },
+            variables: { id },
             optimisticResponse: {
                 __typename: 'Mutation',
                 deleteTag: true
@@ -26,7 +26,7 @@ export default function useDeleteTag() {
                 if (!success) return;
                 const { assetCollections } = proxy.readQuery({ query: ASSET_COLLECTIONS });
                 const updatedAssetCollections = assetCollections.map(assetCollection => {
-                    return { ...assetCollection, tags: assetCollection.tags.filter(tag => tag?.label !== label) };
+                    return { ...assetCollection, tags: assetCollection.tags.filter(tag => tag?.id !== id) };
                 });
                 proxy.writeQuery({
                     query: ASSET_COLLECTIONS,
@@ -37,14 +37,14 @@ export default function useDeleteTag() {
                 proxy.writeQuery({
                     query: TAGS,
                     data: {
-                        tags: tags.filter(tag => tag.label !== label)
+                        tags: tags.filter(tag => tag.id !== id)
                     }
                 });
             }
         }).then(success => {
             // Unselect currently selected tag if it was just deleted
-            if (success && label === selectedTag?.label) {
-                setSelectedTag(null);
+            if (success && id === selectedTagId) {
+                setSelectedTagId(null);
             }
         });
 

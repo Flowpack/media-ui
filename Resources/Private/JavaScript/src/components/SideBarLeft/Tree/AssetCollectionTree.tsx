@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import { IconButton, Tree, Headline } from '@neos-project/react-ui-components';
 
@@ -9,7 +9,7 @@ import { MediaUiTheme } from '../../../interfaces';
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
-import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagState } from '../../../state';
+import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagIdState } from '../../../state';
 import {
     useAssetCollectionsQuery,
     useDeleteAssetCollection,
@@ -22,6 +22,7 @@ import {
 } from '../../../hooks';
 import AddAssetCollectionButton from './AddAssetCollectionButton';
 import AddTagButton from './AddTagButton';
+import useSelectedTag from '../../../hooks/useSelectedTag';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
@@ -51,8 +52,9 @@ const AssetCollectionTree = () => {
     const selectTag = useSelectTag();
     const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
     const selectedAssetCollection = useSelectedAssetCollection();
+    const selectedTag = useSelectedTag();
     const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
-    const [selectedTag, setSelectedTag] = useRecoilState(selectedTagState);
+    const setSelectedTagId = useSetRecoilState(selectedTagIdState);
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAssetSource] = useSelectAssetSource();
@@ -68,14 +70,14 @@ const AssetCollectionTree = () => {
                 ])
             );
             if (!confirm) return;
-            deleteTag(selectedTag)
+            deleteTag(selectedTag.id)
                 .then(() => {
                     Notify.ok(translate('action.deleteTag.success', 'The tag has been deleted'));
                 })
                 .catch(({ message }) => {
                     Notify.error(translate('action.deleteTag.error', 'Error while trying to delete the tag'), message);
                 });
-            setSelectedTag(null);
+            setSelectedTagId(null);
             setSelectedAssetCollectionId(null);
             setSelectedAssetId(null);
         } else if (selectedAssetCollection) {
@@ -99,7 +101,7 @@ const AssetCollectionTree = () => {
                         error.message
                     );
                 });
-            setSelectedTag(null);
+            setSelectedTagId(null);
             setSelectedAssetCollectionId(null);
             setSelectedAssetId(null);
         }
@@ -108,7 +110,7 @@ const AssetCollectionTree = () => {
         selectedAssetCollection,
         translate,
         deleteTag,
-        setSelectedTag,
+        setSelectedTagId,
         setSelectedAssetCollectionId,
         setSelectedAssetId,
         Notify,
@@ -149,9 +151,9 @@ const AssetCollectionTree = () => {
                 >
                     {tags?.map(tag => (
                         <TagTreeNode
-                            key={tag.label}
+                            key={tag.id}
                             tag={tag}
-                            isActive={!selectedAssetCollection && tag.label == selectedTag?.label}
+                            isActive={!selectedAssetCollection && tag.id == selectedTag?.id}
                             level={2}
                             onClick={selectTag}
                         />
@@ -167,11 +169,11 @@ const AssetCollectionTree = () => {
                     >
                         {assetCollection.tags?.map(tag => (
                             <TagTreeNode
-                                key={tag.label}
+                                key={tag.id}
                                 tag={tag}
                                 assetCollection={assetCollection}
                                 isActive={
-                                    assetCollection.id == selectedAssetCollection?.id && tag.label == selectedTag?.label
+                                    assetCollection.id == selectedAssetCollection?.id && tag.id == selectedTag?.id
                                 }
                                 level={2}
                                 onClick={selectTag}
