@@ -5,7 +5,7 @@ import gql from 'graphql-tag';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 
-import { assetCollections, assets, assetSources, tags } from './fixtures';
+import { loadFixtures } from './fixtures';
 import { Tag } from '../src/interfaces';
 
 const PORT = 8000;
@@ -13,6 +13,8 @@ const PORT = 8000;
 const bundler = new Bundler(__dirname + '/index.html', {
     outDir: __dirname + '/dist'
 });
+
+let { assets, assetCollections, assetSources, tags } = loadFixtures();
 
 const filterAssets = (assetSourceId = '', tag = '', assetCollection = '', mediaType = '', searchTerm = '') => {
     return assets.filter(asset => {
@@ -109,8 +111,18 @@ const app = express();
 
 server.applyMiddleware({ app, path: '/graphql' });
 
+app.use((req, res, next) => {
+    if (req.query.reset) {
+        const fixtures = loadFixtures();
+        assets = fixtures.assets;
+        assetCollections = fixtures.assetCollections;
+        tags = fixtures.tags;
+        assetSources = fixtures.assetSources;
+        console.log('Fixtures have been reset');
+    }
+    next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(bundler.middleware());
 
 app.listen(PORT, () => {

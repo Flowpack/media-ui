@@ -1,6 +1,8 @@
 import { Selector } from 'testcafe';
 
-fixture('Media Module').page('http://localhost:8000/');
+import { SERVER_NAME } from './helpers';
+
+fixture('Media Ui').page(SERVER_NAME);
 
 const firstThumbnail = Selector('[class^="thumbnail-"] [class^="caption-"]');
 

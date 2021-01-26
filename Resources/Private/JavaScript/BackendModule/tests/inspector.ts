@@ -1,6 +1,8 @@
 import { Selector } from 'testcafe';
 
-fixture('Media Module').page('http://localhost:8000/');
+import { SERVER_NAME } from './helpers';
+
+fixture('Media Ui').page(SERVER_NAME);
 
 const firstThumbnail = Selector('[class^="thumbnail-"]');
 const inspector = Selector('[class^="inspector-"]');
@@ -19,8 +21,9 @@ test('Tagging works', async t => {
     await t
         .click(firstThumbnail)
         .click(tagSelection)
-        .click(tagSelection.find('span[title="Example tag 1"]'))
-        .click(actions.child().withText('Apply'))
-        .getBrowserConsoleMessages()
-        .then(({ info }) => t.expect(info.includes('The asset has been tagged')).ok('', { timeoutSeconds: 1 }));
+        .click(Selector('[class^="_dropDown_"] span[title="Example tag 1"]'))
+        .click(actions.child().withText('Apply'));
+}).after(async (t) => {
+    const { log } = await t.getBrowserConsoleMessages();
+    await t.expect(log.includes('The asset has been tagged')).ok('')
 });

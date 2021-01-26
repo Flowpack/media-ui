@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash.clonedeep';
+
 import { Asset, AssetCollection, AssetSource, Image, IptcProperty, Tag } from '../src/interfaces';
 
 const exampleImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
@@ -105,4 +107,13 @@ const assets: Asset[] = range(150).map(index => {
     };
 });
 
-export { assetSources, assetCollections, tags, assets };
+const loadFixtures = () => {
+    return {
+        assets: cloneDeep(assets),
+        assetCollections: cloneDeep(assetCollections),
+        assetSources: cloneDeep(assetSources),
+        tags: cloneDeep(tags)
+    }
+}
+
+export { loadFixtures };
