@@ -8,7 +8,7 @@
   },
   "scripts": {
     "postinstall": "patch-package",
-    "lint": "tsc --noEmit && eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
+    "lint": "eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
     "test": "yarn workspace backend-module run test:e2e",
     "dev": "yarn workspace backend-module run dev",
     "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:ui-plugin\"",
@@ -20,5 +20,16 @@
   ],
   "workspaces": [
     "Resources/Private/JavaScript/*"
-  ]
+  ],
+  "devDependencies": {
+    "@neos-project/eslint-config-neos": "*",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
+    "eslint": "^7.16.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-prettier": "^3.3.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-testcafe": "^0.2.1"
+  }
 }

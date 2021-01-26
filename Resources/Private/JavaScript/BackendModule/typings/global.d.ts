@@ -1,5 +1,11 @@
 interface NeosI18n {
-    translate: (id: string, fallback: string, packageKey: string, source: string, args: any[]) => string;
+    translate: (
+        id: string,
+        fallback: string,
+        packageKey: string,
+        source: string,
+        args: Record<string, unknown> | string[]
+    ) => string;
     initialized: boolean;
 }
 

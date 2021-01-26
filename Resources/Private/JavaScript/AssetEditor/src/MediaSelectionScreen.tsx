@@ -33,8 +33,7 @@ let apolloClient = null;
 
 interface MediaSelectionScreenProps {
     i18nRegistry: I18nRegistry;
-    handleAssetSelected: Function;
-    neos: object;
+    neos: Record<string, unknown>;
     // TODO: Forward and use prop in selection screen
     type: 'assets' | 'images';
     onComplete: (localAssetIdentifier: string) => void;
@@ -126,11 +125,11 @@ export default class MediaSelectionScreen extends React.PureComponent<
     translate = (
         id?: string,
         fallback?: string,
-        params?: {},
+        params?: Record<string, unknown> | string[],
         packageKey = 'Flowpack.Media.Ui',
         sourceName = 'Main'
     ) => {
-        return this.props.i18nRegistry.translate(id, fallback, packageKey, sourceName);
+        return this.props.i18nRegistry.translate(id, fallback, params, packageKey, sourceName);
     };
 
     render() {

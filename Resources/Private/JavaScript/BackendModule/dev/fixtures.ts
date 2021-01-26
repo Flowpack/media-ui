@@ -113,7 +113,7 @@ const loadFixtures = () => {
         assetCollections: cloneDeep(assetCollections),
         assetSources: cloneDeep(assetSources),
         tags: cloneDeep(tags)
-    }
-}
+    };
+};
 
 export { loadFixtures };

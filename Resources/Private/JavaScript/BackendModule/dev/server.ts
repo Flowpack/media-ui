@@ -105,7 +105,6 @@ const typeDefs = gql`
     ${fs.readFileSync(path.join(__dirname, '../../../GraphQL/schema.root.graphql'), 'utf8')}
 `;
 
-// @ts-ignore
 const server = new ApolloServer({ typeDefs, resolvers, uploads: false });
 const app = express();
 

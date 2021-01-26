@@ -25,7 +25,7 @@ export function resetLocalState(cache: ApolloCache<NormalizedCacheObject>) {
     cache.writeData({ data: { ...data } });
 }
 
-export function updateLocalState(data: object, cache: ApolloCache<NormalizedCacheObject>) {
+export function updateLocalState(data: Record<string, string>, cache: ApolloCache<NormalizedCacheObject>) {
     Object.keys(data).forEach(key => localStorage.setItem(`${STORAGE_PREFIX}.${key}`, data[key]));
     cache.writeData({ data: { ...data } });
 }
