@@ -6,8 +6,8 @@
         "neos/media": "^5.2 || ~7.0",
         "neos/neos": "^5.2 || ~7.0",
         "neos/neos-ui": "^5.2 || ~7.0",
-        "t3n/graphql": "^2.1",
-        "t3n/graphql-upload": "^1.0"
+        "t3n/graphql": "^2.1 || ^3.0",
+        "t3n/graphql-upload": "^1.0 || ^2.0"
     },
     "suggest": {
       "phpstan/phpstan": "For running code quality checks"
