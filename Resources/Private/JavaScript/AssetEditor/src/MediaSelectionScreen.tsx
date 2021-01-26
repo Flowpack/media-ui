@@ -16,7 +16,7 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-import { I18nRegistry, Notify } from '../../src/interfaces';
+import { I18nRegistry, Notify } from 'backend-module/src/interfaces';
 import {
     IntlProvider,
     MediaUiProvider,
@@ -26,8 +26,8 @@ import {
     PersistentStateManager,
     IdFromObjectResolver,
     ApolloErrorHandler
-} from '../../src/core';
-import App from '../../src/components/App';
+} from 'backend-module/src/core';
+import App from 'backend-module/src/components/App';
 
 let apolloClient = null;
 

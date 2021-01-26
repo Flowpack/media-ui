@@ -100,7 +100,7 @@ const resolvers = {
 };
 
 const typeDefs = gql`
-    ${fs.readFileSync(path.join(__dirname, '../../GraphQL/schema.root.graphql'), 'utf8')}
+    ${fs.readFileSync(path.join(__dirname, '../../../GraphQL/schema.root.graphql'), 'utf8')}
 `;
 
 // @ts-ignore
