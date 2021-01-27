@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
@@ -18,15 +19,19 @@ use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
+use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
+use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Media\Exception\AssetServiceException;
+use Neos\Neos\Domain\Repository\SiteRepository;
 use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
 
@@ -76,6 +81,13 @@ class MutationResolver implements ResolverInterface
      * @var AssetCollectionRepository
      */
     protected $assetCollectionRepository;
+
+
+    /**
+     * @Flow\Inject
+     * @var SiteRepository
+     */
+    protected $siteRepository;
 
     /**
      * @param $_
@@ -171,7 +183,7 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'assetSourceId' => $assetSourceId,
-            'tag' => $tagName
+            'tagId' => $tagId
         ] = $variables;
 
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
@@ -184,7 +196,7 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Cannot tag asset that was never imported', 1591561758);
         }
 
-        $tag = $this->tagRepository->findOneByLabel($tagName);
+        $tag = $this->tagRepository->findByIdentifier($tagId);
 
         if (!$tag) {
             throw new Exception('Cannot tag asset with tag that does not exist', 1591561845);
@@ -213,9 +225,8 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'assetSourceId' => $assetSourceId,
-            'tags' => $tagNames
+            'tagIds' => $tagIds
         ] = $variables;
-
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
             return null;
@@ -227,8 +238,8 @@ class MutationResolver implements ResolverInterface
         }
 
         $tags = new ArrayCollection();
-        foreach ($tagNames as $tagName) {
-            $tag = $this->tagRepository->findOneByLabel($tagName);
+        foreach ($tagIds as $tagId) {
+            $tag = $this->tagRepository->findByIdentifier($tagId);
             if (!$tag) {
                 throw new Exception('Cannot tag asset with tag that does not exist', 1594621318);
             }
@@ -257,9 +268,8 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'assetSourceId' => $assetSourceId,
-            'collections' => $collectionNames
+            'assetCollectionIds' => $assetCollectionIds
         ] = $variables;
-
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
             return null;
@@ -270,15 +280,15 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Cannot assign collections to asset that was never imported', 1594621322);
         }
 
-        $collections = new ArrayCollection();
-        foreach ($collectionNames as $collectionName) {
-            $collection = $this->assetCollectionRepository->findOneByTitle($collectionName);
+        $assetCollections = new ArrayCollection();
+        foreach ($assetCollectionIds as $assetCollectionId) {
+            $collection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
             if (!$collection) {
                 throw new Exception('Cannot assign non existing assign collection to asset', 1594621318);
             }
-            $collections->add($collection);
+            $assetCollections->add($collection);
         }
-        $asset->setAssetCollections($collections);
+        $asset->setAssetCollections($assetCollections);
 
         try {
             $this->assetRepository->update($asset);
@@ -301,7 +311,7 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'assetSourceId' => $assetSourceId,
-            'tag' => $tagName
+            'tagId' => $tagId
         ] = $variables;
 
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
@@ -314,7 +324,7 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Cannot untag asset that was never imported', 1591561930);
         }
 
-        $tag = $this->tagRepository->findOneByLabel($tagName);
+        $tag = $this->tagRepository->findByIdentifier($tagId);
 
         if (!$tag) {
             throw new Exception('Cannot untag asset from tag that does not exist', 1591561934);
@@ -424,5 +434,187 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Could not import asset', 1591972264);
         }
         return $importedAsset;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return AssetCollection
+     * @throws IllegalObjectTypeException
+     */
+    public function createAssetCollection($_, array $variables): AssetCollection
+    {
+        [
+            'title' => $title,
+        ] = $variables;
+
+        $newAssetCollection = new AssetCollection($title);
+
+        // FIXME: Multiple asset collections with the same title can exist, but do we want that?
+
+        $this->assetCollectionRepository->add($newAssetCollection);
+
+        return $newAssetCollection;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return array
+     * @throws Exception|IllegalObjectTypeException
+     */
+    public function deleteAssetCollection($_, array $variables): array
+    {
+        [
+            'id' => $id,
+        ] = $variables;
+
+        $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
+
+        if (!$assetCollection) {
+            throw new Exception('Asset collection not found', 1591972269);
+        }
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        foreach ($this->siteRepository->findByAssetCollection($assetCollection) as $site) {
+            $site->setAssetCollection(null);
+            $this->siteRepository->update($site);
+        }
+
+        $this->assetCollectionRepository->remove($assetCollection);
+
+        return [
+            'success' => true,
+        ];
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return AssetCollection|null
+     * @throws Exception
+     */
+    public function updateAssetCollection($_, array $variables): ?AssetCollection
+    {
+        [
+            'id' => $id,
+            'title' => $title,
+            'tagIds' => $tagIds
+        ] = $variables + ['title' => null, 'tagIds' => null];
+
+        $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
+
+        if (!$assetCollection) {
+            throw new Exception('Asset collection not found', 1590659045);
+        }
+
+        if ($title !== null) {
+            $assetCollection->setTitle($title);
+        }
+
+        if ($tagIds !== null) {
+            $tags = new ArrayCollection();
+            foreach ($tagIds as $tagId) {
+                $tag = $this->tagRepository->findByIdentifier($tagId);
+                if (!$tag) {
+                    throw new Exception('Cannot tag asset collection with tag that does not exist', 1594621319);
+                }
+                $tags->add($tag);
+            }
+            $assetCollection->setTags($tags);
+        }
+
+        $this->assetCollectionRepository->update($assetCollection);
+
+        return $assetCollection;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return Tag
+     * @throws Exception|IllegalObjectTypeException
+     */
+    public function createTag($_, array $variables): Tag
+    {
+        [
+            'label' => $label,
+            'assetCollectionId' => $assetCollectionId
+        ] = $variables + ['assetCollectionId' => null];
+
+        $tag = $this->tagRepository->findOneByLabel($label);
+        if ($tag === null) {
+            $tag = new Tag($label);
+            $this->tagRepository->add($tag);
+        } else {
+            throw new Exception('Tag already exists', 1603921233);
+        }
+
+        if ($assetCollectionId) {
+            $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
+            if ($assetCollection) {
+                $assetCollection->addTag($tag);
+                $this->assetCollectionRepository->update($assetCollection);
+            } else {
+                throw new Exception('Asset collection not found', 1603921193);
+            }
+        }
+        return $tag;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return Tag
+     * @throws Exception
+     */
+    public function updateTag($_, array $variables): ?Tag
+    {
+        [
+            'id' => $id,
+            'label' => $label,
+        ] = $variables + ['label' => null];
+
+        $tag = $this->tagRepository->findByIdentifier($id);
+
+        if (!$tag) {
+            throw new Exception('Tag not found', 1590659046);
+        }
+
+        if ($label !== null) {
+            $tag->setLabel($label);
+        }
+
+        $this->tagRepository->update($tag);
+
+        return $tag;
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return bool
+     * @throws Exception|IllegalObjectTypeException|InvalidQueryException
+     */
+    public function deleteTag($_, array $variables): bool
+    {
+        [
+            'id' => $id,
+        ] = $variables;
+
+        $tag = $this->tagRepository->findByIdentifier($id);
+
+        if (!$tag) {
+            throw new Exception('Tag not found', 1591553709);
+        }
+
+        $taggedAssets = $this->assetRepository->findByTag($tag);
+        foreach ($taggedAssets as $asset) {
+            $asset->removeTag($tag);
+            $this->assetRepository->update($asset);
+        }
+        $this->tagRepository->remove($tag);
+
+        return true;
     }
 }

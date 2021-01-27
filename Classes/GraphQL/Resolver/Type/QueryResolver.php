@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
@@ -15,7 +16,6 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
-use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
@@ -101,14 +101,14 @@ class QueryResolver implements ResolverInterface
     ): ?AssetProxyQueryInterface {
         [
             'assetSourceId' => $assetSourceId,
-            'tag' => $tag,
-            'assetCollection' => $assetCollection,
+            'tagId' => $tagId,
+            'assetCollectionId' => $assetCollectionId,
             'mediaType' => $mediaType,
             'searchTerm' => $searchTerm,
         ] = $variables + [
             'assetSourceId' => 'neos',
-            'tag' => null,
-            'assetCollection' => null,
+            'tagId' => null,
+            'assetCollectionId' => null,
             'mediaType' => null,
             'searchTerm' => null
         ];
@@ -128,10 +128,10 @@ class QueryResolver implements ResolverInterface
             }
         }
 
-        if ($assetCollection && $assetProxyRepository instanceof SupportsCollectionsInterface) {
+        if ($assetCollectionId && $assetProxyRepository instanceof SupportsCollectionsInterface) {
             /** @var AssetCollection $assetCollection */
             /** @noinspection PhpUndefinedMethodInspection */
-            $assetCollection = $this->assetCollectionRepository->findOneByTitle($assetCollection);
+            $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
             if ($assetCollection) {
                 $assetProxyRepository->filterByCollection($assetCollection);
             }
@@ -139,8 +139,8 @@ class QueryResolver implements ResolverInterface
 
         // TODO: Implement sorting via `SupportsSortingInterface`
 
-        if ($tag && $assetProxyRepository instanceof SupportsTaggingInterface) {
-            $tag = $this->tagRepository->findOneByLabel($tag);
+        if ($tagId && $assetProxyRepository instanceof SupportsTaggingInterface) {
+            $tag = $this->tagRepository->findByIdentifier($tagId);
             if ($tag) {
                 return $assetProxyRepository->findByTag($tag)->getQuery();
             }
@@ -174,8 +174,10 @@ class QueryResolver implements ResolverInterface
     protected function getMaximumFileUploadSize(): int
     {
         try {
-            return (int)min(Files::sizeStringToBytes(ini_get('post_max_size')),
-                Files::sizeStringToBytes(ini_get('upload_max_filesize')));
+            return (int)min(
+                Files::sizeStringToBytes(ini_get('post_max_size')),
+                Files::sizeStringToBytes(ini_get('upload_max_filesize'))
+            );
         } catch (FilesException $e) {
             return 0;
         }

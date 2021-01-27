@@ -5,6 +5,8 @@ import { RecoilRoot } from 'recoil';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloClient } from 'apollo-client';
+import { createUploadLink } from 'apollo-upload-client';
+import { ApolloLink } from 'apollo-link';
 import { $get, $transform } from 'plow-js';
 
 // Neos dependencies are provided by the UI
@@ -14,24 +16,24 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-import { I18nRegistry, Notify } from '../../src/interfaces';
+import { I18nRegistry, Notify } from 'backend-module/src/interfaces';
 import {
     IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,
     NotifyProvider,
     Resolvers,
-    PersistentStateManager
-} from '../../src/core';
-import App from '../../src/components/App';
-import { createUploadLink } from 'apollo-upload-client';
+    PersistentStateManager,
+    IdFromObjectResolver,
+    ApolloErrorHandler
+} from 'backend-module/src/core';
+import App from 'backend-module/src/components/App';
 
 let apolloClient = null;
 
 interface MediaSelectionScreenProps {
     i18nRegistry: I18nRegistry;
-    handleAssetSelected: Function;
-    neos: object;
+    neos: Record<string, unknown>;
     // TODO: Forward and use prop in selection screen
     type: 'assets' | 'images';
     onComplete: (localAssetIdentifier: string) => void;
@@ -57,7 +59,10 @@ interface MediaSelectionScreenState {
     i18nRegistry: globalRegistry.get('i18n')
 }))
 // eslint-disable-next-line prettier/prettier
-export default class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps, MediaSelectionScreenState> {
+export default class MediaSelectionScreen extends React.PureComponent<
+    MediaSelectionScreenProps,
+    MediaSelectionScreenState
+> {
     constructor(props: MediaSelectionScreenProps) {
         super(props);
         this.state = {
@@ -98,15 +103,18 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
     getApolloClient() {
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
-            const cache = new InMemoryCache();
+            const cache = new InMemoryCache({ dataIdFromObject: IdFromObjectResolver });
             PersistentStateManager.restoreLocalState(cache);
 
             apolloClient = new ApolloClient({
                 cache,
-                link: createUploadLink({
-                    uri: endpoints.graphql,
-                    credentials: 'same-origin'
-                }),
+                link: ApolloLink.from([
+                    ApolloErrorHandler,
+                    createUploadLink({
+                        uri: endpoints.graphql,
+                        credentials: 'same-origin'
+                    })
+                ]),
                 typeDefs: Resolvers.typeDefs,
                 resolvers: Resolvers.resolvers
             });
@@ -117,11 +125,11 @@ export default class MediaSelectionScreen extends React.PureComponent<MediaSelec
     translate = (
         id?: string,
         fallback?: string,
-        params?: {},
+        params?: Record<string, unknown> | string[],
         packageKey = 'Flowpack.Media.Ui',
         sourceName = 'Main'
     ) => {
-        return this.props.i18nRegistry.translate(id, fallback, packageKey, sourceName);
+        return this.props.i18nRegistry.translate(id, fallback, params, packageKey, sourceName);
     };
 
     render() {

@@ -11,8 +11,8 @@
 #
 # Compiled assets.
 #
-/.cache
-Resources/Private/JavaScript/dev/dist
+.cache
+Resources/Private/JavaScript/BackendModule/dev/dist
 yarn-error.log
 
 #

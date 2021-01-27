@@ -1,0 +1,35 @@
+diff --git a/node_modules/@neos-project/build-essentials/src/webpack.config.js b/node_modules/@neos-project/build-essentials/src/webpack.config.js
+index b1974aa..f2313d4 100644
+--- a/node_modules/@neos-project/build-essentials/src/webpack.config.js
++++ b/node_modules/@neos-project/build-essentials/src/webpack.config.js
+@@ -108,7 +108,8 @@ const webpackConfig = {
+                 test: /\.css$/,
+                 exclude: [
+                     /node_modules\/@fortawesome\/fontawesome-svg-core\/styles\.css$/,
+-                    /node_modules\/@ckeditor.*$/
++                    /node_modules\/@ckeditor.*$/,
++                    /node_modules\/react-image-lightbox\/style\.css$/
+                 ],
+                 use: [
+                     {
+@@ -136,6 +137,20 @@ const webpackConfig = {
+                     }
+                 ]
+             },
++            {
++                test: /node_modules\/react-image-lightbox\/style\.css$/,
++                use: [
++                    {
++                        loader: MiniCssExtractPlugin.loader,
++                        options: {
++                            publicPath: './../'
++                        }
++                    },
++                    {
++                        loader: 'css-loader'
++                    }
++                ]
++            },
+             {
+                 test: /\.vanilla-css$/,
+                 use: [

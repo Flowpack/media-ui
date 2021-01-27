@@ -1,5 +1,5 @@
 {
-  "name": "neos-media-ui-asset-editor",
+  "name": "asset-editor",
   "version": "1.0.0",
   "license": "GNU GPLv3",
   "private": true,
@@ -7,14 +7,15 @@
     "node": ">=12"
   },
   "scripts": {
-    "build": "NODE_ENV=production ../../../../node_modules/.bin/neos-react-scripts build",
-    "watch": "../../../../node_modules/.bin/neos-react-scripts watch"
+    "build": "NODE_ENV=production neos-react-scripts build",
+    "watch": "neos-react-scripts watch"
+  },
+  "dependencies": {
+    "@neos-project/neos-ui-extensibility": "^5.3.4",
+    "backend-module": "*"
   },
   "devDependencies": {
-    "@neos-project/eslint-config-neos": "*",
-    "@neos-project/neos-ui-extensibility": "*",
-    "@neos-project/react-ui-components": "*",
-    "webpack": "*"
+    "webpack": "^4.44.2"
   },
   "neos": {
     "buildTargetDirectory": "../../../Public/AssetEditor"
