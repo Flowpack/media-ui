@@ -9,7 +9,7 @@
   "scripts": {
     "postinstall": "patch-package",
     "lint": "eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
-    "test": "yarn workspace backend-module run test:e2e",
+    "test": "testcafe",
     "dev": "yarn workspace backend-module run dev",
     "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:ui-plugin\"",
     "build": "yarn workspaces run build"

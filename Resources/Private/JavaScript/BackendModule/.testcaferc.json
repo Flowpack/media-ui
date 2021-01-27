@@ -1,5 +1,0 @@
-{
-  "browsers": "chromium",
-  "src": ["tests/**/*.ts"],
-  "appCommand": "yarn dev"
-}

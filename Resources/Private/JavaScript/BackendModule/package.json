@@ -79,7 +79,6 @@
   "scripts": {
     "watch:module": "parcel watch src/index.tsx --public-url . --out-dir ../../../Public/Assets -o main.bundle.js",
     "build": "parcel build src/index.tsx --public-url . --out-dir ../../../Public/Assets -o main.bundle.js",
-    "test:e2e": "testcafe",
     "dev": "nodemon dev/server.ts"
   }
 }

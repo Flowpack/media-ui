@@ -1,0 +1,5 @@
+{
+  "browsers": "chromium",
+  "src": ["Resources/Private/JavaScript/BackendModule/tests/**/*.ts"],
+  "appCommand": "yarn dev"
+}
