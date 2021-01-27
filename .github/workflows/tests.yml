@@ -49,8 +49,7 @@ jobs:
         run: yarn
 
       - name: Build sources
-        run: yarn build
+        run: yarn build:module
 
-      - uses: DevExpress/testcafe-action@latest
-        with:
-          args: "chrome"
+      - name: Run TestCafe
+        run: yarn test:github-actions
