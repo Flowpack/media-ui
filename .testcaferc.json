@@ -1,5 +1,5 @@
 {
   "browsers": "chromium",
   "src": ["Resources/Private/JavaScript/BackendModule/tests/**/*.ts"],
-  "appCommand": "yarn dev"
+  "appCommand": "yarn ts-node Resources/Private/JavaScript/BackendModule/dev/server.ts"
 }
