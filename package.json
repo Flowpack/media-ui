@@ -9,10 +9,13 @@
   "scripts": {
     "postinstall": "patch-package",
     "lint": "eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
-    "test": "yarn workspace backend-module run test:e2e",
+    "test": "testcafe",
     "dev": "yarn workspace backend-module run dev",
     "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:ui-plugin\"",
-    "build": "yarn workspaces run build"
+    "build": "yarn workspaces run build",
+    "build:module": "yarn workspace backend-module run build",
+    "build:editor": "yarn workspace asset-editor run build",
+    "test:github-actions": "xvfb-run --server-args=\"-screen 0 1280x720x24\" yarn testcafe chrome"
   },
   "browserslist": [
     "> 1%",

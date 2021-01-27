@@ -1,4 +1,0 @@
-{
-  "browsers": "chromium",
-  "src": ["tests/**/*.ts"]
-}
