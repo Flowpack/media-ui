@@ -77,7 +77,7 @@
     "@neos-project/react-ui-components/*": "@neos-project/react-ui-components/lib-esm/*"
   },
   "scripts": {
-    "watch:module": "parcel watch src/index.tsx --public-url . --out-dir ../../../Public/Assets -o main.bundle.js",
+    "watch": "parcel watch src/index.tsx --public-url . --out-dir ../../../Public/Assets -o main.bundle.js",
     "build": "parcel build src/index.tsx --public-url . --out-dir ../../../Public/Assets -o main.bundle.js",
     "dev": "nodemon dev/server.ts"
   }
