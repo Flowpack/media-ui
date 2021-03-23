@@ -3,9 +3,9 @@
     "description": "This module allows managing media assets including pictures, videos, audio and documents.",
     "type": "neos-package",
     "require": {
-        "neos/media": "^5.2 || ~7.0",
-        "neos/neos": "^5.2 || ~7.0",
-        "neos/neos-ui": "^5.2 || ~7.0",
+        "neos/media": "^5.2 || ~7.0 || dev-master",
+        "neos/neos": "^5.2 || ~7.0 || dev-master",
+        "neos/neos-ui": "^5.2 || ~7.0 || dev-master",
         "t3n/graphql": "^2.1 || ^3.0",
         "t3n/graphql-upload": "^1.0 || ^2.0"
     },
