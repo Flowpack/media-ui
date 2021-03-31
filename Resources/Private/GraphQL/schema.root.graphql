@@ -74,6 +74,11 @@ type Query {
     changedAssets(since: DateTime): ChangedAssetsResult!
 
     """
+    list of assets which have some kind of similarity to the provided asset
+    """
+    similarAssets(id: AssetId!, assetSourceId: AssetSourceId!): [Asset!]!
+
+    """
     all tags
     """
     tags: [Tag!]!

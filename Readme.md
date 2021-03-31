@@ -67,6 +67,26 @@ Neos:
 
 Now the "delete" action for assets will be disabled if an asset is in use, and the filter dropdown contains a new item "Unused". 
 Selecting it will switch the main view to show all unused assets.
+
+### Show similar assets
+
+This package provides a `SimilarAssetStrategyInterface`. 
+Other packages can implement this interface and provide a list of
+other assets based on a given asset.
+
+Example for this could be perceptually similar images or assets with similar filenames.
+
+
+Given that you installed a package with a strategy, enable the feature in the ui with the following setting:
+
+```yaml
+Neos:
+  Neos:
+    Ui:
+      frontendConfiguration:
+        Flowpack.Media.Ui:
+          showSimilarAssets: true
+```
     
 ## Architecture
 

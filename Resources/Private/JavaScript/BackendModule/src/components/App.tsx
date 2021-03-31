@@ -15,6 +15,7 @@ import { Main } from './Main';
 import AssetPreview from './AssetPreview';
 import { createAssetCollectionDialogState, createTagDialogState, uploadDialogVisibleState } from '../state';
 import { CreateTagDialog, UploadDialog, CreateAssetCollectionDialog } from './Dialogs';
+import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets/src';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode }) => ({
@@ -80,6 +81,7 @@ const App = () => {
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
+    const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const classes = useStyles({ selectionMode });
 
     return (
@@ -111,6 +113,7 @@ const App = () => {
             {showUploadDialog && <UploadDialog />}
             {showCreateTagDialog && <CreateTagDialog />}
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
+            {showSimilarAssetsModal && <SimilarAssetsModal />}
 
             <ClipboardWatcher />
             <ConcurrencyWatcher />

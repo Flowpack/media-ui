@@ -6,3 +6,4 @@ Neos:
           useNewMediaSelection: true
           queryAssetUsage: false
           pollForChanges: true
+          showSimilarAssets: false

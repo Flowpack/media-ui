@@ -51,7 +51,7 @@ const AssetUsagesModal: React.FC = () => {
         asset ? { assetId: asset.id, assetSourceId: asset.assetSource.id } : null
     );
 
-    const handleRequestClose = useCallback(() => setIsOpen((prev) => !prev), [setIsOpen]);
+    const handleRequestClose = useCallback(() => setIsOpen(false), [setIsOpen]);
 
     return (
         <Dialog

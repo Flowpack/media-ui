@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { TextArea, TextInput } from '@neos-project/react-ui-components';
 
 import { AssetUsagesToggleButton } from '@media-ui/feature-asset-usage/src';
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core/src';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
 
@@ -13,6 +13,7 @@ import { useRecoilValue } from 'recoil';
 import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
+import { SimilarAssetsToggleButton } from '@media-ui/feature-similar-assets/src';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     textArea: {
@@ -28,6 +29,7 @@ const AssetInspector = () => {
     const selectedAsset = useSelectedAsset();
     const Notify = useNotify();
     const { translate } = useIntl();
+    const { featureFlags } = useMediaUi();
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
     const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
@@ -122,6 +124,7 @@ const AssetInspector = () => {
             {selectedAsset.assetSource.supportsTagging && <TagSelectBoxAsset />}
 
             <AssetUsagesToggleButton />
+            {featureFlags.showSimilarAssets && <SimilarAssetsToggleButton />}
 
             <MetadataView />
         </InspectorContainer>

@@ -17,8 +17,10 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
+use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
@@ -79,6 +81,18 @@ class QueryResolver implements ResolverInterface
      * @var AssetChangeLog
      */
     protected $assetChangeLog;
+
+    /**
+     * @Flow\Inject
+     * @var SimilarityService
+     */
+    protected $similarityService;
+
+    /**
+     * @Flow\Inject
+     * @var PersistenceManager
+     */
+    protected $persistenceManager;
 
     /**
      * Returns total count of asset proxies in the given asset source
@@ -433,5 +447,31 @@ class QueryResolver implements ResolverInterface
             'lastModified' => $lastModified,
             'changes' => $filteredChanges,
         ];
+    }
+
+    public function similarAssets($_, array $variables, AssetSourceContext $assetSourceContext): array
+    {
+        [
+            'id' => $id,
+            'assetSourceId' => $assetSourceId,
+        ] = $variables + ['id' => null, 'assetSourceId' => null];
+
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
+
+        if (!$assetProxy) {
+            return [];
+        }
+
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            return [];
+        }
+
+        $similarAssets = $this->similarityService->getSimilarAssets($asset);
+        return array_map(function ($asset) use ($assetSourceContext) {
+            $assetId = $this->persistenceManager->getIdentifierByObject($asset);
+            return $assetSourceContext->getAssetProxy($assetId, $asset->getAssetSourceIdentifier());
+        }, $similarAssets);
     }
 }
