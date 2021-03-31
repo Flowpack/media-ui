@@ -7,18 +7,17 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:testcafe/recommended',
         'plugin:prettier/recommended',
-        'prettier/@typescript-eslint'
     ],
     plugins: ['testcafe', 'prettier', 'react', 'react-hooks'],
     settings: {
         react: {
-            version: 'detect'
-        }
+            version: 'detect',
+        },
     },
     env: {
         browser: true,
         es6: true,
-        node: true
+        node: true,
     },
     rules: {
         '@typescript-eslint/explicit-function-return-type': 'off',
@@ -32,8 +31,8 @@ module.exports = {
         'react-hooks/exhaustive-deps': [
             'warn',
             {
-                additionalHooks: 'useRecoilCallback'
-            }
-        ]
-    }
+                additionalHooks: 'useRecoilCallback',
+            },
+        ],
+    },
 };

@@ -1,5 +1,5 @@
 import { Asset, AssetCollection, AssetFile, AssetSource, Image, Tag } from '../interfaces';
-import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
+import { defaultDataIdFromObject } from '@apollo/client';
 
 /**
  * This resolver is used by the Apollo Cache to allow identifying

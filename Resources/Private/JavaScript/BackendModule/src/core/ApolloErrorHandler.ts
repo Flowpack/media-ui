@@ -1,4 +1,4 @@
-import { onError } from 'apollo-link-error';
+import { onError } from '@apollo/client/link/error';
 
 // TODO: Use NotificationHandler to show simplified error message to user
 const ApolloErrorHandler = onError(({ graphQLErrors, networkError }) => {

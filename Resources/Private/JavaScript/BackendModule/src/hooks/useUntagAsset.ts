@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 import { Asset } from '../interfaces';
 import { UNTAG_ASSET } from '../queries';

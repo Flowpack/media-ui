@@ -2,11 +2,11 @@ import * as React from 'react';
 import { createRef } from 'react';
 import { connect } from 'react-redux';
 import { RecoilRoot } from 'recoil';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloClient } from 'apollo-client';
+import { ApolloProvider } from '@apollo/client';
+import { InMemoryCache } from '@apollo/client';
+import { ApolloClient } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
-import { ApolloLink } from 'apollo-link';
+import { ApolloLink } from '@apollo/client';
 import { $get, $transform } from 'plow-js';
 
 // Neos dependencies are provided by the UI

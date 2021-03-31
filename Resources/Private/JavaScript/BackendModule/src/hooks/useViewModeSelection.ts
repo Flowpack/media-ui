@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import { ExecutionResult } from 'graphql';
 
 import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from '../queries';

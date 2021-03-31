@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 import { Tag } from '../interfaces';
 import { ASSET_COLLECTIONS, CREATE_TAG, TAGS } from '../queries';

@@ -4,10 +4,7 @@ import { render } from 'react-dom';
 import Modal from 'react-modal';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { ApolloClient } from 'apollo-client';
-import { ApolloLink } from 'apollo-link';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ApolloClient, ApolloProvider, ApolloLink, InMemoryCache } from '@apollo/client';
 import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 

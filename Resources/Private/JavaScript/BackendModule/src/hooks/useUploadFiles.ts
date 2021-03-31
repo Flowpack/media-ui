@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 import { UPLOAD_FILES } from '../queries';
 import { FileUploadResult } from '../interfaces';

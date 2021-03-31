@@ -1,5 +1,5 @@
 import { useRecoilValue } from 'recoil';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/client';
 
 import { Asset } from '../interfaces';
 import { selectedAssetIdState } from '../state';

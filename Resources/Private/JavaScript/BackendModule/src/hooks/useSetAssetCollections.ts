@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 import { Asset, AssetCollection } from '../interfaces';
 import { SET_ASSET_COLLECTIONS } from '../queries';

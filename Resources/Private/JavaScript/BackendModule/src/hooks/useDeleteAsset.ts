@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { useRecoilState } from 'recoil';
 
 import { DELETE_ASSET } from '../queries';
