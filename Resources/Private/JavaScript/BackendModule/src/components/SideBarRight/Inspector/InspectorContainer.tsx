@@ -8,9 +8,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         gridAutoRows: 'auto',
         gridGap: theme.spacing.full,
         '& input, & textarea': {
-            width: '100%'
-        }
-    }
+            width: '100%',
+        },
+    },
 }));
 
 const InspectorContainer = ({ children }: { children: React.ReactNode }) => {

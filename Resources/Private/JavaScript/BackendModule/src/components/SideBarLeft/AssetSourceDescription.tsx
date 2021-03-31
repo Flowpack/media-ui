@@ -11,14 +11,14 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceDescription: {
         border: `1px solid ${theme.colors.border}`,
         '& .ReactCollapse--collapse': {
-            transition: `height ${theme.transition.slow}`
-        }
+            transition: `height ${theme.transition.slow}`,
+        },
     },
     panelHeader: {
         '& button': {
-            position: 'absolute'
-        }
-    }
+            position: 'absolute',
+        },
+    },
 }));
 
 export default function AssetSourceDescription() {

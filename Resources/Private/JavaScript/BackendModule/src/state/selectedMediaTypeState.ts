@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 const selectedMediaTypeState = atom<string>({
     key: 'selectedMediaTypeState',
-    default: ''
+    default: '',
 });
 
 export default selectedMediaTypeState;

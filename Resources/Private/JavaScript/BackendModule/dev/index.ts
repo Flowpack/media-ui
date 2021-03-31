@@ -6,7 +6,7 @@ setTimeout(() => {
     app.setAttribute(
         'data-endpoints',
         JSON.stringify({
-            graphql: '/graphql'
+            graphql: '/graphql',
         })
     );
     app.setAttribute('data-dummy-image', '/dummy-image.svg');
@@ -18,14 +18,14 @@ setTimeout(() => {
         I18n: {
             initialized: true,
             // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
-            translate: (id, fallback: string, packageKey = null, source = null, args = []) => fallback
+            translate: (id, fallback: string, packageKey = null, source = null, args = []) => fallback,
         },
         Notification: {
-            notice: title => console.log(title),
-            ok: title => console.log(title),
+            notice: (title) => console.log(title),
+            ok: (title) => console.log(title),
             error: (title, message) => console.error(message, title),
             warning: (title, message) => console.warn(message, title),
-            info: title => console.info(title)
-        }
+            info: (title) => console.info(title),
+        },
     };
 }, 2000);

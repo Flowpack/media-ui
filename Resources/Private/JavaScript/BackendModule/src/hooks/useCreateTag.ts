@@ -28,7 +28,7 @@ export default function useCreateTag() {
             // },
             update: (proxy, { data: { createTag: newTag } }) => {
                 const { assetCollections } = proxy.readQuery({ query: ASSET_COLLECTIONS });
-                const updatedAssetCollections = assetCollections.map(assetCollection => {
+                const updatedAssetCollections = assetCollections.map((assetCollection) => {
                     if (assetCollection.id === assetCollectionId) {
                         return { ...assetCollection, tags: [...assetCollection.tags, newTag] };
                     }
@@ -36,19 +36,19 @@ export default function useCreateTag() {
                 });
                 proxy.writeQuery({
                     query: ASSET_COLLECTIONS,
-                    data: { assetCollections: updatedAssetCollections }
+                    data: { assetCollections: updatedAssetCollections },
                 });
 
                 const { tags } = proxy.readQuery({ query: TAGS });
-                if (!tags.find(tag => tag?.label === newTag?.label)) {
+                if (!tags.find((tag) => tag?.label === newTag?.label)) {
                     proxy.writeQuery({
                         query: TAGS,
                         data: {
-                            tags: [...tags, newTag]
-                        }
+                            tags: [...tags, newTag],
+                        },
                     });
                 }
-            }
+            },
         });
 
     return { createTag, data, error };

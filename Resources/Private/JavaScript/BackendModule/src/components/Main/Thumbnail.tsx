@@ -16,11 +16,11 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         flexDirection: 'column',
         position: 'relative',
         '&:hover $caption': {
-            backgroundColor: theme.colors.primary
+            backgroundColor: theme.colors.primary,
         },
         '&:hover $toolBar': {
-            display: 'flex'
-        }
+            display: 'flex',
+        },
     },
     picture: {
         cursor: 'pointer',
@@ -29,8 +29,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             display: 'block',
             height: '250px',
             width: '100%',
-            objectFit: 'contain'
-        }
+            objectFit: 'contain',
+        },
     },
     caption: {
         backgroundColor: theme.colors.captionBackground,
@@ -41,18 +41,18 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '& img': {
             width: '1.3rem',
             height: 'auto',
-            marginRight: theme.spacing.quarter
-        }
+            marginRight: theme.spacing.quarter,
+        },
     },
     selected: {
-        backgroundColor: theme.colors.primary
+        backgroundColor: theme.colors.primary,
     },
     toolBar: {
         display: 'none',
         position: 'absolute',
         top: theme.spacing.quarter,
         right: theme.spacing.quarter,
-        backgroundColor: 'rgba(0.15, 0.15, 0.15, 0.25)'
+        backgroundColor: 'rgba(0.15, 0.15, 0.15, 0.25)',
     },
     label: {
         position: 'absolute',
@@ -62,8 +62,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         borderRadius: '3px',
         padding: '2px 4px',
         backgroundColor: theme.colors.primary,
-        userSelect: 'none'
-    }
+        userSelect: 'none',
+    },
 }));
 
 interface ThumbnailProps {

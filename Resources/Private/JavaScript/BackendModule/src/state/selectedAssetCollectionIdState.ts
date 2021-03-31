@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 const selectedAssetCollectionIdState = atom<string>({
     key: 'selectedAssetCollectionIdState',
-    default: null
+    default: null,
 });
 
 export default selectedAssetCollectionIdState;

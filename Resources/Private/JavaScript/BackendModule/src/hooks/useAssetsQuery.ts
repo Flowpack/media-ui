@@ -46,8 +46,8 @@ const useAssetsQuery = () => {
             mediaType: mediaTypeFilter,
             tagId: selectedTag?.id,
             limit,
-            offset
-        }
+            offset,
+        },
     });
 
     useEffect(() => {
@@ -59,8 +59,8 @@ const useAssetsQuery = () => {
                     mediaType: mediaTypeFilter,
                     tagId: selectedTag?.id,
                     limit,
-                    offset
-                }
+                    offset,
+                },
             });
             setIsLoading(true);
         } else if (data && !loading && isLoading) {
@@ -68,7 +68,7 @@ const useAssetsQuery = () => {
             setAssets(data.assets);
 
             // Update currentPage if asset count changes and current page exceeds limit
-            setCurrentPage(prev => ((prev - 1) * limit > data.assetCount ? 1 : prev));
+            setCurrentPage((prev) => ((prev - 1) * limit > data.assetCount ? 1 : prev));
         }
         // Don't include `isLoading` to prevent constant reloads
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,7 +82,7 @@ const useAssetsQuery = () => {
         searchTerm,
         selectedAssetCollection?.title,
         mediaTypeFilter,
-        selectedTag?.id
+        selectedTag?.id,
     ]);
 
     return { error, assets, refetchAssets: refetch };

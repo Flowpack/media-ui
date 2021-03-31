@@ -9,9 +9,9 @@ import { selectedAssetForPreviewState } from '../state';
 const useStyles = createUseMediaUiStyles({
     lightbox: {
         '& .ril__image': {
-            maxWidth: '100%'
-        }
-    }
+            maxWidth: '100%',
+        },
+    },
 });
 
 export default function AssetPreview() {

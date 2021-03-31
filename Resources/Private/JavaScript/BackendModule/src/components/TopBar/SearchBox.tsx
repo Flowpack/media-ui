@@ -10,9 +10,9 @@ import { searchTermState } from '../../state';
 const useStyles = createUseMediaUiStyles({
     searchBox: {
         '& input': {
-            width: '100%'
-        }
-    }
+            width: '100%',
+        },
+    },
 });
 
 export default function SearchBox() {
@@ -26,7 +26,7 @@ export default function SearchBox() {
             <TextInput
                 value={searchValue}
                 type="search"
-                onChange={value => setSearchValue(value)}
+                onChange={(value) => setSearchValue(value)}
                 onEnterKey={() => setSearchTerm(searchValue)}
                 placeholder={translate('searchBox.placeholder', 'Search')}
             />

@@ -35,7 +35,7 @@ export function MediaUiProvider({
     dummyImage,
     selectionMode = false,
     onAssetSelection = null,
-    containerRef
+    containerRef,
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
@@ -47,7 +47,7 @@ export function MediaUiProvider({
         (asset: Asset) => {
             const confirm = window.confirm(
                 translate('action.deleteAsset.confirm', 'Do you really want to delete the asset ' + asset.label, [
-                    asset.label
+                    asset.label,
                 ])
             );
             if (!confirm) return;
@@ -92,7 +92,7 @@ export function MediaUiProvider({
                 handleSelectAsset,
                 selectionMode,
                 assets,
-                refetchAssets
+                refetchAssets,
             }}
         >
             {children}

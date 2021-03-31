@@ -10,11 +10,11 @@ import useSelectedAssetCollection from '../../../hooks/useSelectedAssetCollectio
 const tagsMatchAssetCollection = (tags: Tag[], assetCollection: AssetCollection) => {
     return (
         tags
-            .map(tag => tag.id)
+            .map((tag) => tag.id)
             .sort()
             .join(',') ===
         assetCollection.tags
-            .map(tag => tag.id)
+            .map((tag) => tag.id)
             .sort()
             .join(',')
     );
@@ -28,7 +28,7 @@ const TagSelectBoxAssetCollection = () => {
     const selectedAssetCollection = useSelectedAssetCollection();
 
     const tagIds = useMemo(() => selectedAssetCollection?.tags.map(({ id }) => id).sort(), [
-        selectedAssetCollection?.tags
+        selectedAssetCollection?.tags,
     ]);
 
     const handleChange = useCallback(
@@ -36,7 +36,7 @@ const TagSelectBoxAssetCollection = () => {
             if (!tagsMatchAssetCollection(newTags, selectedAssetCollection)) {
                 updateAssetCollection({
                     assetCollection: selectedAssetCollection,
-                    tags: newTags
+                    tags: newTags,
                 })
                     .then(() => {
                         Notify.ok(

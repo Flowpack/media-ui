@@ -15,7 +15,7 @@ const useSelectedAssetCollection = (): AssetCollection => {
             {
                 id: `AssetCollection_${selectedAssetCollectionId}`,
                 fragment: ASSET_COLLECTION_FRAGMENT,
-                fragmentName: 'AssetCollectionProps'
+                fragmentName: 'AssetCollectionProps',
             },
             true
         );

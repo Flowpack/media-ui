@@ -10,8 +10,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnailView: {
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-        gridGap: theme.spacing.full
-    }
+        gridGap: theme.spacing.full,
+    },
 }));
 
 const ThumbnailView: React.FC = () => {

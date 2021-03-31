@@ -25,15 +25,15 @@ export default function useSetAssetTags() {
             variables: {
                 id: asset.id,
                 assetSourceId: asset.assetSource.id,
-                tagIds: tags.map(tag => tag.id)
+                tagIds: tags.map((tag) => tag.id),
             },
             optimisticResponse: {
                 __typename: 'Mutation',
                 setAssetTags: {
                     ...asset,
-                    tags
-                }
-            }
+                    tags,
+                },
+            },
         });
 
     return { setAssetTags, data, error, loading };

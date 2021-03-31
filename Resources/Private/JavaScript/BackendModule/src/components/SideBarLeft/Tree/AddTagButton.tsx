@@ -11,8 +11,8 @@ const useStyles = createUseMediaUiStyles({
     plusIcon: {
         top: '13px !important',
         left: '11px !important',
-        width: '9px !important'
-    }
+        width: '9px !important',
+    },
 });
 
 const AddTagButton: React.FC = () => {

@@ -10,8 +10,8 @@ const useStyles = createUseMediaUiStyles({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        userSelect: 'none'
-    }
+        userSelect: 'none',
+    },
 });
 
 const AssetCount: React.FC = () => {

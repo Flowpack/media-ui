@@ -5,18 +5,18 @@ import { MediaUiTheme } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iconWrap: {
-        verticalAlign: 'middle'
+        verticalAlign: 'middle',
     },
     label: {
         fontWeight: 'bold',
         lineHeight: theme.spacing.goldenUnit,
         paddingLeft: theme.spacing.half,
-        userSelect: 'none'
+        userSelect: 'none',
     },
     imgIcon: {
         width: 'auto',
-        height: '18px'
-    }
+        height: '18px',
+    },
 }));
 
 interface IconLabelProps {
@@ -32,7 +32,7 @@ const IconLabel: React.FC<IconLabelProps> = ({
     iconUri = '',
     label = '',
     className = '',
-    children = null
+    children = null,
 }: IconLabelProps) => {
     const classes = useStyles();
 

@@ -25,15 +25,15 @@ export default function useUntagAsset() {
             variables: {
                 id: asset.id,
                 assetSourceId: asset.assetSource.id,
-                tag: tagName
+                tag: tagName,
             },
             optimisticResponse: {
                 __typename: 'Mutation',
                 untagAsset: {
                     ...asset,
-                    tags: [...asset.tags.filter(tag => tag.label !== tagName)]
-                }
-            }
+                    tags: [...asset.tags.filter((tag) => tag.label !== tagName)],
+                },
+            },
         });
 
     return { untagAsset, data, error, loading };

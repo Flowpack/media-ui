@@ -9,11 +9,11 @@ import { TagSelectBox } from '.';
 const tagsMatchAsset = (tags: Tag[], asset: Asset) => {
     return (
         tags
-            .map(tag => tag.id)
+            .map((tag) => tag.id)
             .sort()
             .join(',') ===
         asset.tags
-            .map(tag => tag.id)
+            .map((tag) => tag.id)
             .sort()
             .join(',')
     );
@@ -29,11 +29,11 @@ const TagSelectBoxAsset = () => {
     const selectedTagIds = useMemo(() => selectedAsset?.tags.map(({ id }) => id).sort(), [selectedAsset?.tags]);
 
     const handleChange = useCallback(
-        newTags => {
+        (newTags) => {
             if (!tagsMatchAsset(newTags, selectedAsset)) {
                 setAssetTags({
                     asset: selectedAsset,
-                    tags: newTags
+                    tags: newTags,
                 })
                     .then(() => {
                         Notify.ok(translate('actions.setAssetTags.success', 'The asset has been tagged'));

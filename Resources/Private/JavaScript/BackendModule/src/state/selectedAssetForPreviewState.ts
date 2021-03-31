@@ -4,7 +4,7 @@ import { Asset } from '../interfaces';
 
 const selectedAssetForPreviewState = atom<Asset>({
     key: 'selectedAssetForPreviewState',
-    default: null
+    default: null,
 });
 
 export default selectedAssetForPreviewState;

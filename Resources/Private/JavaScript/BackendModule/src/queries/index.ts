@@ -11,7 +11,7 @@ import {
     ASSET_SOURCE_FRAGMENT,
     FILE_FRAGMENT,
     IPTC_PROPERTY_FRAGMENT,
-    TAG_FRAGMENT
+    TAG_FRAGMENT,
 } from './Fragments';
 import {
     CREATE_TAG,
@@ -28,7 +28,7 @@ import {
     UPDATE_ASSET_COLLECTION,
     UPDATE_TAG,
     UPLOAD_FILE,
-    UPLOAD_FILES
+    UPLOAD_FILES,
 } from './Mutations';
 import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from './ViewModeSelectionQuery';
 import { CONFIG } from './ConfigQuery';
@@ -65,5 +65,5 @@ export {
     UPDATE_TAG,
     UPLOAD_FILE,
     UPLOAD_FILES,
-    VIEW_MODE_SELECTION
+    VIEW_MODE_SELECTION,
 };

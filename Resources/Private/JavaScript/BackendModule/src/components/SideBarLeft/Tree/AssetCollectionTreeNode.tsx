@@ -20,7 +20,7 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     children,
     level,
     onClick,
-    collapsedByDefault = true
+    collapsedByDefault = true,
 }: AssetCollectionTreeNodeProps) => {
     const [collapsed, setCollapsed] = useState(collapsedByDefault);
     const handleToggle = useCallback(() => setCollapsed(!collapsed), [collapsed]);

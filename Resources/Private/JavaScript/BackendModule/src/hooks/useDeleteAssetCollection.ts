@@ -16,21 +16,21 @@ export default function useDeleteAssetCollection() {
     const deleteAssetCollection = (id: string) =>
         action({
             variables: {
-                id
+                id,
             },
             optimisticResponse: {
                 deleteAssetCollection: {
                     success: true,
-                    __typename: 'DeleteAssetCollectionResult'
-                }
+                    __typename: 'DeleteAssetCollectionResult',
+                },
             },
             update(cache) {
                 const { assetCollections } = cache.readQuery({ query: ASSET_COLLECTIONS });
                 cache.writeQuery({
                     query: ASSET_COLLECTIONS,
-                    data: { assetCollections: assetCollections.filter((c: AssetCollection) => c.id !== id) }
+                    data: { assetCollections: assetCollections.filter((c: AssetCollection) => c.id !== id) },
                 });
-            }
+            },
         });
 
     return { deleteAssetCollection, data, error, loading };

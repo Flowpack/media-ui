@@ -11,8 +11,8 @@ import useSelectedAssetCollection from '../../hooks/useSelectedAssetCollection';
 
 const useStyles = createUseMediaUiStyles(() => ({
     formBody: {
-        padding: 16
-    }
+        padding: 16,
+    },
 }));
 
 const CreateTagDialog: React.FC = () => {
@@ -26,16 +26,16 @@ const CreateTagDialog: React.FC = () => {
 
     const handleRequestClose = useCallback(() => setDialogState({ visible: false, label: '' }), [setDialogState]);
     const handleCreate = useCallback(() => {
-        setDialogState(state => ({ ...state, visible: false }));
+        setDialogState((state) => ({ ...state, visible: false }));
         createTag(dialogState.label, selectedAssetCollection?.id)
             .then(() => {
                 Notify.ok(translate('assetCollectionActions.create.success', 'Tag was created'));
             })
-            .catch(error => {
+            .catch((error) => {
                 Notify.error(translate('assetCollectionActions.create.error', 'Failed to create tag'), error.message);
             });
     }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetCollection]);
-    const setLabel = useCallback(label => setDialogState(state => ({ ...state, label })), [setDialogState]);
+    const setLabel = useCallback((label) => setDialogState((state) => ({ ...state, label })), [setDialogState]);
 
     return (
         <Dialog
@@ -54,7 +54,7 @@ const CreateTagDialog: React.FC = () => {
                     onClick={handleCreate}
                 >
                     {translate('general.create', 'Create')}
-                </Button>
+                </Button>,
             ]}
         >
             <div className={classes.formBody}>

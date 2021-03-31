@@ -24,6 +24,6 @@ export const resolvers = {
         setViewModeSelection: (_, { viewModeSelection }, { cache }) => {
             updateLocalState({ viewModeSelection }, cache);
             return viewModeSelection;
-        }
-    }
+        },
+    },
 };

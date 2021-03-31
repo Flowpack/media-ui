@@ -11,7 +11,7 @@ const useSelectAssetSource = (): [AssetSource, (assetSource: AssetSource) => Pro
     const { selectedAssetSourceId } = selectedAssetSourceQuery.data;
     const { assetSources } = useAssetSourcesQuery();
     const selectedAssetSource = useMemo(
-        () => assetSources.find(assetSource => assetSource.id === selectedAssetSourceId),
+        () => assetSources.find((assetSource) => assetSource.id === selectedAssetSourceId),
         [assetSources, selectedAssetSourceId]
     );
 
@@ -19,7 +19,7 @@ const useSelectAssetSource = (): [AssetSource, (assetSource: AssetSource) => Pro
     const setSelectedAssetSource = useCallback(
         (assetSource: AssetSource) => {
             return mutateSelectedAssetSourceId({
-                variables: { selectedAssetSourceId: assetSource.id }
+                variables: { selectedAssetSourceId: assetSource.id },
             });
         },
         [mutateSelectedAssetSourceId]

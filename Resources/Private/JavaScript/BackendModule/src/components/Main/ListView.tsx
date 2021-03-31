@@ -20,11 +20,11 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 textOverflow: 'ellipsis',
                 userSelect: 'none',
                 '&:first-child, &:last-child': {
-                    padding: 0
-                }
-            }
-        }
-    }
+                    padding: 0,
+                },
+            },
+        },
+    },
 }));
 
 const ListView: React.FC = () => {

@@ -21,5 +21,5 @@ export {
     selectedAssetForPreviewState,
     selectedAssetIdState,
     selectedTagIdState,
-    uploadDialogState
+    uploadDialogState,
 };

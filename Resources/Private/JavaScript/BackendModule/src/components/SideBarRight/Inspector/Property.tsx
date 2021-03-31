@@ -3,7 +3,7 @@ import { createUseMediaUiStyles } from '../../../core';
 import { Label } from '@neos-project/react-ui-components';
 
 const useStyles = createUseMediaUiStyles({
-    propertyGroup: {}
+    propertyGroup: {},
 });
 
 const Property = ({ children, label }: { children: React.ReactNode; label: React.ReactNode }) => {

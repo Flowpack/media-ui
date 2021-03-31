@@ -15,25 +15,25 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         cursor: 'pointer',
         backgroundColor: theme.colors.mainBackground,
         '&:nth-of-type(2n)': {
-            backgroundColor: theme.colors.alternatingBackground
+            backgroundColor: theme.colors.alternatingBackground,
         },
         '&:hover': {
-            backgroundColor: theme.colors.primary
-        }
+            backgroundColor: theme.colors.primary,
+        },
     },
     selected: {
         backgroundColor: theme.colors.primary,
         '&:nth-of-type(2n)': {
-            backgroundColor: theme.colors.primary
-        }
+            backgroundColor: theme.colors.primary,
+        },
     },
     textColumn: {
         padding: `0 ${theme.spacing.half}`,
         whiteSpace: 'nowrap',
         userSelect: 'none',
         '& > *': {
-            verticalAlign: 'middle'
-        }
+            verticalAlign: 'middle',
+        },
     },
     previewColumn: {
         minWidth: theme.spacing.goldenUnit,
@@ -46,30 +46,30 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 display: 'block',
                 width: '100%',
                 height: '100%',
-                objectFit: 'contain'
-            }
-        }
+                objectFit: 'contain',
+            },
+        },
     },
     labelColumn: {
         extend: 'textColumn',
         userSelect: 'text',
         '& > *': {
-            width: '200px'
-        }
+            width: '200px',
+        },
     },
     lastModifiedColumn: {
-        extend: 'textColumn'
+        extend: 'textColumn',
     },
     fileSizeColumn: {
-        extend: 'textColumn'
+        extend: 'textColumn',
     },
     mediaTypeColumn: {
-        extend: 'textColumn'
+        extend: 'textColumn',
     },
     actionsColumn: {
         display: 'flex',
-        justifyContent: 'flex-end'
-    }
+        justifyContent: 'flex-end',
+    },
 }));
 
 interface ListViewItemProps {
@@ -80,7 +80,7 @@ const dateFormatOptions = {
     weekday: 'short',
     year: 'numeric',
     month: 'short',
-    day: 'numeric'
+    day: 'numeric',
 };
 
 const ListViewItem: React.FC<ListViewItemProps> = ({ asset }: ListViewItemProps) => {

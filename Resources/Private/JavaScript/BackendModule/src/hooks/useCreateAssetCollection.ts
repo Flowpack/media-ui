@@ -16,15 +16,15 @@ export default function useCreateAssetCollection() {
     const createAssetCollection = (title: string) =>
         action({
             variables: {
-                title
+                title,
             },
             update(cache, { data }) {
                 const { assetCollections } = cache.readQuery({ query: ASSET_COLLECTIONS });
                 cache.writeQuery({
                     query: ASSET_COLLECTIONS,
-                    data: { assetCollections: assetCollections.concat([data?.createAssetCollection]) }
+                    data: { assetCollections: assetCollections.concat([data?.createAssetCollection]) },
                 });
-            }
+            },
         });
 
     return { createAssetCollection, data, error, loading };

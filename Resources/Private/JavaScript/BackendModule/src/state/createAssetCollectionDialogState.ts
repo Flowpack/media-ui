@@ -4,8 +4,8 @@ const createAssetCollectionDialogState = atom({
     key: 'createAssetCollectionDialogState',
     default: {
         visible: false,
-        title: ''
-    }
+        title: '',
+    },
 });
 
 export default createAssetCollectionDialogState;

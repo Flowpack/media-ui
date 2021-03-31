@@ -5,7 +5,7 @@ import { createUseMediaUiStyles } from '../core';
 import { loadingState } from '../state';
 
 const useStyles = createUseMediaUiStyles({
-    loadingLabel: {}
+    loadingLabel: {},
 });
 
 interface LoadingLabelProps {

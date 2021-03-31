@@ -17,9 +17,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     textArea: {
         // TODO: Remove when overriding rule is removed from Minimal Module Style in Neos
         '.neos textarea&': {
-            padding: theme.spacing.half
-        }
-    }
+            padding: theme.spacing.half,
+        },
+    },
 }));
 
 const AssetInspector = () => {
@@ -59,7 +59,7 @@ const AssetInspector = () => {
                 asset: selectedAsset,
                 label,
                 caption,
-                copyrightNotice
+                copyrightNotice,
             })
                 .then(() => {
                     Notify.ok(translate('actions.updateAsset.success', 'The asset has been updated'));

@@ -20,7 +20,7 @@ export default function useUpdateTag() {
         action({
             variables: {
                 id: tag.id,
-                label
+                label,
             },
             optimisticResponse: {
                 updateTag: {
@@ -28,11 +28,11 @@ export default function useUpdateTag() {
                     label,
                     ...(label
                         ? {
-                              label
+                              label,
                           }
-                        : {})
-                }
-            }
+                        : {}),
+                },
+            },
         });
 
     return { updateTag, data, error, loading };

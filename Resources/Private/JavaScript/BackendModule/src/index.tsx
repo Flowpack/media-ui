@@ -15,7 +15,7 @@ import {
     MediaUiProvider,
     MediaUiThemeProvider,
     NotifyProvider,
-    PersistentStateManager
+    PersistentStateManager,
 } from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
@@ -25,12 +25,12 @@ import { RecoilRoot } from 'recoil';
 loadIconLibrary();
 
 setConfig({
-    showReactDomPatchNotification: false
+    showReactDomPatchNotification: false,
 });
 
 window.onload = async (): Promise<void> => {
     while (!window.NeosCMS || !window.NeosCMS.I18n.initialized) {
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
     const root = document.getElementById('media-ui-app');
@@ -52,11 +52,11 @@ window.onload = async (): Promise<void> => {
             ApolloErrorHandler,
             createUploadLink({
                 uri: endpoints.graphql,
-                credentials: 'same-origin'
-            })
+                credentials: 'same-origin',
+            }),
         ]),
         typeDefs,
-        resolvers
+        resolvers,
     });
 
     const containerRef = createRef<HTMLDivElement>();

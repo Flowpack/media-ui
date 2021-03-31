@@ -25,15 +25,15 @@ export default function useSetAssetCollections() {
             variables: {
                 id: asset.id,
                 assetSourceId: asset.assetSource.id,
-                assetCollectionIds: assetCollections.map(c => c.id)
+                assetCollectionIds: assetCollections.map((c) => c.id),
             },
             optimisticResponse: {
                 __typename: 'Mutation',
                 setAssetCollections: {
                     ...asset,
-                    collections: assetCollections
-                }
-            }
+                    collections: assetCollections,
+                },
+            },
         });
 
     return { setAssetCollections: setAssetCollections, data, error, loading };

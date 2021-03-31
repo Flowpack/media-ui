@@ -6,24 +6,24 @@ const exampleImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
 
 const range = (length: number) => [...Array(length)].map((val, i) => i);
 const getExampleFilename = (seed = 0) => exampleImages[seed % exampleImages.length];
-const getExampleImagePath = filename => `Assets/${filename}`;
+const getExampleImagePath = (filename) => `Assets/${filename}`;
 
 const getIptcProperties = (seed: number): IptcProperty[] => [
     {
         __typename: 'IptcProperty',
         propertyName: 'Camera',
-        value: `Phone ${seed}`
+        value: `Phone ${seed}`,
     },
     {
         __typename: 'IptcProperty',
         propertyName: 'Exposure',
-        value: `${seed}`
+        value: `${seed}`,
     },
     {
         __typename: 'IptcProperty',
         propertyName: 'SpecialSetting',
-        value: `${seed % 2 === 0 ? 'true' : 'false'}`
-    }
+        value: `${seed % 2 === 0 ? 'true' : 'false'}`,
+    },
 ];
 
 const typeIcons: { [key: string]: Image } = {
@@ -32,8 +32,8 @@ const typeIcons: { [key: string]: Image } = {
         width: 16,
         height: 16,
         url: 'jpg.svg',
-        alt: 'jpeg image'
-    }
+        alt: 'jpeg image',
+    },
 };
 
 const assetSources: AssetSource[] = [
@@ -45,7 +45,7 @@ const assetSources: AssetSource[] = [
         iconUri: 'asset-source-icon.svg',
         readOnly: false,
         supportsTagging: true,
-        supportsCollections: true
+        supportsCollections: true,
     },
     {
         __typename: 'AssetSource',
@@ -55,26 +55,26 @@ const assetSources: AssetSource[] = [
         iconUri: 'asset-source-icon.svg',
         readOnly: true,
         supportsTagging: false,
-        supportsCollections: false
-    }
+        supportsCollections: false,
+    },
 ];
 
-const tags: Tag[] = range(10).map(index => ({
+const tags: Tag[] = range(10).map((index) => ({
     __typename: 'Tag',
     id: `index ${index + 1}`,
     label: `Example tag ${index + 1}`,
     parent: null,
-    children: []
+    children: [],
 }));
 
-const assetCollections: AssetCollection[] = range(3).map(index => ({
+const assetCollections: AssetCollection[] = range(3).map((index) => ({
     __typename: 'AssetCollection',
     id: `someId_${index}`,
     title: `Example collection ${index + 1}`,
-    tags: range(index % 3).map(i => tags[(i * 3 + index) % tags.length])
+    tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
 }));
 
-const assets: Asset[] = range(150).map(index => {
+const assets: Asset[] = range(150).map((index) => {
     const isCloud = index > 120;
     const filename = getExampleFilename(index);
 
@@ -87,8 +87,8 @@ const assets: Asset[] = range(150).map(index => {
         label: `Example asset ${index + 1}`,
         caption: `The caption for example asset ${index + 1}`,
         filename: 'example1.jpg',
-        tags: range(index % 3).map(i => tags[(i * 3 + index) % tags.length]),
-        collections: range(index % 2).map(i => assetCollections[(i * 2 + index) % assetCollections.length]),
+        tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
+        collections: range(index % 2).map((i) => assetCollections[(i * 2 + index) % assetCollections.length]),
         copyrightNotice: 'The Neos team',
         lastModified: new Date('2020-06-16 15:07:00'),
         iptcProperties: index % 5 === 0 ? getIptcProperties(index) : [],
@@ -100,10 +100,10 @@ const assets: Asset[] = range(150).map(index => {
             mediaType: 'image/jpeg',
             typeIcon: typeIcons.jpg,
             size: 200,
-            url: getExampleImagePath(filename)
+            url: getExampleImagePath(filename),
         },
         thumbnailUrl: getExampleImagePath(filename),
-        previewUrl: getExampleImagePath(filename)
+        previewUrl: getExampleImagePath(filename),
     };
 });
 
@@ -112,7 +112,7 @@ const loadFixtures = () => {
         assets: cloneDeep(assets),
         assetCollections: cloneDeep(assetCollections),
         assetSources: cloneDeep(assetSources),
-        tags: cloneDeep(tags)
+        tags: cloneDeep(tags),
     };
 };
 

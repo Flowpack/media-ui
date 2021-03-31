@@ -15,7 +15,7 @@ const useSelectedTag = (): Tag => {
             {
                 id: `Tag_${selectedTagId}`,
                 fragment: TAG_FRAGMENT,
-                fragmentName: 'TagProps'
+                fragmentName: 'TagProps',
             },
             true
         );

@@ -25,7 +25,7 @@ import {
     Resolvers,
     PersistentStateManager,
     IdFromObjectResolver,
-    ApolloErrorHandler
+    ApolloErrorHandler,
 } from 'backend-module/src/core';
 import App from 'backend-module/src/components/App';
 
@@ -48,15 +48,15 @@ interface MediaSelectionScreenState {
 
 @connect(
     $transform({
-        isLeftSideBarHidden: $get('ui.leftSideBar.isHidden')
+        isLeftSideBarHidden: $get('ui.leftSideBar.isHidden'),
     }),
     {
         addFlashMessage: actions.UI.FlashMessages.add,
-        toggleSidebar: actions.UI.LeftSideBar.toggle
+        toggleSidebar: actions.UI.LeftSideBar.toggle,
     }
 )
-@neos(globalRegistry => ({
-    i18nRegistry: globalRegistry.get('i18n')
+@neos((globalRegistry) => ({
+    i18nRegistry: globalRegistry.get('i18n'),
 }))
 // eslint-disable-next-line prettier/prettier
 export default class MediaSelectionScreen extends React.PureComponent<
@@ -66,14 +66,14 @@ export default class MediaSelectionScreen extends React.PureComponent<
     constructor(props: MediaSelectionScreenProps) {
         super(props);
         this.state = {
-            initialLeftSideBarHiddenState: false
+            initialLeftSideBarHiddenState: false,
         };
     }
 
     componentDidMount() {
         const { isLeftSideBarHidden, toggleSidebar } = this.props;
         this.setState({
-            initialLeftSideBarHiddenState: isLeftSideBarHidden
+            initialLeftSideBarHiddenState: isLeftSideBarHidden,
         });
         if (!isLeftSideBarHidden) {
             toggleSidebar();
@@ -93,10 +93,10 @@ export default class MediaSelectionScreen extends React.PureComponent<
             endpoints: {
                 // TODO: Generate uri from Neos maybe like $get('routes.core.modules.mediaBrowser', neos);
                 graphql: '/neos/graphql/media-assets',
-                upload: '/neos/media-ui/upload'
+                upload: '/neos/media-ui/upload',
             },
             // TODO: Generate image uri from Neos
-            dummyImage: '/_Resources/Static/Packages/Neos.Neos/Images/dummy-image.svg'
+            dummyImage: '/_Resources/Static/Packages/Neos.Neos/Images/dummy-image.svg',
         };
     }
 
@@ -112,11 +112,11 @@ export default class MediaSelectionScreen extends React.PureComponent<
                     ApolloErrorHandler,
                     createUploadLink({
                         uri: endpoints.graphql,
-                        credentials: 'same-origin'
-                    })
+                        credentials: 'same-origin',
+                    }),
                 ]),
                 typeDefs: Resolvers.typeDefs,
-                resolvers: Resolvers.resolvers
+                resolvers: Resolvers.resolvers,
             });
         }
         return apolloClient;
@@ -139,11 +139,11 @@ export default class MediaSelectionScreen extends React.PureComponent<
         const containerRef = createRef<HTMLDivElement>();
 
         const Notification: Notify = {
-            info: message => addFlashMessage(message, message, 'error'),
-            ok: message => addFlashMessage(message, message, 'error'),
-            notice: message => addFlashMessage(message, message, 'error'),
+            info: (message) => addFlashMessage(message, message, 'error'),
+            ok: (message) => addFlashMessage(message, message, 'error'),
+            notice: (message) => addFlashMessage(message, message, 'error'),
             warning: (title, message = '') => addFlashMessage(title, message, 'error'),
-            error: (title, message = '') => addFlashMessage(title, message, 'error')
+            error: (title, message = '') => addFlashMessage(title, message, 'error'),
         };
 
         return (
@@ -154,7 +154,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
                             <RecoilRoot>
                                 <MediaUiProvider
                                     dummyImage={dummyImage}
-                                    onAssetSelection={localAssetIdentifier => onComplete(localAssetIdentifier)}
+                                    onAssetSelection={(localAssetIdentifier) => onComplete(localAssetIdentifier)}
                                     selectionMode={true}
                                     containerRef={containerRef}
                                 >

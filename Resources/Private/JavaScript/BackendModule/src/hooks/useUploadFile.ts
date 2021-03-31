@@ -9,8 +9,8 @@ export default function useUploadFile() {
     const uploadFile = (file: File) =>
         action({
             variables: {
-                file
-            }
+                file,
+            },
         });
 
     return { uploadFile, uploadState: data?.uploadFile || {}, error, loading };

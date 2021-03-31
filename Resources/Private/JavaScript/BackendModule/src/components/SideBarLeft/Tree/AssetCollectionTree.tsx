@@ -18,7 +18,7 @@ import {
     useDeleteTag,
     useSelectedAssetCollection,
     useSelectAssetCollection,
-    useSelectTag
+    useSelectTag,
 } from '../../../hooks';
 import AddAssetCollectionButton from './AddAssetCollectionButton';
 import AddTagButton from './AddTagButton';
@@ -26,22 +26,22 @@ import useSelectedTag from '../../../hooks/useSelectedTag';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {
-        border: `1px solid ${theme.colors.border}`
+        border: `1px solid ${theme.colors.border}`,
     },
     headline: {
-        padding: `0 ${theme.spacing.full}`
+        padding: `0 ${theme.spacing.full}`,
     },
     iconWrap: {
         width: theme.spacing.goldenUnit,
         display: 'inline-flex',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     toolbar: {
-        borderTop: `1px solid ${theme.colors.border}`
+        borderTop: `1px solid ${theme.colors.border}`,
     },
     tree: {
-        borderTop: `1px solid ${theme.colors.border}`
-    }
+        borderTop: `1px solid ${theme.colors.border}`,
+    },
 }));
 
 const AssetCollectionTree = () => {
@@ -66,7 +66,7 @@ const AssetCollectionTree = () => {
         if (selectedTag) {
             const confirm = window.confirm(
                 translate('action.deleteTag.confirm', 'Do you really want to delete the tag ' + selectedTag.label, [
-                    selectedTag.label
+                    selectedTag.label,
                 ])
             );
             if (!confirm) return;
@@ -95,7 +95,7 @@ const AssetCollectionTree = () => {
                         translate('assetCollectionActions.delete.success', 'Asset collection was successfully deleted')
                     );
                 })
-                .catch(error => {
+                .catch((error) => {
                     Notify.error(
                         translate('assetCollectionActions.delete.error', 'Failed to delete asset collection'),
                         error.message
@@ -114,7 +114,7 @@ const AssetCollectionTree = () => {
         setSelectedAssetCollectionId,
         setSelectedAssetId,
         Notify,
-        deleteAssetCollection
+        deleteAssetCollection,
     ]);
 
     if (!selectedAssetSource?.supportsCollections) return null;
@@ -149,7 +149,7 @@ const AssetCollectionTree = () => {
                     assetCollection={null}
                     collapsedByDefault={false}
                 >
-                    {tags?.map(tag => (
+                    {tags?.map((tag) => (
                         <TagTreeNode
                             key={tag.id}
                             tag={tag}
@@ -167,7 +167,7 @@ const AssetCollectionTree = () => {
                         level={1}
                         isActive={assetCollection.title == selectedAssetCollection?.title && !selectedTag}
                     >
-                        {assetCollection.tags?.map(tag => (
+                        {assetCollection.tags?.map((tag) => (
                             <TagTreeNode
                                 key={tag.id}
                                 tag={tag}

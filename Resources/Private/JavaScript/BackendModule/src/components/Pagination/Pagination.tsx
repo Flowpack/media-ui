@@ -18,17 +18,17 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         right: 0,
         borderTop: `1px solid ${theme.colors.border}`,
         backgroundColor: theme.colors.moduleBackground,
-        zIndex: theme.paginationZIndex
+        zIndex: theme.paginationZIndex,
     },
     list: {
         display: 'flex',
         justifySelf: 'center',
         listStyleType: 'none',
-        textAlign: 'center'
+        textAlign: 'center',
     },
     ellipsis: {
-        lineHeight: '2.4rem'
-    }
+        lineHeight: '2.4rem',
+    },
 }));
 
 const Pagination: React.FC = () => {
@@ -43,12 +43,12 @@ const Pagination: React.FC = () => {
         end: 0,
         hasLessPages: false,
         hasMorePages: false,
-        pages: []
+        pages: [],
     });
 
-    const handlePageClick = useCallback(page => setCurrentPage(page), [setCurrentPage]);
-    const handlePreviousPageClick = useCallback(() => setCurrentPage(prev => prev - 1), [setCurrentPage]);
-    const handleNextPageClick = useCallback(() => setCurrentPage(prev => prev + 1), [setCurrentPage]);
+    const handlePageClick = useCallback((page) => setCurrentPage(page), [setCurrentPage]);
+    const handlePreviousPageClick = useCallback(() => setCurrentPage((prev) => prev - 1), [setCurrentPage]);
+    const handleNextPageClick = useCallback(() => setCurrentPage((prev) => prev + 1), [setCurrentPage]);
 
     // Calculates visible display range
     useMemo(() => {
@@ -75,7 +75,7 @@ const Pagination: React.FC = () => {
             end,
             hasLessPages: start > 2,
             hasMorePages: end + 1 < numberOfPages,
-            pages
+            pages,
         });
     }, [numberOfPages, currentPage]);
 
@@ -99,7 +99,7 @@ const Pagination: React.FC = () => {
                         />
                     )}
                     {displayRange.hasLessPages && <li className={classes.ellipsis}>…</li>}
-                    {displayRange.pages.map(page => (
+                    {displayRange.pages.map((page) => (
                         <PaginationItem
                             key={page}
                             selected={currentPage === page}

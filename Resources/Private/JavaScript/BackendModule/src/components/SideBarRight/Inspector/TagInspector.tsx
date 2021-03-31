@@ -33,7 +33,7 @@ const TagInspector = () => {
         if (label !== selectedTag.label) {
             updateTag({
                 tag: selectedTag,
-                label
+                label,
             })
                 .then(() => {
                     Notify.ok(translate('actions.updateTag.success', 'The tag has been updated'));

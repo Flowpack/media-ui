@@ -18,12 +18,12 @@ const mediaUiTheme: MediaUiTheme = {
     spacing: config.spacing,
     fontSize: {
         ...config.fontSize,
-        large: '18px'
+        large: '18px',
     },
     size: {
         ...config.size,
         sidebarWidth: '250px',
-        scrollbarSize: '4px'
+        scrollbarSize: '4px',
     },
     colors: {
         primary: config.colors.primaryBlue,
@@ -43,17 +43,17 @@ const mediaUiTheme: MediaUiTheme = {
         captionBackground: config.colors.contrastNeutral,
         moduleBackground: config.colors.contrastDarker,
         scrollbarBackground: 'transparent',
-        scrollbarForeground: config.colors.contrastBright
+        scrollbarForeground: config.colors.contrastBright,
     },
     transition: config.transition,
     loadingIndicatorZIndex: 10024,
     paginationZIndex: 10022,
-    lightboxZIndex: 10023
+    lightboxZIndex: 10023,
 };
 
 export const useMediaUiTheme = useTheme;
 
-export const createUseMediaUiStyles = styles => createUseStyles<MediaUiTheme>(styles, { theming });
+export const createUseMediaUiStyles = (styles) => createUseStyles(styles, { theming });
 
 export function MediaUiThemeProvider({ children }: { children: React.ReactElement }) {
     return <ThemeProvider theme={mediaUiTheme}>{children}</ThemeProvider>;

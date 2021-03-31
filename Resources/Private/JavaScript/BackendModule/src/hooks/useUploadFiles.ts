@@ -9,8 +9,8 @@ export default function useUploadFiles() {
     const uploadFiles = (files: File[]) =>
         action({
             variables: {
-                files
-            }
+                files,
+            },
         });
 
     return { uploadFiles, uploadState: data?.uploadFiles || [], error, loading };

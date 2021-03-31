@@ -54,5 +54,5 @@ export {
     useUpdateAssetCollection,
     useUploadFile,
     useUploadFiles,
-    useViewModeSelection
+    useViewModeSelection,
 };

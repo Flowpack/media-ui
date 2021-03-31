@@ -10,7 +10,7 @@ import { IconLabel } from '../Presentation';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceList: {
         border: `1px solid ${theme.colors.border}`,
-        padding: `0 ${theme.spacing.full}`
+        padding: `0 ${theme.spacing.full}`,
     },
     item: {
         display: 'flex',
@@ -20,15 +20,15 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             cursor: 'pointer',
             userSelect: 'none',
             '&:hover': {
-                color: theme.colors.primary
-            }
-        }
+                color: theme.colors.primary,
+            },
+        },
     },
     itemSelected: {
         '&, .neos.neos-module &': {
-            color: theme.colors.primary
-        }
-    }
+            color: theme.colors.primary,
+        },
+    },
 }));
 
 export default function AssetSourceList() {
@@ -44,7 +44,7 @@ export default function AssetSourceList() {
             <Headline type="h2">
                 <IconLabel icon="box" label={translate('assetSourceList.header', 'Media sources')} />
             </Headline>
-            {assetSources?.map(assetSource => (
+            {assetSources?.map((assetSource) => (
                 <IconLabel
                     key={assetSource.id}
                     label={assetSource.label}

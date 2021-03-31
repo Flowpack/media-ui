@@ -10,15 +10,15 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         backgroundColor: theme.colors.mainBackground,
         bottom: 0,
         '& > *': {
-            flex: 1
-        }
-    }
+            flex: 1,
+        },
+    },
 }));
 
 const Actions = ({
     hasUnpublishedChanges,
     handleApply,
-    handleDiscard
+    handleDiscard,
 }: {
     hasUnpublishedChanges: boolean;
     handleApply: () => void;

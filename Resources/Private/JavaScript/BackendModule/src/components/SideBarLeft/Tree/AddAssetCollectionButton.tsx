@@ -11,8 +11,8 @@ const useStyles = createUseMediaUiStyles({
     plusIcon: {
         top: '15px !important',
         left: '13px !important',
-        width: '9px !important'
-    }
+        width: '9px !important',
+    },
 });
 
 const AddAssetCollectionButton: React.FC = () => {

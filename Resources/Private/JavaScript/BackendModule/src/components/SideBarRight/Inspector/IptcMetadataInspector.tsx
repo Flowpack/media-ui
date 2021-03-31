@@ -14,16 +14,16 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 backgroundColor: theme.colors.alternatingBackground,
                 fontWeight: 'bold',
                 color: 'white',
-                padding: '8px 8px 0'
+                padding: '8px 8px 0',
             },
             '& dd': {
                 backgroundColor: theme.colors.alternatingBackground,
                 marginBottom: '1px',
                 padding: '8px',
-                color: theme.colors.inactive
-            }
-        }
-    }
+                color: theme.colors.inactive,
+            },
+        },
+    },
 }));
 
 const IptcMetadataInspector: React.FC = () => {
@@ -39,7 +39,7 @@ const IptcMetadataInspector: React.FC = () => {
                 <IconLabel icon="camera" label={translate('inspector.iptcMetadata', 'IPTC Metadata')} />
             </Headline>
             <PropertyList>
-                {selectedAsset.iptcProperties.map(iptcProperty => (
+                {selectedAsset.iptcProperties.map((iptcProperty) => (
                     <PropertyListItem
                         key={iptcProperty.propertyName}
                         label={iptcProperty.propertyName}

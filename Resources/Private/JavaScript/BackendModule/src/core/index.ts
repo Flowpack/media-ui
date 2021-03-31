@@ -22,5 +22,5 @@ export {
     useIntl,
     useMediaUi,
     useMediaUiTheme,
-    useNotify
+    useNotify,
 };

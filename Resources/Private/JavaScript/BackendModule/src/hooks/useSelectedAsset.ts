@@ -15,7 +15,7 @@ const useSelectedAsset = (): Asset => {
             {
                 id: `Asset_${selectedAssetId}`,
                 fragment: ASSET_FRAGMENT,
-                fragmentName: 'AssetProps'
+                fragmentName: 'AssetProps',
             },
             true
         );

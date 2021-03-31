@@ -31,7 +31,7 @@ export default function useUpdateAsset() {
                 assetSourceId: asset.assetSource.id,
                 label,
                 caption,
-                copyrightNotice
+                copyrightNotice,
             },
             optimisticResponse: {
                 __typename: 'Mutation',
@@ -39,9 +39,9 @@ export default function useUpdateAsset() {
                     ...asset,
                     label,
                     caption,
-                    copyrightNotice
-                }
-            }
+                    copyrightNotice,
+                },
+            },
         });
 
     return { updateAsset, data, error, loading };

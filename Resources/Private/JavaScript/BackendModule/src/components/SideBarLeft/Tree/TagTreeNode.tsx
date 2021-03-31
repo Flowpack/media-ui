@@ -20,7 +20,7 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
     label,
     title,
     onClick,
-    level
+    level,
 }: TagTreeNodeProps) => {
     const handleClick = useCallback(() => onClick(tag, assetCollection), [onClick, tag, assetCollection]);
 

@@ -26,7 +26,7 @@ export default function useUpdateAssetCollection() {
             variables: {
                 id: assetCollection.id,
                 title,
-                tagIds: tags?.map(tag => tag.id)
+                tagIds: tags?.map((tag) => tag.id),
             },
             optimisticResponse: {
                 updateAssetCollection: {
@@ -34,16 +34,16 @@ export default function useUpdateAssetCollection() {
                     title,
                     ...(title
                         ? {
-                              title
+                              title,
                           }
                         : {}),
                     ...(tags
                         ? {
-                              tags
+                              tags,
                           }
-                        : {})
-                }
-            }
+                        : {}),
+                },
+            },
         });
 
     return { updateAssetCollection, data, error, loading };

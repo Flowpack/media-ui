@@ -11,7 +11,7 @@ const SideBarRight = () => {
         AssetInspector,
         AssetCollectionInspector,
         TagInspector,
-        IptcMetadataInspector
+        IptcMetadataInspector,
     ];
 
     return (

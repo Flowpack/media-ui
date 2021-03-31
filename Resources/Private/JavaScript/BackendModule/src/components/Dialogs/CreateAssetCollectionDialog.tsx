@@ -10,8 +10,8 @@ import { useCreateAssetCollection } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles(() => ({
     formBody: {
-        padding: 16
-    }
+        padding: 16,
+    },
 }));
 
 const CreateAssetCollectionDialog = () => {
@@ -24,19 +24,19 @@ const CreateAssetCollectionDialog = () => {
 
     const handleRequestClose = useCallback(() => setDialogState({ title: '', visible: false }), [setDialogState]);
     const handleCreate = useCallback(() => {
-        setDialogState(state => ({ ...state, visible: false }));
+        setDialogState((state) => ({ ...state, visible: false }));
         createAssetCollection(dialogState.title)
             .then(() => {
                 Notify.ok(translate('assetCollectionActions.create.success', 'Asset collection was created'));
             })
-            .catch(error => {
+            .catch((error) => {
                 Notify.error(
                     translate('assetCollectionActions.create.error', 'Failed to create asset collection'),
                     error.message
                 );
             });
     }, [Notify, setDialogState, createAssetCollection, dialogState, translate]);
-    const setTitle = useCallback(title => setDialogState(state => ({ ...state, title })), [setDialogState]);
+    const setTitle = useCallback((title) => setDialogState((state) => ({ ...state, title })), [setDialogState]);
 
     return (
         <Dialog
@@ -55,7 +55,7 @@ const CreateAssetCollectionDialog = () => {
                     onClick={handleCreate}
                 >
                     {translate('general.create', 'Create')}
-                </Button>
+                </Button>,
             ]}
         >
             <div className={classes.formBody}>

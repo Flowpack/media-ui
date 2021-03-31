@@ -18,16 +18,16 @@ export default function useImportAsset() {
         action({
             variables: {
                 id: asset.id,
-                assetSourceId: asset.assetSource.id
+                assetSourceId: asset.assetSource.id,
             },
             optimisticResponse: useOptimisticResponse && {
                 __typename: 'Mutation',
                 importAsset: {
                     ...asset,
                     imported: true,
-                    localId: 'tmp'
-                }
-            }
+                    localId: 'tmp',
+                },
+            },
         });
 
     return { importAsset, data, error, loading };

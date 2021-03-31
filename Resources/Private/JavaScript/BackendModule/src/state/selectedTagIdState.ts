@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 const selectedTagIdState = atom<string>({
     key: 'selectedTagIdState',
-    default: null
+    default: null,
 });
 
 export default selectedTagIdState;

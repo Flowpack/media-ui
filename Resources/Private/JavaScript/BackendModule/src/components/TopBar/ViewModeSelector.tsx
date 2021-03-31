@@ -12,9 +12,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         display: 'flex',
         alignItems: 'baseline',
         '& label': {
-            marginRight: theme.spacing.quarter
-        }
-    }
+            marginRight: theme.spacing.quarter,
+        },
+    },
 }));
 
 export default function ViewModeSelector() {
@@ -27,13 +27,13 @@ export default function ViewModeSelector() {
             {
                 value: VIEW_MODES.Thumbnails,
                 label: translate(`viewModeSelector.viewMode.${VIEW_MODES.Thumbnails}`, 'Thumbnails'),
-                icon: 'th'
+                icon: 'th',
             },
             {
                 value: VIEW_MODES.List,
                 label: translate(`viewModeSelector.viewMode.${VIEW_MODES.List}`, 'List'),
-                icon: 'th-list'
-            }
+                icon: 'th-list',
+            },
         ];
     }, [translate]);
 
@@ -41,7 +41,7 @@ export default function ViewModeSelector() {
         <div className={classes.viewModeSelector}>
             <SelectBox
                 options={viewModeOptions}
-                onValueChange={value => setViewModeSelection(value)}
+                onValueChange={(value) => setViewModeSelection(value)}
                 value={viewModeSelection}
                 optionValueField="value"
             />

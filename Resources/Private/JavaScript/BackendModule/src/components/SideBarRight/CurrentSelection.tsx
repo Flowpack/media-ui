@@ -14,8 +14,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     currentSelection: {},
     headline: {
         fontWeight: 'bold',
-        lineHeight: theme.spacing.goldenUnit
-    }
+        lineHeight: theme.spacing.goldenUnit,
+    },
 }));
 
 const CurrentSelection = () => {
@@ -41,17 +41,17 @@ const CurrentSelection = () => {
         selectedAssetCollection && {
             value: 'assetCollection',
             label: selectedAssetCollection.title,
-            icon: 'folder'
+            icon: 'folder',
         },
         selectedTag && {
             value: 'tag',
             label: selectedTag.label,
-            icon: 'tag'
+            icon: 'tag',
         },
-        selectedAsset && { value: 'asset', label: selectedAsset.label, icon: assetIcon }
+        selectedAsset && { value: 'asset', label: selectedAsset.label, icon: assetIcon },
     ].filter(Boolean);
-    const selectedOption = options.find(o => o.value === selectedInspectorView);
-    const value = options.find(o => o.value === selectedInspectorView) ? selectedInspectorView : options[0]?.value;
+    const selectedOption = options.find((o) => o.value === selectedInspectorView);
+    const value = options.find((o) => o.value === selectedInspectorView) ? selectedInspectorView : options[0]?.value;
 
     // @TODO get rid of this junk code in favour of something like this https://neos-project.slack.com/archives/CUEUD49ED/p1604002816009700
     useEffect(() => {

@@ -10,11 +10,11 @@ import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles({
     collectionSelectBox: {},
-    collectionSelection: {}
+    collectionSelection: {},
 });
 
 const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
-    return assetCollectionIds.join(',') === asset.collections.map(collection => collection.id).join(',');
+    return assetCollectionIds.join(',') === asset.collections.map((collection) => collection.id).join(',');
 };
 
 const CollectionSelectBox = () => {
@@ -33,11 +33,11 @@ const CollectionSelectBox = () => {
     const assetCollectionIds = useMemo(() => selectedAsset?.collections.map(({ id }) => id), [selectedAsset]);
 
     const handleChange = useCallback(
-        newAssetCollectionIds => {
+        (newAssetCollectionIds) => {
             if (!collectionsMatchAsset(newAssetCollectionIds, selectedAsset)) {
                 setAssetCollections({
                     asset: selectedAsset,
-                    assetCollections: assetCollections.filter(c => newAssetCollectionIds.includes(c.id))
+                    assetCollections: assetCollections.filter((c) => newAssetCollectionIds.includes(c.id)),
                 })
                     .then(() => {
                         Notify.ok(

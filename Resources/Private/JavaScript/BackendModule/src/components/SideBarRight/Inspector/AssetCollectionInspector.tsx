@@ -34,7 +34,7 @@ const AssetCollectionInspector = () => {
         if (title !== selectedAssetCollection.title) {
             updateAssetCollection({
                 assetCollection: selectedAssetCollection,
-                title
+                title,
             })
                 .then(() => {
                     Notify.ok(

@@ -7,8 +7,8 @@ const useStyles = createUseMediaUiStyles({
         display: 'inline-block',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis'
-    }
+        textOverflow: 'ellipsis',
+    },
 });
 
 interface AssetLabelProps {

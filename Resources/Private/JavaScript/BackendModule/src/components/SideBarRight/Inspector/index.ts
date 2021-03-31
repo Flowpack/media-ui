@@ -17,5 +17,5 @@ export {
     TagInspector,
     TagSelectBox,
     TagSelectBoxAsset,
-    TagSelectBoxAssetCollection
+    TagSelectBoxAssetCollection,
 };

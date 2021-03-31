@@ -27,5 +27,5 @@ export {
     IptcProperty,
     MediaUiTheme,
     Notify,
-    Tag
+    Tag,
 };

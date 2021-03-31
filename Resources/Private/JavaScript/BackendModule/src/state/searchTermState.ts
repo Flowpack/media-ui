@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 const searchTermState = atom<string>({
     key: 'searchTermState',
-    default: ''
+    default: '',
 });
 
 export default searchTermState;

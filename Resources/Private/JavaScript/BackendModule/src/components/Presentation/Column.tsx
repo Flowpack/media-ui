@@ -11,8 +11,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         gridGap: theme.spacing.full,
         overflowY: 'auto',
         overflowX: 'hidden',
-        height: '100%'
-    }
+        height: '100%',
+    },
 }));
 
 interface ColumnProps {

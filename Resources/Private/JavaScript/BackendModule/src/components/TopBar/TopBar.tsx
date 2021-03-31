@@ -9,8 +9,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     topBar: {
         display: 'grid',
         gridTemplateColumns: 'repeat( auto-fit, minmax(200px, 1fr) )',
-        gridGap: theme.spacing.goldenUnit
-    }
+        gridGap: theme.spacing.goldenUnit,
+    },
 }));
 
 const TopBar: React.FC = () => {

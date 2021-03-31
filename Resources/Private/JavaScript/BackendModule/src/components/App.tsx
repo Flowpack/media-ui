@@ -35,26 +35,26 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             "left main right"
         `,
         gridGap: theme.spacing.full,
-        lineHeight: 1.5
+        lineHeight: 1.5,
     }),
     gridColumn: {
         height: '100%',
-        overflowY: 'auto'
+        overflowY: 'auto',
     },
     gridRight: {
         extend: 'gridColumn',
-        gridArea: 'right'
+        gridArea: 'right',
     },
     gridLeft: {
         extend: 'gridColumn',
-        gridArea: 'left'
+        gridArea: 'left',
     },
     gridMain: {
         extend: 'gridColumn',
-        gridArea: 'main'
+        gridArea: 'main',
     },
     gridTop: {
-        gridArea: 'top'
+        gridArea: 'top',
     },
     '@global': {
         '#media-ui-app': {
@@ -62,16 +62,16 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             scrollbarColor: `${theme.colors.scrollbarForeground} ${theme.colors.scrollbarBackground}`,
 
             '& ::-webkit-scrollbar': {
-                width: theme.size.scrollbarSize
+                width: theme.size.scrollbarSize,
             },
             '& ::-webkit-scrollbar-track': {
-                background: theme.colors.scrollbarBackground
+                background: theme.colors.scrollbarBackground,
             },
             '& ::-webkit-scrollbar-thumb': {
-                backgroundColor: theme.colors.scrollbarForeground
-            }
-        }
-    }
+                backgroundColor: theme.colors.scrollbarForeground,
+            },
+        },
+    },
 }));
 
 const App = () => {

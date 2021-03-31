@@ -16,9 +16,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             cursor: 'pointer',
             '&:hover': {
                 backgroundColor: theme.colors.primary,
-                color: 'white'
-            }
-        }
+                color: 'white',
+            },
+        },
     },
     selected: {
         border: `1px solid ${theme.colors.border}`,
@@ -26,9 +26,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         borderBottom: 0,
         boxSizing: 'border-box',
         '& a': {
-            color: theme.colors.primary
-        }
-    }
+            color: theme.colors.primary,
+        },
+    },
 }));
 
 interface PaginationItemProps {
@@ -46,7 +46,7 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
     onClick,
     page = null,
     selected = false,
-    icon
+    icon,
 }: PaginationItemProps) => {
     const classes = useStyles();
     return (

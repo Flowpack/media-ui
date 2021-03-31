@@ -13,7 +13,7 @@ import { uploadDialogState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     uploadArea: {
-        padding: theme.spacing.full
+        padding: theme.spacing.full,
     },
     dropzone: {
         display: 'flex',
@@ -34,18 +34,18 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         outline: 'none',
         cursor: 'pointer',
         userSelect: 'none',
-        transition: 'border .24s ease-in-out'
+        transition: 'border .24s ease-in-out',
     },
     fileList: {
         marginTop: theme.spacing.full,
         display: 'flex',
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
     },
     fileListHeader: {
         flex: '1 1 100%',
         marginBottom: theme.spacing.full,
-        fontSize: theme.fontSize
+        fontSize: theme.fontSize,
     },
     thumb: {
         display: 'inline-flex',
@@ -56,7 +56,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         width: 100,
         height: 100,
         padding: theme.spacing.quarter,
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
     },
     thumbInner: {
         position: 'relative',
@@ -67,8 +67,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         justifyContent: 'center',
         '& span': {
             marginLeft: theme.spacing.half,
-            userSelect: 'none'
-        }
+            userSelect: 'none',
+        },
     },
     img: {
         position: 'absolute',
@@ -78,7 +78,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         objectFit: 'cover',
         left: 0,
         top: 0,
-        zIndex: -1
+        zIndex: -1,
     },
     stateOverlay: {
         position: 'absolute',
@@ -89,31 +89,31 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         bottom: 0,
         backgroundColor: theme.colors.alternatingBackground,
         opacity: 0.3,
-        zIndex: -1
+        zIndex: -1,
     },
     loading: {
         borderColor: theme.colors.border,
         '& $thumbInner:after': {
-            extend: 'stateOverlay'
-        }
+            extend: 'stateOverlay',
+        },
     },
     success: {
         borderColor: theme.colors.success,
         '& $thumbInner:after': {
             extend: 'stateOverlay',
-            backgroundColor: theme.colors.success
-        }
+            backgroundColor: theme.colors.success,
+        },
     },
     error: {
         borderColor: theme.colors.error,
         '& $thumbInner:after': {
             extend: 'stateOverlay',
-            backgroundColor: theme.colors.error
-        }
+            backgroundColor: theme.colors.error,
+        },
     },
     warning: {
-        color: theme.colors.warn
-    }
+        color: theme.colors.warn,
+    },
 }));
 
 interface UploadedFile extends File {
@@ -134,10 +134,10 @@ const UploadDialog: React.FC = () => {
 
     // TODO: Define accepted mimetypes `{ accept: 'image/jpeg, image/png, video/*'}`
     const { getRootProps, getInputProps, isDragAccept, isDragActive, isDragReject } = useDropzone({
-        onDrop: acceptedFiles => {
+        onDrop: (acceptedFiles) => {
             if (acceptedFiles.length === 0) return;
-            setFiles(prev => {
-                const newFiles = (acceptedFiles as UploadedFile[]).map(file => {
+            setFiles((prev) => {
+                const newFiles = (acceptedFiles as UploadedFile[]).map((file) => {
                     if (file.type.indexOf('image') === 0) {
                         file.preview = URL.createObjectURL(file);
                     } else {
@@ -156,13 +156,13 @@ const UploadDialog: React.FC = () => {
         },
         maxSize: config?.uploadMaxFileSize || 0,
         multiple: true,
-        preventDropOnDocument: true
+        preventDropOnDocument: true,
     });
     const classes = useStyles({ isDragAccept, isDragActive, isDragReject });
 
     useEffect(() => {
         // Make sure to revoke the data uris to avoid memory leaks
-        files.forEach(file => URL.revokeObjectURL(file.preview));
+        files.forEach((file) => URL.revokeObjectURL(file.preview));
     }, [files]);
 
     const handleUpload = useCallback(() => {
@@ -171,7 +171,7 @@ const UploadDialog: React.FC = () => {
                 Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
                 refetchAssets();
             })
-            .catch(error => {
+            .catch((error) => {
                 Notify.error(translate('fileUpload.error', 'Upload failed'), error);
             });
     }, [uploadFiles, Notify, translate, files, refetchAssets]);
@@ -198,7 +198,7 @@ const UploadDialog: React.FC = () => {
                     onClick={() => handleUpload()}
                 >
                     {translate('uploadDialog.upload', 'Upload')}
-                </Button>
+                </Button>,
             ]}
             style="wide"
         >
@@ -226,7 +226,7 @@ const UploadDialog: React.FC = () => {
                         </h4>
                         {files.map((file: UploadedFile) => {
                             // TODO: cleanup and move into component
-                            const fileState = uploadState.find(result => result.filename === file.name);
+                            const fileState = uploadState.find((result) => result.filename === file.name);
                             const success = fileState?.success;
 
                             let stateClassName = '';
