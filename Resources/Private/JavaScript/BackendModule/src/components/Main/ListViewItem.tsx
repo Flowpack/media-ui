@@ -2,17 +2,16 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import { Asset, MediaUiTheme } from '../../interfaces';
+import { AssetIdentity, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useMediaUi } from '../../core';
 import { humanFileSize } from '../../helper';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
 import { selectedAssetForPreviewState, selectedAssetIdState } from '../../state';
-import { useSelectAsset } from '../../hooks';
+import { useAssetQuery, useSelectAsset } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {
-        cursor: 'pointer',
         backgroundColor: theme.colors.mainBackground,
         '&:nth-of-type(2n)': {
             backgroundColor: theme.colors.alternatingBackground,
@@ -52,6 +51,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     labelColumn: {
         extend: 'textColumn',
+        cursor: 'pointer',
         userSelect: 'text',
         '& > *': {
             width: '200px',
@@ -72,10 +72,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-interface ListViewItemProps {
-    asset: Asset;
-}
-
 const dateFormatOptions = {
     weekday: 'short',
     year: 'numeric',
@@ -83,16 +79,21 @@ const dateFormatOptions = {
     day: 'numeric',
 };
 
-const ListViewItem: React.FC<ListViewItemProps> = ({ asset }: ListViewItemProps) => {
+interface ListViewItemProps {
+    assetIdentity: AssetIdentity;
+}
+
+const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity }: ListViewItemProps) => {
     const classes = useStyles();
     const { dummyImage } = useMediaUi();
+    const { asset } = useAssetQuery(assetIdentity);
     const [selectedAssetId] = useRecoilState(selectedAssetIdState);
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const selectAsset = useSelectAsset();
-    const { label, thumbnailUrl, file, lastModified } = asset;
+    const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
 
     const onSelect = useCallback(() => {
-        if (selectedAssetId === asset.id) {
+        if (selectedAssetId.assetId === asset.id) {
             setSelectedAssetForPreview(asset);
         } else {
             selectAsset(asset);
@@ -100,28 +101,33 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ asset }: ListViewItemProps)
     }, [selectedAssetId, asset, setSelectedAssetForPreview, selectAsset]);
 
     return (
-        <tr
-            onClick={onSelect}
-            className={[classes.listViewItem, selectedAssetId === asset.id ? classes.selected : ''].join(' ')}
-        >
+        <tr className={[classes.listViewItem, isSelected ? classes.selected : ''].join(' ')}>
             <td className={classes.previewColumn}>
                 <picture>
-                    <img src={thumbnailUrl || dummyImage} alt={label} width={40} height={36} />
+                    <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label} width={40} height={36} />
                 </picture>
             </td>
-            <td className={classes.labelColumn}>
-                <AssetLabel label={label} />
-            </td>
-            <td className={classes.lastModifiedColumn}>
-                {new Date(lastModified).toLocaleString([], dateFormatOptions)}
-            </td>
-            <td className={classes.fileSizeColumn}>{humanFileSize(file.size)}</td>
-            <td className={classes.mediaTypeColumn}>{file.mediaType}</td>
-            <td className={classes.actionsColumn}>
-                <AssetActions asset={asset} />
-            </td>
+            {asset ? (
+                <>
+                    <td className={classes.labelColumn} onClick={onSelect}>
+                        <AssetLabel label={asset.label} />
+                    </td>
+                    <td className={classes.lastModifiedColumn}>
+                        {new Date(asset.lastModified).toLocaleString([], dateFormatOptions)}
+                    </td>
+                    <td className={classes.fileSizeColumn}>{humanFileSize(asset.file.size)}</td>
+                    <td className={classes.mediaTypeColumn}>{asset.file.mediaType}</td>
+                    <td className={classes.actionsColumn}>
+                        <AssetActions asset={asset} />
+                    </td>
+                </>
+            ) : (
+                <td className={classes.labelColumn} colSpan={5}>
+                    Loading...
+                </td>
+            )}
         </tr>
     );
 };
 
-export default React.memo(ListViewItem);
+export default React.memo(ListViewItem, (prev, next) => prev.assetIdentity.assetId === next.assetIdentity.assetId);

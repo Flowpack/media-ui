@@ -9,6 +9,7 @@ const useSelectedAssetCollection = (): AssetCollection => {
     const client = useApolloClient();
     const selectedAssetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
 
+    // TODO: use normal query and add typePolicy to cache for AssetCollection similar to Asset
     // Read selection from cache as we can only select asset collections that have been queried before
     try {
         return client.readFragment(

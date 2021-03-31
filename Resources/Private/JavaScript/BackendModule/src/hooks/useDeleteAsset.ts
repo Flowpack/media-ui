@@ -20,7 +20,7 @@ export default function useDeleteAsset() {
     const deleteAsset = ({ id, assetSource: { id: assetSourceId } }: Asset) =>
         action({ variables: { id, assetSourceId } }).then(() => {
             // Unselect currently selected asset if it was just deleted
-            if (id === selectedAssetId) {
+            if (id === selectedAssetId.assetId) {
                 setSelectedAsset(null);
             }
         });

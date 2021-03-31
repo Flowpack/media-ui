@@ -1,6 +1,8 @@
 import { atom } from 'recoil';
 
-const selectedAssetIdState = atom<string>({
+import { AssetIdentity } from '../interfaces';
+
+const selectedAssetIdState = atom<AssetIdentity>({
     key: 'selectedAssetIdState',
     default: null,
 });

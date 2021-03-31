@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useMemo } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { SelectBox } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../core';
-import { selectedMediaTypeState } from '../../state';
+import { clipboardState, selectedMediaTypeState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
     typeFilter: {},
@@ -23,6 +23,7 @@ export default function TypeFilter() {
     const classes = useStyles();
     const [mediaTypeFilter, setMediaTypeFilter] = useRecoilState(selectedMediaTypeState);
     const { translate } = useIntl();
+    const { visible: showClipboard } = useRecoilValue(clipboardState);
 
     const mediaTypeOptions = useMemo(
         (): MediaTypeOptions => ({
@@ -59,6 +60,7 @@ export default function TypeFilter() {
     return (
         <div className={classes.typeFilter}>
             <SelectBox
+                disabled={showClipboard}
                 options={Object.values(mediaTypeOptions)}
                 onValueChange={(value) => setMediaTypeFilter(value)}
                 value={mediaTypeFilter}

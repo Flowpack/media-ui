@@ -9,6 +9,7 @@ const useSelectedTag = (): Tag => {
     const client = useApolloClient();
     const selectedTagId = useRecoilValue(selectedTagIdState);
 
+    // TODO: use normal query and add typePolicy to cache for Tag similar to Asset
     // Read selection from cache as we can only select tags that have been queried before
     try {
         return client.readFragment(

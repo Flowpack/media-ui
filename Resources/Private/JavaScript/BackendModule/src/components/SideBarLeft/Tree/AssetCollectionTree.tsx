@@ -64,6 +64,7 @@ const AssetCollectionTree = () => {
 
     const onClickDelete = useCallback(() => {
         if (selectedTag) {
+            // TODO: Use custom modal
             const confirm = window.confirm(
                 translate('action.deleteTag.confirm', 'Do you really want to delete the tag ' + selectedTag.label, [
                     selectedTag.label,
@@ -81,6 +82,7 @@ const AssetCollectionTree = () => {
             setSelectedAssetCollectionId(null);
             setSelectedAssetId(null);
         } else if (selectedAssetCollection) {
+            // TODO: Use custom modal
             const confirm = window.confirm(
                 translate(
                     'action.deleteAssetCollection.confirm',

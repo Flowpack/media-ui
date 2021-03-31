@@ -2,23 +2,15 @@ import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS, createUseMediaUiStyles, useIntl } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
-import { currentPageState } from '../../state';
-import { useAssetCountQuery } from '../../hooks';
-import { AssetCount, PaginationItem } from './index';
+import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS, createUseMediaUiStyles, useIntl } from '../../../core';
+import { MediaUiTheme } from '../../../interfaces';
+import { currentPageState } from '../../../state';
+import { useAssetCountQuery } from '../../../hooks';
+import PaginationItem from './PaginationItem';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
-        display: 'grid',
-        gridTemplateColumns: theme.size.sidebarWidth + ' 1fr ' + theme.size.sidebarWidth,
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        borderTop: `1px solid ${theme.colors.border}`,
-        backgroundColor: theme.colors.moduleBackground,
-        zIndex: theme.paginationZIndex,
+        justifySelf: 'center',
     },
     list: {
         display: 'flex',
@@ -81,7 +73,6 @@ const Pagination: React.FC = () => {
 
     return (
         <nav className={classes.pagination}>
-            <AssetCount />
             {numberOfPages > 0 && (
                 <ol className={classes.list}>
                     {currentPage > 1 && (

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../core';
-import { searchTermState } from '../../state';
+import { clipboardState, searchTermState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
     searchBox: {
@@ -20,12 +20,14 @@ export default function SearchBox() {
     const [searchTerm, setSearchTerm] = useRecoilState(searchTermState);
     const [searchValue, setSearchValue] = useState(searchTerm);
     const { translate } = useIntl();
+    const { visible: showClipboard } = useRecoilValue(clipboardState);
 
     return (
         <div className={classes.searchBox}>
             <TextInput
                 value={searchValue}
                 type="search"
+                disabled={showClipboard}
                 onChange={(value) => setSearchValue(value)}
                 onEnterKey={() => setSearchTerm(searchValue)}
                 placeholder={translate('searchBox.placeholder', 'Search')}

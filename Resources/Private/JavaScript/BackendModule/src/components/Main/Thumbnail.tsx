@@ -2,12 +2,12 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { Asset, MediaUiTheme } from '../../interfaces';
+import { AssetIdentity, MediaUiTheme } from '../../interfaces';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
 import { selectedAssetForPreviewState, selectedAssetIdState } from '../../state';
-import { useSelectAsset } from '../../hooks';
+import { useAssetQuery, useSelectAsset } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnail: {
@@ -67,17 +67,17 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 }));
 
 interface ThumbnailProps {
-    asset: Asset;
+    assetIdentity: AssetIdentity;
 }
 
-const Thumbnail: React.FC<ThumbnailProps> = ({ asset }: ThumbnailProps) => {
+const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { dummyImage } = useMediaUi();
+    const { asset } = useAssetQuery(assetIdentity);
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
-    const { label, thumbnailUrl, file } = asset;
-    const isSelected = selectedAssetId === asset.id;
+    const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
     const selectAsset = useSelectAsset();
 
     const onSelect = useCallback(() => {
@@ -90,19 +90,23 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ asset }: ThumbnailProps) => {
 
     return (
         <figure className={classes.thumbnail}>
-            {asset.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
+            {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
             <picture onClick={onSelect} className={classes.picture}>
-                <img src={thumbnailUrl || dummyImage} alt={label} />
+                <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label} />
             </picture>
-            <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
-                <img src={file.typeIcon.url} alt={file.typeIcon.alt} />
-                <AssetLabel label={label} />
-            </figcaption>
-            <div className={classes.toolBar}>
-                <AssetActions asset={asset} />
-            </div>
+            {asset && (
+                <>
+                    <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
+                        <img src={asset.file.typeIcon.url} alt={asset.file.typeIcon.alt} />
+                        <AssetLabel label={asset.label} />
+                    </figcaption>
+                    <div className={classes.toolBar}>
+                        <AssetActions asset={asset} />
+                    </div>
+                </>
+            )}
         </figure>
     );
 };
 
-export default React.memo(Thumbnail);
+export default React.memo(Thumbnail, (prev, next) => prev.assetIdentity.assetId === next.assetIdentity.assetId);

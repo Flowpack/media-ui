@@ -1,17 +1,14 @@
 import * as React from 'react';
-import { useQuery } from '@apollo/client';
 import { useRecoilValue } from 'recoil';
 
 import { SideBarLeft } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
-import { Pagination } from './Pagination';
 import { createUseMediaUiStyles, useMediaUi } from '../core';
 import LoadingIndicator from './LoadingIndicator';
 import { MediaUiTheme } from '../interfaces';
-import { VIEW_MODE_SELECTION } from '../queries';
+import { BottomBar } from './BottomBar';
 import { TopBar } from './TopBar';
-import { ListView, ThumbnailView } from './Main';
-import { VIEW_MODES } from '../hooks';
+import { Main } from './Main';
 import AssetPreview from './AssetPreview';
 import { createAssetCollectionDialogState, createTagDialogState, uploadDialogState } from '../state';
 import { CreateTagDialog, UploadDialog, CreateAssetCollectionDialog } from './Dialogs';
@@ -81,9 +78,6 @@ const App = () => {
     const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
     const classes = useStyles({ selectionMode });
 
-    const viewModeSelectionQuery = useQuery(VIEW_MODE_SELECTION);
-    const { viewModeSelection } = viewModeSelectionQuery.data;
-
     return (
         <div className={classes.container} ref={containerRef}>
             <LoadingIndicator />
@@ -97,10 +91,10 @@ const App = () => {
             </div>
 
             <div className={classes.gridMain}>
-                {viewModeSelection === VIEW_MODES.List ? <ListView /> : <ThumbnailView />}
+                <Main />
             </div>
 
-            <Pagination />
+            <BottomBar />
 
             {!selectionMode && (
                 <div className={classes.gridRight}>

@@ -1,13 +1,12 @@
 import * as React from 'react';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
+import { createUseMediaUiStyles, useIntl } from '../../core';
+import { AssetIdentity, MediaUiTheme } from '../../interfaces';
 import { ListViewItem } from './index';
-import LoadingLabel from '../LoadingLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
-        overflow: 'scroll',
+        overflowY: 'scroll',
         '& table': {
             borderSpacing: '0 1px',
             width: '100%',
@@ -27,37 +26,33 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-const ListView: React.FC = () => {
+interface ListViewProps {
+    assetIdentities: AssetIdentity[];
+}
+
+const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
-    const { assets } = useMediaUi();
 
     return (
         <section className={classes.listView}>
-            {assets.length ? (
-                <table>
-                    <thead>
-                        <tr>
-                            <th />
-                            <th>{translate('thumbnailView.header.name', 'Name')}</th>
-                            <th>{translate('thumbnailView.header.lastModified', 'Last Modified')}</th>
-                            <th>{translate('thumbnailView.header.fileSize', 'File size')}</th>
-                            <th>{translate('thumbnailView.header.mediaType', 'Type')}</th>
-                            <th />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {assets.map((asset, index) => (
-                            <ListViewItem key={index} asset={asset} />
-                        ))}
-                    </tbody>
-                </table>
-            ) : (
-                <LoadingLabel
-                    loadingText={translate('assetList.loading', 'Loading assets')}
-                    emptyText={translate('assetList.empty', 'No assets found')}
-                />
-            )}
+            <table>
+                <thead>
+                    <tr>
+                        <th />
+                        <th>{translate('thumbnailView.header.name', 'Name')}</th>
+                        <th>{translate('thumbnailView.header.lastModified', 'Last Modified')}</th>
+                        <th>{translate('thumbnailView.header.fileSize', 'File size')}</th>
+                        <th>{translate('thumbnailView.header.mediaType', 'Type')}</th>
+                        <th />
+                    </tr>
+                </thead>
+                <tbody>
+                    {assetIdentities.map((assetIdentity, index) => (
+                        <ListViewItem key={index} assetIdentity={assetIdentity} />
+                    ))}
+                </tbody>
+            </table>
         </section>
     );
 };

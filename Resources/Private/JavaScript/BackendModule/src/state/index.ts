@@ -1,3 +1,4 @@
+import clipboardState from './clipboardState';
 import createAssetCollectionDialogState from './createAssetCollectionDialogState';
 import createTagDialogState from './createTagDialogState';
 import currentPageState from './currentPageState';
@@ -11,6 +12,7 @@ import selectedTagIdState from './selectedTagIdState';
 import uploadDialogState from './uploadDialogState';
 
 export {
+    clipboardState,
     createAssetCollectionDialogState,
     createTagDialogState,
     currentPageState,

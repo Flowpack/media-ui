@@ -21,6 +21,9 @@ import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
 import { RecoilRoot } from 'recoil';
+import { AssetIdentity } from './interfaces';
+import { ASSET } from './queries';
+import { gql } from '@apollo/client/core';
 
 loadIconLibrary();
 
@@ -41,7 +44,28 @@ window.onload = async (): Promise<void> => {
     Modal.setAppElement(root);
 
     // Cache for ApolloClient
-    const cache = new InMemoryCache({ dataIdFromObject: IdFromObjectResolver });
+    const cache = new InMemoryCache({
+        dataIdFromObject: IdFromObjectResolver,
+        typePolicies: {
+            Query: {
+                fields: {
+                    asset(_, { args, toReference }) {
+                        return toReference({ __typename: 'Asset', id: args.id });
+                    },
+                },
+            },
+            Asset: {
+                keyFields: ['id'],
+                fields: {
+                    isInClipboard(_, { variables }) {
+                        // TODO: Optimize to just to an array.includes
+                        const clipboard = PersistentStateManager.getItem<AssetIdentity[]>('clipboard') || [];
+                        return clipboard.find(({ assetId }) => assetId === variables.id) !== undefined;
+                    },
+                },
+            },
+        },
+    });
 
     // Restore state from last visit
     PersistentStateManager.restoreLocalState(cache);

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
@@ -7,7 +7,7 @@ import { IconButton } from '@neos-project/react-ui-components';
 import { Asset } from '../../interfaces';
 import { selectedAssetForPreviewState } from '../../state';
 import { useIntl, useMediaUi, useNotify } from '../../core';
-import { useImportAsset } from '../../hooks';
+import { useImportAsset, useClipboard } from '../../hooks';
 
 interface ItemActionsProps {
     asset: Asset;
@@ -19,6 +19,11 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     const { handleDeleteAsset } = useMediaUi();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { importAsset } = useImportAsset();
+    const { clipboard, addOrRemoveFromClipboard } = useClipboard();
+
+    const isInClipboard = useMemo(() => {
+        return !!clipboard.find(({ assetId }) => assetId === asset.id);
+    }, [asset.id, clipboard]);
 
     const onImportAsset = useCallback(() => {
         importAsset(asset)
@@ -37,6 +42,10 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     const onDeleteAsset = useCallback(() => {
         handleDeleteAsset(asset);
     }, [handleDeleteAsset, asset]);
+
+    const onCopyAssetToClipboard = useCallback(() => {
+        addOrRemoveFromClipboard({ assetId: asset.id, assetSourceId: asset.assetSource.id });
+    }, [addOrRemoveFromClipboard, asset]);
 
     return (
         <>
@@ -72,6 +81,16 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                 <a href={asset.file.url} download title={translate('itemActions.download', 'Download asset')}>
                     <IconButton icon="download" size="regular" style="transparent" hoverStyle="warn" />
                 </a>
+            )}
+            {asset.localId && (
+                <IconButton
+                    title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}
+                    icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
+                    size="regular"
+                    style="transparent"
+                    hoverStyle="brand"
+                    onClick={onCopyAssetToClipboard}
+                />
             )}
         </>
     );

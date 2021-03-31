@@ -1,7 +1,9 @@
 import useAssetCollectionsQuery from './useAssetCollectionsQuery';
 import useAssetCountQuery from './useAssetCountQuery';
 import useAssetsQuery from './useAssetsQuery';
+import useAssetQuery from './useAssetQuery';
 import useAssetSourcesQuery from './useAssetSourcesQuery';
+import useClipboard from './useClipboard';
 import useConfigQuery from './useConfigQuery';
 import useCreateTag from './useCreateTag';
 import useDeleteAsset from './useDeleteAsset';
@@ -31,7 +33,9 @@ export {
     useAssetCollectionsQuery,
     useAssetCountQuery,
     useAssetsQuery,
+    useAssetQuery,
     useAssetSourcesQuery,
+    useClipboard,
     useConfigQuery,
     useCreateAssetCollection,
     useDeleteAssetCollection,

@@ -45,6 +45,7 @@ export function MediaUiProvider({
 
     const handleDeleteAsset = useCallback(
         (asset: Asset) => {
+            // TODO: Use custom modal
             const confirm = window.confirm(
                 translate('action.deleteAsset.confirm', 'Do you really want to delete the asset ' + asset.label, [
                     asset.label,

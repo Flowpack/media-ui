@@ -27,4 +27,6 @@ export default interface Asset extends GraphQlEntity {
     file: AssetFile;
     thumbnailUrl?: string;
     previewUrl?: string;
+
+    isInClipboard?: boolean;
 }

@@ -86,6 +86,7 @@ export const ASSET_FRAGMENT = gql`
         }
         thumbnailUrl
         previewUrl
+        isInClipboard @client
     }
     ${ASSET_SOURCE_FRAGMENT}
     ${IPTC_PROPERTY_FRAGMENT}

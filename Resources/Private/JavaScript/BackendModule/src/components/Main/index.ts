@@ -1,7 +1,8 @@
+import AssetActions from './AssetActions';
 import ListView from './ListView';
 import ListViewItem from './ListViewItem';
-import ThumbnailView from './ThumbnailView';
+import Main from './Main';
 import Thumbnail from './Thumbnail';
-import AssetActions from './AssetActions';
+import ThumbnailView from './ThumbnailView';
 
-export { ThumbnailView, Thumbnail, ListView, ListViewItem, AssetActions };
+export { ThumbnailView, Thumbnail, ListView, ListViewItem, AssetActions, Main };

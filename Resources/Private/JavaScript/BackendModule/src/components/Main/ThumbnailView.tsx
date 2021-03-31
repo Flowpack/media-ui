@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { useMemo } from 'react';
 
-import { useIntl, createUseMediaUiStyles, useMediaUi } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
+import { createUseMediaUiStyles } from '../../core';
+import { AssetIdentity, MediaUiTheme } from '../../interfaces';
 import { Thumbnail } from './index';
-import LoadingLabel from '../LoadingLabel';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnailView: {
@@ -14,23 +12,18 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-const ThumbnailView: React.FC = () => {
-    const classes = useStyles();
-    const { assets } = useMediaUi();
-    const { translate } = useIntl();
+interface ThumbnailViewProps {
+    assetIdentities: AssetIdentity[];
+}
 
-    const thumbnails = useMemo(() => assets.map((asset, index) => <Thumbnail key={index} asset={asset} />), [assets]);
+const ThumbnailView: React.FC<ThumbnailViewProps> = ({ assetIdentities }: ThumbnailViewProps) => {
+    const classes = useStyles();
 
     return (
         <section className={classes.thumbnailView}>
-            {assets.length ? (
-                thumbnails
-            ) : (
-                <LoadingLabel
-                    loadingText={translate('assetList.loading', 'Loading assets')}
-                    emptyText={translate('assetList.empty', 'No assets found')}
-                />
-            )}
+            {assetIdentities.map((assetIdentity, index) => (
+                <Thumbnail key={index} assetIdentity={assetIdentity} />
+            ))}
         </section>
     );
 };

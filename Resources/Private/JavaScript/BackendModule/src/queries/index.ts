@@ -31,9 +31,11 @@ import {
     UPLOAD_FILES,
 } from './Mutations';
 import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from './ViewModeSelectionQuery';
+import { ADD_OR_REMOVE_FROM_CLIPBOARD, CLIPBOARD } from './ClipboardQuery';
 import { CONFIG } from './ConfigQuery';
 
 export {
+    ADD_OR_REMOVE_FROM_CLIPBOARD,
     ASSET,
     ASSETS,
     ASSET_COLLECTIONS,
@@ -43,6 +45,7 @@ export {
     ASSET_SOURCES,
     ASSET_SOURCE_FRAGMENT,
     CONFIG,
+    CLIPBOARD,
     CREATE_ASSET_COLLECTION,
     DELETE_ASSET_COLLECTION,
     CREATE_TAG,
