@@ -22,8 +22,6 @@ import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
 import { RecoilRoot } from 'recoil';
 import { AssetIdentity } from './interfaces';
-import { ASSET } from './queries';
-import { gql } from '@apollo/client/core';
 
 loadIconLibrary();
 
@@ -49,6 +47,7 @@ window.onload = async (): Promise<void> => {
         typePolicies: {
             Query: {
                 fields: {
+                    // This resolver allows fetching single assets from the cache that were already retrieved from any previous query
                     asset(_, { args, toReference }) {
                         return toReference({ __typename: 'Asset', id: args.id });
                     },
