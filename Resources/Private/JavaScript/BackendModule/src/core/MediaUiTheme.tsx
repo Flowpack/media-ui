@@ -53,7 +53,8 @@ const mediaUiTheme: MediaUiTheme = {
 
 export const useMediaUiTheme = useTheme;
 
-export const createUseMediaUiStyles = (styles) => createUseStyles(styles, { theming });
+export const createUseMediaUiStyles = (styles) =>
+    createUseStyles<string, Record<string, any>, MediaUiTheme>(styles, { theming });
 
 export function MediaUiThemeProvider({ children }: { children: React.ReactElement }) {
     return <ThemeProvider theme={mediaUiTheme}>{children}</ThemeProvider>;
