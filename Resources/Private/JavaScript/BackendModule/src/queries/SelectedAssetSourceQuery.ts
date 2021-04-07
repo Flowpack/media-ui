@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const SELECTED_ASSET_SOURCE_ID = gql`
     query SelectedAssetSourceId {
