@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
 import { ASSETS } from '../queries';
 import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
-import { currentPageState, loadingState, searchTermState, selectedMediaTypeState } from '../state';
+import {
+    currentPageState,
+    loadingState,
+    searchTermState,
+    selectedMediaTypeState,
+    initialLoadCompleteState,
+} from '../state';
 import useSelectedAssetCollection from './useSelectedAssetCollection';
 import useSelectedTag from './useSelectedTag';
 import { ASSETS_PER_PAGE } from '../constants/pagination';
@@ -33,6 +39,7 @@ const useAssetsQuery = () => {
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
+    const setInitialLoadComplete = useSetRecoilState(initialLoadCompleteState);
     const [assets, setAssets] = useState<Asset[]>([]);
 
     const limit = ASSETS_PER_PAGE;
@@ -65,6 +72,7 @@ const useAssetsQuery = () => {
             setIsLoading(true);
         } else if (data && !loading && isLoading) {
             setIsLoading(false);
+            setInitialLoadComplete(true);
             setAssets(data.assets);
 
             // Update currentPage if asset count changes and current page exceeds limit

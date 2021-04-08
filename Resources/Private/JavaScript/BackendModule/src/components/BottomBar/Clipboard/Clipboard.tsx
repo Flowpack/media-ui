@@ -1,13 +1,14 @@
 import * as React from 'react';
+import { useCallback } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+
 import { Button } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '../../../core';
 import { useClipboard } from '../../../hooks';
 import { AssetIdentity } from '../../../interfaces';
 import ClipboardItem from './ClipboardItem';
-import { useSetRecoilState } from 'recoil';
-import { clipboardState } from '../../../state';
-import { useCallback } from 'react';
+import { clipboardState, initialLoadCompleteState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles({
     clipboard: {
@@ -29,6 +30,7 @@ const Clipboard: React.FC = () => {
     const { translate } = useIntl();
     const { clipboard } = useClipboard();
     const setClipboardState = useSetRecoilState(clipboardState);
+    const initialLoadComplete = useRecoilValue(initialLoadCompleteState);
 
     const toggleClipboard = useCallback(
         () =>
@@ -37,6 +39,8 @@ const Clipboard: React.FC = () => {
             }),
         [setClipboardState]
     );
+
+    if (!initialLoadComplete) return null;
 
     return (
         <div className={classes.clipboard}>

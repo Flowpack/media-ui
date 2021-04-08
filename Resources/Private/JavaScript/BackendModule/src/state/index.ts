@@ -2,6 +2,7 @@ import clipboardState from './clipboardState';
 import createAssetCollectionDialogState from './createAssetCollectionDialogState';
 import createTagDialogState from './createTagDialogState';
 import currentPageState from './currentPageState';
+import initialLoadCompleteState from './initialLoadComplete';
 import loadingState from './loadingState';
 import selectedMediaTypeState from './selectedMediaTypeState';
 import searchTermState from './searchTermState';
@@ -16,6 +17,7 @@ export {
     createAssetCollectionDialogState,
     createTagDialogState,
     currentPageState,
+    initialLoadCompleteState,
     loadingState,
     selectedMediaTypeState,
     searchTermState,
