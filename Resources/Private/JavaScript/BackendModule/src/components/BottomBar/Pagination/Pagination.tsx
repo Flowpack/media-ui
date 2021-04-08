@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { createUseMediaUiStyles, useIntl } from '../../../core';
-import { MediaUiTheme } from '../../../interfaces';
-import { currentPageState } from '../../../state';
+import { clipboardState, currentPageState } from '../../../state';
 import { useAssetCountQuery } from '../../../hooks';
 import PaginationItem from './PaginationItem';
 import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS } from '../../../constants/pagination';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+const useStyles = createUseMediaUiStyles({
     pagination: {
         justifySelf: 'center',
     },
@@ -22,13 +21,14 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     ellipsis: {
         lineHeight: '2.4rem',
     },
-}));
+});
 
 const Pagination: React.FC = () => {
     const classes = useStyles();
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const { assetCount } = useAssetCountQuery();
     const { translate } = useIntl();
+    const { visible: showClipboard } = useRecoilValue(clipboardState);
 
     const numberOfPages = Math.ceil(assetCount / ASSETS_PER_PAGE);
     const [displayRange, setDisplayRange] = useState({
@@ -76,17 +76,17 @@ const Pagination: React.FC = () => {
         <nav className={classes.pagination}>
             {numberOfPages > 0 && (
                 <ol className={classes.list}>
-                    {currentPage > 1 && (
-                        <PaginationItem
-                            icon="angle-left"
-                            title={translate('pagination.previousPageTitle', `Go to previous page`)}
-                            onClick={handlePreviousPageClick}
-                        />
-                    )}
+                    <PaginationItem
+                        icon="angle-left"
+                        title={translate('pagination.previousPageTitle', `Go to previous page`)}
+                        onClick={handlePreviousPageClick}
+                        disabled={currentPage <= 1 || showClipboard}
+                    />
                     {displayRange.start > 1 && (
                         <PaginationItem
                             title={translate('pagination.firstPageTitle', `Go to first page`)}
                             onClick={handlePageClick}
+                            disabled={showClipboard}
                             page={1}
                         />
                     )}
@@ -96,6 +96,7 @@ const Pagination: React.FC = () => {
                             key={page}
                             selected={currentPage === page}
                             onClick={handlePageClick}
+                            disabled={showClipboard}
                             title={translate('pagination.page', `Go to page ${page}`, [page])}
                             page={page}
                         />
@@ -105,16 +106,16 @@ const Pagination: React.FC = () => {
                         <PaginationItem
                             title={translate('pagination.lastPageTitle', `Go to last page`)}
                             onClick={handlePageClick}
+                            disabled={showClipboard}
                             page={numberOfPages}
                         />
                     )}
-                    {currentPage < numberOfPages && (
-                        <PaginationItem
-                            icon="angle-right"
-                            title={translate('pagination.nextPageTitle', `Go to next page`)}
-                            onClick={handleNextPageClick}
-                        />
-                    )}
+                    <PaginationItem
+                        icon="angle-right"
+                        title={translate('pagination.nextPageTitle', `Go to next page`)}
+                        onClick={handleNextPageClick}
+                        disabled={currentPage === numberOfPages || showClipboard}
+                    />
                 </ol>
             )}
         </nav>

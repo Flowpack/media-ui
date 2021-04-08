@@ -1,41 +1,26 @@
 import * as React from 'react';
 
-import { IconButton } from '@neos-project/react-ui-components';
-import { createUseMediaUiStyles } from '../../../core';
-import { MediaUiTheme } from '../../../interfaces';
+import { IconButton, Button } from '@neos-project/react-ui-components';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+import { createUseMediaUiStyles } from '../../../core';
+
+const useStyles = createUseMediaUiStyles({
     item: {
-        width: '2.4rem',
         userSelect: 'none',
-        lineHeight: '2.4rem',
-        '& a': {
-            display: 'block',
-            height: '100%',
-            width: '100%',
-            cursor: 'pointer',
-            '&:hover': {
-                backgroundColor: theme.colors.primary,
-                color: 'white',
-            },
+        '& button': {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
         },
     },
-    selected: {
-        border: `1px solid ${theme.colors.border}`,
-        borderTop: 0,
-        borderBottom: 0,
-        boxSizing: 'border-box',
-        '& a': {
-            color: theme.colors.primary,
-        },
-    },
-}));
+});
 
 interface PaginationItemProps {
     title: string;
     label?: string;
     onClick: (page: number) => void;
     page?: number;
+    disabled?: boolean;
     selected?: boolean;
     icon?: string;
 }
@@ -46,6 +31,7 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
     onClick,
     page = null,
     selected = false,
+    disabled = false,
     icon,
 }: PaginationItemProps) => {
     const classes = useStyles();
@@ -54,6 +40,7 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
             {icon ? (
                 <IconButton
                     icon={icon}
+                    disabled={disabled}
                     size="regular"
                     style="transparent"
                     hoverStyle="brand"
@@ -61,9 +48,17 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
                     onClick={() => onClick(page)}
                 />
             ) : (
-                <a onClick={() => onClick(page)} title={title}>
+                <Button
+                    icon={icon}
+                    disabled={disabled}
+                    size="regular"
+                    style={selected ? 'brand' : 'transparent'}
+                    hoverStyle="brand"
+                    title={title}
+                    onClick={() => onClick(page)}
+                >
                     {label || page}
-                </a>
+                </Button>
             )}
         </li>
     );

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
 
@@ -29,7 +29,7 @@ const Clipboard: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { clipboard } = useClipboard();
-    const setClipboardState = useSetRecoilState(clipboardState);
+    const [{ visible }, setClipboardState] = useRecoilState(clipboardState);
     const initialLoadComplete = useRecoilValue(initialLoadCompleteState);
 
     const toggleClipboard = useCallback(
@@ -44,12 +44,22 @@ const Clipboard: React.FC = () => {
 
     return (
         <div className={classes.clipboard}>
-            <Button disabled={!clipboard} size="regular" style="lighter" hoverStyle="brand" onClick={toggleClipboard}>
+            <Button
+                disabled={!clipboard.length}
+                size="regular"
+                style={visible ? 'brand' : 'lighter'}
+                hoverStyle="brand"
+                onClick={toggleClipboard}
+            >
                 {translate('clipboard.toggle', 'Clipboard')} ({clipboard.length})
             </Button>
-            {clipboard.slice(0, 3).map((assetIdentity: AssetIdentity) => (
-                <ClipboardItem key={assetIdentity.assetId} assetIdentity={assetIdentity} />
-            ))}
+            {clipboard
+                .slice()
+                .reverse()
+                .slice(0, 3)
+                .map((assetIdentity: AssetIdentity) => (
+                    <ClipboardItem key={assetIdentity.assetId} assetIdentity={assetIdentity} />
+                ))}
         </div>
     );
 };

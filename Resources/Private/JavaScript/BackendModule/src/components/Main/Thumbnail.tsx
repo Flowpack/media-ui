@@ -38,6 +38,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         padding: theme.spacing.half,
         display: 'flex',
         alignItems: 'center',
+        flex: 1,
         '& img': {
             width: '1.3rem',
             height: 'auto',
@@ -102,7 +103,11 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) 
                     </>
                 )}
             </figcaption>
-            <div className={classes.toolBar}>{asset && <AssetActions asset={asset} />}</div>
+            {asset && (
+                <div className={classes.toolBar}>
+                    <AssetActions asset={asset} />
+                </div>
+            )}
         </figure>
     );
 };
