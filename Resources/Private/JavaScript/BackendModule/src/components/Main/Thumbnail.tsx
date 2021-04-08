@@ -41,7 +41,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '& img': {
             width: '1.3rem',
             height: 'auto',
-            marginRight: theme.spacing.quarter,
+            marginRight: theme.spacing.half,
         },
     },
     selected: {
