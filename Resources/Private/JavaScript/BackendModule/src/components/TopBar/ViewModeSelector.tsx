@@ -17,7 +17,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-export default function ViewModeSelector() {
+const ViewModeSelector: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const [viewModeSelection, setViewModeSelection] = useViewModeSelection();
@@ -47,4 +47,6 @@ export default function ViewModeSelector() {
             />
         </div>
     );
-}
+};
+
+export default React.memo(ViewModeSelector);

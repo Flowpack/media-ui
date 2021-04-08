@@ -19,7 +19,7 @@ interface MediaTypeOptions {
     };
 }
 
-export default function TypeFilter() {
+const TypeFilter: React.FC = () => {
     const classes = useStyles();
     const [mediaTypeFilter, setMediaTypeFilter] = useRecoilState(selectedMediaTypeState);
     const { translate } = useIntl();
@@ -57,10 +57,11 @@ export default function TypeFilter() {
         [translate]
     );
 
+    if (showClipboard) return null;
+
     return (
         <div className={classes.typeFilter}>
             <SelectBox
-                disabled={showClipboard}
                 options={Object.values(mediaTypeOptions)}
                 onValueChange={(value) => setMediaTypeFilter(value)}
                 value={mediaTypeFilter}
@@ -68,4 +69,6 @@ export default function TypeFilter() {
             />
         </div>
     );
-}
+};
+
+export default React.memo(TypeFilter);
