@@ -1,22 +1,34 @@
 import * as React from 'react';
-import { useEffect, useMemo, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import { useQuery } from '@apollo/client';
+
+import { Button } from '@neos-project/react-ui-components';
 
 import { useClipboard, VIEW_MODES } from '../../hooks';
 import { ListView, ThumbnailView } from './index';
 import { VIEW_MODE_SELECTION } from '../../queries';
-import { useIntl, useMediaUi } from '../../core';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
 import { clipboardState } from '../../state';
 import LoadingLabel from '../LoadingLabel';
 
+const useStyles = createUseMediaUiStyles({
+    emptyStateWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 'inherit',
+    },
+});
+
 const Main: React.FC = () => {
+    const classes = useStyles();
     // TODO: Extract viewmode query into custom hook
     const viewModeSelectionQuery = useQuery<{ viewModeSelection: VIEW_MODES }>(VIEW_MODE_SELECTION);
     const { viewModeSelection } = viewModeSelectionQuery.data;
     const { assets } = useMediaUi();
     const { clipboard } = useClipboard();
-    const { visible: showClipboard } = useRecoilValue(clipboardState);
+    const [{ visible: showClipboard }, setClipboardState] = useRecoilState(clipboardState);
     const { translate } = useIntl();
     const [assetIdentities, setAssetIdentities] = useState([]);
 
@@ -36,10 +48,23 @@ const Main: React.FC = () => {
             <ThumbnailView assetIdentities={assetIdentities} />
         )
     ) : (
-        <LoadingLabel
-            loadingText={translate('assetList.loading', 'Loading assets')}
-            emptyText={translate('assetList.empty', 'No assets found')}
-        />
+        <div className={classes.emptyStateWrapper}>
+            {showClipboard ? (
+                <Button
+                    size="regular"
+                    style="brand"
+                    hoverStyle="brand"
+                    onClick={() => setClipboardState({ visible: false })}
+                >
+                    {translate('clipboard.close', 'Close clipboard')}
+                </Button>
+            ) : (
+                <LoadingLabel
+                    loadingText={translate('assetList.loading', 'Loading assets')}
+                    emptyText={translate('assetList.empty', 'No assets found')}
+                />
+            )}
+        </div>
     );
 };
 

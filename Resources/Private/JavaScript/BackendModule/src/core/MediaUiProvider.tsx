@@ -49,7 +49,7 @@ export function MediaUiProvider({
             );
             if (!confirm) return;
 
-            deleteAsset(asset)
+            deleteAsset({ assetId: asset.id, assetSourceId: asset.assetSource.id })
                 .then(() => {
                     Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
                 })

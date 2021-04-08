@@ -86,9 +86,16 @@ const resolvers = {
             asset.collections = assetCollections.filter((collection) => newAssetCollectionIds.includes(collection.id));
             return asset;
         },
-        deleteTag: ($_, { id: id }) => {
+        deleteTag: ($_, { id }) => {
             tags.splice(
                 tags.findIndex((tag) => tag.id === id),
+                1
+            );
+            return true;
+        },
+        deleteAsset: ($_, { id: id, assetSourceId }) => {
+            assets.splice(
+                assets.findIndex((asset) => asset.id === id && asset.assetSource.id === assetSourceId),
                 1
             );
             return true;

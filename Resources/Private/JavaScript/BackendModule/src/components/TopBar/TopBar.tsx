@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { createUseMediaUiStyles } from '../../core';
 import { MediaUiTheme } from '../../interfaces';
-import { SearchBox, TypeFilter, ViewModeSelector } from './index';
+import { SearchBox, TypeFilter, ViewModeSelector, ClipboardActions } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     topBar: {
@@ -16,7 +16,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 const TopBar: React.FC = () => {
     const classes = useStyles();
 
-    const components = useMemo(() => [SearchBox, TypeFilter, ViewModeSelector], []);
+    const components = useMemo(() => [ClipboardActions, SearchBox, TypeFilter, ViewModeSelector], []);
 
     return (
         <div className={classes.topBar}>
