@@ -8,6 +8,7 @@ import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
 import { selectedAssetForPreviewState, selectedAssetIdState } from '../../state';
 import { useAssetQuery, useSelectAsset } from '../../hooks';
+import MissingAssetActions from './MissingAssetActions';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     thumbnail: {
@@ -103,11 +104,9 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) 
                     </>
                 )}
             </figcaption>
-            {asset && (
-                <div className={classes.toolBar}>
-                    <AssetActions asset={asset} />
-                </div>
-            )}
+            <div className={classes.toolBar}>
+                {asset ? <AssetActions asset={asset} /> : <MissingAssetActions assetIdentity={assetIdentity} />}
+            </div>
         </figure>
     );
 };

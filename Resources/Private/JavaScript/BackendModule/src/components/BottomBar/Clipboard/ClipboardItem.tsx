@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 
 import { AssetIdentity, MediaUiTheme } from '../../../interfaces';
 import { useAssetQuery, useSelectAsset } from '../../../hooks';
-import { createUseMediaUiStyles, useMediaUi } from '../../../core';
+import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../../core';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     clipboardItem: {
@@ -27,12 +27,18 @@ interface ClipboardItemProps {
 const ClipboardItem: React.FC<ClipboardItemProps> = ({ assetIdentity }: ClipboardItemProps) => {
     const { asset } = useAssetQuery(assetIdentity);
     const { dummyImage } = useMediaUi();
+    const Notify = useNotify();
     const classes = useStyles();
     const selectAsset = useSelectAsset();
+    const { translate } = useIntl();
 
     const onClick = useCallback(() => {
-        selectAsset(asset);
-    }, [asset, selectAsset]);
+        if (asset) {
+            selectAsset(asset);
+        } else {
+            Notify.warning(translate('clipboard.assetNotLoaded', "Cannot select asset as it couldn't be loaded"));
+        }
+    }, [asset, selectAsset, Notify, translate]);
 
     return (
         <span onClick={onClick} className={classes.clipboardItem} title={asset?.isInClipboard + ''}>
