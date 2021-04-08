@@ -19,7 +19,7 @@ Run the following command to install it:
 
 This package will currently add a second media backend module called `Media (new)` and a new 
 media selection screen for asset and image editors.
-The old media module will still be available until this package replaces it completely with Neos 7.0 (planned).
+The old media module will still be available until this package replaces it completely with Neos 8.0 (planned).
     
 #### Disabling the new media selection
 
