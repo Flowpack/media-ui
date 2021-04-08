@@ -5,9 +5,9 @@ import { useLazyQuery } from '@apollo/client';
 import { ASSETS } from '../queries';
 import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
 import { currentPageState, loadingState, searchTermState, selectedMediaTypeState } from '../state';
-import { ASSETS_PER_PAGE } from '../core';
 import useSelectedAssetCollection from './useSelectedAssetCollection';
 import useSelectedTag from './useSelectedTag';
+import { ASSETS_PER_PAGE } from '../constants/pagination';
 
 interface AssetsQueryResult {
     assets: Asset[];

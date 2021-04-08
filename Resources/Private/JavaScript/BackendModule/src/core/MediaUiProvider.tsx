@@ -26,10 +26,6 @@ interface MediaUiProviderValues {
 export const MediaUiContext = createContext({} as MediaUiProviderValues);
 export const useMediaUi = (): MediaUiProviderValues => useContext(MediaUiContext);
 
-// TODO: Make configurable via Settings
-export const ASSETS_PER_PAGE = 20;
-export const PAGINATION_MAXIMUM_LINKS = 5;
-
 export function MediaUiProvider({
     children,
     dummyImage,

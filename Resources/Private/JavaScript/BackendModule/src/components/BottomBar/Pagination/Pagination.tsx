@@ -2,11 +2,12 @@ import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS, createUseMediaUiStyles, useIntl } from '../../../core';
+import { createUseMediaUiStyles, useIntl } from '../../../core';
 import { MediaUiTheme } from '../../../interfaces';
 import { currentPageState } from '../../../state';
 import { useAssetCountQuery } from '../../../hooks';
 import PaginationItem from './PaginationItem';
+import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS } from '../../../constants/pagination';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     pagination: {
