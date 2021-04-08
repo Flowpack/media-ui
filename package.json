@@ -19,10 +19,6 @@
     "build:editor": "yarn workspace asset-editor run build",
     "test:github-actions": "xvfb-run --server-args=\"-screen 0 1280x720x24\" yarn testcafe chrome"
   },
-  "browserslist": [
-    "> 1%",
-    "Last 2 versions"
-  ],
   "workspaces": [
     "Resources/Private/JavaScript/*"
   ],

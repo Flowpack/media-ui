@@ -17,6 +17,9 @@
   "devDependencies": {
     "webpack": "^4.44.2"
   },
+  "browserslist": [
+    "defaults and > 1% and not ie <= 11"
+  ],
   "neos": {
     "buildTargetDirectory": "../../../Public/AssetEditor"
   }
