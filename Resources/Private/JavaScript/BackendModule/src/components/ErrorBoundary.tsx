@@ -1,9 +1,12 @@
 import React from 'react';
+import { NotifyContext } from '../core/Notify';
 
 class ErrorBoundary extends React.Component<
     { children: React.ReactElement | React.ReactElement[] },
     { hasError: boolean }
 > {
+    static contextType = NotifyContext;
+
     constructor(props) {
         super(props);
         this.state = { hasError: false };
@@ -14,7 +17,7 @@ class ErrorBoundary extends React.Component<
     }
 
     componentDidCatch(error, errorInfo) {
-        console.error(error, errorInfo);
+        this.context.error(error, errorInfo);
     }
 
     render() {
