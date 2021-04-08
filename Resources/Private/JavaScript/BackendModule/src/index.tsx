@@ -21,6 +21,7 @@ import {
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
+import ErrorBoundary from './components/ErrorBoundary';
 
 loadIconLibrary();
 
@@ -74,13 +75,15 @@ window.onload = async (): Promise<void> => {
             <NotifyProvider notificationApi={Notification}>
                 <ApolloProvider client={client}>
                     <RecoilRoot>
-                        <MediaUiProvider dummyImage={dummyImage} containerRef={containerRef}>
-                            <MediaUiThemeProvider>
-                                <DndProvider backend={HTML5Backend}>
-                                    <AppWithHmr />
-                                </DndProvider>
-                            </MediaUiThemeProvider>
-                        </MediaUiProvider>
+                        <ErrorBoundary>
+                            <MediaUiProvider dummyImage={dummyImage} containerRef={containerRef}>
+                                <MediaUiThemeProvider>
+                                    <DndProvider backend={HTML5Backend}>
+                                        <AppWithHmr />
+                                    </DndProvider>
+                                </MediaUiThemeProvider>
+                            </MediaUiProvider>
+                        </ErrorBoundary>
                     </RecoilRoot>
                 </ApolloProvider>
             </NotifyProvider>
