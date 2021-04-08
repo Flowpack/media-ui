@@ -2,26 +2,25 @@ import * as React from 'react';
 import { createRef } from 'react';
 import { render } from 'react-dom';
 import Modal from 'react-modal';
+import { RecoilRoot } from 'recoil';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { ApolloClient, ApolloProvider, ApolloLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloProvider, ApolloLink } from '@apollo/client';
 import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
 import {
     ApolloErrorHandler,
-    IdFromObjectResolver,
     IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,
     NotifyProvider,
     PersistentStateManager,
+    CacheFactory,
 } from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';
-import { RecoilRoot } from 'recoil';
-import { AssetIdentity } from './interfaces';
 
 loadIconLibrary();
 
@@ -42,29 +41,7 @@ window.onload = async (): Promise<void> => {
     Modal.setAppElement(root);
 
     // Cache for ApolloClient
-    const cache = new InMemoryCache({
-        dataIdFromObject: IdFromObjectResolver,
-        typePolicies: {
-            Query: {
-                fields: {
-                    // This resolver allows fetching single assets from the cache that were already retrieved from any previous query
-                    asset(_, { args, toReference }) {
-                        return toReference({ __typename: 'Asset', id: args.id });
-                    },
-                },
-            },
-            Asset: {
-                keyFields: ['id'],
-                fields: {
-                    isInClipboard(_, { variables }) {
-                        // TODO: Optimize to just to an array.includes
-                        const clipboard = PersistentStateManager.getItem<AssetIdentity[]>('clipboard') || [];
-                        return clipboard.find(({ assetId }) => assetId === variables.id) !== undefined;
-                    },
-                },
-            },
-        },
-    });
+    const cache = CacheFactory.createCache();
 
     // Restore state from last visit
     PersistentStateManager.restoreLocalState(cache);

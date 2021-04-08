@@ -6,10 +6,12 @@ import * as Resolvers from './Resolvers';
 import { useNotify, NotifyProvider } from './Notify';
 import IdFromObjectResolver from './IdFromObjectResolver';
 import ApolloErrorHandler from './ApolloErrorHandler';
+import CacheFactory from './Cache';
 
 export {
     ApolloErrorHandler,
     ASSETS_PER_PAGE,
+    CacheFactory,
     IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,

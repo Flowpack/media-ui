@@ -39,10 +39,23 @@ type Query {
     assetCollections: [AssetCollection!]!
 
     """
+    a single asset collection by its id, or null if no corresponding collection exists
+    """
+    assetCollection(id: AssetCollectionId!): AssetCollection
+
+    """
     all tags
     """
     tags: [Tag!]!
 
+    """
+    a single tag by its id, or null if no corresponding tag exists
+    """
+    tag(id: TagId!): Tag
+
+    """
+    server side runtime configuration
+    """
     config: Config!
 }
 

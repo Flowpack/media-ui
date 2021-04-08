@@ -130,7 +130,6 @@ class QueryResolver implements ResolverInterface
 
         if ($assetCollectionId && $assetProxyRepository instanceof SupportsCollectionsInterface) {
             /** @var AssetCollection $assetCollection */
-            /** @noinspection PhpUndefinedMethodInspection */
             $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
             if ($assetCollection) {
                 $assetProxyRepository->filterByCollection($assetCollection);
@@ -233,6 +232,19 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
+     * @param $_
+     * @param array $variables
+     * @return Tag|null
+     */
+    public function tag($_, array $variables): ?Tag
+    {
+        $id = $variables['id'] ?? null;
+        /** @var Tag $tag */
+        $tag = $id ? $this->tagRepository->findByIdentifier($id) : null;
+        return $tag;
+    }
+
+    /**
      * Returns the list of all registered asset sources. By default the asset source `neos` should always exist.
      *
      * @param $_
@@ -253,6 +265,19 @@ class QueryResolver implements ResolverInterface
     public function assetCollections($_, array $variables): array
     {
         return $this->assetCollectionRepository->findAll()->toArray();
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return AssetCollection|null
+     */
+    public function assetCollection($_, array $variables): ?AssetCollection
+    {
+        $id = $variables['id'] ?? null;
+        /** @var AssetCollection $assetCollection */
+        $assetCollection = $id ? $this->assetCollectionRepository->findByIdentifier($id) : null;
+        return $assetCollection;
     }
 
     /**

@@ -1,31 +1,23 @@
 import { useRecoilValue } from 'recoil';
-import { useApolloClient } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import { Tag } from '../interfaces';
 import { selectedTagIdState } from '../state';
-import { TAG_FRAGMENT } from '../queries';
+import { TAG } from '../queries';
+
+interface TagQueryResult {
+    tag: Tag;
+}
 
 const useSelectedTag = (): Tag => {
-    const client = useApolloClient();
     const selectedTagId = useRecoilValue(selectedTagIdState);
 
-    // TODO: use normal query and add typePolicy to cache for Tag similar to Asset
-    // Read selection from cache as we can only select tags that have been queried before
-    try {
-        return client.readFragment(
-            {
-                id: `Tag_${selectedTagId}`,
-                fragment: TAG_FRAGMENT,
-                fragmentName: 'TagProps',
-            },
-            true
-        );
-    } catch (e) {
-        // TODO: Run query to get the tag when its not found
-        console.error(e, 'Selected tag missing in cache');
-    }
+    const { data } = useQuery<TagQueryResult>(TAG, {
+        variables: { id: selectedTagId },
+        skip: !selectedTagId,
+    });
 
-    return null;
+    return data?.tag || null;
 };
 
 export default useSelectedTag;

@@ -1,10 +1,12 @@
 import { ASSET } from './AssetQuery';
 import { ASSETS } from './AssetsQuery';
 import { SELECTED_ASSET_SOURCE_ID, SET_SELECTED_ASSET_SOURCE_ID } from './SelectedAssetSourceQuery';
-import ASSET_COLLECTIONS from './AssetCollectionQuery';
+import ASSET_COLLECTIONS from './AssetCollectionsQuery';
+import ASSET_COLLECTION from './AssetCollectionQuery';
 import ASSET_COUNT from './AssetCountQuery';
 import ASSET_SOURCES from './AssetSourcesQuery';
 import TAGS from './TagsQuery';
+import TAG from './TagQuery';
 import {
     ASSET_COLLECTION_FRAGMENT,
     ASSET_FRAGMENT,
@@ -38,6 +40,7 @@ export {
     ADD_OR_REMOVE_FROM_CLIPBOARD,
     ASSET,
     ASSETS,
+    ASSET_COLLECTION,
     ASSET_COLLECTIONS,
     ASSET_COLLECTION_FRAGMENT,
     ASSET_COUNT,
@@ -59,6 +62,7 @@ export {
     SET_ASSET_TAGS,
     SET_SELECTED_ASSET_SOURCE_ID,
     SET_VIEW_MODE_SELECTION,
+    TAG,
     TAGS,
     TAG_ASSET,
     TAG_FRAGMENT,
