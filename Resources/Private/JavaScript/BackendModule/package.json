@@ -75,6 +75,6 @@
   "scripts": {
     "watch": "parcel watch src/index.tsx --public-url . --out-dir ../../../Public/Assets -o main.bundle.js",
     "build": "parcel build src/index.tsx --public-url . --out-dir ../../../Public/Assets -o main.bundle.js",
-    "dev": "nodemon dev/server.ts"
+    "dev": "nodemon --watch 'dev/*.ts' dev/server.ts"
   }
 }
