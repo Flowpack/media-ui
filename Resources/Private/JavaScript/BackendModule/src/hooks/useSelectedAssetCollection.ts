@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 
 import { AssetCollection } from '../interfaces';
 import { selectedAssetCollectionIdState } from '../state';
-import { TAG } from '../queries';
+import ASSET_COLLECTION from '../queries/AssetCollectionQuery';
 
 interface AssetCollectionQueryResult {
     assetCollection: AssetCollection;
@@ -12,7 +12,7 @@ interface AssetCollectionQueryResult {
 const useSelectedAssetCollection = (): AssetCollection => {
     const selectedAssetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
 
-    const { data } = useQuery<AssetCollectionQueryResult>(TAG, {
+    const { data } = useQuery<AssetCollectionQueryResult>(ASSET_COLLECTION, {
         variables: { id: selectedAssetCollectionId },
         skip: !selectedAssetCollectionId,
     });

@@ -94,17 +94,15 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) 
             <picture onClick={onSelect} className={classes.picture}>
                 <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label} />
             </picture>
-            {asset && (
-                <>
-                    <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
+            <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
+                {asset && (
+                    <>
                         <img src={asset.file.typeIcon.url} alt={asset.file.typeIcon.alt} />
                         <AssetLabel label={asset.label} />
-                    </figcaption>
-                    <div className={classes.toolBar}>
-                        <AssetActions asset={asset} />
-                    </div>
-                </>
-            )}
+                    </>
+                )}
+            </figcaption>
+            <div className={classes.toolBar}>{asset && <AssetActions asset={asset} />}</div>
         </figure>
     );
 };

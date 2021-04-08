@@ -14,13 +14,13 @@ class CacheFactory {
                     fields: {
                         // These resolvers allow fetching single entities from the cache that were already retrieved from any previous query
                         asset(_, { args, toReference }) {
-                            return toReference({ __typename: 'Asset', id: args.id });
+                            return args.id ? toReference({ __typename: 'Asset', id: args.id }) : null;
                         },
                         tag(_, { args, toReference }) {
-                            return toReference({ __typename: 'Tag', id: args.id });
+                            return args.id ? toReference({ __typename: 'Tag', id: args.id }) : null;
                         },
                         assetCollection(_, { args, toReference }) {
-                            return toReference({ __typename: 'AssetCollection', id: args.id });
+                            return args.id ? toReference({ __typename: 'AssetCollection', id: args.id }) : null;
                         },
                     },
                 },
@@ -33,6 +33,12 @@ class CacheFactory {
                             return clipboard.find(({ assetId }) => assetId === variables.id) !== undefined;
                         },
                     },
+                },
+                Tag: {
+                    keyFields: ['id'],
+                },
+                AssetCollection: {
+                    keyFields: ['id'],
                 },
             },
         });

@@ -54,7 +54,9 @@ const resolvers = {
         },
         assetSources: () => assetSources,
         assetCollections: () => assetCollections,
+        assetCollection: ($_, { id }) => assetCollections.find((assetCollection) => assetCollection.id === id),
         tags: () => tags,
+        tag: ($_, { id }) => tags.find((tag) => tag.id === id),
         config: () => ({
             uploadMaxFileSize: 1024 * 1024,
         }),
