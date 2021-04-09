@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash.clonedeep';
 
-import { Asset, AssetCollection, AssetSource, Image, IptcProperty, Tag } from '../src/interfaces';
+import { Asset, AssetCollection, AssetSource, AssetUsage, Image, IptcProperty, Tag } from '../src/interfaces';
 
 const exampleImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
 
@@ -107,11 +107,21 @@ const assets: Asset[] = range(150).map((index) => {
     };
 });
 
+const assetUsageReferences: AssetUsage[] = range(150).map((index) => {
+    return {
+        __typename: 'AssetUsage',
+        assetId: index.toString(),
+        label: 'Test',
+        url: 'http://localhost',
+    };
+});
+
 const loadFixtures = () => {
     return {
         assets: cloneDeep(assets),
         assetCollections: cloneDeep(assetCollections),
         assetSources: cloneDeep(assetSources),
+        assetUsageReferences: cloneDeep(assetUsageReferences),
         tags: cloneDeep(tags),
     };
 };

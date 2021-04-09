@@ -3,6 +3,7 @@ import AssetCollection from './AssetCollection';
 import AssetFile from './AssetFile';
 import AssetIdentity from './AssetIdentity';
 import AssetSource from './AssetSource';
+import AssetUsage from './AssetUsage';
 import FileUploadResult from './FileUploadResult';
 import I18nRegistry from './I18nRegistry';
 import Image from './Image';
@@ -19,8 +20,9 @@ export {
     Asset,
     AssetCollection,
     AssetFile,
-    AssetSource,
     AssetIdentity,
+    AssetSource,
+    AssetUsage,
     DeleteAssetCollectionResult,
     FileUploadResult,
     GraphQlEntity,

@@ -28,4 +28,4 @@ setTimeout(() => {
             info: (title) => console.info(title),
         },
     };
-}, 2000);
+}, 0);

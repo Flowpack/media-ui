@@ -48,6 +48,7 @@ window.onload = async (): Promise<void> => {
     PersistentStateManager.restoreLocalState(cache);
 
     const client = new ApolloClient({
+        connectToDevTools: true,
         cache,
         link: ApolloLink.from([
             ApolloErrorHandler,

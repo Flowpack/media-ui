@@ -17,6 +17,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
@@ -28,6 +29,8 @@ use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
+use Neos\Media\Domain\Service\AssetService;
+use Neos\Neos\Domain\Model\Dto\AssetUsageInNodeProperties;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
 use Psr\Log\LoggerInterface;
@@ -55,6 +58,12 @@ class QueryResolver implements ResolverInterface
      * @var AssetCollectionRepository
      */
     protected $assetCollectionRepository;
+
+    /**
+     * @Flow\Inject
+     * @var AssetService
+     */
+    protected $assetService;
 
     /**
      * @Flow\Inject
@@ -150,6 +159,45 @@ class QueryResolver implements ResolverInterface
         }
 
         return $assetProxyRepository->findAll()->getQuery();
+    }
+
+    /**
+     * Returns a list of accessible and inaccessible relations for the given asset
+     *
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return array
+     */
+    public function assetUsageReferencesQuery($_, array $variables, AssetSourceContext $assetSourceContext): array
+    {
+        [
+            'id' => $id,
+            'assetSourceId' => $assetSourceId,
+        ] = $variables + ['id' => null, 'assetSourceId' => null];
+
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
+
+        if (!$assetProxy || !$assetProxy->getLocalAssetIdentifier()) {
+            return [];
+        }
+
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            return [];
+        }
+
+        $usages = $this->assetService->getUsageReferences($asset);
+
+        return array_reduce($usages, static function ($carry, $usage) {
+            if ($usage instanceof AssetUsageInNodeProperties) {
+                $carry['relatedNodes'] = $usage->getNodeIdentifier();
+            } else {
+                $carry['inaccessibleRelations'] = $usage;
+            }
+            return $carry;
+        }, []);
     }
 
     /**
@@ -293,7 +341,6 @@ class QueryResolver implements ResolverInterface
             'assetSourceId' => $assetSourceId,
         ] = $variables + ['id' => null, 'assetSourceId' => null];
 
-        $activeAssetSource = $assetSourceContext->getAssetSource($assetSourceId);
-        return $activeAssetSource ? $activeAssetSource->getAssetProxyRepository()->getAssetProxy($id) : null;
+        return $assetSourceContext->getAssetProxy($id, $assetSourceId);
     }
 }

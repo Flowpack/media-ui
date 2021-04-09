@@ -14,7 +14,7 @@ const bundler = new Bundler(__dirname + '/index.html', {
     outDir: __dirname + '/dist',
 });
 
-let { assets, assetCollections, assetSources, tags } = loadFixtures();
+let { assets, assetCollections, assetSources, tags, assetUsageReferences } = loadFixtures();
 
 const filterAssets = (assetSourceId = '', tag = '', assetCollection = '', mediaType = '', searchTerm = '') => {
     return assets.filter((asset) => {
@@ -51,6 +51,12 @@ const resolvers = {
             { assetSourceId = 'neos', tag = null, assetCollection = null, mediaType = '', searchTerm = '' }
         ) => {
             return filterAssets(assetSourceId, tag, assetCollection, mediaType, searchTerm).length;
+        },
+        assetUsageReferences: ($_, { id }) => {
+            return {
+                relatedNodes: assetUsageReferences.filter((assetUsage) => assetUsage.assetId === id),
+                inaccessibleRelations: [],
+            };
         },
         assetSources: () => assetSources,
         assetCollections: () => assetCollections,
@@ -126,6 +132,7 @@ app.use((req, res, next) => {
         assetCollections = fixtures.assetCollections;
         tags = fixtures.tags;
         assetSources = fixtures.assetSources;
+        assetUsageReferences = fixtures.assetUsageReferences;
         console.log('Fixtures have been reset');
     }
     next();
