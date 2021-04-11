@@ -89,6 +89,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     size="regular"
                     style="transparent"
                     hoverStyle="brand"
+                    className={isInClipboard ? 'button--active' : ''}
                     onClick={onCopyAssetToClipboard}
                 />
             )}

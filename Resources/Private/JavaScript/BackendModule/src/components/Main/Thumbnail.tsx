@@ -20,7 +20,16 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             backgroundColor: theme.colors.primary,
         },
         '&:hover $toolBar': {
-            display: 'flex',
+            pointerEvents: 'all',
+            backgroundColor: 'rgba(0.15, 0.15, 0.15, 0.25)',
+            '& button': {
+                opacity: 1,
+                '&.button--active': {
+                    '& svg': {
+                        color: 'white',
+                    },
+                },
+            },
         },
     },
     picture: {
@@ -50,11 +59,23 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         backgroundColor: theme.colors.primary,
     },
     toolBar: {
-        display: 'none',
+        display: 'flex',
         position: 'absolute',
         top: theme.spacing.quarter,
         right: theme.spacing.quarter,
-        backgroundColor: 'rgba(0.15, 0.15, 0.15, 0.25)',
+        pointerEvents: 'none',
+        backgroundColor: 'transparent',
+        transition: 'background-color .1s ease-in',
+        '& button': {
+            transition: 'opacity .1s ease-in',
+            opacity: 0,
+            '&.button--active': {
+                opacity: 1,
+                '& svg': {
+                    color: theme.colors.primary,
+                },
+            },
+        },
     },
     label: {
         position: 'absolute',
@@ -63,7 +84,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         fontSize: theme.fontSize.small,
         borderRadius: '3px',
         padding: '2px 4px',
-        backgroundColor: theme.colors.primary,
         userSelect: 'none',
     },
 }));
