@@ -107,22 +107,28 @@ const assets: Asset[] = range(150).map((index) => {
     };
 });
 
-const assetUsageReferences: AssetUsage[] = range(150).map((index) => {
-    return {
-        __typename: 'AssetUsage',
-        assetId: index.toString(),
-        label: 'Test',
-        url: 'http://localhost',
-    };
-});
+// TODO: Make this more variable
+const assetUsageReferences: AssetUsage[] = range(150)
+    .map((index) => {
+        return {
+            __typename: 'AssetUsage',
+            assetId: ((index * 4) % assets.length).toString(),
+            serviceId: 'neos',
+            label: `Usage ${index} in node xyz`,
+            metadata: {
+                backendUri: 'http://localhost/neos/somewhere-in-the-content-module',
+            },
+        };
+    })
+    .filter((usage) => !!usage);
 
 const loadFixtures = () => {
     return {
-        assets: cloneDeep(assets),
-        assetCollections: cloneDeep(assetCollections),
-        assetSources: cloneDeep(assetSources),
-        assetUsageReferences: cloneDeep(assetUsageReferences),
-        tags: cloneDeep(tags),
+        assets: cloneDeep(assets) as Asset[],
+        assetCollections: cloneDeep(assetCollections) as AssetCollection[],
+        assetSources: cloneDeep(assetSources) as AssetSource[],
+        assetUsageReferences: cloneDeep(assetUsageReferences) as AssetUsage[],
+        tags: cloneDeep(tags) as Tag[],
     };
 };
 

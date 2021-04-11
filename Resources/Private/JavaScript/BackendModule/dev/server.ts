@@ -100,6 +100,9 @@ const resolvers = {
             return true;
         },
         deleteAsset: ($_, { id: id, assetSourceId }) => {
+            if (assetUsageReferences.some((usage) => usage.assetId === id)) {
+                return false;
+            }
             assets.splice(
                 assets.findIndex((asset) => asset.id === id && asset.assetSource.id === assetSourceId),
                 1
