@@ -43,6 +43,8 @@ type Query {
     """
     assetCollection(id: AssetCollectionId!): AssetCollection
 
+    assetUsageReferences(id: AssetId!, assetSourceId: AssetSourceId!): [AssetUsage!]!
+
     """
     all tags
     """
@@ -134,6 +136,13 @@ type Asset {
     thumbnailUrl: Url
     previewUrl: Url
     thumbnail(maximumWidth: Int, maximumHeight: Int, ratioMode: RatioMode, allowUpScaling: Boolean): Image
+}
+
+type AssetUsage {
+    assetId: AssetId!
+    serviceId: String!
+    label: String!
+    metadata: AssetUsageMetadata
 }
 
 """
@@ -249,6 +258,11 @@ scalar AssetSourceId
 Unique identifier of an Asset collection (e.g. "neos")
 """
 scalar AssetCollectionId
+
+"""
+Metadata about how an asset is being used
+"""
+scalar AssetUsageMetadata
 
 """
 IANA media type of an Asset (e.g. "image/jpeg")
