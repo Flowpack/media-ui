@@ -5,8 +5,9 @@ import { gql } from '@apollo/client';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 
+import { Tag } from 'backend-module/src/interfaces';
+
 import { loadFixtures } from './fixtures';
-import { Tag } from '../src/interfaces';
 
 const PORT = 8000;
 
@@ -53,10 +54,7 @@ const resolvers = {
             return filterAssets(assetSourceId, tag, assetCollection, mediaType, searchTerm).length;
         },
         assetUsageReferences: ($_, { id }) => {
-            return {
-                relatedNodes: assetUsageReferences.filter((assetUsage) => assetUsage.assetId === id),
-                inaccessibleRelations: [],
-            };
+            return assetUsageReferences.filter((assetUsage) => assetUsage.assetId === id);
         },
         assetSources: () => assetSources,
         assetCollections: () => assetCollections,
@@ -120,7 +118,7 @@ const resolvers = {
 };
 
 const typeDefs = gql`
-    ${fs.readFileSync(path.join(__dirname, '../../../GraphQL/schema.root.graphql'), 'utf8')}
+    ${fs.readFileSync(path.join(__dirname, '../../GraphQL/schema.root.graphql'), 'utf8')}
 `;
 
 const server = new ApolloServer({ typeDefs, resolvers, uploads: false });

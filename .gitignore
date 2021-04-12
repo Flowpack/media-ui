@@ -12,7 +12,7 @@ node_modules
 # Compiled assets.
 #
 .cache
-Resources/Private/JavaScript/BackendModule/dev/dist
+Resources/Private/JavaScript/dev-server/dist
 yarn-error.log
 
 #

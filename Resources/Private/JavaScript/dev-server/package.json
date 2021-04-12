@@ -1,0 +1,15 @@
+{
+  "name": "@media-ui/dev-server",
+  "version": "1.0.0",
+  "license": "GNU GPLv3",
+  "dependencies": {
+    "backend-module": "*"
+  },
+  "devDependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "dev": "nodemon --watch '*.ts' server.ts"
+  }
+}
