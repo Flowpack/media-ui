@@ -5,9 +5,9 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Icon, Dialog } from '@neos-project/react-ui-components';
 
-import { useConfigQuery, useUploadFiles } from '../../hooks';
-import { createUseMediaUiStyles, useIntl, useMediaUi, useNotify } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } from '@media-ui/core/src';
+import { useConfigQuery, useUploadFiles } from '@media-ui/core/src/hooks';
+
 import { humanFileSize } from '../../helper';
 import { uploadDialogState } from '../../state';
 

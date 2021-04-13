@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 
-import { Tag } from 'backend-module/src/interfaces';
+import { Tag } from '@media-ui/core/src/interfaces';
 
 import { loadFixtures } from './fixtures';
 
@@ -101,11 +101,12 @@ const resolvers = {
             if (assetUsageReferences.some((usage) => usage.assetId === id)) {
                 return false;
             }
-            assets.splice(
-                assets.findIndex((asset) => asset.id === id && asset.assetSource.id === assetSourceId),
-                1
-            );
-            return true;
+            const assetIndex = assets.findIndex((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
+            if (assetIndex >= 0) {
+                assets.splice(assetIndex, 1);
+                return true;
+            }
+            return false;
         },
         createTag: ($_, { tag: newTag }: { tag: Tag }) => {
             if (!tags.find((tag) => tag === newTag)) {

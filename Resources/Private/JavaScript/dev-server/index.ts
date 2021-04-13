@@ -18,7 +18,10 @@ setTimeout(() => {
         I18n: {
             initialized: true,
             // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
-            translate: (id, fallback: string, packageKey = null, source = null, args = []) => fallback,
+            translate: (id, fallback: string, packageKey = null, source = null, args = []) => {
+                Object.keys(args).forEach((key) => (fallback = fallback.replace(`{${key}}`, args[key])));
+                return fallback;
+            },
         },
         Notification: {
             notice: (title) => console.log(title),

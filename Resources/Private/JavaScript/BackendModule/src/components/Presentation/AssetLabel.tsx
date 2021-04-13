@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { createUseMediaUiStyles } from '../../core';
+import { createUseMediaUiStyles } from '@media-ui/core/src';
 
 const useStyles = createUseMediaUiStyles({
     assetLabel: {

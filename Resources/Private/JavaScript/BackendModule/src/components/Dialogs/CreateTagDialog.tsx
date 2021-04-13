@@ -1,13 +1,13 @@
 import * as React from 'react';
+import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { Button, Dialog, Label, TextInput } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useNotify } from '../../core';
-import { useCallback } from 'react';
+import { useIntl, createUseMediaUiStyles, useNotify } from '@media-ui/core/src';
+import { useCreateTag, useSelectedAssetCollection } from '@media-ui/core/src/hooks';
+
 import { createTagDialogState } from '../../state';
-import { useCreateTag } from '../../hooks';
-import useSelectedAssetCollection from '../../hooks/useSelectedAssetCollection';
 
 const useStyles = createUseMediaUiStyles(() => ({
     formBody: {

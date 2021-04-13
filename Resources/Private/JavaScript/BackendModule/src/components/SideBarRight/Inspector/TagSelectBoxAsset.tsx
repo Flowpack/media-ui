@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import { useIntl, useNotify } from '../../../core';
-import { useSelectedAsset, useSetAssetTags, useTagsQuery } from '../../../hooks';
-import { Asset, Tag } from '../../../interfaces';
+import { useIntl, useNotify } from '@media-ui/core/src';
+import { Asset, Tag } from '@media-ui/core/src/interfaces';
+import { useSelectedAsset, useSetAssetTags, useTagsQuery } from '@media-ui/core/src/hooks';
+
 import { TagSelectBox } from '.';
 
 const tagsMatchAsset = (tags: Tag[], asset: Asset) => {

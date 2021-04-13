@@ -2,8 +2,9 @@ import { InMemoryCache } from '@apollo/client';
 import { ApolloCache } from '@apollo/client/cache/core/cache';
 import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
+
 import { IdFromObjectResolver, PersistentStateManager } from './index';
-import { AssetIdentity } from '../interfaces';
 
 class CacheFactory {
     public static createCache(): ApolloCache<NormalizedCacheObject> {
@@ -38,6 +39,9 @@ class CacheFactory {
                     keyFields: ['id'],
                 },
                 AssetCollection: {
+                    keyFields: ['id'],
+                },
+                AssetSource: {
                     keyFields: ['id'],
                 },
             },

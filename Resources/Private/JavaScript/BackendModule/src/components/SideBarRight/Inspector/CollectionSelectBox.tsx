@@ -3,9 +3,10 @@ import { useCallback, useMemo } from 'react';
 
 import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { useAssetCollectionsQuery, useSelectedAsset, useSetAssetCollections } from '../../../hooks';
-import { Asset } from '../../../interfaces';
+import { useIntl, createUseMediaUiStyles, useNotify } from '@media-ui/core/src';
+import { Asset } from '@media-ui/core/src/interfaces';
+import { useAssetCollectionsQuery, useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
+
 import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles({

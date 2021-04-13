@@ -3,12 +3,13 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { TextArea, TextInput } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { MediaUiTheme } from '../../../interfaces';
-import { useSelectedAsset, useUpdateAsset } from '../../../hooks';
+import { AssetUsageToggleButton } from '@media-ui/feature-asset-usage/src';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify } from '@media-ui/core/src';
+import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
+import { selectedInspectorViewState } from '@media-ui/core/src/state';
+
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import { useRecoilValue } from 'recoil';
-import selectedInspectorViewState from '../../../state/selectedInspectorViewState';
 import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
@@ -119,6 +120,8 @@ const AssetInspector = () => {
 
             {selectedAsset.assetSource.supportsCollections && <CollectionSelectBox />}
             {selectedAsset.assetSource.supportsTagging && <TagSelectBoxAsset />}
+
+            <AssetUsageToggleButton />
 
             <MetadataView />
         </InspectorContainer>

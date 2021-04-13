@@ -9,15 +9,9 @@ import { ApolloClient, ApolloProvider, ApolloLink } from '@apollo/client';
 import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
-import {
-    ApolloErrorHandler,
-    IntlProvider,
-    MediaUiProvider,
-    MediaUiThemeProvider,
-    NotifyProvider,
-    PersistentStateManager,
-    CacheFactory,
-} from './core';
+import { IntlProvider, MediaUiProvider, MediaUiThemeProvider, NotifyProvider } from '@media-ui/core/src';
+
+import { ApolloErrorHandler, PersistentStateManager, CacheFactory } from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
 import { resolvers, typeDefs } from './core/Resolvers';

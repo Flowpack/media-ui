@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { useCallback } from 'react';
 
 import { Tree } from '@neos-project/react-ui-components';
 
-import { AbstractTreeNodeProps, AssetCollection } from '../../../interfaces';
-import { dndTypes } from '../../../constants';
-import Tag from '../../../interfaces/Tag';
-import { useCallback } from 'react';
+import { AssetCollection, Tag } from '@media-ui/core/src/interfaces';
+import dndTypes from '@media-ui/core/src/constants/dndTypes';
+
+import { AbstractTreeNodeProps } from '../../../interfaces';
 
 export interface TagTreeNodeProps extends AbstractTreeNodeProps {
     tag: Tag;

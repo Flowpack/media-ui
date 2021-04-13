@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { createUseMediaUiStyles } from '../../../core';
 import { Label } from '@neos-project/react-ui-components';
+
+import { createUseMediaUiStyles } from '@media-ui/core/src';
 
 const useStyles = createUseMediaUiStyles({
     propertyGroup: {},

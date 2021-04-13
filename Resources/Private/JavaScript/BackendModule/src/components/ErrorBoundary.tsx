@@ -1,5 +1,6 @@
 import React from 'react';
-import { NotifyContext } from '../core/Notify';
+
+import { NotifyContext } from '@media-ui/core/src/provider/Notify';
 
 class ErrorBoundary extends React.Component<
     { children: React.ReactElement | React.ReactElement[] },

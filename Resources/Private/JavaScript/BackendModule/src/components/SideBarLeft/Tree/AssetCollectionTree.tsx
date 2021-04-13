@@ -4,25 +4,25 @@ import { useSetRecoilState } from 'recoil';
 
 import { IconButton, Tree, Headline } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useNotify } from '../../../core';
-import { MediaUiTheme } from '../../../interfaces';
-import AssetCollectionTreeNode from './AssetCollectionTreeNode';
-import TagTreeNode from './TagTreeNode';
-import { IconLabel } from '../../Presentation';
-import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagIdState } from '../../../state';
+import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagIdState } from '@media-ui/core/src/state';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify } from '@media-ui/core/src';
 import {
     useAssetCollectionsQuery,
     useDeleteAssetCollection,
-    useSelectAssetSource,
-    useTagsQuery,
     useDeleteTag,
-    useSelectedAssetCollection,
     useSelectAssetCollection,
+    useSelectAssetSource,
+    useSelectedAssetCollection,
+    useSelectedTag,
     useSelectTag,
-} from '../../../hooks';
+    useTagsQuery,
+} from '@media-ui/core/src/hooks';
+
+import AssetCollectionTreeNode from './AssetCollectionTreeNode';
+import TagTreeNode from './TagTreeNode';
+import { IconLabel } from '../../Presentation';
 import AddAssetCollectionButton from './AddAssetCollectionButton';
 import AddTagButton from './AddTagButton';
-import useSelectedTag from '../../../hooks/useSelectedTag';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetCollectionTree: {

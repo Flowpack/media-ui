@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { createUseMediaUiStyles, useIntl } from '../../core';
-import { AssetIdentity, MediaUiTheme } from '../../interfaces';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
+
 import { ListViewItem } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

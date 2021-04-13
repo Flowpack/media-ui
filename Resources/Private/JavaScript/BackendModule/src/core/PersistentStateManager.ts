@@ -1,9 +1,13 @@
 import { ApolloCache } from '@apollo/client';
 import { NormalizedCacheObject } from '@apollo/client/cache';
+
+import { SELECTED_ASSET_SOURCE_ID } from '@media-ui/core/src/queries';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { NEOS_ASSET_SOURCE } from '@media-ui/core/src/constants/neos';
+
 import { VIEW_MODES } from '../hooks';
-import { CLIPBOARD, SELECTED_ASSET_SOURCE_ID, VIEW_MODE_SELECTION } from '../queries';
-import { Neos } from '../constants';
-import { AssetIdentity } from '../interfaces';
+import { VIEW_MODE_SELECTION } from '../queries';
+import { CLIPBOARD } from '@media-ui/feature-clipboard/src';
 
 const STORAGE_PREFIX = 'flowpack.mediaui';
 
@@ -43,7 +47,7 @@ export function getItem<T>(key): T {
 
 export function restoreLocalState(cache: ApolloCache<NormalizedCacheObject>) {
     writeToCache(cache, {
-        selectedAssetSourceId: getItem<string>('selectedAssetSourceId') || Neos.NEOS_ASSET_SOURCE,
+        selectedAssetSourceId: getItem<string>('selectedAssetSourceId') || NEOS_ASSET_SOURCE,
         viewModeSelection: getItem<string>('viewModeSelection') || VIEW_MODES.Thumbnails,
         clipboard: getItem<AssetIdentity[]>('clipboard') || [],
     });
@@ -51,7 +55,7 @@ export function restoreLocalState(cache: ApolloCache<NormalizedCacheObject>) {
 
 export function resetLocalState(cache: ApolloCache<NormalizedCacheObject>) {
     writeToCache(cache, {
-        selectedAssetSourceId: Neos.NEOS_ASSET_SOURCE,
+        selectedAssetSourceId: NEOS_ASSET_SOURCE,
         viewModeSelection: VIEW_MODES.Thumbnails,
         clipboard: [],
     });

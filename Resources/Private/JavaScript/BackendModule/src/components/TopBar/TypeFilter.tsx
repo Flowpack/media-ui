@@ -4,8 +4,9 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { SelectBox } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '../../core';
-import { clipboardState, selectedMediaTypeState } from '../../state';
+import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { selectedMediaTypeState } from '@media-ui/core/src/state';
+import { clipboardState } from '@media-ui/feature-clipboard/src';
 
 const useStyles = createUseMediaUiStyles({
     typeFilter: {},

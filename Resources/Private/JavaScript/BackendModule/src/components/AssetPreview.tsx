@@ -3,7 +3,8 @@ import Lightbox from 'react-image-lightbox';
 import { useRecoilState } from 'recoil';
 import 'react-image-lightbox/style.css';
 
-import { createUseMediaUiStyles, useMediaUi, useMediaUiTheme } from '../core';
+import { createUseMediaUiStyles, useMediaUi, useMediaUiTheme } from '@media-ui/core/src';
+
 import { selectedAssetForPreviewState } from '../state';
 
 const useStyles = createUseMediaUiStyles({

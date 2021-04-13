@@ -2,10 +2,11 @@ import * as React from 'react';
 
 import { Headline } from '@neos-project/react-ui-components';
 
+import { useIntl } from '@media-ui/core/src';
+import { useSelectedAsset } from '@media-ui/core/src/hooks';
+
 import { humanFileSize } from '../../../helper';
 import { IconLabel, PropertyList, PropertyListItem } from '../../Presentation';
-import { useIntl } from '../../../core';
-import { useSelectedAsset } from '../../../hooks';
 
 const MetadataView: React.FC = () => {
     const { translate } = useIntl();

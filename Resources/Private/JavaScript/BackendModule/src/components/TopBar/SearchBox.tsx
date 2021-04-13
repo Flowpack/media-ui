@@ -4,8 +4,9 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '../../core';
-import { clipboardState, searchTermState } from '../../state';
+import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { searchTermState } from '@media-ui/core/src/state';
+import { clipboardState } from '@media-ui/feature-clipboard/src';
 
 const useStyles = createUseMediaUiStyles({
     searchBox: {

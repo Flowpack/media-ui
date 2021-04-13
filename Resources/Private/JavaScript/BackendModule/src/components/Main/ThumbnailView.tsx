@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { createUseMediaUiStyles } from '../../core';
-import { AssetIdentity, MediaUiTheme } from '../../interfaces';
+import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
+
 import { Thumbnail } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

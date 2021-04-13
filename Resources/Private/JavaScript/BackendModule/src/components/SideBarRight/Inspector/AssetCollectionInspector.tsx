@@ -3,12 +3,12 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify } from '../../../core';
-import { useUpdateAssetCollection } from '../../../hooks';
-import useSelectedAssetCollection from '../../../hooks/useSelectedAssetCollection';
+import { useIntl, useNotify } from '@media-ui/core/src';
+import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/core/src/hooks';
+import { selectedInspectorViewState } from '@media-ui/core/src/state';
+
 import { TagSelectBoxAssetCollection } from '.';
 import { useRecoilValue } from 'recoil';
-import selectedInspectorViewState from '../../../state/selectedInspectorViewState';
 import Actions from './Actions';
 import Property from './Property';
 import InspectorContainer from './InspectorContainer';

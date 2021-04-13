@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 
 import { SelectBox } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+
 import { VIEW_MODES, useViewModeSelection } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

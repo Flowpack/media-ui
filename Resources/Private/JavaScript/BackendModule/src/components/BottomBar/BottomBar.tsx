@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 
-import { createUseMediaUiStyles } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
+import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { Clipboard } from '@media-ui/feature-clipboard/src';
+
 import AssetCount from './AssetCount/AssetCount';
 import Pagination from './Pagination/Pagination';
-import Clipboard from './Clipboard/Clipboard';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     bottomBar: {

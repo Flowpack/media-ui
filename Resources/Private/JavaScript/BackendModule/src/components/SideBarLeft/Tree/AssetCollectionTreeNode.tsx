@@ -3,9 +3,10 @@ import { useCallback, useState } from 'react';
 
 import { Tree } from '@neos-project/react-ui-components';
 
+import dndTypes from '@media-ui/core/src/constants/dndTypes';
+import { AssetCollection } from '@media-ui/core/src/interfaces';
+
 import { AbstractTreeNodeProps } from '../../../interfaces';
-import { dndTypes } from '../../../constants';
-import AssetCollection from '../../../interfaces/AssetCollection';
 
 export interface AssetCollectionTreeNodeProps extends AbstractTreeNodeProps {
     assetCollection: AssetCollection;

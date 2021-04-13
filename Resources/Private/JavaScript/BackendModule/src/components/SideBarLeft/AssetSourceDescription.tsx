@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import { ToggablePanel } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
-import { useSelectAssetSource } from '../../hooks';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useSelectAssetSource } from '@media-ui/core/src/hooks';
+
 import { IconLabel } from '../Presentation';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

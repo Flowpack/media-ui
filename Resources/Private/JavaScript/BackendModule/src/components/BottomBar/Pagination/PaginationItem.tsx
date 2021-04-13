@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { IconButton, Button } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles } from '../../../core';
+import { createUseMediaUiStyles } from '@media-ui/core/src';
 
 const useStyles = createUseMediaUiStyles({
     item: {

@@ -2,11 +2,13 @@ import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { createUseMediaUiStyles, useIntl } from '../../../core';
-import { clipboardState, currentPageState } from '../../../state';
-import { useAssetCountQuery } from '../../../hooks';
+import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { currentPageState } from '@media-ui/core/src/state';
+import { useAssetCountQuery } from '@media-ui/core/src/hooks';
+import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS } from '@media-ui/core/src/constants/pagination';
+import { clipboardState } from '@media-ui/feature-clipboard/src';
+
 import PaginationItem from './PaginationItem';
-import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS } from '../../../constants/pagination';
 
 const useStyles = createUseMediaUiStyles({
     pagination: {

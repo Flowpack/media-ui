@@ -4,10 +4,12 @@ import { useSetRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { Asset } from '../../interfaces';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
+import { Asset } from '@media-ui/core/src/interfaces';
+import { useImportAsset } from '@media-ui/core/src/hooks';
+import { useClipboard } from '@media-ui/feature-clipboard/src';
+
 import { selectedAssetForPreviewState } from '../../state';
-import { useIntl, useMediaUi, useNotify } from '../../core';
-import { useImportAsset, useClipboard } from '../../hooks';
 
 interface ItemActionsProps {
     asset: Asset;
@@ -40,7 +42,11 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     }, [setSelectedAssetForPreview, asset]);
 
     const onDeleteAsset = useCallback(() => {
-        handleDeleteAsset(asset);
+        handleDeleteAsset(asset).then((success) => {
+            if (success) {
+                addOrRemoveFromClipboard({ assetId: asset.id, assetSourceId: asset.assetSource.id });
+            }
+        });
     }, [handleDeleteAsset, asset]);
 
     const onCopyAssetToClipboard = useCallback(() => {

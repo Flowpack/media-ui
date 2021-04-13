@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { createUseMediaUiStyles } from '../core';
-import { MediaUiTheme } from '../interfaces';
-import { loadingState } from '../state';
+import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { loadingState } from '@media-ui/core/src/state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     '@keyframes cssloadWidth': {

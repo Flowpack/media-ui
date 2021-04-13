@@ -8,10 +8,17 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "jsx": "react",
-    "typeRoots": ["./Resources/Private/JavaScript/typings"]
+    "typeRoots": ["./Resources/Private/JavaScript/typings"],
+    "baseUrl": "./",
+    "paths": {
+      "@media-ui/feature-asset-usage/src/*": ["./Resources/Private/JavaScript/asset-usage/src/*"],
+    }
   },
+  "include": [
+    "./Resources/Private/Javascript/**/*",
+    "node_modules/@media-ui/feature-asset-usage/src/**/*"
+  ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
   ]
 }

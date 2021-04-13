@@ -4,7 +4,8 @@ import { useSetRecoilState } from 'recoil';
 
 import { Button, Icon } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '../../../core';
+import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+
 import { createAssetCollectionDialogState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles({

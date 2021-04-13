@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { Button, Icon } from '@neos-project/react-ui-components';
 
-import { useIntl } from '../../core';
+import { useIntl } from '@media-ui/core/src';
+
 import { uploadDialogState } from '../../state';
 import { useSetRecoilState } from 'recoil';
 

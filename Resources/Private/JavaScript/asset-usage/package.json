@@ -1,0 +1,9 @@
+{
+  "name": "@media-ui/feature-asset-usage",
+  "version": "1.0.0",
+  "license": "GNU GPLv3",
+  "private": true,
+  "dependencies": {
+    "@media-ui/core": "*"
+  }
+}

@@ -2,13 +2,15 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
-import { AssetIdentity, MediaUiTheme } from '../../interfaces';
-import { createUseMediaUiStyles, useMediaUi } from '../../core';
+import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+
 import { humanFileSize } from '../../helper';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
-import { selectedAssetForPreviewState, selectedAssetIdState } from '../../state';
-import { useAssetQuery, useSelectAsset } from '../../hooks';
+import { selectedAssetForPreviewState } from '../../state';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { useAssetQuery, useSelectAsset } from '@media-ui/core/src/hooks';
+import { selectedAssetIdState } from '@media-ui/core/src/state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {

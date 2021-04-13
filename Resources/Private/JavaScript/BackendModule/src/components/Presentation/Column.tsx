@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { ReactElement } from 'react';
 
-import { createUseMediaUiStyles } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
+import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     column: {

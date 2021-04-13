@@ -5,10 +5,9 @@ import { fromString as getMediaTypeFromString } from 'media-type';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
-import { useSelectedAsset, useSelectedAssetCollection, useSelectedTag } from '../../hooks';
-import selectedInspectorViewState from '../../state/selectedInspectorViewState';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useSelectedAsset, useSelectedAssetCollection, useSelectedTag } from '@media-ui/core/src/hooks';
+import { selectedInspectorViewState } from '@media-ui/core/src/state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     currentSelection: {},

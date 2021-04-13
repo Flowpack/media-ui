@@ -5,11 +5,12 @@ import { useQuery } from '@apollo/client';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { useClipboard, VIEW_MODES } from '../../hooks';
+import { useIntl, createUseMediaUiStyles, useMediaUi } from '@media-ui/core/src';
+import { clipboardState, useClipboard } from '@media-ui/feature-clipboard/src';
+
+import { VIEW_MODES } from '../../hooks';
 import { ListView, ThumbnailView } from './index';
 import { VIEW_MODE_SELECTION } from '../../queries';
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
-import { clipboardState } from '../../state';
 import LoadingLabel from '../LoadingLabel';
 
 const useStyles = createUseMediaUiStyles({

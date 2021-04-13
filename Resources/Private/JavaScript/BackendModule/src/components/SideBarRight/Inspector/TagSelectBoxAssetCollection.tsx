@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import { useIntl, useNotify } from '../../../core';
-import { useTagsQuery, useUpdateAssetCollection } from '../../../hooks';
-import { AssetCollection, Tag } from '../../../interfaces';
+import { useIntl, useNotify } from '@media-ui/core/src';
+import { AssetCollection, Tag } from '@media-ui/core/src/interfaces';
+import { useSelectedAssetCollection, useTagsQuery, useUpdateAssetCollection } from '@media-ui/core/src/hooks';
+
 import { TagSelectBox } from '.';
-import useSelectedAssetCollection from '../../../hooks/useSelectedAssetCollection';
 
 const tagsMatchAssetCollection = (tags: Tag[], assetCollection: AssetCollection) => {
     return (

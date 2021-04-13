@@ -2,9 +2,10 @@ import * as React from 'react';
 
 import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '../../../core';
+import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { Tag } from '@media-ui/core/src/interfaces';
+
 import { IconLabel } from '../../Presentation';
-import { Tag } from '../../../interfaces';
 
 const useStyles = createUseMediaUiStyles({
     tagSelectBox: {},

@@ -1,12 +1,13 @@
-import { gql } from '@apollo/client';
+import { ApolloCache, gql } from '@apollo/client';
 
 import { updateLocalState } from './PersistentStateManager';
-import { CLIPBOARD } from '../queries';
-import { ApolloCache } from '@apollo/client';
 import { NormalizedCacheObject } from '@apollo/client/cache';
-import { AssetIdentity } from '../interfaces';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { CLIPBOARD } from '@media-ui/feature-clipboard/src';
 
 // TODO: Split this into feature specific separate typedefs and resolvers and give them as array to the apollo client
+
+// FIXME: Move clipboard specifics to clipboard package
 
 export const typeDefs = gql`
     type AssetIdentity {
@@ -63,6 +64,7 @@ export const resolvers = {
             } else {
                 clipboard = clipboard.concat([assetIdentity]);
             }
+            // TODO: Make sure all cached entities are updated
             // cache.writeFragment({
             //     id: `Asset_${assetIdentity.assetId}`,
             //     fragment: gql`

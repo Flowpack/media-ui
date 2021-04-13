@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { createUseMediaUiStyles } from '../core';
-import { loadingState } from '../state';
+import { createUseMediaUiStyles } from '@media-ui/core/src';
+import { loadingState } from '@media-ui/core/src/state';
 
 const useStyles = createUseMediaUiStyles({
     loadingLabel: {},

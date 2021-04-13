@@ -2,10 +2,10 @@ import * as React from 'react';
 
 import { Headline } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '../../../core';
-import { MediaUiTheme } from '../../../interfaces';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useSelectedAsset } from '@media-ui/core/src/hooks';
+
 import { IconLabel, PropertyList, PropertyListItem } from '../../Presentation';
-import { useSelectedAsset } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     iptcData: {

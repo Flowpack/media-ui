@@ -3,9 +3,9 @@ import { useMemo } from 'react';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { AssetIdentity } from '../../interfaces';
-import { useIntl } from '../../core';
-import { useClipboard } from '../../hooks';
+import { useIntl } from '@media-ui/core/src';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { useClipboard } from '@media-ui/feature-clipboard/src';
 
 interface MissingAssetActionsProps {
     assetIdentity: AssetIdentity;

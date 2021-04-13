@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 
-import { createUseMediaUiStyles } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
-import { SearchBox, TypeFilter, ViewModeSelector, ClipboardActions } from './index';
+import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { ClipboardActions } from '@media-ui/feature-clipboard/src';
+
+import { SearchBox, TypeFilter, ViewModeSelector } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     topBar: {

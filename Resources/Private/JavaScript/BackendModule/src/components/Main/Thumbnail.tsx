@@ -2,12 +2,14 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { AssetIdentity, MediaUiTheme } from '../../interfaces';
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '../../core';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { useAssetQuery, useSelectAsset } from '@media-ui/core/src/hooks';
+import { selectedAssetIdState } from '@media-ui/core/src/state';
+
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
-import { selectedAssetForPreviewState, selectedAssetIdState } from '../../state';
-import { useAssetQuery, useSelectAsset } from '../../hooks';
+import { selectedAssetForPreviewState } from '../../state';
 import MissingAssetActions from './MissingAssetActions';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

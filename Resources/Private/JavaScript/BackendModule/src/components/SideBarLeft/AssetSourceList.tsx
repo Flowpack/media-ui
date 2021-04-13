@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import { Headline } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles } from '../../core';
-import { MediaUiTheme } from '../../interfaces';
-import { useSelectAssetSource, useAssetSourcesQuery } from '../../hooks';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useAssetSourcesQuery, useSelectAssetSource } from '@media-ui/core/src/hooks';
+
 import { IconLabel } from '../Presentation';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

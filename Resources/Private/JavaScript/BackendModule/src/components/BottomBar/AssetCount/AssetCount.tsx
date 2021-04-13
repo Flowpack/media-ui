@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { createUseMediaUiStyles, useIntl } from '../../../core';
-import { useAssetCountQuery } from '../../../hooks';
+import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { useAssetCountQuery } from '@media-ui/core/src/hooks';
 
 const useStyles = createUseMediaUiStyles({
     assetCount: {

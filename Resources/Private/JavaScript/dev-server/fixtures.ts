@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash.clonedeep';
 
-import { Asset, AssetCollection, AssetSource, Image, IptcProperty, Tag } from 'backend-module/src/interfaces';
 import { AssetUsage } from '@media-ui/feature-asset-usage/src';
+import { Asset, AssetCollection, AssetSource, Image, IptcProperty, Tag } from '@media-ui/core/src/interfaces';
 
 const exampleImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
 
