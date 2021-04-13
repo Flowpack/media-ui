@@ -57,25 +57,24 @@ export const resolvers = {
             { cache }: { cache: ApolloCache<NormalizedCacheObject> }
         ) => {
             let { clipboard }: { clipboard: AssetIdentity[] } = cache.readQuery({ query: CLIPBOARD });
-            // let added = true;
-            if (clipboard.find(({ assetId }) => assetId === assetIdentity.assetId)) {
+            let added = true;
+            if (clipboard.some(({ assetId }) => assetId === assetIdentity.assetId)) {
                 clipboard = clipboard.filter(({ assetId }) => assetId !== assetIdentity.assetId);
-                // added = false;
+                added = false;
             } else {
                 clipboard = clipboard.concat([assetIdentity]);
             }
-            // TODO: Make sure all cached entities are updated
-            // cache.writeFragment({
-            //     id: `Asset_${assetIdentity.assetId}`,
-            //     fragment: gql`
-            //         fragment UpdatedAsset on Asset {
-            //             isInClipboard
-            //         }
-            //     `,
-            //     data: {
-            //         isInClipboard: added,
-            //     },
-            // });
+            cache.writeFragment({
+                id: cache.identify({ __typename: 'Asset', id: assetIdentity.assetId }),
+                fragment: gql`
+                    fragment UpdatedAsset on Asset {
+                        isInClipboard
+                    }
+                `,
+                data: {
+                    isInClipboard: added,
+                },
+            });
             updateLocalState({ clipboard }, cache);
             return clipboard;
         },

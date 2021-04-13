@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
@@ -21,11 +21,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     const { handleDeleteAsset } = useMediaUi();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { importAsset } = useImportAsset();
-    const { clipboard, addOrRemoveFromClipboard } = useClipboard();
-
-    const isInClipboard = useMemo(() => {
-        return !!clipboard.find(({ assetId }) => assetId === asset.id);
-    }, [asset.id, clipboard]);
+    const { addOrRemoveFromClipboard } = useClipboard();
 
     const onImportAsset = useCallback(() => {
         importAsset(asset)
@@ -91,11 +87,11 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             {asset.localId && (
                 <IconButton
                     title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}
-                    icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
+                    icon={asset.isInClipboard ? 'clipboard-check' : 'clipboard'}
                     size="regular"
                     style="transparent"
                     hoverStyle="brand"
-                    className={isInClipboard ? 'button--active' : ''}
+                    className={asset.isInClipboard ? 'button--active' : ''}
                     onClick={onCopyAssetToClipboard}
                 />
             )}
