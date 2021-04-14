@@ -27,38 +27,54 @@ const ClipboardActions: React.FC = () => {
     const Notify = useNotify();
 
     const onDeleteClipboard = useCallback(() => {
-        if (confirm(translate('action.deleteAssets.confirm', 'Delete all assets in the clipboard?'))) {
-            Promise.all(
-                clipboard.map(
-                    async (assetIdentity) =>
-                        await deleteAsset(assetIdentity).then(() => {
-                            addOrRemoveFromClipboard(assetIdentity);
-                        })
-                )
+        if (!confirm(translate('clipboard.deleteAssets.confirm', 'Delete all assets in the clipboard?'))) return;
+
+        Promise.all(
+            clipboard.map(
+                async (assetIdentity) =>
+                    await deleteAsset(assetIdentity).then(() => {
+                        addOrRemoveFromClipboard(assetIdentity);
+                    })
             )
-                .then(() => {
-                    Notify.ok(translate('action.deleteAssets.success', 'The assets have been deleted'));
-                })
-                .catch(({ message }) => {
-                    Notify.error(
-                        translate('action.deleteAssets.error', 'Error while trying to delete the assets'),
-                        message
-                    );
-                });
-        }
-    }, [clipboard, deleteAsset, Notify, translate]);
+        )
+            .then(() => {
+                Notify.ok(translate('clipboard.deleteAssets.success', 'The assets have been deleted'));
+            })
+            .catch(({ message }) => {
+                Notify.error(
+                    translate('clipboard.deleteAssets.error', 'Error while trying to delete the assets'),
+                    message
+                );
+            });
+    }, [translate, clipboard, deleteAsset, addOrRemoveFromClipboard, Notify]);
+
+    const onFlushClipboard = useCallback(() => {
+        if (!confirm(translate('clipboard.flush.confirm', 'Remove all assets from clipboard?'))) return;
+
+        clipboard.map((assetIdentity) => {
+            addOrRemoveFromClipboard(assetIdentity);
+        });
+    }, [addOrRemoveFromClipboard, clipboard, translate]);
 
     if (!showClipboard) return null;
 
     return (
         <div className={classes.clipboardActions}>
             <IconButton
-                title={translate('itemActions.delete', 'Delete asset')}
+                title={translate('clipboard.deleteAsset', 'Delete all assets in clipboard')}
                 icon="trash"
                 size="regular"
                 style="transparent"
                 hoverStyle="warn"
                 onClick={onDeleteClipboard}
+            />
+            <IconButton
+                title={translate('clipboard.flush', 'Flush clipboard')}
+                icon="clipboard"
+                size="regular"
+                style="transparent"
+                hoverStyle="warn"
+                onClick={onFlushClipboard}
             />
         </div>
     );
