@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
 
@@ -14,6 +14,20 @@ export default function useClipboard() {
     const addOrRemoveFromClipboard = (assetIdentity: AssetIdentity) =>
         mutateClipboard({
             variables: { ...assetIdentity },
+            update: (cache) => {
+                const { clipboard }: { clipboard: AssetIdentity[] } = cache.readQuery({ query: CLIPBOARD });
+                cache.writeFragment({
+                    id: cache.identify({ __typename: 'Asset', id: assetIdentity.assetId }),
+                    fragment: gql`
+                        fragment UpdatedAsset on Asset {
+                            isInClipboard
+                        }
+                    `,
+                    data: {
+                        isInClipboard: clipboard.some(({ assetId }) => assetId === assetIdentity.assetId),
+                    },
+                });
+            },
         });
 
     return { clipboard: clipboard ?? [], addOrRemoveFromClipboard };
