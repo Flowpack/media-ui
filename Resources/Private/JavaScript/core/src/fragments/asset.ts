@@ -5,6 +5,8 @@ import { IPTC_PROPERTY_FRAGMENT } from './iptcProperty';
 import { FILE_FRAGMENT } from './file';
 import { TAG_FRAGMENT } from './tag';
 
+// TODO: Somehow extend `isInClipboard` from clipboard feature package
+
 export const ASSET_FRAGMENT = gql`
     fragment AssetProps on Asset {
         id

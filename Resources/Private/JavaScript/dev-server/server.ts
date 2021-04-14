@@ -15,7 +15,7 @@ const bundler = new Bundler(__dirname + '/index.html', {
     outDir: __dirname + '/dist',
 });
 
-let { assets, assetCollections, assetSources, tags, assetUsageReferences } = loadFixtures();
+let { assets, assetCollections, assetSources, tags, assetUsages } = loadFixtures();
 
 const filterAssets = (assetSourceId = '', tag = '', assetCollection = '', mediaType = '', searchTerm = '') => {
     return assets.filter((asset) => {
@@ -53,8 +53,8 @@ const resolvers = {
         ) => {
             return filterAssets(assetSourceId, tag, assetCollection, mediaType, searchTerm).length;
         },
-        assetUsageReferences: ($_, { id }) => {
-            return assetUsageReferences.filter((assetUsage) => assetUsage.assetId === id);
+        assetUsages: ($_, { id }) => {
+            return assetUsages.filter((assetUsage) => assetUsage.assetId === id);
         },
         assetSources: () => assetSources,
         assetCollections: () => assetCollections,
@@ -98,7 +98,7 @@ const resolvers = {
             return true;
         },
         deleteAsset: ($_, { id: id, assetSourceId }) => {
-            if (assetUsageReferences.some((usage) => usage.assetId === id)) {
+            if (assetUsages.some((usage) => usage.assetId === id)) {
                 return false;
             }
             const assetIndex = assets.findIndex((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
@@ -134,7 +134,7 @@ app.use((req, res, next) => {
         assetCollections = fixtures.assetCollections;
         tags = fixtures.tags;
         assetSources = fixtures.assetSources;
-        assetUsageReferences = fixtures.assetUsageReferences;
+        assetUsages = fixtures.assetUsages;
         console.log('Fixtures have been reset');
     }
     next();

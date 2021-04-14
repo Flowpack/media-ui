@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash.clonedeep';
 
-import { AssetUsage } from '@media-ui/feature-asset-usage/src';
+import { AssetUsage, NeosAssetUsage } from '@media-ui/feature-asset-usage/src';
 import { Asset, AssetCollection, AssetSource, Image, IptcProperty, Tag } from '@media-ui/core/src/interfaces';
 
 const exampleImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
@@ -109,7 +109,7 @@ const assets: Asset[] = range(150).map((index) => {
 });
 
 // TODO: Make this more variable
-const assetUsageReferences: AssetUsage[] = range(150)
+const assetUsages: AssetUsage[] = range(150)
     .map((index) => {
         return {
             __typename: 'AssetUsage',
@@ -117,9 +117,13 @@ const assetUsageReferences: AssetUsage[] = range(150)
             serviceId: 'neos',
             label: `Usage ${index} in node xyz`,
             metadata: {
-                backendUri: 'http://localhost/neos/somewhere-in-the-content-module',
+                site: 'Media UI demo site',
+                uri: 'http://localhost/neos/somewhere-in-the-content-module',
+                workspace: 'live',
+                lastModified: new Date('2020-06-16 15:07:00'),
+                contentDimensions: ['English'],
             },
-        };
+        } as NeosAssetUsage;
     })
     .filter((usage) => !!usage);
 
@@ -128,7 +132,7 @@ const loadFixtures = () => {
         assets: cloneDeep(assets) as Asset[],
         assetCollections: cloneDeep(assetCollections) as AssetCollection[],
         assetSources: cloneDeep(assetSources) as AssetSource[],
-        assetUsageReferences: cloneDeep(assetUsageReferences) as AssetUsage[],
+        assetUsages: cloneDeep(assetUsages) as AssetUsage[],
         tags: cloneDeep(tags) as Tag[],
     };
 };

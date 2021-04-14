@@ -43,7 +43,10 @@ type Query {
     """
     assetCollection(id: AssetCollectionId!): AssetCollection
 
-    assetUsageReferences(id: AssetId!, assetSourceId: AssetSourceId!): [AssetUsage!]!
+    """
+    a references for a single asset
+    """
+    assetUsages(id: AssetId!, assetSourceId: AssetSourceId!): [AssetUsage!]!
 
     """
     all tags

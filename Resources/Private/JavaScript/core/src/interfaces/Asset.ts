@@ -32,5 +32,6 @@ export default interface Asset extends GraphQlEntity {
     thumbnailUrl?: string;
     previewUrl?: string;
 
+    // TODO: Somehow extend from clipboard feature package
     isInClipboard?: boolean;
 }
