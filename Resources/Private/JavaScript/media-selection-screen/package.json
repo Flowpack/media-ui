@@ -1,5 +1,5 @@
 {
-  "name": "asset-editor",
+  "name": "@media-ui/media-selection-screen",
   "version": "1.0.0",
   "license": "GNU GPLv3",
   "private": true,
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@neos-project/neos-ui-extensibility": "^5.3.4",
+    "@media-ui/core": "*",
     "backend-module": "*"
   },
   "devDependencies": {

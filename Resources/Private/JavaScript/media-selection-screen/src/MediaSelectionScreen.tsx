@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createRef } from 'react';
 import { connect } from 'react-redux';
 import { RecoilRoot } from 'recoil';
-import { ApolloProvider, InMemoryCache, ApolloClient, ApolloLink } from '@apollo/client';
+import { ApolloProvider, ApolloClient, ApolloLink } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 import { $get, $transform } from 'plow-js';
 
@@ -21,7 +21,7 @@ import {
     IntlProvider,
     Notify,
 } from '@media-ui/core/src';
-import { Resolvers, PersistentStateManager, IdFromObjectResolver, ApolloErrorHandler } from 'backend-module/src/core';
+import { Resolvers, PersistentStateManager, ApolloErrorHandler, CacheFactory } from 'backend-module/src/core';
 import App from 'backend-module/src/components/App';
 
 let apolloClient = null;
@@ -98,7 +98,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
     getApolloClient() {
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
-            const cache = new InMemoryCache({ dataIdFromObject: IdFromObjectResolver });
+            const cache = CacheFactory.createCache();
             PersistentStateManager.restoreLocalState(cache);
 
             apolloClient = new ApolloClient({

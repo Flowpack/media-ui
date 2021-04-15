@@ -12,6 +12,7 @@ const useSelectAsset = () => {
     const { handleSelectAsset } = useMediaUi();
     return useCallback(
         (asset: Asset) => {
+            if (!asset) return;
             setSelectedAssetId({ assetId: asset.id, assetSourceId: asset.assetSource.id });
             handleSelectAsset(asset);
             setSelectedInspectorView('asset');
