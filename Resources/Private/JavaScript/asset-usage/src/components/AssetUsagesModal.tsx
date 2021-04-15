@@ -7,12 +7,16 @@ import { Button, Dialog } from '@neos-project/react-ui-components';
 import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 
-import assetUsageModalState from '../state/assetUsageModalState';
+import assetUsageDetailsModalState from '../state/assetUsageDetailsModalState';
 import useAssetUsagesQuery from '../hooks/useAssetUsages';
+import AssetUsageSection from './AssetUsageSection';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetUsage: {
         padding: theme.spacing.full,
+        '& section + section': {
+            marginTop: theme.spacing.full,
+        },
     },
     usageTable: {
         width: '100%',
@@ -38,12 +42,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-const AssetUsageModal: React.FC = () => {
+const AssetUsagesModal: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
-    const [isOpen, setIsOpen] = useRecoilState(assetUsageModalState);
+    const [isOpen, setIsOpen] = useRecoilState(assetUsageDetailsModalState);
     const asset = useSelectedAsset();
-    const { assetUsages, loading } = useAssetUsagesQuery(
+    const { assetUsageDetails, loading } = useAssetUsagesQuery(
         asset ? { assetId: asset.id, assetSourceId: asset.assetSource.id } : null
     );
 
@@ -52,7 +56,7 @@ const AssetUsageModal: React.FC = () => {
     return (
         <Dialog
             isOpen={isOpen}
-            title={translate('assetUsage.title', 'Asset usage for {asset}', { asset: asset.label })}
+            title={translate('assetUsage.title', `Usage details for ${asset.label}`, { asset: asset.label })}
             onRequestClose={handleRequestClose}
             style="wide"
             actions={[
@@ -61,40 +65,21 @@ const AssetUsageModal: React.FC = () => {
                 </Button>,
             ]}
         >
-            <section className={classes.assetUsage}>
-                {assetUsages?.length > 0 ? (
-                    <table className={classes.usageTable}>
-                        <tr>
-                            <th>Document</th>
-                            <th>Service</th>
-                            <th>Dimensions</th>
-                            <th>Workspace</th>
-                            <th>Last modification</th>
-                        </tr>
-                        {assetUsages.map((assetUsage) => (
-                            <tr key={assetUsage.assetId}>
-                                <td>
-                                    <a href={assetUsage.metadata.uri} target="_blank" rel="noreferrer">
-                                        {assetUsage.label}
-                                    </a>
-                                </td>
-                                <td>{assetUsage.serviceId}</td>
-                                <td>{assetUsage.metadata.contentDimensions?.join(', ')}</td>
-                                <td>{assetUsage.metadata.workspace}</td>
-                                <td>{new Date(assetUsage.metadata.lastModified).toLocaleString()}</td>
-                            </tr>
-                        ))}
-                    </table>
+            <div className={classes.assetUsage}>
+                {assetUsageDetails?.length > 0 ? (
+                    assetUsageDetails.map((usageDetailsGroup, index) => (
+                        <AssetUsageSection key={index} usageDetailsGroup={usageDetailsGroup} />
+                    ))
                 ) : (
                     <span>
                         {loading
-                            ? translate('assetUsageModal.loading', 'Loading...')
-                            : translate('assetUsageModal.noResults', 'No results')}
+                            ? translate('assetUsagesModal.loading', 'Loading...')
+                            : translate('assetUsagesModal.noResults', 'No results')}
                     </span>
                 )}
-            </section>
+            </div>
         </Dialog>
     );
 };
 
-export default React.memo(AssetUsageModal);
+export default React.memo(AssetUsagesModal);

@@ -44,9 +44,14 @@ type Query {
     assetCollection(id: AssetCollectionId!): AssetCollection
 
     """
-    a references for a single asset
+    usages for a single asset
     """
-    assetUsages(id: AssetId!, assetSourceId: AssetSourceId!): [AssetUsage!]!
+    assetUsageDetails(id: AssetId!, assetSourceId: AssetSourceId!): [UsageDetailsGroup!]!
+
+    """
+    usage count for a single asset
+    """
+    assetUsageCount(id: AssetId!, assetSourceId: AssetSourceId!): Int!
 
     """
     all tags
@@ -141,11 +146,28 @@ type Asset {
     thumbnail(maximumWidth: Int, maximumHeight: Int, ratioMode: RatioMode, allowUpScaling: Boolean): Image
 }
 
-type AssetUsage {
-    assetId: AssetId!
-    serviceId: String!
+type UsageDetailsGroup {
+    serviceId: ServiceId!
     label: String!
-    metadata: AssetUsageMetadata
+    metadataSchema: [UsageDetailsMetadataSchema!]!
+    usages: [UsageDetails!]!
+}
+
+type UsageDetailsMetadataSchema {
+    name: MetadataName!
+    label: String!
+    type: UsageDetailsMetadataType!
+}
+
+type UsageDetails {
+    label: String!
+    url: String
+    metadata: [UsageDetailsMetadata!]!
+}
+
+type UsageDetailsMetadata {
+    name: MetadataName!
+    value: String
 }
 
 """
@@ -227,6 +249,16 @@ type DeleteAssetCollectionResult {
 }
 
 """
+Data types for usage details metadata
+"""
+enum UsageDetailsMetadataType {
+    TEXT
+    DATE
+    DATETIME
+    URL
+}
+
+"""
 Ratio mode of an image
 """
 enum RatioMode {
@@ -263,9 +295,9 @@ Unique identifier of an Asset collection (e.g. "neos")
 scalar AssetCollectionId
 
 """
-Metadata about how an asset is being used
+Headers for asset usage metadata
 """
-scalar AssetUsageMetadata
+scalar UsageDetailsHeaders
 
 """
 IANA media type of an Asset (e.g. "image/jpeg")
@@ -301,6 +333,10 @@ scalar IptcPropertyName
 The title of an Asset collection (e.g. "slideshows")
 """
 scalar AssetCollectionTitle
+
+scalar ServiceId
+
+scalar MetadataName
 
 """
 An absolute or relative URL

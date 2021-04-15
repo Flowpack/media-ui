@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createContext, useContext } from 'react';
 
-interface Notify {
+export interface Notify {
     notice: (title: string) => void;
     ok: (title: string) => void;
     error: (title: string, message?: string) => void;

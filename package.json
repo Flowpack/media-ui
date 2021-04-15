@@ -14,7 +14,7 @@
     "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:editor\"",
     "watch:module": "yarn workspace backend-module run watch",
     "watch:editor": "yarn workspace asset-editor run watch",
-    "build": "yarn workspaces run build",
+    "build": "yarn build:module && yarn build:editor",
     "build:module": "yarn workspace backend-module run build",
     "build:editor": "yarn workspace asset-editor run build",
     "test:github-actions": "xvfb-run --server-args=\"-screen 0 1280x720x24\" yarn testcafe chrome"

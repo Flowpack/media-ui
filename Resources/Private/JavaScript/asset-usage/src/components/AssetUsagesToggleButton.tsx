@@ -5,10 +5,10 @@ import { Button } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core/src';
 
-import assetUsageModalState from '../state/assetUsageModalState';
+import assetUsageDetailsModalState from '../state/assetUsageDetailsModalState';
 
-const AssetUsageToggleButton: React.FC = () => {
-    const [assetUsageModalOpen, setAssetUsageModalOpen] = useRecoilState(assetUsageModalState);
+const AssetUsagesToggleButton: React.FC = () => {
+    const [assetUsagesModalOpen, setAssetUsagesModalOpen] = useRecoilState(assetUsageDetailsModalState);
     const { translate } = useIntl();
     // TODO: Resolve actual usage when calculation is fast enough or data has been preloaded
     const usage = 1;
@@ -17,13 +17,13 @@ const AssetUsageToggleButton: React.FC = () => {
         <Button
             disabled={!usage}
             size="regular"
-            style={assetUsageModalOpen ? 'brand' : 'lighter'}
+            style={assetUsagesModalOpen ? 'brand' : 'lighter'}
             hoverStyle="brand"
-            onClick={() => setAssetUsageModalOpen(!assetUsageModalOpen)}
+            onClick={() => setAssetUsagesModalOpen(!assetUsagesModalOpen)}
         >
             {translate('assetUsageList.toggle', 'Toggle usages')}
         </Button>
     );
 };
 
-export default React.memo(AssetUsageToggleButton);
+export default React.memo(AssetUsagesToggleButton);

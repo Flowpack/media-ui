@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { TextArea, TextInput } from '@neos-project/react-ui-components';
 
-import { AssetUsageToggleButton } from '@media-ui/feature-asset-usage/src';
+import { AssetUsagesToggleButton } from '@media-ui/feature-asset-usage/src';
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify } from '@media-ui/core/src';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
@@ -121,7 +121,7 @@ const AssetInspector = () => {
             {selectedAsset.assetSource.supportsCollections && <CollectionSelectBox />}
             {selectedAsset.assetSource.supportsTagging && <TagSelectBoxAsset />}
 
-            <AssetUsageToggleButton />
+            <AssetUsagesToggleButton />
 
             <MetadataView />
         </InspectorContainer>

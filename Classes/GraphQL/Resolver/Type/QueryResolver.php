@@ -15,9 +15,9 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  */
 
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
+use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetCollection;
-use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
@@ -30,7 +30,6 @@ use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Service\AssetService;
-use Neos\Neos\Domain\Model\Dto\AssetUsageInNodeProperties;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
 use Psr\Log\LoggerInterface;
@@ -70,6 +69,12 @@ class QueryResolver implements ResolverInterface
      * @var LoggerInterface
      */
     protected $systemLogger;
+
+    /**
+     * @Flow\Inject
+     * @var UsageDetailsService
+     */
+    protected $assetUsageService;
 
     /**
      * Returns total count of asset proxies in the given asset source
@@ -148,6 +153,7 @@ class QueryResolver implements ResolverInterface
         // TODO: Implement sorting via `SupportsSortingInterface`
 
         if ($tagId && $assetProxyRepository instanceof SupportsTaggingInterface) {
+            /** @var Tag $tag */
             $tag = $this->tagRepository->findByIdentifier($tagId);
             if ($tag) {
                 return $assetProxyRepository->findByTag($tag)->getQuery();
@@ -169,7 +175,7 @@ class QueryResolver implements ResolverInterface
      * @param AssetSourceContext $assetSourceContext
      * @return array
      */
-    public function assetUsageReferencesQuery($_, array $variables, AssetSourceContext $assetSourceContext): array
+    public function assetUsageDetails($_, array $variables, AssetSourceContext $assetSourceContext): array
     {
         [
             'id' => $id,
@@ -188,16 +194,37 @@ class QueryResolver implements ResolverInterface
             return [];
         }
 
-        $usages = $this->assetService->getUsageReferences($asset);
+        return $this->assetUsageService->resolveUsagesForAsset($asset);
+    }
 
-        return array_reduce($usages, static function ($carry, $usage) {
-            if ($usage instanceof AssetUsageInNodeProperties) {
-                $carry['relatedNodes'] = $usage->getNodeIdentifier();
-            } else {
-                $carry['inaccessibleRelations'] = $usage;
-            }
-            return $carry;
-        }, []);
+    /**
+     * Returns the total usage count for the given asset
+     *
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return int
+     */
+    public function assetUsageCount($_, array $variables, AssetSourceContext $assetSourceContext): int
+    {
+        [
+            'id' => $id,
+            'assetSourceId' => $assetSourceId,
+        ] = $variables + ['id' => null, 'assetSourceId' => null];
+
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
+
+        if (!$assetProxy || !$assetProxy->getLocalAssetIdentifier()) {
+            return 0;
+        }
+
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            return 0;
+        }
+
+        return $this->assetService->getUsageCount($asset);
     }
 
     /**
@@ -249,7 +276,7 @@ class QueryResolver implements ResolverInterface
         $query = $this->createAssetProxyQuery($variables, $assetSourceContext);
 
         if (!$query) {
-            $this->systemLogger->error('Could not build asset query for given variables', $variables);
+            $this->systemLogger->error('Could not build assets query for given variables', $variables);
             return null;
         }
 

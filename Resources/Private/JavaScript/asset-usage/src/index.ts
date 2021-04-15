@@ -1,19 +1,27 @@
-import ASSET_USAGE from './queries/assetUsage';
-import ASSET_USAGE_FRAGMENT from './fragments/assetUsage';
-import AssetUsage from './interfaces/AssetUsage';
-import AssetUsageModal from './components/AssetUsageModal';
-import AssetUsageToggleButton from './components/AssetUsageToggleButton';
-import NeosAssetUsage from './interfaces/NeosAssetUsage';
-import assetUsageModalState from './state/assetUsageModalState';
+import ASSET_USAGE_DETAILS from './queries/assetUsages';
+import USAGE_DETAILS_GROUP_FRAGMENT from './fragments/usageDetailsGroupFragment';
+import {
+    UsageDetailsGroup,
+    UsageDetails,
+    UsageDetailsMetadata,
+    UsageDetailsMetadataSchema,
+    UsageDetailsMetadataType,
+} from './interfaces/UsageDetails';
+import AssetUsagesModal from './components/AssetUsagesModal';
+import AssetUsagesToggleButton from './components/AssetUsagesToggleButton';
+import assetUsageDetailsModalState from './state/assetUsageDetailsModalState';
 import useAssetUsagesQuery from './hooks/useAssetUsages';
 
 export {
-    ASSET_USAGE,
-    ASSET_USAGE_FRAGMENT,
-    AssetUsage,
-    AssetUsageModal,
-    AssetUsageToggleButton,
-    NeosAssetUsage,
-    assetUsageModalState,
+    ASSET_USAGE_DETAILS,
+    AssetUsagesModal,
+    AssetUsagesToggleButton,
+    USAGE_DETAILS_GROUP_FRAGMENT,
+    UsageDetails,
+    UsageDetailsGroup,
+    UsageDetailsMetadata,
+    UsageDetailsMetadataSchema,
+    UsageDetailsMetadataType,
+    assetUsageDetailsModalState,
     useAssetUsagesQuery,
 };

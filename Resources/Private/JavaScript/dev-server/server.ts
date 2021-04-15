@@ -7,7 +7,7 @@ import express from 'express';
 
 import { Tag } from '@media-ui/core/src/interfaces';
 
-import { loadFixtures } from './fixtures';
+import { getUsageDetailsForAsset, loadFixtures } from './fixtures';
 
 const PORT = 8000;
 
@@ -15,7 +15,7 @@ const bundler = new Bundler(__dirname + '/index.html', {
     outDir: __dirname + '/dist',
 });
 
-let { assets, assetCollections, assetSources, tags, assetUsages } = loadFixtures();
+let { assets, assetCollections, assetSources, tags } = loadFixtures();
 
 const filterAssets = (assetSourceId = '', tag = '', assetCollection = '', mediaType = '', searchTerm = '') => {
     return assets.filter((asset) => {
@@ -53,8 +53,8 @@ const resolvers = {
         ) => {
             return filterAssets(assetSourceId, tag, assetCollection, mediaType, searchTerm).length;
         },
-        assetUsages: ($_, { id }) => {
-            return assetUsages.filter((assetUsage) => assetUsage.assetId === id);
+        assetUsageDetails: ($_, { id }) => {
+            return getUsageDetailsForAsset(id);
         },
         assetSources: () => assetSources,
         assetCollections: () => assetCollections,
@@ -98,7 +98,8 @@ const resolvers = {
             return true;
         },
         deleteAsset: ($_, { id: id, assetSourceId }) => {
-            if (assetUsages.some((usage) => usage.assetId === id)) {
+            const inUse = getUsageDetailsForAsset(id).reduce((prev, { usages }) => prev && usages.length > 0, false);
+            if (inUse) {
                 return false;
             }
             const assetIndex = assets.findIndex((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
@@ -134,7 +135,6 @@ app.use((req, res, next) => {
         assetCollections = fixtures.assetCollections;
         tags = fixtures.tags;
         assetSources = fixtures.assetSources;
-        assetUsages = fixtures.assetUsages;
         console.log('Fixtures have been reset');
     }
     next();

@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash.clonedeep';
 
-import { AssetUsage, NeosAssetUsage } from '@media-ui/feature-asset-usage/src';
 import { Asset, AssetCollection, AssetSource, Image, IptcProperty, Tag } from '@media-ui/core/src/interfaces';
+import { UsageDetailsGroup } from '@media-ui/feature-asset-usage/src';
 
 const exampleImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
 
@@ -108,33 +108,84 @@ const assets: Asset[] = range(150).map((index) => {
     };
 });
 
-// TODO: Make this more variable
-const assetUsages: AssetUsage[] = range(150)
-    .map((index) => {
-        return {
-            __typename: 'AssetUsage',
-            assetId: ((index * 4) % assets.length).toString(),
+const getUsageDetailsForAsset = (assetId: string) => {
+    const usageCount = (parseInt(assetId) || 0) % 5;
+
+    return [
+        {
+            __typename: 'UsageDetailsGroup',
             serviceId: 'neos',
-            label: `Usage ${index} in node xyz`,
-            metadata: {
-                site: 'Media UI demo site',
-                uri: 'http://localhost/neos/somewhere-in-the-content-module',
-                workspace: 'live',
-                lastModified: new Date('2020-06-16 15:07:00'),
-                contentDimensions: ['English'],
-            },
-        } as NeosAssetUsage;
-    })
-    .filter((usage) => !!usage);
+            label: `Neos documents and content`,
+            metadataSchema: [
+                {
+                    name: 'site',
+                    label: 'Site',
+                    type: 'TEXT',
+                },
+                {
+                    name: 'workspace',
+                    label: 'Workspace',
+                    type: 'TEXT',
+                },
+                {
+                    name: 'contentDimensions',
+                    label: 'Content Dimensions',
+                    type: 'TEXT',
+                },
+                {
+                    name: 'lastModified',
+                    label: 'Last modified',
+                    type: 'DATETIME',
+                },
+            ],
+            usages: range(usageCount).map((index) => {
+                return {
+                    label: `Usage ${index} for asset ${assetId}`,
+                    url: '/neos/previewurl',
+                    metadata: [
+                        {
+                            name: 'site',
+                            value: 'media.ui',
+                        },
+                        {
+                            name: 'workspace',
+                            value: 'live',
+                        },
+                        {
+                            name: 'lastModified',
+                            value: new Date('2020-06-16 15:07:00').toISOString(),
+                        },
+                        {
+                            name: 'contentDimensions',
+                            value: JSON.stringify([['en_US']]),
+                        },
+                    ],
+                };
+            }),
+        },
+        {
+            __typename: 'UsageDetailsGroup',
+            serviceId: 'other_service',
+            label: `Some other service`,
+            metadataSchema: [],
+            usages: range(usageCount % 3).map((index) => {
+                return {
+                    label: `Usage ${index} for asset ${assetId}`,
+                    url: '/other-service/previewurl',
+                    metadata: [],
+                };
+            }),
+        },
+    ] as UsageDetailsGroup[];
+};
 
 const loadFixtures = () => {
     return {
         assets: cloneDeep(assets) as Asset[],
         assetCollections: cloneDeep(assetCollections) as AssetCollection[],
         assetSources: cloneDeep(assetSources) as AssetSource[],
-        assetUsages: cloneDeep(assetUsages) as AssetUsage[],
         tags: cloneDeep(tags) as Tag[],
     };
 };
 
-export { loadFixtures };
+export { loadFixtures, getUsageDetailsForAsset };

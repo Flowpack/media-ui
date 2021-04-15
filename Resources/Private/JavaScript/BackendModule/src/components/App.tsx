@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { AssetUsageModal, assetUsageModalState } from '@media-ui/feature-asset-usage/src';
+import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
 
 import { SideBarLeft } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
@@ -77,7 +77,7 @@ const App = () => {
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
-    const showAssetUsageModal = useRecoilValue(assetUsageModalState);
+    const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const classes = useStyles({ selectionMode });
 
     return (
@@ -105,7 +105,7 @@ const App = () => {
             )}
 
             <AssetPreview />
-            {showAssetUsageModal && <AssetUsageModal />}
+            {showAssetUsagesModal && <AssetUsagesModal />}
             {showUploadDialog && <UploadDialog />}
             {showCreateTagDialog && <CreateTagDialog />}
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}

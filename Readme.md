@@ -118,7 +118,7 @@ The following command will recompile and reload the media module when changes to
     
 #### Only watch the UI plugin
 
-    yarn watch:ui-plugin
+    yarn watch:editor
 
 ### Check for code quality
 

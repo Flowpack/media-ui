@@ -2,11 +2,8 @@ import * as React from 'react';
 import { createRef } from 'react';
 import { connect } from 'react-redux';
 import { RecoilRoot } from 'recoil';
-import { ApolloProvider } from '@apollo/client';
-import { InMemoryCache } from '@apollo/client';
-import { ApolloClient } from '@apollo/client';
+import { ApolloProvider, InMemoryCache, ApolloClient, ApolloLink } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
-import { ApolloLink } from '@apollo/client';
 import { $get, $transform } from 'plow-js';
 
 // Neos dependencies are provided by the UI
@@ -16,17 +13,15 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-import { I18nRegistry, Notify } from 'backend-module/src/interfaces';
 import {
-    IntlProvider,
+    I18nRegistry,
     MediaUiProvider,
     MediaUiThemeProvider,
     NotifyProvider,
-    Resolvers,
-    PersistentStateManager,
-    IdFromObjectResolver,
-    ApolloErrorHandler,
-} from 'backend-module/src/core';
+    IntlProvider,
+    Notify,
+} from '@media-ui/core/src';
+import { Resolvers, PersistentStateManager, IdFromObjectResolver, ApolloErrorHandler } from 'backend-module/src/core';
 import App from 'backend-module/src/components/App';
 
 let apolloClient = null;
