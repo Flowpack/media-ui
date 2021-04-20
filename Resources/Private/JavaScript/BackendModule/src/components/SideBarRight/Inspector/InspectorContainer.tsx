@@ -5,6 +5,7 @@ import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {
         display: 'grid',
+        gridTemplateColumns: 'minmax(0, 1fr)',
         gridAutoRows: 'auto',
         gridGap: theme.spacing.full,
         '& input, & textarea': {
