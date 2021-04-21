@@ -1,36 +1,9 @@
-import { ApolloCache, gql } from '@apollo/client';
+import { ApolloCache } from '@apollo/client';
 
 import { updateLocalState } from './PersistentStateManager';
 import { NormalizedCacheObject } from '@apollo/client/cache';
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { CLIPBOARD } from '@media-ui/feature-clipboard/src';
-
-// TODO: Split this into feature specific separate typedefs and resolvers and give them as array to the apollo client
-
-// FIXME: Move clipboard specifics to clipboard package
-
-export const typeDefs = gql`
-    type AssetIdentity {
-        id: AssetId!
-        assetSourceId: AssetSourceId!
-    }
-
-    extend type Query {
-        selectedAssetSourceId: String
-        viewModeSelection: String
-        clipboard: [AssetIdentity]!
-    }
-
-    extend type Asset {
-        isInClipboard: Boolean!
-    }
-
-    extend type Mutation {
-        setSelectedAssetSourceId(selectedAssetSourceId: String): String
-        setViewModeSelection(viewModeSelection: String): String
-        addOrRemoveFromClipboard(assetId: AssetId!, assetSourceId: AssetSourceId!): [AssetIdentity]!
-    }
-`;
 
 // noinspection JSUnusedGlobalSymbols
 export const resolvers = {

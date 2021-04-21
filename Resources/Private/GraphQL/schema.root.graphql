@@ -122,6 +122,7 @@ type Asset {
     localId: LocalAssetId!
     assetSource: AssetSource!
     imported: Boolean!
+    isInUse: Boolean!
 
     label: String!
     caption: String

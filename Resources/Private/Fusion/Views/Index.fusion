@@ -15,6 +15,11 @@ Flowpack.Media.Ui.MediaController {
             path = 'resource://Neos.Neos/Public/Images/dummy-image.svg'
         }
 
+        data-features = Neos.Fusion:DataStructure {
+            fastAssetUsageCalculationSupport = ${!!Configuration.setting('Neos.Media.fastAssetUsageCalculationSupport')}
+            @process.stringify = ${Json.stringify(value)}
+        }
+
         renderer = afx`
             <div id="media-ui-app" {...props}>
                 Loading media ui...

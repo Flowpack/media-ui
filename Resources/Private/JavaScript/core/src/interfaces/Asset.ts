@@ -14,6 +14,9 @@ export default interface Asset extends GraphQlEntity {
     assetSource: AssetSource;
     imported: boolean;
 
+    // usage will only be queried if fast usage calculation is supported by the backend
+    isInUse?: boolean;
+
     label: string;
     caption: string;
     filename: string;

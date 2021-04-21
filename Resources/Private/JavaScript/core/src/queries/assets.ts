@@ -11,8 +11,10 @@ const ASSETS = gql`
         $tagId: TagId
         $limit: Int
         $offset: Int
+        $includeUsage: Boolean = false
     ) {
         selectedAssetSourceId @client(always: true) @export(as: "assetSourceId")
+        includeUsage @client @export(as: "includeUsage")
         assets(
             searchTerm: $searchTerm
             assetSourceId: $assetSourceId

@@ -2,12 +2,12 @@ import { InMemoryCache } from '@apollo/client';
 import { ApolloCache } from '@apollo/client/cache/core/cache';
 import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { AssetIdentity, FeatureFlags } from '@media-ui/core/src/interfaces';
 
 import { IdFromObjectResolver, PersistentStateManager } from './index';
 
 class CacheFactory {
-    public static createCache(): ApolloCache<NormalizedCacheObject> {
+    public static createCache(featureFlags: FeatureFlags): ApolloCache<NormalizedCacheObject> {
         return new InMemoryCache({
             dataIdFromObject: IdFromObjectResolver,
             typePolicies: {
@@ -22,6 +22,16 @@ class CacheFactory {
                         },
                         assetCollection(_, { args, toReference }) {
                             return args.id ? toReference({ __typename: 'AssetCollection', id: args.id }) : null;
+                        },
+                        includeUsage() {
+                            return featureFlags.fastAssetUsageCalculationSupport;
+                        },
+                    },
+                },
+                Mutation: {
+                    fields: {
+                        includeUsage() {
+                            return featureFlags.fastAssetUsageCalculationSupport;
                         },
                     },
                 },

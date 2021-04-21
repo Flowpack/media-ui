@@ -9,7 +9,9 @@ const UPDATE_ASSET = gql`
         $label: String
         $caption: String
         $copyrightNotice: String
+        $includeUsage: Boolean = false
     ) {
+        includeUsage @client @export(as: "includeUsage")
         updateAsset(
             id: $id
             assetSourceId: $assetSourceId

@@ -10,11 +10,13 @@ import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
 import { IntlProvider, MediaUiProvider, MediaUiThemeProvider, NotifyProvider } from '@media-ui/core/src';
+import { FeatureFlags } from '@media-ui/core/src/interfaces';
+import TYPE_DEFS from '@media-ui/core/schema.client.graphql';
 
 import { ApolloErrorHandler, PersistentStateManager, CacheFactory } from './core';
 import App from './components/App';
 import loadIconLibrary from './lib/FontAwesome';
-import { resolvers, typeDefs } from './core/Resolvers';
+import { resolvers } from './core/Resolvers';
 import ErrorBoundary from './components/ErrorBoundary';
 
 loadIconLibrary();
@@ -31,12 +33,13 @@ window.onload = async (): Promise<void> => {
     const root = document.getElementById('media-ui-app');
     const { dummyImage } = root.dataset;
     const endpoints = JSON.parse(root.dataset.endpoints);
+    const featureFlags: FeatureFlags = JSON.parse(root.dataset.features);
 
     // Modal for the lightbox
     Modal.setAppElement(root);
 
     // Cache for ApolloClient
-    const cache = CacheFactory.createCache();
+    const cache = CacheFactory.createCache(featureFlags);
 
     // Restore state from last visit
     PersistentStateManager.restoreLocalState(cache);
@@ -51,7 +54,7 @@ window.onload = async (): Promise<void> => {
                 credentials: 'same-origin',
             }),
         ]),
-        typeDefs,
+        typeDefs: [TYPE_DEFS],
         resolvers,
     });
 

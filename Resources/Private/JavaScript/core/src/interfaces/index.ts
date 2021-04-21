@@ -4,6 +4,7 @@ import AssetFile from './AssetFile';
 import AssetIdentity from './AssetIdentity';
 import AssetSource from './AssetSource';
 import DeleteAssetCollectionResult from './DeleteAssetCollectionResult';
+import FeatureFlags from './FeatureFlags';
 import FileUploadResult from './FileUploadResult';
 import GraphQlEntity from './GraphQLEntity';
 import Image from './Image';
@@ -17,6 +18,7 @@ export {
     AssetIdentity,
     AssetSource,
     DeleteAssetCollectionResult,
+    FeatureFlags,
     FileUploadResult,
     GraphQlEntity,
     Image,

@@ -106,7 +106,7 @@ class UsageDetailsService
 
     public function resolveUsagesForAsset(AssetInterface $asset): array
     {
-        return array_map(function ($strategy) use ($asset) {
+        return array_filter(array_map(function ($strategy) use ($asset) {
             // TODO: At some point the strategy should be able to create the AssetUsageDetails DTO and headers for us, until then we build them manually for the strategies we know
             $usageByStrategy = [
                 'serviceId' => get_class($strategy),
@@ -115,20 +115,30 @@ class UsageDetailsService
                 'usages' => [],
             ];
 
-            if ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
-                // TODO: Translate label
-                $usageByStrategy['label'] = 'Neos documents and content';
+            if (!$strategy instanceof AssetUsageStrategyInterface) {
+                return $usageByStrategy;
+            }
+
+            // Should be solved via an interface in the future
+            if (method_exists($strategy, 'getLabel')) {
+                $usageByStrategy['label'] = $strategy->getLabel();
+            } else {
+                if ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
+                    $usageByStrategy['label'] = 'Neos documents and content';
+                }
+            }
+
+            $usageReferences = $strategy->getUsageReferences($asset);
+            if (count($usageReferences) && $usageReferences[0] instanceof AssetUsageInNodeProperties) {
                 $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema();
                 $usageByStrategy['usages'] = array_map(function (AssetUsageInNodeProperties $usage) {
                     return $this->getNodePropertiesUsageDetails($usage);
-                }, $strategy->getUsageReferences($asset));
-            } else {
-                // TODO: Fill in something
-                $usageByStrategy['metadataSchema'] = [];
-                $usageByStrategy['usages'] = [];
+                }, $usageReferences);
             }
             return $usageByStrategy;
-        }, $this->getUsageStrategies());
+        }, $this->getUsageStrategies()), static function ($usageByStrategy) {
+            return count($usageByStrategy['usages']) > 0;
+        });
     }
 
     protected function getNodePropertiesUsageMetadataSchema(): array
@@ -206,6 +216,7 @@ class UsageDetailsService
             [
                 'workspaceName' => $assetUsage->getWorkspaceName(),
                 'dimensions' => $assetUsage->getDimensionValues(),
+                'targetDimensions' => [],
                 'invisibleContentShown' => true,
                 'removedContentShown' => true
             ]

@@ -26,6 +26,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             backgroundColor: 'rgba(0.15, 0.15, 0.15, 0.25)',
             '& button': {
                 opacity: 1,
+                '&[disabled]': {
+                    opacity: 0.5,
+                },
                 '&.button--active': {
                     '& svg': {
                         color: 'white',
@@ -68,7 +71,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         pointerEvents: 'none',
         backgroundColor: 'transparent',
         transition: 'background-color .1s ease-in',
-        '& button': {
+        '& button, & button[disabled]': {
             transition: 'opacity .1s ease-in',
             opacity: 0,
             '&.button--active': {

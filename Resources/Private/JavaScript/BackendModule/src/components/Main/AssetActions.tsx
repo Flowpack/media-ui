@@ -43,7 +43,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                 addOrRemoveFromClipboard({ assetId: asset.id, assetSourceId: asset.assetSource.id });
             }
         });
-    }, [handleDeleteAsset, asset]);
+    }, [handleDeleteAsset, asset, addOrRemoveFromClipboard]);
 
     const onCopyAssetToClipboard = useCallback(() => {
         addOrRemoveFromClipboard({ assetId: asset.id, assetSourceId: asset.assetSource.id });
@@ -71,7 +71,12 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             )}
             {!asset.assetSource.readOnly && (
                 <IconButton
-                    title={translate('itemActions.delete', 'Delete asset')}
+                    title={
+                        asset.isInUse
+                            ? translate('itemActions.delete.disabled', 'Cannot delete an asset that is in use')
+                            : translate('itemActions.delete', 'Delete asset')
+                    }
+                    disabled={asset.isInUse}
                     icon="trash"
                     size="regular"
                     style="transparent"
