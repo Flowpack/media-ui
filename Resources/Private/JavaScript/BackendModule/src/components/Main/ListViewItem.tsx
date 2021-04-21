@@ -32,6 +32,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         padding: `0 ${theme.spacing.half}`,
         whiteSpace: 'nowrap',
         userSelect: 'none',
+        cursor: 'pointer',
         '& > *': {
             verticalAlign: 'middle',
         },
@@ -39,6 +40,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     previewColumn: {
         minWidth: theme.spacing.goldenUnit,
         width: theme.spacing.goldenUnit,
+        cursor: 'pointer',
         '& picture': {
             display: 'block',
             width: '100%',
@@ -53,7 +55,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     labelColumn: {
         extend: 'textColumn',
-        cursor: 'pointer',
         userSelect: 'text',
         '& > *': {
             width: '200px',
@@ -95,7 +96,7 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity }: ListViewIt
     const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
 
     const onSelect = useCallback(() => {
-        if (selectedAssetId.assetId === asset.id) {
+        if (selectedAssetId?.assetId === asset.id) {
             setSelectedAssetForPreview(asset);
         } else {
             selectAsset(asset);
@@ -104,7 +105,7 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity }: ListViewIt
 
     return (
         <tr className={[classes.listViewItem, isSelected ? classes.selected : ''].join(' ')}>
-            <td className={classes.previewColumn}>
+            <td className={classes.previewColumn} onClick={onSelect}>
                 <picture>
                     <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label} width={40} height={36} />
                 </picture>
@@ -114,11 +115,15 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity }: ListViewIt
                     <td className={classes.labelColumn} onClick={onSelect}>
                         <AssetLabel label={asset.label} />
                     </td>
-                    <td className={classes.lastModifiedColumn}>
+                    <td className={classes.lastModifiedColumn} onClick={onSelect}>
                         {new Date(asset.lastModified).toLocaleString([], dateFormatOptions)}
                     </td>
-                    <td className={classes.fileSizeColumn}>{humanFileSize(asset.file.size)}</td>
-                    <td className={classes.mediaTypeColumn}>{asset.file.mediaType}</td>
+                    <td className={classes.fileSizeColumn} onClick={onSelect}>
+                        {humanFileSize(asset.file.size)}
+                    </td>
+                    <td className={classes.mediaTypeColumn} onClick={onSelect}>
+                        {asset.file.mediaType}
+                    </td>
                     <td className={classes.actionsColumn}>
                         <AssetActions asset={asset} />
                     </td>
