@@ -1,5 +1,5 @@
 <?php
-
+/** @noinspection PhpUnusedParameterInspection */
 declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
@@ -23,6 +23,7 @@ use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Http\Factories\FlowUploadedFile;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\Tag;
@@ -154,12 +155,14 @@ class MutationResolver implements ResolverInterface
             $asset->setTitle($label);
         }
 
-        if ($caption !== null) {
-            $asset->setCaption($caption);
-        }
+        if ($asset instanceof Asset) {
+            if ($caption !== null) {
+                $asset->setCaption($caption);
+            }
 
-        if ($copyrightNotice !== null) {
-            $asset->setCopyrightNotice($copyrightNotice);
+            if ($copyrightNotice !== null) {
+                $asset->setCopyrightNotice($copyrightNotice);
+            }
         }
 
         try {
@@ -196,6 +199,11 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Cannot tag asset that was never imported', 1591561758);
         }
 
+        if (!$asset instanceof Asset) {
+            throw new Exception('Asset type does not support tagging', 1619081662);
+        }
+
+        /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($tagId);
 
         if (!$tag) {
@@ -235,6 +243,10 @@ class MutationResolver implements ResolverInterface
 
         if (!$asset) {
             throw new Exception('Cannot tag asset that was never imported', 1594621322);
+        }
+
+        if (!$asset instanceof Asset) {
+            throw new Exception('Asset type does not support tagging', 1619081714);
         }
 
         $tags = new ArrayCollection();
@@ -278,6 +290,10 @@ class MutationResolver implements ResolverInterface
 
         if (!$asset) {
             throw new Exception('Cannot assign collections to asset that was never imported', 1594621322);
+        }
+
+        if (!$asset instanceof Asset) {
+            throw new Exception('Asset type does not support collections', 1619081722);
         }
 
         $assetCollections = new ArrayCollection();
@@ -324,6 +340,11 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Cannot untag asset that was never imported', 1591561930);
         }
 
+        if (!$asset instanceof Asset) {
+            throw new Exception('Asset type does not support tagging', 1619081740);
+        }
+
+        /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($tagId);
 
         if (!$tag) {
@@ -502,6 +523,7 @@ class MutationResolver implements ResolverInterface
             'tagIds' => $tagIds
         ] = $variables + ['title' => null, 'tagIds' => null];
 
+        /** @var AssetCollection $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
 
         if (!$assetCollection) {
@@ -575,6 +597,7 @@ class MutationResolver implements ResolverInterface
             'label' => $label,
         ] = $variables + ['label' => null];
 
+        /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id);
 
         if (!$tag) {
@@ -602,6 +625,7 @@ class MutationResolver implements ResolverInterface
             'id' => $id,
         ] = $variables;
 
+        /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id);
 
         if (!$tag) {

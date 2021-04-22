@@ -16,6 +16,7 @@ namespace Flowpack\Media\Ui\Service;
 
 use Flowpack\Media\Ui\Domain\Model\Dto\AssetUsageDetails;
 use GuzzleHttp\Psr7\ServerRequest;
+use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
@@ -31,6 +32,7 @@ use Neos\Neos\Controller\CreateContentContextTrait;
 use Neos\Neos\Domain\Model\Dto\AssetUsageInNodeProperties;
 use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Domain\Repository\SiteRepository;
+use Neos\Neos\Domain\Service\ContentContext;
 use Neos\Neos\Domain\Service\UserService as DomainUserService;
 use Neos\Neos\Domain\Strategy\AssetUsageInNodePropertiesStrategy;
 use Neos\Neos\Service\LinkingService;
@@ -170,6 +172,7 @@ class UsageDetailsService
 
     protected function getNodePropertiesUsageDetails(AssetUsageInNodeProperties $usage): AssetUsageDetails
     {
+        /** @var Node $node */
         $node = $this->getNodeFrom($usage);
         $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
         $accessible = $this->usageIsAccessible($usage->getWorkspaceName());
@@ -185,8 +188,9 @@ class UsageDetailsService
         ) : '';
 
         if ($node && $closestDocumentNode) {
-            /** @var Site $site */
-            $site = $node->getContext()->getCurrentSite();
+            /** @var ContentContext $context */
+            $context = $node->getContext();
+            $site = $context->getCurrentSite();
             $metadata = [
                 [
                     'name' => 'workspace',
@@ -194,7 +198,7 @@ class UsageDetailsService
                 ],
                 [
                     'name' => 'site',
-                    'value' => $site->getName(),
+                    'value' => $site ? $site->getName() : 'n/a',
                 ],
                 [
                     'name' => 'lastModified',

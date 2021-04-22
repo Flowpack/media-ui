@@ -17,6 +17,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ResourceManagement\ResourceManager;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\ProvidesOriginalUriInterface;
@@ -118,7 +119,7 @@ class AssetResolver implements ResolverInterface
     public function caption(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
     {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
-        return $localAssetData ? $localAssetData->getCaption() : null;
+        return $localAssetData instanceof Asset ? $localAssetData->getCaption() : null;
     }
 
     /**
@@ -201,7 +202,7 @@ class AssetResolver implements ResolverInterface
     public function copyrightNotice(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
     {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
-        return $localAssetData ? $localAssetData->getCopyrightNotice() : null;
+        return $localAssetData instanceof Asset ? $localAssetData->getCopyrightNotice() : null;
     }
 
     /**
@@ -213,7 +214,7 @@ class AssetResolver implements ResolverInterface
     public function lastModified(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
     {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
-        return $localAssetData && $localAssetData->getLastModified() ? $localAssetData->getLastModified()->format(DATE_W3C) : null;
+        return $localAssetData instanceof Asset && $localAssetData->getLastModified() ? $localAssetData->getLastModified()->format(DATE_W3C) : null;
     }
 
     /**
@@ -225,7 +226,7 @@ class AssetResolver implements ResolverInterface
     public function tags(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): array
     {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
-        return $localAssetData ? $localAssetData->getTags()->toArray() : [];
+        return $localAssetData instanceof Asset ? $localAssetData->getTags()->toArray() : [];
     }
 
     /**
@@ -237,7 +238,7 @@ class AssetResolver implements ResolverInterface
     public function collections(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): array
     {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
-        return $localAssetData ? $localAssetData->getAssetCollections()->toArray() : [];
+        return $localAssetData instanceof Asset ? $localAssetData->getAssetCollections()->toArray() : [];
     }
 
     /**
