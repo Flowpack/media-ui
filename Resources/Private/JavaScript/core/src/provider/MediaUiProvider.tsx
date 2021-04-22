@@ -42,14 +42,14 @@ export function MediaUiProvider({
     const { assets, refetchAssets } = useAssetsQuery();
 
     const handleDeleteAsset = useCallback(
-        (asset: Asset) => {
+        (asset: Asset): Promise<boolean> => {
             // TODO: Use custom modal
             const confirm = window.confirm(
                 translate('action.deleteAsset.confirm', 'Do you really want to delete the asset ' + asset.label, [
                     asset.label,
                 ])
             );
-            if (!confirm) return;
+            if (!confirm) return new Promise(() => false);
 
             return deleteAsset({ assetId: asset.id, assetSourceId: asset.assetSource.id })
                 .then(() => {
