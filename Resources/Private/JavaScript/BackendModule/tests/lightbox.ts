@@ -8,7 +8,7 @@ const firstThumbnail = Selector('[class^="thumbnail-"]');
 const firstThumbnailPreviewAction = firstThumbnail.find('button[title="Preview asset"]');
 const lightbox = Selector('.ril-outer');
 
-test('Preview opens lightbox', async t => {
+test('Preview opens lightbox', async (t) => {
     await t
         .hover(firstThumbnail)
         .click(firstThumbnailPreviewAction)
