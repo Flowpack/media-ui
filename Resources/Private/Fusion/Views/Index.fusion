@@ -16,7 +16,7 @@ Flowpack.Media.Ui.MediaController {
         }
 
         data-features = Neos.Fusion:DataStructure {
-            queryAssetUsage = ${!!Configuration.setting('Neos.Neos.Ui.frontendConfiguration.Flowpack.Media.Ui.queryAssetUsage')}
+            queryAssetUsage = ${!!Configuration.setting('Neos.Neos.Ui.frontendConfiguration')['Flowpack.Media.Ui'].queryAssetUsage}
             @process.stringify = ${Json.stringify(value)}
         }
 
