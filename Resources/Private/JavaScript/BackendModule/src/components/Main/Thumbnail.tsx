@@ -101,7 +101,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) 
     const classes = useStyles();
     const { translate } = useIntl();
     const { dummyImage } = useMediaUi();
-    const { asset } = useAssetQuery(assetIdentity);
+    const { asset, loading } = useAssetQuery(assetIdentity);
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
@@ -119,7 +119,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) 
         <figure className={classes.thumbnail}>
             {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
             <picture onClick={onSelect} className={classes.picture}>
-                <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label} />
+                <img src={loading || !asset ? dummyImage : asset.thumbnailUrl} alt={asset?.label} />
             </picture>
             <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
                 {asset && (
