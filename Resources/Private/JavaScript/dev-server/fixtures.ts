@@ -75,39 +75,6 @@ const assetCollections: AssetCollection[] = range(3).map((index) => ({
     tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
 }));
 
-const assets: Asset[] = range(150).map((index) => {
-    const isCloud = index > 120;
-    const filename = getExampleFilename(index);
-
-    return {
-        __typename: 'Asset',
-        id: index.toString(),
-        localId: index.toString(),
-        assetSource: assetSources[isCloud ? 1 : 0],
-        imported: isCloud && index % 3 === 0,
-        label: `Example asset ${index + 1}`,
-        caption: `The caption for example asset ${index + 1}`,
-        filename: 'example1.jpg',
-        tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
-        collections: range(index % 2).map((i) => assetCollections[(i * 2 + index) % assetCollections.length]),
-        copyrightNotice: 'The Neos team',
-        lastModified: new Date('2020-06-16 15:07:00'),
-        iptcProperties: index % 5 === 0 ? getIptcProperties(index) : [],
-        width: 90,
-        height: 210,
-        file: {
-            __typename: 'AssetFile',
-            extension: 'jpg',
-            mediaType: 'image/jpeg',
-            typeIcon: typeIcons.jpg,
-            size: 200,
-            url: getExampleImagePath(filename),
-        },
-        thumbnailUrl: getExampleImagePath(filename),
-        previewUrl: getExampleImagePath(filename),
-    };
-});
-
 const getUsageDetailsForAsset = (assetId: string) => {
     const usageCount = (parseInt(assetId) || 0) % 5;
 
@@ -178,6 +145,43 @@ const getUsageDetailsForAsset = (assetId: string) => {
         },
     ] as UsageDetailsGroup[];
 };
+
+const assets: Asset[] = range(150).map((index) => {
+    const isCloud = index > 120;
+    const filename = getExampleFilename(index);
+
+    return {
+        __typename: 'Asset',
+        id: index.toString(),
+        localId: index.toString(),
+        assetSource: assetSources[isCloud ? 1 : 0],
+        imported: isCloud && index % 3 === 0,
+        label: `Example asset ${index + 1}`,
+        caption: `The caption for example asset ${index + 1}`,
+        filename: 'example1.jpg',
+        tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
+        collections: range(index % 2).map((i) => assetCollections[(i * 2 + index) % assetCollections.length]),
+        copyrightNotice: 'The Neos team',
+        lastModified: new Date('2020-06-16 15:07:00'),
+        iptcProperties: index % 5 === 0 ? getIptcProperties(index) : [],
+        width: 90,
+        height: 210,
+        file: {
+            __typename: 'AssetFile',
+            extension: 'jpg',
+            mediaType: 'image/jpeg',
+            typeIcon: typeIcons.jpg,
+            size: 200,
+            url: getExampleImagePath(filename),
+        },
+        thumbnailUrl: getExampleImagePath(filename),
+        previewUrl: getExampleImagePath(filename),
+        isInUse: getUsageDetailsForAsset(index.toString()).reduce(
+            (prev, usageByService) => prev || usageByService.usages.length > 0,
+            false
+        ),
+    };
+});
 
 const loadFixtures = () => {
     return {

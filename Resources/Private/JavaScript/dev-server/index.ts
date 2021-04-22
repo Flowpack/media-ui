@@ -1,3 +1,5 @@
+import { FeatureFlags } from '@media-ui/core/src/interfaces';
+
 setTimeout(() => {
     console.info('Started Media Module dev server script');
 
@@ -8,6 +10,12 @@ setTimeout(() => {
         JSON.stringify({
             graphql: '/graphql',
         })
+    );
+    app.setAttribute(
+        'data-features',
+        JSON.stringify({
+            queryAssetUsage: true,
+        } as FeatureFlags)
     );
     app.setAttribute('data-dummy-image', '/dummy-image.svg');
 
