@@ -11,13 +11,21 @@ import { createUploadLink } from 'apollo-upload-client';
 
 import { IntlProvider, MediaUiProvider, MediaUiThemeProvider, NotifyProvider } from '@media-ui/core/src';
 import { FeatureFlags } from '@media-ui/core/src/interfaces';
-import TYPE_DEFS from '@media-ui/core/schema.client.graphql';
 
+// GraphQL type definitions
+import TYPE_DEFS_CORE from '@media-ui/core/schema.graphql';
+import TYPE_DEFS_CLIPBOARD from '@media-ui/feature-clipboard/schema.graphql';
+import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql';
+
+// GraphQL local resolvers
+import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
+import buildModuleResolver from './resolvers/mutation';
+
+// Internal dependencies
 import { ApolloErrorHandler, PersistentStateManager, CacheFactory } from './core';
 import App from './components/App';
-import loadIconLibrary from './lib/FontAwesome';
-import { resolvers } from './core/Resolvers';
 import ErrorBoundary from './components/ErrorBoundary';
+import loadIconLibrary from './lib/FontAwesome';
 
 loadIconLibrary();
 
@@ -54,8 +62,11 @@ window.onload = async (): Promise<void> => {
                 credentials: 'same-origin',
             }),
         ]),
-        typeDefs: [TYPE_DEFS],
-        resolvers,
+        typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_CLIPBOARD, TYPE_DEFS_ASSET_USAGE],
+        resolvers: [
+            buildModuleResolver(PersistentStateManager.updateLocalState),
+            buildClipboardResolver(PersistentStateManager.updateLocalState),
+        ],
     });
 
     const containerRef = createRef<HTMLDivElement>();

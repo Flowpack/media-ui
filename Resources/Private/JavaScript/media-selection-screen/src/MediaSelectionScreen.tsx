@@ -21,13 +21,25 @@ import {
     IntlProvider,
     Notify,
 } from '@media-ui/core/src';
-import { Resolvers, PersistentStateManager, ApolloErrorHandler, CacheFactory } from 'backend-module/src/core';
+import { PersistentStateManager, ApolloErrorHandler, CacheFactory } from 'backend-module/src/core';
 import App from 'backend-module/src/components/App';
+
+// GraphQL type definitions
+import TYPE_DEFS_CORE from '@media-ui/core/schema.graphql';
+import TYPE_DEFS_CLIPBOARD from '@media-ui/feature-clipboard/schema.graphql';
+import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql';
+
+// GraphQL local resolvers
+import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
+import buildModuleResolver from 'backend-module/src/resolvers/mutation';
 
 let apolloClient = null;
 
 interface MediaSelectionScreenProps {
     i18nRegistry: I18nRegistry;
+    frontendConfiguration: {
+        queryAssetUsage: boolean;
+    };
     neos: Record<string, unknown>;
     // TODO: Forward and use prop in selection screen
     type: 'assets' | 'images';
@@ -52,6 +64,7 @@ interface MediaSelectionScreenState {
 )
 @neos((globalRegistry) => ({
     i18nRegistry: globalRegistry.get('i18n'),
+    frontendConfiguration: globalRegistry.get('frontendConfiguration').get('Flowpack.Media.Ui'),
 }))
 // eslint-disable-next-line prettier/prettier
 export default class MediaSelectionScreen extends React.PureComponent<
@@ -97,8 +110,11 @@ export default class MediaSelectionScreen extends React.PureComponent<
 
     getApolloClient() {
         if (!apolloClient) {
+            console.log(this.props.frontendConfiguration, 'queryAssetUsage');
             const { endpoints } = this.getConfig();
-            const cache = CacheFactory.createCache();
+            const cache = CacheFactory.createCache({
+                queryAssetUsage: this.props.frontendConfiguration.queryAssetUsage,
+            });
             PersistentStateManager.restoreLocalState(cache);
 
             apolloClient = new ApolloClient({
@@ -110,8 +126,11 @@ export default class MediaSelectionScreen extends React.PureComponent<
                         credentials: 'same-origin',
                     }),
                 ]),
-                typeDefs: Resolvers.typeDefs,
-                resolvers: Resolvers.resolvers,
+                typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_CLIPBOARD, TYPE_DEFS_ASSET_USAGE],
+                resolvers: [
+                    buildModuleResolver(PersistentStateManager.updateLocalState),
+                    buildClipboardResolver(PersistentStateManager.updateLocalState),
+                ],
             });
         }
         return apolloClient;

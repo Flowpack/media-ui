@@ -1,0 +1,11 @@
+extend type Query {
+    clipboard: [AssetIdentity]!
+}
+
+extend type Asset {
+    isInClipboard: Boolean!
+}
+
+extend type Mutation {
+    addOrRemoveFromClipboard(assetId: AssetId!, assetSourceId: AssetSourceId!): [AssetIdentity]!
+}

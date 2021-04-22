@@ -38,3 +38,4 @@ Neos:
       frontendConfiguration:
         Flowpack.Media.Ui:
           useNewMediaSelection: true
+          queryAssetUsage: false

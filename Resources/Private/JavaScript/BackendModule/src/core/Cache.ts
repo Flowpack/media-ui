@@ -24,14 +24,14 @@ class CacheFactory {
                             return args.id ? toReference({ __typename: 'AssetCollection', id: args.id }) : null;
                         },
                         includeUsage() {
-                            return featureFlags.fastAssetUsageCalculationSupport;
+                            return featureFlags.queryAssetUsage;
                         },
                     },
                 },
                 Mutation: {
                     fields: {
                         includeUsage() {
-                            return featureFlags.fastAssetUsageCalculationSupport;
+                            return featureFlags.queryAssetUsage;
                         },
                     },
                 },
