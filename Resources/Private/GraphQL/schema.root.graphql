@@ -18,6 +18,11 @@ type Query {
     ): [Asset!]!
 
     """
+    unused local assets
+    """
+    unusedAssets(limit: Int, offset: Int): [Asset!]!
+
+    """
     number of assets matching the given criteria
     """
     assetCount(

@@ -23,11 +23,12 @@ use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetTypeFilter;
+use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
+use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
 use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
-use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Utility\Exception\FilesException;
@@ -40,11 +41,6 @@ use t3n\GraphQL\ResolverInterface;
  */
 class QueryResolver implements ResolverInterface
 {
-    /**
-     * @Flow\Inject
-     * @var AssetRepository
-     */
-    protected $assetRepository;
 
     /**
      * @Flow\Inject
@@ -270,9 +266,7 @@ class QueryResolver implements ResolverInterface
         array $variables,
         AssetSourceContext $assetSourceContext
     ): ?AssetProxyQueryResultInterface {
-        $limit = array_key_exists('limit', $variables) ? $variables['limit'] : 20;
-        $offset = array_key_exists('offset', $variables) ? $variables['offset'] : 0;
-
+        ['limit' => $limit, 'offset' => $offset] = $variables + ['limit' => 20, 'offset' => 0];
         $query = $this->createAssetProxyQuery($variables, $assetSourceContext);
 
         if (!$query) {
@@ -292,6 +286,18 @@ class QueryResolver implements ResolverInterface
 
         // TODO: It's not possible to use `toArray` here as not all asset sources implement it
         return $query->execute();
+    }
+
+    public function unusedAssets($_, array $variables, AssetSourceContext $assetSourceContext): array
+    {
+        ['limit' => $limit, 'offset' => $offset] = $variables + ['limit' => 20, 'offset' => 0];
+
+        /** @var NeosAssetSource $neosAssetSource */
+        $neosAssetSource = $assetSourceContext->getAssetSource('neos');
+
+        return array_map(static function ($asset) use ($neosAssetSource) {
+            return new NeosAssetProxy($asset, $neosAssetSource);
+        }, $this->assetUsageService->getUnusedAssets());
     }
 
     /**

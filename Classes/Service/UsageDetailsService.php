@@ -14,23 +14,27 @@ namespace Flowpack\Media\Ui\Service;
  * source code.
  */
 
+use Doctrine\ORM\EntityManagerInterface;
 use Flowpack\Media\Ui\Domain\Model\Dto\AssetUsageDetails;
+use Flowpack\Media\Ui\Exception;
 use GuzzleHttp\Psr7\ServerRequest;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Exception as FlowException;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
+use Neos\Flow\Package\PackageManager;
 use Neos\Flow\Reflection\ReflectionService;
 use Neos\Media\Domain\Model\AssetInterface;
+use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetUsageStrategyInterface;
 use Neos\Neos\Controller\CreateContentContextTrait;
 use Neos\Neos\Domain\Model\Dto\AssetUsageInNodeProperties;
-use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use Neos\Neos\Domain\Service\ContentContext;
 use Neos\Neos\Domain\Service\UserService as DomainUserService;
@@ -103,6 +107,18 @@ class UsageDetailsService
      * @var UriBuilder
      */
     protected $uriBuilder;
+
+    /**
+     * @Flow\Inject
+     * @var EntityManagerInterface
+     */
+    protected $entityManager;
+
+    /**
+     * @Flow\Inject
+     * @var PackageManager
+     */
+    protected $packageManager;
 
     private $accessibleWorkspaces = [];
 
@@ -274,5 +290,43 @@ class UsageDetailsService
             $usageStrategies[] = $this->objectManager->get($assetUsageStrategyImplementationClassName);
         }
         return $usageStrategies;
+    }
+
+    /**
+     * Returns all assets which have no usage reference provided by `Flowpack.EntityUsage`
+     *
+     * @param int $limit
+     * @param int $offset
+     * @return array<AssetInterface>
+     * @throws Exception
+     */
+    public function getUnusedAssets(int $limit = 20, int $offset = 0): array
+    {
+        try {
+            $this->packageManager->getPackage('Flowpack.EntityUsage.DatabaseStorage');
+        } catch (FlowException $e) {
+            throw new Exception('This method requires "flowpack/entity-usage-databasestorage" to be installed.', 1619178077);
+        }
+
+        $variantClassNames = $this->reflectionService->getAllImplementationClassNamesForInterface(AssetVariantInterface::class);
+
+        return $this->entityManager->createQuery(/** @lang DQL */ '
+            SELECT a
+            FROM Neos\Media\Domain\Model\Asset a
+            WHERE
+                a.assetSourceIdentifier = :assetSourceIdentifier AND
+                a NOT INSTANCE OF :variantClassName AND
+                NOT EXISTS (
+                    SELECT e
+                    FROM Flowpack\EntityUsage\DatabaseStorage\Domain\Model\EntityUsage e
+                    WHERE a.Persistence_Object_Identifier = e.entityId
+                )
+            ORDER BY a.lastModified DESC
+        ')
+            ->setParameter('assetSourceIdentifier', 'neos')
+            ->setParameter('variantClassName', $variantClassNames)
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getResult();
     }
 }
