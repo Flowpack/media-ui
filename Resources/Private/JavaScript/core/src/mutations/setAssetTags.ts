@@ -9,7 +9,7 @@ const SET_ASSET_TAGS = gql`
         $tagIds: [TagId!]!
         $includeUsage: Boolean = false
     ) {
-        includeUsage @client @export(as: "includeUsage")
+        includeUsage @client(always: true) @export(as: "includeUsage")
         setAssetTags(id: $id, assetSourceId: $assetSourceId, tagIds: $tagIds) {
             ...AssetProps
         }

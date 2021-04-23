@@ -4,7 +4,7 @@ import { ASSET_FRAGMENT } from '../fragments/asset';
 
 const UNTAG_ASSET = gql`
     mutation UntagAsset($id: AssetId!, $assetSourceId: AssetSourceId!, $tagId: TagId!, $includeUsage: Boolean = false) {
-        includeUsage @client @export(as: "includeUsage")
+        includeUsage @client(always: true) @export(as: "includeUsage")
         untagAsset(id: $id, assetSourceId: $assetSourceId, tagId: $tagId) {
             ...AssetProps
         }

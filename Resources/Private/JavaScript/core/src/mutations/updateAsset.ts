@@ -11,7 +11,7 @@ const UPDATE_ASSET = gql`
         $copyrightNotice: String
         $includeUsage: Boolean = false
     ) {
-        includeUsage @client @export(as: "includeUsage")
+        includeUsage @client(always: true) @export(as: "includeUsage")
         updateAsset(
             id: $id
             assetSourceId: $assetSourceId

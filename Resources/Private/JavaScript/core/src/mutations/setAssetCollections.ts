@@ -9,7 +9,7 @@ const SET_ASSET_COLLECTIONS = gql`
         $assetCollectionIds: [AssetCollectionId!]!
         $includeUsage: Boolean = false
     ) {
-        includeUsage @client @export(as: "includeUsage")
+        includeUsage @client(always: true) @export(as: "includeUsage")
         setAssetCollections(id: $id, assetSourceId: $assetSourceId, assetCollectionIds: $assetCollectionIds) {
             ...AssetProps
         }
