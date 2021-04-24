@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export default interface AbstractTreeNodeProps {
+export default interface TreeNodeProps {
     title?: string;
     label?: string;
     onClick: ([string]: any) => void;

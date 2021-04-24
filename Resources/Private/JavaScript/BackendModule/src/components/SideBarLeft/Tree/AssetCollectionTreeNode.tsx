@@ -6,9 +6,9 @@ import { Tree } from '@neos-project/react-ui-components';
 import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { AssetCollection } from '@media-ui/core/src/interfaces';
 
-import { AbstractTreeNodeProps } from '../../../interfaces';
+import TreeNodeProps from './TreeNodeProps';
 
-export interface AssetCollectionTreeNodeProps extends AbstractTreeNodeProps {
+export interface AssetCollectionTreeNodeProps extends TreeNodeProps {
     assetCollection: AssetCollection;
     onClick: (assetCollection: AssetCollection) => void;
 }
