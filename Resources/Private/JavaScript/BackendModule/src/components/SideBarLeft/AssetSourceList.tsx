@@ -37,7 +37,8 @@ export default function AssetSourceList() {
     const { translate } = useIntl();
     const [selectedAssetSource, setSelectedAssetSource] = useSelectAssetSource();
 
-    if (!assetSources?.length) return null;
+    // We don't show the source selection if there is only one
+    if (!assetSources || assetSources.length < 2) return null;
 
     return (
         <nav className={classes.assetSourceList}>
