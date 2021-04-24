@@ -302,6 +302,8 @@ class UsageDetailsService
      */
     public function getUnusedAssets(int $limit = 20, int $offset = 0): array
     {
+        // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
+
         try {
             $this->packageManager->getPackage('Flowpack.EntityUsage.DatabaseStorage');
         } catch (FlowException $e) {
