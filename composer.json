@@ -10,7 +10,9 @@
         "t3n/graphql-upload": "^1.0 || ^2.0"
     },
     "suggest": {
-      "phpstan/phpstan": "For running code quality checks"
+      "phpstan/phpstan": "For running code quality checks",
+      "flowpack/neos-asset-usage": "Allows filtering unused assets and other related features",
+      "flowpack/entity-usage-databasestorage": "Required for the asset usage features"
     },
     "scripts": {
       "codestyle": "phpstan analyse"
