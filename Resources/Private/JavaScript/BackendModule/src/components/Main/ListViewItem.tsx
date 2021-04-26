@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
+import { useAssetQuery } from '@media-ui/core/src/hooks';
+import { selectedAssetIdState } from '@media-ui/core/src/state';
 
 import { humanFileSize } from '../../helper';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
-import { selectedAssetForPreviewState } from '../../state';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
-import { useAssetQuery, useSelectAsset } from '@media-ui/core/src/hooks';
-import { selectedAssetIdState } from '@media-ui/core/src/state';
+import MissingAssetActions from './MissingAssetActions';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listViewItem: {
@@ -84,55 +84,41 @@ const dateFormatOptions = {
 
 interface ListViewItemProps {
     assetIdentity: AssetIdentity;
+    onSelect: (asset: Asset) => void;
 }
 
-const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity }: ListViewItemProps) => {
+const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: ListViewItemProps) => {
     const classes = useStyles();
     const { dummyImage } = useMediaUi();
-    const { asset } = useAssetQuery(assetIdentity);
+    const { asset, loading } = useAssetQuery(assetIdentity);
     const [selectedAssetId] = useRecoilState(selectedAssetIdState);
-    const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
-    const selectAsset = useSelectAsset();
     const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
 
-    const onSelect = useCallback(() => {
-        if (selectedAssetId?.assetId === asset.id) {
-            setSelectedAssetForPreview(asset);
-        } else {
-            selectAsset(asset);
-        }
-    }, [selectedAssetId, asset, setSelectedAssetForPreview, selectAsset]);
+    const onSelectItem = useCallback(() => onSelect(asset), [onSelect, asset]);
 
     return (
         <tr className={[classes.listViewItem, isSelected ? classes.selected : ''].join(' ')}>
-            <td className={classes.previewColumn} onClick={onSelect}>
+            <td className={classes.previewColumn} onClick={onSelectItem}>
                 <picture>
                     <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label} width={40} height={36} />
                 </picture>
             </td>
-            {asset ? (
-                <>
-                    <td className={classes.labelColumn} onClick={onSelect}>
-                        <AssetLabel label={asset.label} />
-                    </td>
-                    <td className={classes.lastModifiedColumn} onClick={onSelect}>
-                        {new Date(asset.lastModified).toLocaleString([], dateFormatOptions)}
-                    </td>
-                    <td className={classes.fileSizeColumn} onClick={onSelect}>
-                        {humanFileSize(asset.file.size)}
-                    </td>
-                    <td className={classes.mediaTypeColumn} onClick={onSelect}>
-                        {asset.file.mediaType}
-                    </td>
-                    <td className={classes.actionsColumn}>
-                        <AssetActions asset={asset} />
-                    </td>
-                </>
-            ) : (
-                <td className={classes.labelColumn} colSpan={5}>
-                    Loading...
-                </td>
-            )}
+            <td className={classes.labelColumn} onClick={onSelectItem}>
+                {asset && <AssetLabel label={asset.label} />}
+            </td>
+            <td className={classes.lastModifiedColumn} onClick={onSelectItem}>
+                {asset && new Date(asset.lastModified).toLocaleString([], dateFormatOptions)}
+            </td>
+            <td className={classes.fileSizeColumn} onClick={onSelectItem}>
+                {asset && humanFileSize(asset.file.size)}
+            </td>
+            <td className={classes.mediaTypeColumn} onClick={onSelectItem}>
+                {asset?.file.mediaType}
+            </td>
+            <td className={classes.actionsColumn}>
+                {!loading &&
+                    (asset ? <AssetActions asset={asset} /> : <MissingAssetActions assetIdentity={assetIdentity} />)}
+            </td>
         </tr>
     );
 };

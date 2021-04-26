@@ -1,9 +1,14 @@
 import * as React from 'react';
+import { useCallback } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
+import { selectedAssetIdState } from '@media-ui/core/src/state';
+import { useSelectAsset } from '@media-ui/core/src/hooks';
 
 import { ListViewItem } from './index';
+import { selectedAssetForPreviewState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {
@@ -34,6 +39,20 @@ interface ListViewProps {
 const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
+    const selectedAssetId = useRecoilValue(selectedAssetIdState);
+    const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
+    const selectAsset = useSelectAsset();
+
+    const onSelect = useCallback(
+        (asset: Asset) => {
+            if (asset.id === selectedAssetId?.assetId) {
+                setSelectedAssetForPreview(asset);
+            } else {
+                selectAsset(asset);
+            }
+        },
+        [selectedAssetId, setSelectedAssetForPreview, selectAsset]
+    );
 
     return (
         <section className={classes.listView}>
@@ -50,7 +69,7 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
                 </thead>
                 <tbody>
                     {assetIdentities.map((assetIdentity, index) => (
-                        <ListViewItem key={index} assetIdentity={assetIdentity} />
+                        <ListViewItem key={index} assetIdentity={assetIdentity} onSelect={onSelect} />
                     ))}
                 </tbody>
             </table>

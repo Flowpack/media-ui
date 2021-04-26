@@ -23,6 +23,8 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     const { importAsset } = useImportAsset();
     const { addOrRemoveFromClipboard } = useClipboard();
 
+    // TODO: Optimize rendering this component when hooks change, as it takes quite a bit of time
+
     const onImportAsset = useCallback(() => {
         importAsset(asset)
             .then(() => {

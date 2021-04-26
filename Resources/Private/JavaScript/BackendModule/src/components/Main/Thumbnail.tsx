@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery, useSelectAsset } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 
@@ -95,30 +95,21 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 interface ThumbnailProps {
     assetIdentity: AssetIdentity;
+    onSelect: (asset: Asset) => void;
 }
 
-const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) => {
+const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: ThumbnailProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { dummyImage } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
-    const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
-    const selectAsset = useSelectAsset();
-
-    const onSelect = useCallback(() => {
-        if (isSelected) {
-            setSelectedAssetForPreview(asset);
-        } else {
-            selectAsset(asset);
-        }
-    }, [isSelected, setSelectedAssetForPreview, selectAsset, asset]);
 
     return (
         <figure className={classes.thumbnail}>
             {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
-            <picture onClick={onSelect} className={classes.picture}>
+            <picture onClick={() => onSelect(asset)} className={classes.picture}>
                 <img src={loading || !asset ? dummyImage : asset.thumbnailUrl} alt={asset?.label} />
             </picture>
             <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
@@ -130,7 +121,8 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) 
                 )}
             </figcaption>
             <div className={classes.toolBar}>
-                {asset ? <AssetActions asset={asset} /> : <MissingAssetActions assetIdentity={assetIdentity} />}
+                {!loading &&
+                    (asset ? <AssetActions asset={asset} /> : <MissingAssetActions assetIdentity={assetIdentity} />)}
             </div>
         </figure>
     );
