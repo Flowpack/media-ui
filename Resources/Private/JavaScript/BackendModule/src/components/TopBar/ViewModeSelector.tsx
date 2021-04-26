@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { useMemo } from 'react';
 
-import { SelectBox } from '@neos-project/react-ui-components';
+import { IconButton } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme, useIntl } from '@media-ui/core/src';
 
-import { VIEW_MODES, useViewModeSelection } from '../../hooks';
+import { useViewModeSelection, VIEW_MODES } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     viewModeSelector: {
@@ -15,6 +14,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             marginRight: theme.spacing.quarter,
         },
     },
+    selectBox: {
+        minWidth: 'auto',
+    },
 }));
 
 const ViewModeSelector: React.FC = () => {
@@ -22,28 +24,24 @@ const ViewModeSelector: React.FC = () => {
     const { translate } = useIntl();
     const [viewModeSelection, setViewModeSelection] = useViewModeSelection();
 
-    const viewModeOptions = useMemo(() => {
-        return [
-            {
-                value: VIEW_MODES.Thumbnails,
-                label: translate(`viewModeSelector.viewMode.${VIEW_MODES.Thumbnails}`, 'Thumbnails'),
-                icon: 'th',
-            },
-            {
-                value: VIEW_MODES.List,
-                label: translate(`viewModeSelector.viewMode.${VIEW_MODES.List}`, 'List'),
-                icon: 'th-list',
-            },
-        ];
-    }, [translate]);
-
     return (
         <div className={classes.viewModeSelector}>
-            <SelectBox
-                options={viewModeOptions}
-                onValueChange={(value) => setViewModeSelection(value)}
-                value={viewModeSelection}
-                optionValueField="value"
+            <IconButton
+                icon={viewModeSelection === VIEW_MODES.List ? 'th' : 'th-list'}
+                size="regular"
+                title={translate(
+                    `viewModeSelector.viewMode.${
+                        viewModeSelection === VIEW_MODES.List ? VIEW_MODES.Thumbnails : VIEW_MODES.List
+                    }`,
+                    `Switch mode`
+                )}
+                style="neutral"
+                hoverStyle="brand"
+                onClick={() =>
+                    setViewModeSelection(
+                        viewModeSelection === VIEW_MODES.List ? VIEW_MODES.Thumbnails : VIEW_MODES.List
+                    )
+                }
             />
         </div>
     );
