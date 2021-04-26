@@ -18,11 +18,6 @@ type Query {
     ): [Asset!]!
 
     """
-    unused local assets
-    """
-    unusedAssets(limit: Int, offset: Int): [Asset!]!
-
-    """
     number of assets matching the given criteria
     """
     assetCount(
@@ -32,6 +27,20 @@ type Query {
         mediaType: MediaType
         searchTerm: String
     ): Int!
+
+    """
+    unused local assets
+
+    NOTE: This query is only available when `Flowpack.Neos.AssetUsage` is installed
+    """
+    unusedAssets(limit: Int, offset: Int): [Asset!]!
+
+    """
+    number of unused assets
+
+    NOTE: This query is only available when `Flowpack.Neos.AssetUsage` is installed
+    """
+    unusedAssetCount: Int!
 
     """
     all configured asset sources (by default only the "neos" source)

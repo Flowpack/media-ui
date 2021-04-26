@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
-import { useAssetCountQuery } from '@media-ui/core/src/hooks';
+
+import { useAssetCount } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles({
     assetCount: {
@@ -17,7 +18,8 @@ const useStyles = createUseMediaUiStyles({
 const AssetCount: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
-    const { assetCount } = useAssetCountQuery();
+    const assetCount = useAssetCount();
+
     return (
         <div className={classes.assetCount}>
             {assetCount} {translate('pagination.assetCount', 'assets')}

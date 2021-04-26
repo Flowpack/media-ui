@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext } from 'react';
 
 import { useIntl } from '@media-ui/core/src';
 
-import { Asset } from '../interfaces';
+import { Asset, FeatureFlags } from '../interfaces';
 import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
 
@@ -13,6 +13,7 @@ interface MediaUiProviderProps {
     selectionMode?: boolean;
     containerRef: React.RefObject<HTMLDivElement>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
+    featureFlags: FeatureFlags;
 }
 
 interface MediaUiProviderValues {
@@ -23,6 +24,7 @@ interface MediaUiProviderValues {
     selectionMode: boolean;
     assets: Asset[];
     refetchAssets: () => void;
+    featureFlags: FeatureFlags;
 }
 
 export const MediaUiContext = createContext({} as MediaUiProviderValues);
@@ -34,12 +36,13 @@ export function MediaUiProvider({
     selectionMode = false,
     onAssetSelection = null,
     containerRef,
+    featureFlags,
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
-    const { assets, refetchAssets } = useAssetsQuery();
+    const { assets, refetch: refetchAssets } = useAssetsQuery();
 
     const handleDeleteAsset = useCallback(
         (asset: Asset): Promise<boolean> => {
@@ -95,6 +98,7 @@ export function MediaUiProvider({
                 selectionMode,
                 assets,
                 refetchAssets,
+                featureFlags,
             }}
         >
             {children}

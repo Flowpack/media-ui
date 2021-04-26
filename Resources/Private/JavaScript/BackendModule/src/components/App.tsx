@@ -74,7 +74,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 const App = () => {
     const { selectionMode, containerRef } = useMediaUi();
-    const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
+    const showUploadDialog = useRecoilValue(uploadDialogVisibleState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);

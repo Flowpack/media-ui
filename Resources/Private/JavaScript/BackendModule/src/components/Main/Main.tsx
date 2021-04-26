@@ -6,6 +6,7 @@ import { Button } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
 import { clipboardVisibleState, useClipboard } from '@media-ui/feature-clipboard/src';
+import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage/src';
 
 import { useViewModeSelection, VIEW_MODES } from '../../hooks';
 import { ListView, ThumbnailView } from './index';
@@ -25,6 +26,7 @@ const Main: React.FC = () => {
     const classes = useStyles();
     const [viewModeSelection] = useViewModeSelection();
     const { assets } = useMediaUi();
+    const { assets: unusedAssets } = useUnusedAssetsQuery();
     const { clipboard } = useClipboard();
     const mainView = useRecoilValue(mainViewState);
     const setClipboardVisible = useSetRecoilState(clipboardVisibleState);
@@ -37,10 +39,21 @@ const Main: React.FC = () => {
         });
     }, [assets]);
 
+    const queriedUnusedAssets = useMemo(() => {
+        return unusedAssets.map(({ id, assetSource }) => {
+            return { assetId: id, assetSourceId: assetSource.id };
+        });
+    }, [unusedAssets]);
+
     useEffect(() => {
-        const ids = mainView === MainViewState.CLIPBOARD ? clipboard : queriedAssets;
-        setAssetIdentities(ids);
-    }, [mainView, queriedAssets, clipboard, setAssetIdentities]);
+        if (mainView === MainViewState.CLIPBOARD) {
+            setAssetIdentities(clipboard);
+        } else if (mainView === MainViewState.UNUSED_ASSETS) {
+            setAssetIdentities(queriedUnusedAssets);
+        } else {
+            setAssetIdentities(queriedAssets);
+        }
+    }, [mainView, queriedAssets, queriedUnusedAssets, clipboard, setAssetIdentities]);
 
     return assetIdentities.length > 0 ? (
         viewModeSelection === VIEW_MODES.List ? (

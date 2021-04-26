@@ -14,6 +14,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
+use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
@@ -288,6 +289,15 @@ class QueryResolver implements ResolverInterface
         return $query->execute();
     }
 
+    /**
+     * Provides a list of all unused assets in local asset source
+     *
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return array<AssetProxyInterface>
+     * @throws MediaUiException
+     */
     public function unusedAssets($_, array $variables, AssetSourceContext $assetSourceContext): array
     {
         ['limit' => $limit, 'offset' => $offset] = $variables + ['limit' => 20, 'offset' => 0];
@@ -297,7 +307,18 @@ class QueryResolver implements ResolverInterface
 
         return array_map(static function ($asset) use ($neosAssetSource) {
             return new NeosAssetProxy($asset, $neosAssetSource);
-        }, $this->assetUsageService->getUnusedAssets());
+        }, $this->assetUsageService->getUnusedAssets($limit, $offset));
+    }
+
+    /**
+     * Provides number of unused assets in local asset source
+     *
+     * @return int
+     * @throws MediaUiException
+     */
+    public function unusedAssetCount(): int
+    {
+        return $this->assetUsageService->getUnusedAssetCount();
     }
 
     /**

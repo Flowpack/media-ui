@@ -13,12 +13,7 @@ export default function UploadButton() {
 
     return (
         <div>
-            <Button
-                size="regular"
-                style="lighter"
-                hoverStyle="brand"
-                onClick={() => setUploadDialogState({ visible: true })}
-            >
+            <Button size="regular" style="lighter" hoverStyle="brand" onClick={() => setUploadDialogState(true)}>
                 <Icon icon="upload" /> {translate('uploadButton.label', 'Upload')}
             </Button>
         </div>

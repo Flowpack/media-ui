@@ -303,12 +303,7 @@ class UsageDetailsService
     public function getUnusedAssets(int $limit = 20, int $offset = 0): array
     {
         // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
-
-        try {
-            $this->packageManager->getPackage('Flowpack.EntityUsage.DatabaseStorage');
-        } catch (FlowException $e) {
-            throw new Exception('This method requires "flowpack/entity-usage-databasestorage" to be installed.', 1619178077);
-        }
+        $this->canQueryAssetUsage();
 
         $variantClassNames = $this->reflectionService->getAllImplementationClassNamesForInterface(AssetVariantInterface::class);
 
@@ -330,5 +325,49 @@ class UsageDetailsService
             ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->getResult();
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function canQueryAssetUsage(): void
+    {
+        try {
+            $this->packageManager->getPackage('Flowpack.EntityUsage.DatabaseStorage');
+        } catch (FlowException $e) {
+            throw new Exception('This method requires "flowpack/entity-usage-databasestorage" to be installed.',
+                1619178077);
+        }
+    }
+
+    /**
+     * Returns number of assets which have no usage reference provided by `Flowpack.EntityUsage`
+     *
+     * @return int
+     * @throws Exception
+     */
+    public function getUnusedAssetCount(): int
+    {
+        // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
+        $this->canQueryAssetUsage();
+
+        $variantClassNames = $this->reflectionService->getAllImplementationClassNamesForInterface(AssetVariantInterface::class);
+
+        return (int)$this->entityManager->createQuery(/** @lang DQL */ '
+            SELECT COUNT(a)
+            FROM Neos\Media\Domain\Model\Asset a
+            WHERE
+                a.assetSourceIdentifier = :assetSourceIdentifier AND
+                a NOT INSTANCE OF :variantClassName AND
+                NOT EXISTS (
+                    SELECT e
+                    FROM Flowpack\EntityUsage\DatabaseStorage\Domain\Model\EntityUsage e
+                    WHERE a.Persistence_Object_Identifier = e.entityId
+                )
+            ORDER BY a.lastModified DESC
+        ')
+            ->setParameter('assetSourceIdentifier', 'neos')
+            ->setParameter('variantClassName', $variantClassNames)
+            ->getSingleScalarResult();
     }
 }

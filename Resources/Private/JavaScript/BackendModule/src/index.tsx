@@ -85,7 +85,11 @@ window.onload = async (): Promise<void> => {
                 <ApolloProvider client={client}>
                     <RecoilRoot>
                         <ErrorBoundary>
-                            <MediaUiProvider dummyImage={dummyImage} containerRef={containerRef}>
+                            <MediaUiProvider
+                                dummyImage={dummyImage}
+                                containerRef={containerRef}
+                                featureFlags={featureFlags}
+                            >
                                 <MediaUiThemeProvider>
                                     <DndProvider backend={HTML5Backend}>
                                         <AppWithHmr />

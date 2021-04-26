@@ -32,6 +32,7 @@ import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql'
 // GraphQL local resolvers
 import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
 import buildModuleResolver from 'backend-module/src/resolvers/mutation';
+import { FeatureFlags } from '@media-ui/core/src/interfaces';
 
 let apolloClient = null;
 
@@ -110,7 +111,6 @@ export default class MediaSelectionScreen extends React.PureComponent<
 
     getApolloClient() {
         if (!apolloClient) {
-            console.log(this.props.frontendConfiguration, 'queryAssetUsage');
             const { endpoints } = this.getConfig();
             const cache = CacheFactory.createCache({
                 queryAssetUsage: this.props.frontendConfiguration.queryAssetUsage,
@@ -152,6 +152,10 @@ export default class MediaSelectionScreen extends React.PureComponent<
         const { dummyImage } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
 
+        const featureFlags: FeatureFlags = {
+            queryAssetUsage: this.props.frontendConfiguration.queryAssetUsage,
+        };
+
         const Notification: Notify = {
             info: (message) => addFlashMessage(message, message, 'error'),
             ok: (message) => addFlashMessage(message, message, 'error'),
@@ -171,6 +175,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
                                     onAssetSelection={(localAssetIdentifier) => onComplete(localAssetIdentifier)}
                                     selectionMode={true}
                                     containerRef={containerRef}
+                                    featureFlags={featureFlags}
                                 >
                                     <MediaUiThemeProvider>
                                         <App />

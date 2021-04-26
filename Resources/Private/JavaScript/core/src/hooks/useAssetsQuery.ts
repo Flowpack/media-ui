@@ -37,7 +37,7 @@ const useAssetsQuery = () => {
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
-    const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
+    const currentPage = useRecoilValue(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
     const setInitialLoadComplete = useSetRecoilState(initialLoadCompleteState);
     const [assets, setAssets] = useState<Asset[]>([]);
@@ -74,9 +74,7 @@ const useAssetsQuery = () => {
             setIsLoading(false);
             setInitialLoadComplete(true);
             setAssets(data.assets);
-
-            // Update currentPage if asset count changes and current page exceeds limit
-            setCurrentPage((prev) => ((prev - 1) * limit > data.assetCount ? 1 : prev));
+            // TODO: Update currentPage if asset count changes and current page exceeds limit
         }
         // Don't include `isLoading` to prevent constant reloads
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,7 +82,6 @@ const useAssetsQuery = () => {
         query,
         data,
         loading,
-        setCurrentPage,
         offset,
         limit,
         searchTerm,
@@ -93,7 +90,7 @@ const useAssetsQuery = () => {
         selectedTag?.id,
     ]);
 
-    return { error, assets, refetchAssets: refetch };
+    return { error, assets, refetch };
 };
 
 export default useAssetsQuery;

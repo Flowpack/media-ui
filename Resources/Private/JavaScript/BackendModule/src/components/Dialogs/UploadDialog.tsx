@@ -124,7 +124,7 @@ interface UploadedFile extends File {
 const UploadDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const [dialogState, setDialogState] = useRecoilState(uploadDialogVisibleState);
+    const [dialogVisible, setDialogVisible] = useRecoilState(uploadDialogVisibleState);
     const { dummyImage } = useMediaUi();
     const { config } = useConfigQuery();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
@@ -178,12 +178,12 @@ const UploadDialog: React.FC = () => {
 
     const handleRequestClose = useCallback(() => {
         setFiles([]);
-        setDialogState({ visible: false });
-    }, [setFiles, setDialogState]);
+        setDialogVisible(false);
+    }, [setFiles, setDialogVisible]);
 
     return (
         <Dialog
-            isOpen={dialogState.visible}
+            isOpen={dialogVisible}
             title={translate('uploadDialog.title', 'Upload assets')}
             onRequestClose={handleRequestClose}
             actions={[

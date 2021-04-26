@@ -4,11 +4,11 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
 import { currentPageState } from '@media-ui/core/src/state';
-import { useAssetCountQuery } from '@media-ui/core/src/hooks';
 import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS } from '@media-ui/core/src/constants/pagination';
 
 import PaginationItem from './PaginationItem';
 import { MainViewState, mainViewState } from '../../../state';
+import { useAssetCount } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles({
     pagination: {
@@ -28,11 +28,11 @@ const useStyles = createUseMediaUiStyles({
 const Pagination: React.FC = () => {
     const classes = useStyles();
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
-    const { assetCount } = useAssetCountQuery();
+    const assetCount = useAssetCount();
     const { translate } = useIntl();
     const mainView = useRecoilValue(mainViewState);
 
-    const disabled = mainView !== MainViewState.DEFAULT;
+    const disabled = ![MainViewState.DEFAULT, MainViewState.UNUSED_ASSETS].includes(mainView);
     const numberOfPages = Math.ceil(assetCount / ASSETS_PER_PAGE);
     const [displayRange, setDisplayRange] = useState({
         start: 0,

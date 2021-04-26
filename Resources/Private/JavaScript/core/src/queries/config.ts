@@ -4,7 +4,6 @@ const CONFIG = gql`
     query CONFIG {
         config {
             uploadMaxFileSize
-            supportsFastAssetUsageCalculation
         }
     }
 `;

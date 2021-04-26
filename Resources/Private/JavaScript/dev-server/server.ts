@@ -46,6 +46,9 @@ const resolvers = {
                 offset = 0,
             }
         ) => filterAssets(assetSourceId, tag, assetCollection, mediaType, searchTerm).slice(offset, offset + limit),
+        unusedAssets: ($_, { limit = 20, offset = 0 }) =>
+            assets.filter(({ isInUse }) => !isInUse).slice(offset, offset + limit),
+        unusedAssetCount: () => assets.filter(({ isInUse }) => !isInUse).length,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         assetCount: (
             $_,
