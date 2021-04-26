@@ -11,7 +11,7 @@ const tagSelection = inspector.find('[class^="tagSelection-"]');
 const actions = inspector.find('[class^="actions-"]');
 
 test('Inspector appears and shows first asset', async (t) => {
-    await t.click(firstThumbnail).expect(currentSelection.find('span').innerText).eql('Example asset 1');
+    await t.click(firstThumbnail).expect(currentSelection.find('[class^="label-"]').innerText).eql('Example asset 1');
 });
 
 test('Tagging works', async (t) => {
