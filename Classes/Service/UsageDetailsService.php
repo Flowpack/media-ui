@@ -305,29 +305,28 @@ class UsageDetailsService
         // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
         $this->canQueryAssetUsage();
 
-        $variantClassNames = $this->reflectionService->getAllImplementationClassNamesForInterface(AssetVariantInterface::class);
-
-        return $this->entityManager->createQuery(/** @lang DQL */ '
+        return $this->entityManager->createQuery(sprintf(/** @lang DQL */ '
             SELECT a
             FROM Neos\Media\Domain\Model\Asset a
             WHERE
                 a.assetSourceIdentifier = :assetSourceIdentifier AND
-                a NOT INSTANCE OF :variantClassName AND
+                %s AND
                 NOT EXISTS (
                     SELECT e
                     FROM Flowpack\EntityUsage\DatabaseStorage\Domain\Model\EntityUsage e
                     WHERE a.Persistence_Object_Identifier = e.entityId
                 )
             ORDER BY a.lastModified DESC
-        ')
+        ', $this->getAssetVariantFilterClause('a')))
             ->setParameter('assetSourceIdentifier', 'neos')
-            ->setParameter('variantClassName', $variantClassNames)
             ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->getResult();
     }
 
     /**
+     * Checks for the presence of the
+     *
      * @throws Exception
      */
     protected function canQueryAssetUsage(): void
@@ -341,6 +340,21 @@ class UsageDetailsService
     }
 
     /**
+     * Returns a DQL clause filtering any implementation of AssetVariantInterface
+     *
+     * @return string
+     * @var string $alias
+     */
+    protected function getAssetVariantFilterClause(string $alias): string
+    {
+        $variantClassNames = $this->reflectionService->getAllImplementationClassNamesForInterface(AssetVariantInterface::class);
+
+        return implode(' AND ', array_map(static function ($className) use ($alias) {
+            return sprintf("%s NOT INSTANCE OF %s", $alias, $className);
+        }, $variantClassNames));
+    }
+
+    /**
      * Returns number of assets which have no usage reference provided by `Flowpack.EntityUsage`
      *
      * @return int
@@ -351,23 +365,20 @@ class UsageDetailsService
         // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
         $this->canQueryAssetUsage();
 
-        $variantClassNames = $this->reflectionService->getAllImplementationClassNamesForInterface(AssetVariantInterface::class);
-
-        return (int)$this->entityManager->createQuery(/** @lang DQL */ '
-            SELECT COUNT(a)
+        return (int)$this->entityManager->createQuery(sprintf(/** @lang DQL */ '
+            SELECT COUNT(a.Persistence_Object_Identifier)
             FROM Neos\Media\Domain\Model\Asset a
             WHERE
                 a.assetSourceIdentifier = :assetSourceIdentifier AND
-                a NOT INSTANCE OF :variantClassName AND
+                %s AND
                 NOT EXISTS (
                     SELECT e
                     FROM Flowpack\EntityUsage\DatabaseStorage\Domain\Model\EntityUsage e
                     WHERE a.Persistence_Object_Identifier = e.entityId
                 )
             ORDER BY a.lastModified DESC
-        ')
+        ', $this->getAssetVariantFilterClause('a')))
             ->setParameter('assetSourceIdentifier', 'neos')
-            ->setParameter('variantClassName', $variantClassNames)
             ->getSingleScalarResult();
     }
 }
