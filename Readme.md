@@ -26,13 +26,47 @@ The old media module will still be available until this package replaces it comp
 If you want to use this package in a real project you might want to 
 disable the new media selection if it doesn't work as expected.
 You can do this by adding the following setting to your `Settings.yaml`:
+          
+```yaml
+Neos:
+  Neos:
+    Ui:
+      frontendConfiguration:
+        Flowpack.Media.Ui:
+          useNewMediaSelection: false
+``` 
 
-    Neos:
-        Neos:
-            Ui:
-                frontendConfiguration:
-                    Flowpack.Media.Ui:
-                        useNewMediaSelection: false 
+## Optional features
+
+### Fast asset usage calculation & unused assets view
+           
+The default asset usage in Neos is very slow as it is calculated when required. For that it checks 
+your whole project where an asset might be used. For the new media ui a new method has been implemented via the package 
+[Flowpack.Neos.AssetUsage](https://github.com/Flowpack/Flowpack.Neos.AssetUsage).
+
+
+The package provides a service that stores all asset usage references in a database table (other storages can be implemented).
+After you install the package and its peer dependencies you should therefore update the usage reference index:
+
+    ./flow assetusage:update
+
+You have to do this only once for each instance of the application, f.e. dev / staging / production. 
+Afterwards the index will be automatically be kept up-to-date. Make sure you run the command manually again after you run imports or
+change the content repository in any other unusual way. This will clean up any outdated usage.
+                                                                                
+You can now enable the feature via the following setting:
+
+```yaml
+Neos:
+  Neos:
+    Ui:
+      frontendConfiguration:
+        Flowpack.Media.Ui:
+          queryAssetUsage: true
+```
+
+Now the "delete" action for assets will be disabled if an asset is in use, and the filter dropdown contains a new item "Unused". 
+Selecting it will switch the main view to show all unused assets.
     
 ## Architecture
 
@@ -44,7 +78,7 @@ but you can define custom policies and an authentication provider to allow acces
 and f.e. use a token based authentication.
 
 The API is public and will be stable with the 1.0.0 release.
-Until then changes can still happen.
+Until then, changes might still happen.
 
 #### Schema
 
@@ -75,8 +109,8 @@ Component state should be stored with React hooks.
 
 #### Shared component states
 
-The shared component states are current implemented via React Recoil.
-See the `Resources/Private/JavaScript/src/state` folder for examples.
+The shared component states are current implemented via React Recoil atoms and selectors.
+See the `state` folders in the various modules in `Resources/Private/JavaScript` for examples.
 
 Those should be used every time multiple components share a state that is not relevant for
 the GraphQL queries.
