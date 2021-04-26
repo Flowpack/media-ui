@@ -10,6 +10,7 @@ import { clipboardState } from '@media-ui/feature-clipboard/src';
 
 const useStyles = createUseMediaUiStyles({
     searchBox: {
+        flex: 1,
         '& input': {
             width: '100%',
         },

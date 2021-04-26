@@ -8,9 +8,13 @@ import { SearchBox, TypeFilter, ViewModeSelector } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     topBar: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat( auto-fit, minmax(200px, 1fr) )',
-        gridGap: theme.spacing.goldenUnit,
+        display: 'flex',
+        flexWrap: 'nowrap',
+        justifyContent: 'flex-end',
+        margin: `0 -${theme.spacing.half}`,
+        '& > *': {
+            margin: `0 ${theme.spacing.half}`,
+        },
     },
 }));
 

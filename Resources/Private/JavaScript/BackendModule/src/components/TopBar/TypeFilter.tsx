@@ -10,6 +10,9 @@ import { clipboardState } from '@media-ui/feature-clipboard/src';
 
 const useStyles = createUseMediaUiStyles({
     typeFilter: {},
+    selectBox: {
+        minWidth: 'auto',
+    },
 });
 
 interface MediaTypeOptions {
