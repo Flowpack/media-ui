@@ -4,9 +4,10 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
 import { searchTermState } from '@media-ui/core/src/state';
-import { clipboardState } from '@media-ui/feature-clipboard/src';
+
+import { MainViewState, mainViewState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
     searchBox: {
@@ -22,9 +23,9 @@ const SearchBox: React.FC = () => {
     const [searchTerm, setSearchTerm] = useRecoilState(searchTermState);
     const [searchValue, setSearchValue] = useState(searchTerm);
     const { translate } = useIntl();
-    const { visible: showClipboard } = useRecoilValue(clipboardState);
+    const mainView = useRecoilValue(mainViewState);
 
-    if (showClipboard) return null;
+    if (mainView !== MainViewState.DEFAULT) return null;
 
     return (
         <div className={classes.searchBox}>

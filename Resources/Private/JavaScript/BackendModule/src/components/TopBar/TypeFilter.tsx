@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { SelectBox } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
 import { selectedMediaTypeState } from '@media-ui/core/src/state';
-import { clipboardState } from '@media-ui/feature-clipboard/src';
+import { MainViewState, mainViewState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
     typeFilter: {},
@@ -27,14 +27,26 @@ const TypeFilter: React.FC = () => {
     const classes = useStyles();
     const [mediaTypeFilter, setMediaTypeFilter] = useRecoilState(selectedMediaTypeState);
     const { translate } = useIntl();
-    const { visible: showClipboard } = useRecoilValue(clipboardState);
+    const mainView = useRecoilValue(mainViewState);
+
+    const onValueChange = useCallback(
+        (value) => {
+            if (value === 'unused') {
+                // TODO: Implement
+                console.log('unused TODO');
+            } else {
+                setMediaTypeFilter(value);
+            }
+        },
+        [setMediaTypeFilter]
+    );
 
     const mediaTypeOptions = useMemo(
         (): MediaTypeOptions => ({
-            all: {
-                value: '',
-                label: translate('typeFilter.mediaType.values.all', 'All'),
-                icon: 'photo-video',
+            unused: {
+                value: 'unused',
+                label: translate('typeFilter.mediaType.values.unused', 'Unused'),
+                icon: 'fab fa-creative-commons-zero',
             },
             video: {
                 value: 'video',
@@ -61,14 +73,18 @@ const TypeFilter: React.FC = () => {
         [translate]
     );
 
-    if (showClipboard) return null;
+    if (mainView !== MainViewState.DEFAULT) return null;
 
     return (
         <div className={classes.typeFilter}>
             <SelectBox
+                className={classes.selectBox}
                 options={Object.values(mediaTypeOptions)}
-                onValueChange={(value) => setMediaTypeFilter(value)}
+                onValueChange={onValueChange}
                 value={mediaTypeFilter}
+                allowEmpty={true}
+                placeholderIcon="photo-video"
+                placeholder={translate('typeFilter.mediaType.values.all', 'All')}
                 optionValueField="value"
             />
         </div>

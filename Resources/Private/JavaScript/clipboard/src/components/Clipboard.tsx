@@ -10,7 +10,7 @@ import { initialLoadCompleteState } from '@media-ui/core/src/state';
 
 import ClipboardItem from './ClipboardItem';
 import useClipboard from '../hooks/useClipboard';
-import clipboardState from '../state/clipboardState';
+import clipboardVisibleState from '../state/clipboardVisibleState';
 
 const useStyles = createUseMediaUiStyles({
     clipboard: {
@@ -31,16 +31,10 @@ const Clipboard: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { clipboard } = useClipboard();
-    const [{ visible }, setClipboardState] = useRecoilState(clipboardState);
+    const [clipboardVisible, setClipboardVisible] = useRecoilState(clipboardVisibleState);
     const initialLoadComplete = useRecoilValue(initialLoadCompleteState);
 
-    const toggleClipboard = useCallback(
-        () =>
-            setClipboardState((prev) => {
-                return { ...prev, visible: !prev.visible };
-            }),
-        [setClipboardState]
-    );
+    const toggleClipboard = useCallback(() => setClipboardVisible((prev) => !prev), [setClipboardVisible]);
 
     if (!initialLoadComplete) return null;
 
@@ -49,7 +43,7 @@ const Clipboard: React.FC = () => {
             <Button
                 disabled={!clipboard.length}
                 size="regular"
-                style={visible ? 'brand' : 'lighter'}
+                style={clipboardVisible ? 'brand' : 'lighter'}
                 hoverStyle="brand"
                 onClick={toggleClipboard}
             >

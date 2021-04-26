@@ -9,7 +9,7 @@ import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } 
 import { useConfigQuery, useUploadFiles } from '@media-ui/core/src/hooks';
 
 import { humanFileSize } from '../../helper';
-import { uploadDialogState } from '../../state';
+import { uploadDialogVisibleState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     uploadArea: {
@@ -124,7 +124,7 @@ interface UploadedFile extends File {
 const UploadDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const [dialogState, setDialogState] = useRecoilState(uploadDialogState);
+    const [dialogState, setDialogState] = useRecoilState(uploadDialogVisibleState);
     const { dummyImage } = useMediaUi();
     const { config } = useConfigQuery();
     const { uploadFiles, uploadState, loading } = useUploadFiles();

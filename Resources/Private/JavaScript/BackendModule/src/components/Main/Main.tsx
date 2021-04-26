@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, useMediaUi } from '@media-ui/core/src';
-import { clipboardState, useClipboard } from '@media-ui/feature-clipboard/src';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
+import { clipboardVisibleState, useClipboard } from '@media-ui/feature-clipboard/src';
 
 import { useViewModeSelection, VIEW_MODES } from '../../hooks';
 import { ListView, ThumbnailView } from './index';
 import LoadingLabel from '../LoadingLabel';
+import { MainViewState, mainViewState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
     emptyStateWrapper: {
@@ -25,7 +26,8 @@ const Main: React.FC = () => {
     const [viewModeSelection] = useViewModeSelection();
     const { assets } = useMediaUi();
     const { clipboard } = useClipboard();
-    const [{ visible: showClipboard }, setClipboardState] = useRecoilState(clipboardState);
+    const mainView = useRecoilValue(mainViewState);
+    const setClipboardVisible = useSetRecoilState(clipboardVisibleState);
     const { translate } = useIntl();
     const [assetIdentities, setAssetIdentities] = useState([]);
 
@@ -36,9 +38,9 @@ const Main: React.FC = () => {
     }, [assets]);
 
     useEffect(() => {
-        const ids = showClipboard ? clipboard : queriedAssets;
+        const ids = mainView === MainViewState.CLIPBOARD ? clipboard : queriedAssets;
         setAssetIdentities(ids);
-    }, [queriedAssets, clipboard, showClipboard, setAssetIdentities]);
+    }, [mainView, queriedAssets, clipboard, setAssetIdentities]);
 
     return assetIdentities.length > 0 ? (
         viewModeSelection === VIEW_MODES.List ? (
@@ -48,13 +50,8 @@ const Main: React.FC = () => {
         )
     ) : (
         <div className={classes.emptyStateWrapper}>
-            {showClipboard ? (
-                <Button
-                    size="regular"
-                    style="brand"
-                    hoverStyle="brand"
-                    onClick={() => setClipboardState({ visible: false })}
-                >
+            {mainView === MainViewState.CLIPBOARD ? (
+                <Button size="regular" style="brand" hoverStyle="brand" onClick={() => setClipboardVisible(false)}>
                     {translate('clipboard.close', 'Close clipboard')}
                 </Button>
             ) : (

@@ -8,7 +8,7 @@ import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify } from '@media
 import { useDeleteAsset } from '@media-ui/core/src/hooks';
 
 import useClipboard from '../hooks/useClipboard';
-import clipboardState from '../state/clipboardState';
+import clipboardVisibleState from '../state/clipboardVisibleState';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     clipboardActions: {
@@ -21,7 +21,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 const ClipboardActions: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
-    const { visible: showClipboard } = useRecoilValue(clipboardState);
+    const clipboardVisible = useRecoilValue(clipboardVisibleState);
     const { clipboard, addOrRemoveFromClipboard } = useClipboard();
     const { deleteAsset } = useDeleteAsset();
     const Notify = useNotify();
@@ -56,7 +56,7 @@ const ClipboardActions: React.FC = () => {
         });
     }, [addOrRemoveFromClipboard, clipboard, translate]);
 
-    if (!showClipboard) return null;
+    if (!clipboardVisible) return null;
 
     return (
         <div className={classes.clipboardActions}>

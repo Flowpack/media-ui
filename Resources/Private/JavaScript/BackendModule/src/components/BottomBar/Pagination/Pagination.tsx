@@ -6,9 +6,9 @@ import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
 import { currentPageState } from '@media-ui/core/src/state';
 import { useAssetCountQuery } from '@media-ui/core/src/hooks';
 import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS } from '@media-ui/core/src/constants/pagination';
-import { clipboardState } from '@media-ui/feature-clipboard/src';
 
 import PaginationItem from './PaginationItem';
+import { MainViewState, mainViewState } from '../../../state';
 
 const useStyles = createUseMediaUiStyles({
     pagination: {
@@ -30,8 +30,9 @@ const Pagination: React.FC = () => {
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const { assetCount } = useAssetCountQuery();
     const { translate } = useIntl();
-    const { visible: showClipboard } = useRecoilValue(clipboardState);
+    const mainView = useRecoilValue(mainViewState);
 
+    const disabled = mainView !== MainViewState.DEFAULT;
     const numberOfPages = Math.ceil(assetCount / ASSETS_PER_PAGE);
     const [displayRange, setDisplayRange] = useState({
         start: 0,
@@ -82,13 +83,13 @@ const Pagination: React.FC = () => {
                         icon="angle-left"
                         title={translate('pagination.previousPageTitle', `Go to previous page`)}
                         onClick={handlePreviousPageClick}
-                        disabled={currentPage <= 1 || showClipboard}
+                        disabled={disabled || currentPage <= 1}
                     />
                     {displayRange.start > 1 && (
                         <PaginationItem
                             title={translate('pagination.firstPageTitle', `Go to first page`)}
                             onClick={handlePageClick}
-                            disabled={showClipboard}
+                            disabled={disabled}
                             page={1}
                         />
                     )}
@@ -98,7 +99,7 @@ const Pagination: React.FC = () => {
                             key={page}
                             selected={currentPage === page}
                             onClick={handlePageClick}
-                            disabled={showClipboard}
+                            disabled={disabled}
                             title={translate('pagination.page', `Go to page ${page}`, [page])}
                             page={page}
                         />
@@ -108,7 +109,7 @@ const Pagination: React.FC = () => {
                         <PaginationItem
                             title={translate('pagination.lastPageTitle', `Go to last page`)}
                             onClick={handlePageClick}
-                            disabled={showClipboard}
+                            disabled={disabled}
                             page={numberOfPages}
                         />
                     )}
@@ -116,7 +117,7 @@ const Pagination: React.FC = () => {
                         icon="angle-right"
                         title={translate('pagination.nextPageTitle', `Go to next page`)}
                         onClick={handleNextPageClick}
-                        disabled={currentPage === numberOfPages || showClipboard}
+                        disabled={disabled || currentPage === numberOfPages}
                     />
                 </ol>
             )}

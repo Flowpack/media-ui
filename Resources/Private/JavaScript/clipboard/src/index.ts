@@ -1,4 +1,4 @@
-import clipboardState from './state/clipboardState';
+import clipboardVisibleState from './state/clipboardVisibleState';
 import { CLIPBOARD, ADD_OR_REMOVE_FROM_CLIPBOARD } from './queries/ClipboardQuery';
 import useClipboard from './hooks/useClipboard';
 import Clipboard from './components/Clipboard';
@@ -13,6 +13,6 @@ export {
     ClipboardActions,
     ClipboardItem,
     buildResolvers,
-    clipboardState,
+    clipboardVisibleState,
     useClipboard,
 };

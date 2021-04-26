@@ -44,6 +44,7 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload';
 
 import { faNeos } from '@fortawesome/free-brands-svg-icons/faNeos';
+import { faCreativeCommonsZero } from '@fortawesome/free-brands-svg-icons/faCreativeCommonsZero';
 
 config.familyPrefix = 'fa' as IconPrefix;
 config.replacementClass = 'svg-inline--fa';
@@ -64,6 +65,7 @@ export default function loadIconLibrary() {
         faClipboardCheck,
         faClipboardList,
         faCloudDownloadAlt,
+        faCreativeCommonsZero,
         faDownload,
         faExclamationCircle,
         faExpandAlt,
