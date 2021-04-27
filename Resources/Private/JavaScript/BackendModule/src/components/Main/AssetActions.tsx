@@ -21,7 +21,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     const { handleDeleteAsset } = useMediaUi();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { importAsset } = useImportAsset();
-    const { addOrRemoveFromClipboard } = useClipboard();
+    const { toggleClipboardState } = useClipboard();
 
     // TODO: Optimize rendering this component when hooks change, as it takes quite a bit of time
 
@@ -35,22 +35,6 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             });
     }, [importAsset, asset, Notify, translate]);
 
-    const onPreviewAsset = useCallback(() => {
-        setSelectedAssetForPreview(asset);
-    }, [setSelectedAssetForPreview, asset]);
-
-    const onDeleteAsset = useCallback(() => {
-        handleDeleteAsset(asset).then((success) => {
-            if (success) {
-                addOrRemoveFromClipboard({ assetId: asset.id, assetSourceId: asset.assetSource.id });
-            }
-        });
-    }, [handleDeleteAsset, asset, addOrRemoveFromClipboard]);
-
-    const onCopyAssetToClipboard = useCallback(() => {
-        addOrRemoveFromClipboard({ assetId: asset.id, assetSourceId: asset.assetSource.id });
-    }, [addOrRemoveFromClipboard, asset]);
-
     return (
         <>
             <IconButton
@@ -59,7 +43,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                 size="regular"
                 style="transparent"
                 hoverStyle="brand"
-                onClick={onPreviewAsset}
+                onClick={() => setSelectedAssetForPreview(asset)}
             />
             {!asset.imported && !asset.localId && (
                 <IconButton
@@ -83,7 +67,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     size="regular"
                     style="transparent"
                     hoverStyle="warn"
-                    onClick={onDeleteAsset}
+                    onClick={() => handleDeleteAsset(asset)}
                 />
             )}
             {asset.file?.url && (
@@ -99,7 +83,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     style="transparent"
                     hoverStyle="brand"
                     className={asset.isInClipboard ? 'button--active' : ''}
-                    onClick={onCopyAssetToClipboard}
+                    onClick={() => toggleClipboardState({ assetId: asset.id, assetSourceId: asset.assetSource.id })}
                 />
             )}
         </>

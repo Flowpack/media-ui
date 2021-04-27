@@ -3,7 +3,7 @@ import { gql, useMutation, useQuery } from '@apollo/client';
 
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
 
-import { ADD_OR_REMOVE_FROM_CLIPBOARD, CLIPBOARD } from '../queries/ClipboardQuery';
+import { TOGGLE_CLIPBOARD_STATE, CLIPBOARD } from '../queries/ClipboardQuery';
 
 export type ClipboardItems = Record<string, AssetIdentity>;
 
@@ -12,7 +12,9 @@ export default function useClipboard() {
         data: { clipboard },
     } = useQuery<{ clipboard: ClipboardItems }>(CLIPBOARD);
 
-    const [mutateClipboard] = useMutation<void, AssetIdentity>(ADD_OR_REMOVE_FROM_CLIPBOARD);
+    const [mutateClipboard] = useMutation<void, { assetId: string; assetSourceId: string; force: boolean }>(
+        TOGGLE_CLIPBOARD_STATE
+    );
 
     const inClipboard = useCallback(
         ({ assetId }: AssetIdentity) => {
@@ -21,10 +23,10 @@ export default function useClipboard() {
         [clipboard]
     );
 
-    const addOrRemoveFromClipboard = useCallback(
-        (assetIdentity: AssetIdentity) =>
+    const toggleClipboardState = useCallback(
+        (assetIdentity: AssetIdentity, force?: boolean) =>
             mutateClipboard({
-                variables: { ...assetIdentity },
+                variables: { ...assetIdentity, force },
                 update: (cache) => {
                     const { clipboard: cachedClipboard }: { clipboard: ClipboardItems } = cache.readQuery({
                         query: CLIPBOARD,
@@ -45,5 +47,11 @@ export default function useClipboard() {
         [mutateClipboard]
     );
 
-    return { clipboard: clipboard ?? {}, inClipboard, addOrRemoveFromClipboard };
+    const flushClipboard = useCallback(() => {
+        Object.values(clipboard).map((assetIdentity) => {
+            toggleClipboardState(assetIdentity, false);
+        });
+    }, [clipboard, toggleClipboardState]);
+
+    return { clipboard: clipboard ?? {}, inClipboard, toggleClipboardState, flushClipboard };
 }

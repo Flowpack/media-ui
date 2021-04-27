@@ -1,28 +1,26 @@
 import { ApolloCache, NormalizedCacheObject } from '@apollo/client';
 
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
-
 import { CLIPBOARD } from '../queries/ClipboardQuery';
 import { ClipboardItems } from '../hooks/useClipboard';
 
 const buildResolvers = (updateLocalState) => {
     return {
         Mutation: {
-            addOrRemoveFromClipboard: (
+            toggleClipboardState: (
                 _,
-                assetIdentity: AssetIdentity,
+                { assetId, assetSourceId, force },
                 { cache }: { cache: ApolloCache<NormalizedCacheObject> }
             ) => {
                 let { clipboard }: { clipboard: ClipboardItems } = cache.readQuery({ query: CLIPBOARD });
-                if ({}.hasOwnProperty.call(clipboard, assetIdentity.assetId)) {
+                if (force !== true && {}.hasOwnProperty.call(clipboard, assetId)) {
                     clipboard = Object.values(clipboard).reduce((carry, item) => {
-                        if (item.assetId !== assetIdentity.assetId) {
+                        if (item.assetId !== assetId) {
                             carry[item.assetId] = item;
                         }
                         return carry;
                     }, {});
-                } else {
-                    clipboard = { ...clipboard, [assetIdentity.assetId]: assetIdentity };
+                } else if (force !== false) {
+                    clipboard = { ...clipboard, [assetId]: { assetId, assetSourceId } };
                 }
                 updateLocalState({ clipboard }, cache);
                 return clipboard;

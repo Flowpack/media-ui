@@ -7,5 +7,5 @@ extend type Asset {
 }
 
 extend type Mutation {
-    addOrRemoveFromClipboard(assetId: AssetId!, assetSourceId: AssetSourceId!): [AssetIdentity]!
+    toggleClipboardState(assetId: AssetId!, assetSourceId: AssetSourceId!, force: Boolean): [AssetIdentity]!
 }

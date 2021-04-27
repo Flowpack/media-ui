@@ -4,8 +4,9 @@ import { createContext, useCallback, useContext } from 'react';
 import { useIntl } from '@media-ui/core/src';
 
 import { Asset, FeatureFlags } from '../interfaces';
-import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
+import { useAssetsQuery, useDeleteAsset, useEvent, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
+import { assetDeletedEvent } from '../events';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
@@ -43,6 +44,7 @@ export function MediaUiProvider({
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
     const { assets, refetch: refetchAssets } = useAssetsQuery();
+    const assetDeleted = useEvent(assetDeletedEvent);
 
     const handleDeleteAsset = useCallback(
         (asset: Asset): Promise<boolean> => {
@@ -57,6 +59,7 @@ export function MediaUiProvider({
             return deleteAsset({ assetId: asset.id, assetSourceId: asset.assetSource.id })
                 .then(() => {
                     Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
+                    assetDeleted({ assetId: asset.id, assetSourceId: asset.assetSource.id });
                     return true;
                 })
                 .catch(({ message }) => {
@@ -68,7 +71,7 @@ export function MediaUiProvider({
                     return false;
                 });
         },
-        [Notify, translate, deleteAsset]
+        [assetDeleted, Notify, translate, deleteAsset]
     );
 
     // Handle selection mode for the secondary Neos UI inspector

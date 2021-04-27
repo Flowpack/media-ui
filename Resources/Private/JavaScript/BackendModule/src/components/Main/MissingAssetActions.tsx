@@ -12,7 +12,7 @@ interface MissingAssetActionsProps {
 
 const MissingAssetActions: React.FC<MissingAssetActionsProps> = ({ assetIdentity }: MissingAssetActionsProps) => {
     const { translate } = useIntl();
-    const { inClipboard, addOrRemoveFromClipboard } = useClipboard();
+    const { inClipboard, toggleClipboardState } = useClipboard();
 
     // Skip rendering if it's not in the clipboard as we only have one possible action currently
     if (!inClipboard(assetIdentity)) return null;
@@ -24,7 +24,7 @@ const MissingAssetActions: React.FC<MissingAssetActionsProps> = ({ assetIdentity
             size="regular"
             style="transparent"
             hoverStyle="warn"
-            onClick={() => addOrRemoveFromClipboard(assetIdentity)}
+            onClick={() => toggleClipboardState(assetIdentity, false)}
         />
     );
 };

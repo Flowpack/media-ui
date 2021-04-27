@@ -22,21 +22,14 @@ const ClipboardActions: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const clipboardVisible = useRecoilValue(clipboardVisibleState);
-    const { clipboard, addOrRemoveFromClipboard } = useClipboard();
+    const { clipboard, toggleClipboardState, flushClipboard } = useClipboard();
     const { deleteAsset } = useDeleteAsset();
     const Notify = useNotify();
 
     const onDeleteClipboard = useCallback(() => {
         if (!confirm(translate('clipboard.deleteAssets.confirm', 'Delete all assets in the clipboard?'))) return;
 
-        Promise.all(
-            Object.values(clipboard).map(
-                async (assetIdentity) =>
-                    await deleteAsset(assetIdentity).then(() => {
-                        addOrRemoveFromClipboard(assetIdentity);
-                    })
-            )
-        )
+        Promise.all(Object.values(clipboard).map(async (assetIdentity) => await deleteAsset(assetIdentity)))
             .then(() => {
                 Notify.ok(translate('clipboard.deleteAssets.success', 'The assets have been deleted'));
             })
@@ -46,16 +39,12 @@ const ClipboardActions: React.FC = () => {
                     message
                 );
             });
-    }, [translate, clipboard, deleteAsset, addOrRemoveFromClipboard, Notify]);
+    }, [translate, clipboard, deleteAsset, toggleClipboardState, Notify]);
 
     const onFlushClipboard = useCallback(() => {
         if (!confirm(translate('clipboard.flush.confirm', 'Remove all assets from clipboard?'))) return;
-
-        // TODO: Move this into a flush method in the clipboard hook
-        Object.values(clipboard).map((assetIdentity) => {
-            addOrRemoveFromClipboard(assetIdentity);
-        });
-    }, [addOrRemoveFromClipboard, clipboard, translate]);
+        flushClipboard();
+    }, [flushClipboard, translate]);
 
     if (!clipboardVisible) return null;
 

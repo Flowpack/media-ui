@@ -6,8 +6,8 @@ export const CLIPBOARD = gql`
     }
 `;
 
-export const ADD_OR_REMOVE_FROM_CLIPBOARD = gql`
-    mutation AddOrRemoveFromClipboard($assetId: AssetId, $assetSourceId: AssetSourceId) {
-        addOrRemoveFromClipboard(assetId: $assetId, assetSourceId: $assetSourceId) @client
+export const TOGGLE_CLIPBOARD_STATE = gql`
+    mutation ToggleClipboardState($assetId: AssetId, $assetSourceId: AssetSourceId, $force: Boolean) {
+        toggleClipboardState(assetId: $assetId, assetSourceId: $assetSourceId, force: $force) @client
     }
 `;
