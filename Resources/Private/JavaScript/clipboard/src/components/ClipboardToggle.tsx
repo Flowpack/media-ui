@@ -27,7 +27,7 @@ const useStyles = createUseMediaUiStyles({
     },
 });
 
-const Clipboard: React.FC = () => {
+const ClipboardToggle: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { clipboard } = useClipboard();
@@ -36,20 +36,22 @@ const Clipboard: React.FC = () => {
 
     const toggleClipboard = useCallback(() => setClipboardVisible((prev) => !prev), [setClipboardVisible]);
 
+    const size = Object.keys(clipboard).length;
+
     if (!initialLoadComplete) return null;
 
     return (
         <div className={classes.clipboard}>
             <Button
-                disabled={!clipboard.length}
+                disabled={size === 0}
                 size="regular"
                 style={clipboardVisible ? 'brand' : 'lighter'}
                 hoverStyle="brand"
                 onClick={toggleClipboard}
             >
-                {translate('clipboard.toggle', 'Clipboard')} ({clipboard.length})
+                {translate('clipboard.toggle', 'Clipboard')} ({size})
             </Button>
-            {clipboard
+            {Object.values(clipboard)
                 .slice()
                 .reverse()
                 .slice(0, 3)
@@ -60,4 +62,4 @@ const Clipboard: React.FC = () => {
     );
 };
 
-export default React.memo(Clipboard);
+export default React.memo(ClipboardToggle);

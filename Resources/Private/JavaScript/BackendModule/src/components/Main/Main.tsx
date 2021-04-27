@@ -47,7 +47,7 @@ const Main: React.FC = () => {
 
     useEffect(() => {
         if (mainView === MainViewState.CLIPBOARD) {
-            setAssetIdentities(clipboard);
+            setAssetIdentities(Object.values(clipboard));
         } else if (mainView === MainViewState.UNUSED_ASSETS) {
             setAssetIdentities(queriedUnusedAssets);
         } else {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useMemo } from 'react';
 
 import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
-import { Clipboard } from '@media-ui/feature-clipboard/src';
+import { ClipboardToggle } from '@media-ui/feature-clipboard/src';
 
 import AssetCount from './AssetCount/AssetCount';
 import Pagination from './Pagination/Pagination';
@@ -25,7 +25,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 const BottomBar: React.FC = () => {
     const classes = useStyles();
 
-    const components = useMemo(() => [AssetCount, Pagination, Clipboard], []);
+    const components = useMemo(() => [AssetCount, Pagination, ClipboardToggle], []);
 
     return (
         <div className={classes.bottomBar}>

@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import { RecoilRoot } from 'recoil';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { ApolloClient, ApolloProvider, ApolloLink } from '@apollo/client';
+import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
 import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
@@ -22,10 +22,11 @@ import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mu
 import buildModuleResolver from './resolvers/mutation';
 
 // Internal dependencies
-import { ApolloErrorHandler, PersistentStateManager, CacheFactory } from './core';
+import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from './core';
 import App from './components/App';
 import ErrorBoundary from './components/ErrorBoundary';
 import loadIconLibrary from './lib/FontAwesome';
+import { EventProvider } from '../../core/src/provider/EventProvider';
 
 loadIconLibrary();
 
@@ -85,17 +86,19 @@ window.onload = async (): Promise<void> => {
                 <ApolloProvider client={client}>
                     <RecoilRoot>
                         <ErrorBoundary>
-                            <MediaUiProvider
-                                dummyImage={dummyImage}
-                                containerRef={containerRef}
-                                featureFlags={featureFlags}
-                            >
-                                <MediaUiThemeProvider>
-                                    <DndProvider backend={HTML5Backend}>
-                                        <AppWithHmr />
-                                    </DndProvider>
-                                </MediaUiThemeProvider>
-                            </MediaUiProvider>
+                            <EventProvider>
+                                <MediaUiProvider
+                                    dummyImage={dummyImage}
+                                    containerRef={containerRef}
+                                    featureFlags={featureFlags}
+                                >
+                                    <MediaUiThemeProvider>
+                                        <DndProvider backend={HTML5Backend}>
+                                            <AppWithHmr />
+                                        </DndProvider>
+                                    </MediaUiThemeProvider>
+                                </MediaUiProvider>
+                            </EventProvider>
                         </ErrorBoundary>
                     </RecoilRoot>
                 </ApolloProvider>

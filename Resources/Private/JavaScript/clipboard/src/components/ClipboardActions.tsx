@@ -30,7 +30,7 @@ const ClipboardActions: React.FC = () => {
         if (!confirm(translate('clipboard.deleteAssets.confirm', 'Delete all assets in the clipboard?'))) return;
 
         Promise.all(
-            clipboard.map(
+            Object.values(clipboard).map(
                 async (assetIdentity) =>
                     await deleteAsset(assetIdentity).then(() => {
                         addOrRemoveFromClipboard(assetIdentity);
@@ -51,7 +51,8 @@ const ClipboardActions: React.FC = () => {
     const onFlushClipboard = useCallback(() => {
         if (!confirm(translate('clipboard.flush.confirm', 'Remove all assets from clipboard?'))) return;
 
-        clipboard.map((assetIdentity) => {
+        // TODO: Move this into a flush method in the clipboard hook
+        Object.values(clipboard).map((assetIdentity) => {
             addOrRemoveFromClipboard(assetIdentity);
         });
     }, [addOrRemoveFromClipboard, clipboard, translate]);

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useMemo } from 'react';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
@@ -13,14 +12,10 @@ interface MissingAssetActionsProps {
 
 const MissingAssetActions: React.FC<MissingAssetActionsProps> = ({ assetIdentity }: MissingAssetActionsProps) => {
     const { translate } = useIntl();
-    const { clipboard, addOrRemoveFromClipboard } = useClipboard();
-
-    const isInClipboard = useMemo(() => {
-        return !!clipboard.find(({ assetId }) => assetId === assetIdentity.assetId);
-    }, [assetIdentity.assetId, clipboard]);
+    const { inClipboard, addOrRemoveFromClipboard } = useClipboard();
 
     // Skip rendering if it's not in the clipboard as we only have one possible action currently
-    if (!isInClipboard) return null;
+    if (!inClipboard(assetIdentity)) return null;
 
     return (
         <IconButton
