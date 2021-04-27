@@ -13,7 +13,10 @@ import {
     useNotify,
 } from './provider';
 
+import * as Events from './events';
+
 export {
+    Events,
     I18nRegistry,
     IntlProvider,
     MediaUiProvider,

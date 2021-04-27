@@ -9,6 +9,7 @@ import useCreateTag from './useCreateTag';
 import useDeleteAsset from './useDeleteAsset';
 import useDeleteAssetCollection from './useDeleteAssetCollection';
 import useDeleteTag from './useDeleteTag';
+import useEvent from './useEvent';
 import useImportAsset from './useImportAsset';
 import useSelectAsset from './useSelectAsset';
 import useSelectAssetCollection from './useSelectAssetCollection';
@@ -39,6 +40,7 @@ export {
     useDeleteAsset,
     useDeleteAssetCollection,
     useDeleteTag,
+    useEvent,
     useImportAsset,
     useSelectAsset,
     useSelectAssetCollection,

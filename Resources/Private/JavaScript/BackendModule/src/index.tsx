@@ -26,7 +26,6 @@ import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from './core
 import App from './components/App';
 import ErrorBoundary from './components/ErrorBoundary';
 import loadIconLibrary from './lib/FontAwesome';
-import { EventProvider } from '../../core/src/provider/EventProvider';
 
 loadIconLibrary();
 
@@ -86,19 +85,17 @@ window.onload = async (): Promise<void> => {
                 <ApolloProvider client={client}>
                     <RecoilRoot>
                         <ErrorBoundary>
-                            <EventProvider>
-                                <MediaUiProvider
-                                    dummyImage={dummyImage}
-                                    containerRef={containerRef}
-                                    featureFlags={featureFlags}
-                                >
-                                    <MediaUiThemeProvider>
-                                        <DndProvider backend={HTML5Backend}>
-                                            <AppWithHmr />
-                                        </DndProvider>
-                                    </MediaUiThemeProvider>
-                                </MediaUiProvider>
-                            </EventProvider>
+                            <MediaUiProvider
+                                dummyImage={dummyImage}
+                                containerRef={containerRef}
+                                featureFlags={featureFlags}
+                            >
+                                <MediaUiThemeProvider>
+                                    <DndProvider backend={HTML5Backend}>
+                                        <AppWithHmr />
+                                    </DndProvider>
+                                </MediaUiThemeProvider>
+                            </MediaUiProvider>
                         </ErrorBoundary>
                     </RecoilRoot>
                 </ApolloProvider>

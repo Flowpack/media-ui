@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createRef } from 'react';
 import { connect } from 'react-redux';
 import { RecoilRoot } from 'recoil';
-import { ApolloProvider, ApolloClient, ApolloLink } from '@apollo/client';
+import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 import { $get, $transform } from 'plow-js';
 
@@ -15,13 +15,13 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 // Media UI dependencies
 import {
     I18nRegistry,
+    IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,
-    NotifyProvider,
-    IntlProvider,
     Notify,
+    NotifyProvider,
 } from '@media-ui/core/src';
-import { PersistentStateManager, ApolloErrorHandler, CacheFactory } from 'backend-module/src/core';
+import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from 'backend-module/src/core';
 import App from 'backend-module/src/components/App';
 
 // GraphQL type definitions
