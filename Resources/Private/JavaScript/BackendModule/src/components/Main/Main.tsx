@@ -34,15 +34,19 @@ const Main: React.FC = () => {
     const [assetIdentities, setAssetIdentities] = useState([]);
 
     const queriedAssets = useMemo(() => {
-        return assets.map(({ id, assetSource }) => {
-            return { assetId: id, assetSourceId: assetSource.id };
-        });
+        return assets
+            .filter((asset) => asset?.id)
+            .map(({ id, assetSource }) => {
+                return { assetId: id, assetSourceId: assetSource.id };
+            });
     }, [assets]);
 
     const queriedUnusedAssets = useMemo(() => {
-        return unusedAssets.map(({ id, assetSource }) => {
-            return { assetId: id, assetSourceId: assetSource.id };
-        });
+        return unusedAssets
+            .filter((asset) => asset?.id)
+            .map(({ id, assetSource }) => {
+                return { assetId: id, assetSourceId: assetSource.id };
+            });
     }, [unusedAssets]);
 
     useEffect(() => {
