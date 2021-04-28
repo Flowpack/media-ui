@@ -2,6 +2,7 @@ import { createEvent } from './createEvent';
 import { AssetIdentity } from '../interfaces';
 
 const assetCreatedEvent = createEvent<AssetIdentity>('ASSET_CREATED');
-const assetDeletedEvent = createEvent<AssetIdentity>('ASSET_DELETED');
+const assetRemovedEvent = createEvent<AssetIdentity>('ASSET_REMOVED');
+const assetUpdatedEvent = createEvent<AssetIdentity>('ASSET_UPDATED');
 
-export { assetCreatedEvent, assetDeletedEvent };
+export { assetCreatedEvent, assetRemovedEvent, assetUpdatedEvent };

@@ -15,6 +15,8 @@ setTimeout(() => {
         'data-features',
         JSON.stringify({
             queryAssetUsage: true,
+            pollForChanges: true,
+            useNewMediaSelection: true,
         } as FeatureFlags)
     );
     app.setAttribute('data-dummy-image', '/dummy-image.svg');

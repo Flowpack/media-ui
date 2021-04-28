@@ -5,6 +5,8 @@ import { DELETE_ASSET } from '../mutations';
 import { AssetIdentity } from '../interfaces';
 import { selectedAssetIdState } from '../state';
 import { ASSET } from '../queries';
+import { useEvent } from './index';
+import { assetRemovedEvent } from '../events';
 
 interface DeleteAssetVariables {
     id: string;
@@ -14,6 +16,7 @@ interface DeleteAssetVariables {
 export default function useDeleteAsset() {
     const [action, { error, data }] = useMutation<{ deleteAsset: boolean }, DeleteAssetVariables>(DELETE_ASSET);
     const [selectedAssetId, setSelectedAsset] = useRecoilState(selectedAssetIdState);
+    const assetRemoved = useEvent(assetRemovedEvent);
 
     // TODO: Check whether an optimisticResponse can be used here
     // Without a fast asset usage count retrieval a lot of negative responses are possible
@@ -37,6 +40,8 @@ export default function useDeleteAsset() {
             if (!success) {
                 throw new Error('Could not delete asset');
             }
+
+            assetRemoved({ assetId, assetSourceId });
 
             // Unselect currently selected asset if it was just deleted
             if (assetId === selectedAssetId?.assetId) {

@@ -15,10 +15,8 @@ Flowpack.Media.Ui.MediaController {
             path = 'resource://Neos.Neos/Public/Images/dummy-image.svg'
         }
 
-        data-features = Neos.Fusion:DataStructure {
-            queryAssetUsage = ${!!Configuration.setting('Neos.Neos.Ui.frontendConfiguration')['Flowpack.Media.Ui'].queryAssetUsage}
-            @process.stringify = ${Json.stringify(value)}
-        }
+        data-features = ${Configuration.setting('Neos.Neos.Ui.frontendConfiguration')['Flowpack.Media.Ui']}
+        data-features.@process.stringify = ${Json.stringify(value)}
 
         renderer = afx`
             <div id="media-ui-app" {...props}>

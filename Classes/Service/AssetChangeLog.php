@@ -20,6 +20,9 @@ use Neos\Cache\Frontend\StringFrontend;
 use Neos\Flow\Annotations as Flow;
 
 /**
+ * Logs changes to assets
+ * TODO: Make more generic to also capture changes to tags & collections
+ *
  * @Flow\Scope("singleton")
  */
 final class AssetChangeLog

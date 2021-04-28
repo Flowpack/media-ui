@@ -4,6 +4,7 @@ import { useRecoilValue } from 'recoil';
 import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
+import { ConcurrencyWatcher } from '@media-ui/feature-concurrency/src';
 
 import { SideBarLeft } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
@@ -112,6 +113,7 @@ const App = () => {
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
 
             <ClipboardWatcher />
+            <ConcurrencyWatcher />
         </div>
     );
 };

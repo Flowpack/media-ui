@@ -1,0 +1,8 @@
+Neos:
+  Neos:
+    Ui:
+      frontendConfiguration:
+        Flowpack.Media.Ui:
+          useNewMediaSelection: true
+          queryAssetUsage: false
+          pollForChanges: true

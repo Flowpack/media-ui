@@ -6,6 +6,7 @@ import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 
 import { Tag } from '@media-ui/core/src/interfaces';
+import { AssetChange, AssetChangeQueryResult, AssetChangeType } from '@media-ui/feature-concurrency/src';
 
 import { getUsageDetailsForAsset, loadFixtures } from './fixtures';
 
@@ -29,6 +30,18 @@ const filterAssets = (assetSourceId = '', tag = '', assetCollection = '', mediaT
     });
 };
 
+const changedAssetsResponse: AssetChangeQueryResult = {
+    changedAssets: {
+        lastModified: null,
+        changes: [],
+    },
+};
+
+const addAssetChange = (change: AssetChange) => {
+    changedAssetsResponse.changedAssets.lastModified = change.lastModified;
+    changedAssetsResponse.changedAssets.changes.push(change);
+};
+
 const resolvers = {
     Query: {
         asset: ($_, { id, assetSourceId = 'neos' }) =>
@@ -49,6 +62,15 @@ const resolvers = {
         unusedAssets: ($_, { limit = 20, offset = 0 }) =>
             assets.filter(({ isInUse }) => !isInUse).slice(offset, offset + limit),
         unusedAssetCount: () => assets.filter(({ isInUse }) => !isInUse).length,
+        changedAssets: ($_, { since }) => {
+            const { lastModified, changes } = changedAssetsResponse.changedAssets;
+            since = since ? new Date(since) : null;
+
+            return {
+                lastModified,
+                changes: since ? changes.filter((change) => change.lastModified > since) : changes,
+            };
+        },
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         assetCount: (
             $_,
@@ -66,6 +88,7 @@ const resolvers = {
         tag: ($_, { id }) => tags.find((tag) => tag.id === id),
         config: () => ({
             uploadMaxFileSize: 1024 * 1024,
+            currentServerTime: new Date(),
         }),
     },
     Mutation: {
@@ -74,11 +97,22 @@ const resolvers = {
             asset.label = label;
             asset.caption = caption;
             asset.copyrightNotice = copyrightNotice;
+            asset.lastModified = new Date();
+            addAssetChange({
+                lastModified: asset.lastModified,
+                assetId: id,
+                type: AssetChangeType.ASSET_UPDATED,
+            });
             return asset;
         },
         setAssetTags: ($_, { id, assetSourceId, tagIds }: { id: string; assetSourceId: string; tagIds: string[] }) => {
             const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
             asset.tags = tags.filter((tag) => tagIds.includes(tag.id));
+            addAssetChange({
+                lastModified: asset.lastModified,
+                assetId: id,
+                type: AssetChangeType.ASSET_UPDATED,
+            });
             return asset;
         },
         setAssetCollections: (
@@ -91,6 +125,11 @@ const resolvers = {
         ) => {
             const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
             asset.collections = assetCollections.filter((collection) => newAssetCollectionIds.includes(collection.id));
+            addAssetChange({
+                lastModified: asset.lastModified,
+                assetId: id,
+                type: AssetChangeType.ASSET_UPDATED,
+            });
             return asset;
         },
         deleteTag: ($_, { id }) => {
@@ -98,6 +137,7 @@ const resolvers = {
                 tags.findIndex((tag) => tag.id === id),
                 1
             );
+            // TODO: Remove tag from assets
             return true;
         },
         deleteAsset: ($_, { id: id, assetSourceId }) => {
@@ -108,6 +148,11 @@ const resolvers = {
             const assetIndex = assets.findIndex((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
             if (assetIndex >= 0) {
                 assets.splice(assetIndex, 1);
+                addAssetChange({
+                    lastModified: new Date(),
+                    assetId: id,
+                    type: AssetChangeType.ASSET_REMOVED,
+                });
                 return true;
             }
             return false;

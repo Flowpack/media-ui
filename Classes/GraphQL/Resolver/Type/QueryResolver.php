@@ -241,6 +241,7 @@ class QueryResolver implements ResolverInterface
     {
         return [
             'uploadMaxFileSize' => $this->getMaximumFileUploadSize(),
+            'currentServerTime' => (new \DateTime())->format(DATE_W3C),
         ];
     }
 

@@ -112,9 +112,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
     getApolloClient() {
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
-            const cache = CacheFactory.createCache({
-                queryAssetUsage: this.props.frontendConfiguration.queryAssetUsage,
-            });
+            const cache = CacheFactory.createCache(this.props.frontendConfiguration as FeatureFlags);
             PersistentStateManager.restoreLocalState(cache);
 
             apolloClient = new ApolloClient({
@@ -152,9 +150,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
         const { dummyImage } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
 
-        const featureFlags: FeatureFlags = {
-            queryAssetUsage: this.props.frontendConfiguration.queryAssetUsage,
-        };
+        const featureFlags: FeatureFlags = this.props.frontendConfiguration as FeatureFlags;
 
         const Notification: Notify = {
             info: (message) => addFlashMessage(message, message, 'error'),

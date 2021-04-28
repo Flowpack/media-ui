@@ -68,7 +68,8 @@ type Query {
     assetUsageCount(id: AssetId!, assetSourceId: AssetSourceId!): Int!
 
     """
-    list of recently changed asset ids
+    list of recently changed asset ids, and the time & type of the change
+    // TODO: Make this more generic as other entities like Tags and Collections can change too
     """
     changedAssets(since: DateTime): ChangedAssetsResult!
 
@@ -130,7 +131,8 @@ type Mutation {
 Configuration object containing helpful parameters for API interaction
 """
 type Config {
-    uploadMaxFileSize: FileSize
+    uploadMaxFileSize: FileSize!
+    currentServerTime: DateTime!
 }
 
 """
@@ -276,12 +278,19 @@ type ChangedAssetsResult {
     changes: [AssetChange!]!
 }
 
+"""
+One single change to an asset
+TODO: Include assetSourceId, currently changes only happen in the Neos asset source, but might happen somewhere else too
+"""
 type AssetChange {
     lastModified: DateTime!
     assetId: AssetId!
     type: AssetChangeType!
 }
 
+"""
+The type of a change to an asset
+"""
 enum AssetChangeType {
     ASSET_CREATED
     ASSET_UPDATED

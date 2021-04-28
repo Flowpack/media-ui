@@ -4,6 +4,7 @@ import { CONFIG } from '../queries';
 interface ConfigQueryResult {
     config: {
         uploadMaxFileSize: number;
+        currentServerTime: Date;
     };
 }
 
