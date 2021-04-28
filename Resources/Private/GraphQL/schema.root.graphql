@@ -68,6 +68,11 @@ type Query {
     assetUsageCount(id: AssetId!, assetSourceId: AssetSourceId!): Int!
 
     """
+    list of recently changed asset ids
+    """
+    changedAssets(since: DateTime): ChangedAssetsResult!
+
+    """
     all tags
     """
     tags: [Tag!]!
@@ -261,6 +266,27 @@ The result of asset collection deletion
 """
 type DeleteAssetCollectionResult {
     success: Boolean!
+}
+
+"""
+The result of the changed assets query containing the hash of the last change and all changed asset ids
+"""
+type ChangedAssetsResult {
+    lastModified: DateTime
+    changes: [AssetChange!]!
+}
+
+type AssetChange {
+    lastModified: DateTime!
+    assetId: AssetId!
+    type: AssetChangeType!
+}
+
+enum AssetChangeType {
+    ASSET_CREATED
+    ASSET_UPDATED
+    ASSET_REPLACED
+    ASSET_REMOVED
 }
 
 """

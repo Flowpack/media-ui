@@ -1,0 +1,12 @@
+'Flowpack\Media\Ui\Service\AssetChangeLog':
+  arguments:
+    1:
+      object:
+        factoryObjectName: Neos\Flow\Cache\CacheManager
+        factoryMethodName: getCache
+        arguments:
+          1:
+            value: Flowpack_Media_Ui_PollingCache
+    2:
+      # cache lifetime
+      value: 10

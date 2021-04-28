@@ -16,6 +16,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
+use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetCollection;
@@ -72,6 +73,12 @@ class QueryResolver implements ResolverInterface
      * @var UsageDetailsService
      */
     protected $assetUsageService;
+
+    /**
+     * @Flow\Inject
+     * @var AssetChangeLog
+     */
+    protected $assetChangeLog;
 
     /**
      * Returns total count of asset proxies in the given asset source
@@ -396,5 +403,34 @@ class QueryResolver implements ResolverInterface
         ] = $variables + ['id' => null, 'assetSourceId' => null];
 
         return $assetSourceContext->getAssetProxy($id, $assetSourceId);
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @return array
+     */
+    public function changedAssets($_, array $variables): array
+    {
+        /** @var string $since */
+        $since = $variables['since'] ?? null;
+        $changes = $this->assetChangeLog->getChanges();
+
+        $filteredChanges = [];
+        $lastModified = null;
+        foreach ($changes as $change) {
+            if ($since !== null && $change['lastModified'] <= $since) {
+                continue;
+            }
+            if ($lastModified === null || $change['lastModified'] > $lastModified) {
+                $lastModified = $change['lastModified'];
+            }
+            $filteredChanges[] = $change;
+        }
+
+        return [
+            'lastModified' => $lastModified,
+            'changes' => $filteredChanges,
+        ];
     }
 }
