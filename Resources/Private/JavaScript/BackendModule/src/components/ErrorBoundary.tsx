@@ -23,7 +23,15 @@ class ErrorBoundary extends React.Component<
 
     render() {
         if (this.state.hasError) {
-            return <p style={{ color: 'red' }}>Something went wrong.</p>;
+            return (
+                <>
+                    <p style={{ color: 'red' }}>Something went wrong.</p>
+                    <br />
+                    <button className="neos-button" onClick={() => window.location.reload()}>
+                        Reload
+                    </button>
+                </>
+            );
         }
 
         return this.props.children;
