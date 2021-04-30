@@ -5,7 +5,7 @@ import 'react-image-lightbox/style.css';
 
 import { createUseMediaUiStyles, useMediaUi, useMediaUiTheme } from '@media-ui/core/src';
 
-import { selectedAssetForPreviewState } from '../state';
+import selectedAssetForPreviewState from '../state/selectedAssetForPreviewState';
 
 const useStyles = createUseMediaUiStyles({
     lightbox: {
@@ -20,6 +20,8 @@ export default function AssetPreview() {
     const theme = useMediaUiTheme();
     const { containerRef } = useMediaUi();
     const [selectedAssetForPreview, setSelectedAssetForPreview] = useRecoilState(selectedAssetForPreviewState);
+
+    // TODO: Handle pdf fiels with pdf viewer https://github.com/Flowpack/media-ui/issues/29
 
     if (!selectedAssetForPreview) return null;
 

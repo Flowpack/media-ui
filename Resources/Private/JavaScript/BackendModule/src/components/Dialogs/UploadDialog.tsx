@@ -188,14 +188,16 @@ const UploadDialog: React.FC = () => {
             onRequestClose={handleRequestClose}
             actions={[
                 <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>
-                    {translate('uploadDialog.cancel', 'Cancel')}
+                    {uploadState
+                        ? translate('uploadDialog.close', 'Close')
+                        : translate('uploadDialog.cancel', 'Cancel')}
                 </Button>,
                 <Button
                     key="upload"
                     style="success"
                     hoverStyle="success"
                     disabled={!uploadPossible}
-                    onClick={() => handleUpload()}
+                    onClick={handleUpload}
                 >
                     {translate('uploadDialog.upload', 'Upload')}
                 </Button>,

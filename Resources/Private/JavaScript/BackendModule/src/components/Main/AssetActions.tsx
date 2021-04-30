@@ -8,8 +8,7 @@ import { useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
 import { Asset } from '@media-ui/core/src/interfaces';
 import { useImportAsset } from '@media-ui/core/src/hooks';
 import { useClipboard } from '@media-ui/feature-clipboard/src';
-
-import { selectedAssetForPreviewState } from '../../state';
+import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview/src';
 
 interface ItemActionsProps {
     asset: Asset;

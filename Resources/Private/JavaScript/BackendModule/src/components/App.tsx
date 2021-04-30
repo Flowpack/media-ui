@@ -12,10 +12,10 @@ import LoadingIndicator from './LoadingIndicator';
 import { BottomBar } from './BottomBar';
 import { TopBar } from './TopBar';
 import { Main } from './Main';
-import AssetPreview from './AssetPreview';
 import { createAssetCollectionDialogState, createTagDialogState, uploadDialogVisibleState } from '../state';
 import { CreateTagDialog, UploadDialog, CreateAssetCollectionDialog } from './Dialogs';
 import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets/src';
+import { AssetPreview } from '../../../asset-preview/src';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode }) => ({

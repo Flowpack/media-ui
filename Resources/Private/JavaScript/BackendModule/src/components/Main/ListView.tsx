@@ -6,9 +6,9 @@ import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/sr
 import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 import { useSelectAsset } from '@media-ui/core/src/hooks';
+import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview/src';
 
 import { ListViewItem } from './index';
-import { selectedAssetForPreviewState } from '../../state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: {

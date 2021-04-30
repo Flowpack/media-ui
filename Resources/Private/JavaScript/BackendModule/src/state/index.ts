@@ -1,7 +1,6 @@
 import createAssetCollectionDialogState from './createAssetCollectionDialogState';
 import createTagDialogState from './createTagDialogState';
 import { mainViewState, MainViewState } from './mainViewState';
-import selectedAssetForPreviewState from './selectedAssetForPreviewState';
 import uploadDialogVisibleState from './uploadDialogVisibleState';
 
 export {
@@ -9,6 +8,5 @@ export {
     createTagDialogState,
     mainViewState,
     MainViewState,
-    selectedAssetForPreviewState,
     uploadDialogVisibleState,
 };

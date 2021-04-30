@@ -16,6 +16,7 @@
     "@media-ui/feature-clipboard": "*",
     "@media-ui/feature-concurrency": "*",
     "@media-ui/feature-similar-assets": "*",
+    "@media-ui/feature-asset-preview": "*",
     "@neos-project/react-ui-components": "^5.3.4",
     "apollo-upload-client": "^14.1.3",
     "classnames": "^2.2.6",
