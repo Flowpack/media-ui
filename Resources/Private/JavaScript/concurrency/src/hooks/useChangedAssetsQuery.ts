@@ -42,6 +42,7 @@ export default function useChangedAssetsQuery() {
     // Query will continue to run on its own and poll the api
     const { data, client } = useQuery<AssetChangeQueryResult>(CHANGED_ASSETS, {
         variables: { since: lastUpdate ?? config?.currentServerTime },
+        // TODO: slow down or skip requests when errors occur
         pollInterval,
         skip: !config?.currentServerTime,
     });
