@@ -5,6 +5,7 @@ import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing/src';
+import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets/src';
 
 import { SideBarLeft } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
@@ -12,9 +13,9 @@ import LoadingIndicator from './LoadingIndicator';
 import { BottomBar } from './BottomBar';
 import { TopBar } from './TopBar';
 import { Main } from './Main';
+import ErrorBoundary from './ErrorBoundary';
 import { createAssetCollectionDialogState, createTagDialogState, uploadDialogVisibleState } from '../state';
 import { CreateTagDialog, UploadDialog, CreateAssetCollectionDialog } from './Dialogs';
-import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets/src';
 import { AssetPreview } from '../../../asset-preview/src';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -89,7 +90,9 @@ const App = () => {
             <LoadingIndicator />
 
             <div className={classes.gridLeft}>
-                <SideBarLeft />
+                <ErrorBoundary>
+                    <SideBarLeft />
+                </ErrorBoundary>
             </div>
 
             <div className={classes.gridTop}>
@@ -97,14 +100,18 @@ const App = () => {
             </div>
 
             <div className={classes.gridMain}>
-                <Main />
+                <ErrorBoundary>
+                    <Main />
+                </ErrorBoundary>
             </div>
 
             <BottomBar />
 
             {!selectionMode && (
                 <div className={classes.gridRight}>
-                    <SideBarRight />
+                    <ErrorBoundary>
+                        <SideBarRight />
+                    </ErrorBoundary>
                 </div>
             )}
 
