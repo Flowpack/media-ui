@@ -8,9 +8,9 @@ import { assetCreatedEvent, assetRemovedEvent, assetUpdatedEvent } from '@media-
 import useChangedAssetsQuery, { AssetChangeType } from '../hooks/useChangedAssetsQuery';
 
 /**
- * Renderless component to watch for remote changes and update cached assets and inform the user if necessary
+ * Renderless component to watch for remote changes, update cached assets and inform the user if necessary
  */
-const ConcurrencyWatcher: React.FC = () => {
+const ConcurrentChangeMonitor: React.FC = () => {
     const changedAssets = useChangedAssetsQuery();
     const { refetch: refetchAsset } = useAssetQuery();
     const { refetch: refetchAssets } = useAssetsQuery();
@@ -49,4 +49,4 @@ const ConcurrencyWatcher: React.FC = () => {
     return null;
 };
 
-export default React.memo(ConcurrencyWatcher);
+export default React.memo(ConcurrentChangeMonitor);

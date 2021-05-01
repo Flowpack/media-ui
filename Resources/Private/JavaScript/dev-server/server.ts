@@ -6,7 +6,7 @@ import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 
 import { Tag } from '@media-ui/core/src/interfaces';
-import { AssetChange, AssetChangeQueryResult, AssetChangeType } from '@media-ui/feature-concurrency/src';
+import { AssetChange, AssetChangeQueryResult, AssetChangeType } from '@media-ui/feature-concurrent-editing/src';
 
 import { getUsageDetailsForAsset, loadFixtures } from './fixtures';
 

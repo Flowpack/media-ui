@@ -1,4 +1,4 @@
-import ConcurrencyWatcher from './components/ConcurrencyWatcher';
+import ConcurrentChangeMonitor from './components/ConcurrentChangeMonitor';
 import useChangedAssetsQuery, {
     AssetChange,
     AssetChangeQueryResult,
@@ -7,7 +7,7 @@ import useChangedAssetsQuery, {
 import changedAssets from './queries/changedAssets';
 
 export {
-    ConcurrencyWatcher,
+    ConcurrentChangeMonitor,
     useChangedAssetsQuery,
     changedAssets,
     AssetChangeQueryResult,

@@ -14,7 +14,7 @@
     "@media-ui/core": "*",
     "@media-ui/feature-asset-usage": "*",
     "@media-ui/feature-clipboard": "*",
-    "@media-ui/feature-concurrency": "*",
+    "@media-ui/feature-concurrent-editing": "*",
     "@media-ui/feature-similar-assets": "*",
     "@media-ui/feature-asset-preview": "*",
     "@neos-project/react-ui-components": "^5.3.4",

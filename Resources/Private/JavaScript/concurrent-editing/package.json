@@ -1,5 +1,5 @@
 {
-  "name": "@media-ui/feature-concurrency",
+  "name": "@media-ui/feature-concurrent-editing",
   "version": "1.0.0",
   "license": "GNU GPLv3",
   "private": true,
