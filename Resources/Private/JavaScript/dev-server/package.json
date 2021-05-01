@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "GNU GPLv3",
   "dependencies": {
-    "backend-module": "*"
+    "@media-ui/media-module": "*"
   },
   "devDependencies": {
     "express": "^4.17.1",

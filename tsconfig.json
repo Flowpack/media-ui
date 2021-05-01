@@ -8,7 +8,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "jsx": "react",
-    "typeRoots": ["./Resources/Private/JavaScript/typings"],
+    "typeRoots": ["./Resources/Private/JavaScript/core/typings"],
     "baseUrl": "./",
     "paths": {
       "@media-ui/feature-asset-usage/src/*": ["./Resources/Private/JavaScript/asset-usage/src/*"],

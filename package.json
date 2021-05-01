@@ -12,10 +12,10 @@
     "test": "testcafe",
     "dev": "yarn workspace @media-ui/dev-server run dev",
     "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:editor\"",
-    "watch:module": "yarn workspace backend-module run watch",
+    "watch:module": "yarn workspace @media-ui/media-module run watch",
     "watch:editor": "yarn workspace @media-ui/media-selection-screen run watch",
     "build": "yarn build:module && yarn build:editor",
-    "build:module": "yarn workspace backend-module run build",
+    "build:module": "yarn workspace @media-ui/media-module run build",
     "build:editor": "yarn workspace @media-ui/media-selection-screen run build",
     "test:github-actions": "xvfb-run --server-args=\"-screen 0 1280x720x24\" yarn testcafe chrome"
   },

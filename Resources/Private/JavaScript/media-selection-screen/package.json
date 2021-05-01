@@ -13,7 +13,7 @@
   "dependencies": {
     "@media-ui/core": "*",
     "@neos-project/neos-ui-extensibility": "^5.3.4",
-    "backend-module": "*"
+    "@media-ui/media-module": "*"
   },
   "devDependencies": {
     "webpack": "^4.44.2",

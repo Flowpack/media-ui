@@ -21,8 +21,8 @@ import {
     Notify,
     NotifyProvider,
 } from '@media-ui/core/src';
-import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from 'backend-module/src/core';
-import App from 'backend-module/src/components/App';
+import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from '@media-ui/media-module/src/core';
+import App from '@media-ui/media-module/src/components/App';
 
 // GraphQL type definitions
 import TYPE_DEFS_CORE from '@media-ui/core/schema.graphql';
@@ -31,7 +31,7 @@ import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql'
 
 // GraphQL local resolvers
 import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
-import buildModuleResolver from 'backend-module/src/resolvers/mutation';
+import buildModuleResolver from '@media-ui/media-module/src/resolvers/mutation';
 import { FeatureFlags } from '@media-ui/core/src/interfaces';
 
 let apolloClient = null;
