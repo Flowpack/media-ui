@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 
@@ -84,7 +84,7 @@ const dateFormatOptions = {
 
 interface ListViewItemProps {
     assetIdentity: AssetIdentity;
-    onSelect: (asset: Asset) => void;
+    onSelect: (assetIdentity: AssetIdentity, openPreview: boolean) => void;
 }
 
 const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: ListViewItemProps) => {
@@ -94,7 +94,7 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: 
     const [selectedAssetId] = useRecoilState(selectedAssetIdState);
     const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
 
-    const onSelectItem = useCallback(() => onSelect(asset), [onSelect, asset]);
+    const onSelectItem = useCallback(() => onSelect(assetIdentity, isSelected), [onSelect, assetIdentity, isSelected]);
 
     return (
         <tr className={[classes.listViewItem, isSelected ? classes.selected : ''].join(' ')}>

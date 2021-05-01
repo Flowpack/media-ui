@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { useMediaUi } from '../provider';
-import { Asset } from '../interfaces';
+import { AssetIdentity } from '../interfaces';
 import { selectedAssetIdState } from '../state';
 import selectedInspectorViewState from '../state/selectedInspectorViewState';
 
@@ -11,10 +11,10 @@ const useSelectAsset = () => {
     const setSelectedInspectorView = useSetRecoilState(selectedInspectorViewState);
     const { handleSelectAsset } = useMediaUi();
     return useCallback(
-        (asset: Asset) => {
-            if (!asset) return;
-            setSelectedAssetId({ assetId: asset.id, assetSourceId: asset.assetSource.id });
-            handleSelectAsset(asset);
+        (assetIdentity: AssetIdentity) => {
+            if (!assetIdentity) return;
+            setSelectedAssetId(assetIdentity);
+            handleSelectAsset(assetIdentity);
             setSelectedInspectorView('asset');
         },
         [setSelectedAssetId, handleSelectAsset, setSelectedInspectorView]

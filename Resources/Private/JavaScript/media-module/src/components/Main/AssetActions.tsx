@@ -25,7 +25,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     // TODO: Optimize rendering this component when hooks change, as it takes quite a bit of time
 
     const onImportAsset = useCallback(() => {
-        importAsset(asset)
+        importAsset({ assetId: asset.id, assetSourceId: asset.assetSource.id })
             .then(() => {
                 Notify.ok(translate('assetActions.import.success', 'Asset was successfully imported'));
             })
@@ -42,7 +42,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                 size="regular"
                 style="transparent"
                 hoverStyle="brand"
-                onClick={() => setSelectedAssetForPreview(asset)}
+                onClick={() => setSelectedAssetForPreview({ assetId: asset.id, assetSourceId: asset.assetSource.id })}
             />
             {!asset.imported && !asset.localId && (
                 <IconButton

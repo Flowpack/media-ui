@@ -1,8 +1,8 @@
 import { atom } from 'recoil';
 
-import { Asset } from '@media-ui/core/src/interfaces';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
 
-const selectedAssetForPreviewState = atom<Asset>({
+const selectedAssetForPreviewState = atom<AssetIdentity>({
     key: 'selectedAssetForPreviewState',
     default: null,
 });

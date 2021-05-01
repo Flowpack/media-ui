@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 
 import { IMPORT_ASSET } from '../mutations';
-import { Asset } from '../interfaces';
+import { Asset, AssetIdentity } from '../interfaces';
 
 interface ImportAssetVariables {
     id: string;
@@ -14,19 +14,11 @@ export default function useImportAsset() {
         ImportAssetVariables
     >(IMPORT_ASSET);
 
-    const importAsset = (asset: Asset, useOptimisticResponse = true) =>
+    const importAsset = (assetIdentity: AssetIdentity) =>
         action({
             variables: {
-                id: asset.id,
-                assetSourceId: asset.assetSource.id,
-            },
-            optimisticResponse: useOptimisticResponse && {
-                __typename: 'Mutation',
-                importAsset: {
-                    ...asset,
-                    imported: true,
-                    localId: 'tmp',
-                },
+                id: assetIdentity.assetId,
+                assetSourceId: assetIdentity.assetSourceId,
             },
         });
 

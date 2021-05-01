@@ -33,12 +33,12 @@ const ClipboardItem: React.FC<ClipboardItemProps> = ({ assetIdentity }: Clipboar
     const { translate } = useIntl();
 
     const onClick = useCallback(() => {
-        if (asset) {
-            selectAsset(asset);
+        if (assetIdentity) {
+            selectAsset(assetIdentity);
         } else {
             Notify.warning(translate('clipboard.assetNotLoaded', "Cannot select asset as it couldn't be loaded"));
         }
-    }, [asset, selectAsset, Notify, translate]);
+    }, [assetIdentity, selectAsset, Notify, translate]);
 
     return (
         <span onClick={onClick} className={classes.clipboardItem} title={asset?.isInClipboard + ''}>

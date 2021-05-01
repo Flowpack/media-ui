@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
-import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
-import { selectedAssetIdState } from '@media-ui/core/src/state';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useSelectAsset } from '@media-ui/core/src/hooks';
 import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview/src';
 
@@ -24,19 +23,18 @@ interface ThumbnailViewProps {
 
 const ThumbnailView: React.FC<ThumbnailViewProps> = ({ assetIdentities }: ThumbnailViewProps) => {
     const classes = useStyles();
-    const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const selectAsset = useSelectAsset();
 
     const onSelect = useCallback(
-        (asset: Asset) => {
-            if (asset.id === selectedAssetId?.assetId) {
-                setSelectedAssetForPreview(asset);
+        (assetIdentity: AssetIdentity, openPreview = false) => {
+            if (openPreview) {
+                setSelectedAssetForPreview(assetIdentity);
             } else {
-                selectAsset(asset);
+                selectAsset(assetIdentity);
             }
         },
-        [selectedAssetId, setSelectedAssetForPreview, selectAsset]
+        [setSelectedAssetForPreview, selectAsset]
     );
 
     return (

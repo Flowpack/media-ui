@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 
@@ -93,7 +93,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 interface ThumbnailProps {
     assetIdentity: AssetIdentity;
-    onSelect: (asset: Asset) => void;
+    onSelect: (assetIdentity: AssetIdentity, openPreview: boolean) => void;
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: ThumbnailProps) => {
@@ -107,7 +107,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: Thumbn
     return (
         <figure className={classes.thumbnail}>
             {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
-            <picture onClick={() => onSelect(asset)} className={classes.picture}>
+            <picture onClick={() => onSelect(assetIdentity, isSelected)} className={classes.picture}>
                 <img src={loading || !asset ? dummyImage : asset.thumbnailUrl} alt={asset?.label} />
             </picture>
             <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>

@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { createContext, useCallback, useContext } from 'react';
+import { useApolloClient, gql } from '@apollo/client';
 
 import { useIntl } from '@media-ui/core/src';
 
-import { Asset, FeatureFlags } from '../interfaces';
+import { Asset, AssetIdentity, FeatureFlags } from '../interfaces';
 import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
 
@@ -20,7 +21,7 @@ interface MediaUiProviderValues {
     containerRef: React.RefObject<HTMLDivElement>;
     dummyImage: string;
     handleDeleteAsset: (asset: Asset) => Promise<boolean>;
-    handleSelectAsset: (asset: Asset) => void;
+    handleSelectAsset: (assetIdentity: AssetIdentity) => void;
     selectionMode: boolean;
     assets: Asset[];
     refetchAssets: () => void;
@@ -40,6 +41,7 @@ export function MediaUiProvider({
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
+    const client = useApolloClient();
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
     const { assets, refetch: refetchAssets } = useAssetsQuery();
@@ -73,19 +75,30 @@ export function MediaUiProvider({
 
     // Handle selection mode for the secondary Neos UI inspector
     const handleSelectAsset = useCallback(
-        (asset: Asset) => {
-            if (!onAssetSelection || !asset) {
+        (assetIdentity: AssetIdentity) => {
+            if (!onAssetSelection || !assetIdentity) {
                 return;
             }
-            if (asset.localId) {
-                onAssetSelection(asset.localId);
+            // Read local asset id from cache as the asset editor requires it
+            const { localId } = client.readFragment({
+                fragment: gql`
+                    fragment LocalAssetId on Asset {
+                        localId
+                    }
+                `,
+                id: client.cache.identify({ __typename: 'Asset', id: assetIdentity.assetId }),
+            });
+
+            if (localId) {
+                onAssetSelection(localId);
             } else {
-                importAsset(asset, false).then(({ data }) => {
+                // If no local id is present, we first need to import the asset from its remote source
+                importAsset(assetIdentity).then(({ data }) => {
                     onAssetSelection(data.importAsset.localId);
                 });
             }
         },
-        [importAsset, onAssetSelection]
+        [client, importAsset, onAssetSelection]
     );
 
     return (
