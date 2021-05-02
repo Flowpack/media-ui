@@ -12,6 +12,6 @@ test('Preview opens lightbox', async (t) => {
     await t
         .hover(firstThumbnail)
         .click(firstThumbnailPreviewAction)
-        .expect(lightbox.find('.ril__image').getAttribute('src'))
+        .expect(lightbox.find('.ril-image-current').getAttribute('src'))
         .eql(await firstThumbnail.find('picture img').getAttribute('src'));
 });
