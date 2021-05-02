@@ -39,7 +39,7 @@ const ClipboardActions: React.FC = () => {
                     message
                 );
             });
-    }, [translate, clipboard, deleteAsset, toggleClipboardState, Notify]);
+    }, [translate, clipboard, deleteAsset, Notify]);
 
     const onFlushClipboard = useCallback(() => {
         if (!confirm(translate('clipboard.flush.confirm', 'Remove all assets from clipboard?'))) return;
