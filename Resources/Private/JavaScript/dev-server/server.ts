@@ -18,12 +18,12 @@ const bundler = new Bundler(__dirname + '/index.html', {
 
 let { assets, assetCollections, assetSources, tags } = loadFixtures();
 
-const filterAssets = (assetSourceId = '', tag = '', assetCollection = '', mediaType = '', searchTerm = '') => {
+const filterAssets = (assetSourceId = '', tagId = '', assetCollectionId = '', mediaType = '', searchTerm = '') => {
     return assets.filter((asset) => {
         return (
             (!assetSourceId || asset.assetSource.id === assetSourceId) &&
-            (!tag || asset.tags.find(({ label }) => label === tag)) &&
-            (!assetCollection || asset.collections.find(({ title }) => title === assetCollection)) &&
+            (!tagId || asset.tags.find(({ id }) => id === tagId)) &&
+            (!assetCollectionId || asset.collections.find(({ id }) => id === assetCollectionId)) &&
             (!searchTerm || asset.label.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0) &&
             (!mediaType || asset.file.mediaType.indexOf(mediaType) >= 0)
         );
@@ -51,14 +51,14 @@ const resolvers = {
             $_,
             {
                 assetSourceId = 'neos',
-                tag = null,
-                assetCollection = null,
+                tagId = null,
+                assetCollectionId = null,
                 mediaType = '',
                 searchTerm = '',
                 limit = 20,
                 offset = 0,
             }
-        ) => filterAssets(assetSourceId, tag, assetCollection, mediaType, searchTerm).slice(offset, offset + limit),
+        ) => filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm).slice(offset, offset + limit),
         unusedAssets: ($_, { limit = 20, offset = 0 }) =>
             assets.filter(({ isInUse }) => !isInUse).slice(offset, offset + limit),
         unusedAssetCount: () => assets.filter(({ isInUse }) => !isInUse).length,
@@ -74,9 +74,9 @@ const resolvers = {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         assetCount: (
             $_,
-            { assetSourceId = 'neos', tag = null, assetCollection = null, mediaType = '', searchTerm = '' }
+            { assetSourceId = 'neos', tagId = null, assetCollectionId = null, mediaType = '', searchTerm = '' }
         ) => {
-            return filterAssets(assetSourceId, tag, assetCollection, mediaType, searchTerm).length;
+            return filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm).length;
         },
         assetUsageDetails: ($_, { id }) => {
             return getUsageDetailsForAsset(id);
