@@ -15,7 +15,7 @@
     }
   },
   "include": [
-    "./Resources/Private/Javascript/**/*",
+    "./Resources/Private/JavaScript/**/*",
     "node_modules/@media-ui/feature-asset-usage/src/**/*"
   ],
   "exclude": [
