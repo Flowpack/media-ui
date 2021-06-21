@@ -79,6 +79,22 @@ window.onload = async (): Promise<void> => {
 
     const AppWithHmr = hot(module)(App);
 
+    // If being called inside an iframe to choose an asset (as described in the section
+    // "choose assets by rendering media selection iFrame" in the main README.md),
+    // we need to set the onAssetSelection callback and set the selectionMode.
+    //
+    // To determine whether we are in this mode or not, we check the following things:
+    // - are we called from within an iframe?
+    // - on the PARENT frame, is window.NeosMediaBrowserCallbacks.assetChosen implemented and callable?
+    let selectionModeProps = {};
+    if (window.parent && window.parent['NeosMediaBrowserCallbacks'] && window.parent['NeosMediaBrowserCallbacks']['assetChosen']) {
+        const NeosMediaBrowserCallbacks = window.parent['NeosMediaBrowserCallbacks'];
+        selectionModeProps = {
+            onAssetSelection: (localAssetIdentifier) => NeosMediaBrowserCallbacks.assetChosen(localAssetIdentifier),
+            selectionMode: true
+        };
+    }
+
     render(
         <IntlProvider translate={translate}>
             <NotifyProvider notificationApi={Notification}>
@@ -89,6 +105,8 @@ window.onload = async (): Promise<void> => {
                                 dummyImage={dummyImage}
                                 containerRef={containerRef}
                                 featureFlags={featureFlags}
+
+                                {...selectionModeProps}
                             >
                                 <MediaUiThemeProvider>
                                     <DndProvider backend={HTML5Backend}>

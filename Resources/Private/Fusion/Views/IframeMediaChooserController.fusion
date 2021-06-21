@@ -1,0 +1,42 @@
+// This is the rendering of the stand-alone Iframe Media Selection mode.
+// It emulates the Fluid-based backend layout and calls the Neos JS Bootstrap,
+// so that the Media Selection UI can access e.g. the Neos translations as usual.
+//
+// This whole file is a WORKAROUND and should only be used until we can move some of this
+// into the Neos Core.
+Flowpack.Media.Ui.IframeMediaChooserController {
+    index = Neos.Fusion:Component {
+        mediaModule = Flowpack.Media.Ui:MediaModule
+
+        _neosJavascriptBasePath = ${StaticResource.uri('Neos.Neos', 'Public/JavaScript')}
+        _initScript = ${'<script>window.NeosCMS = {}; window.NeosCMS.Configuration = {}; window.NeosCMS.Configuration.neosJavascriptBasePath = ' + Json.stringify(this._neosJavascriptBasePath) + ';</script>'}
+
+        _xliffAsJsonUri = Neos.Fusion:UriBuilder {
+            package = 'Neos.Neos'
+            controller = 'Backend\\Backend'
+            action = 'xliffAsJson'
+            arguments {
+                locale = ${FlowpackMediaUi.MediaChooserNeosConfig.backendInterfaceLanguage()}
+                version = ${FlowpackMediaUi.MediaChooserNeosConfig.backendXliffCacheVersion()}
+            }
+            absolute = true
+        }
+
+        renderer = afx`
+            <html>
+            <head>
+                <link rel="stylesheet" href={StaticResource.uri('Neos.Neos', 'Public/Styles/Minimal.css')} />
+                <link rel="stylesheet" href={StaticResource.uri('Flowpack.Media.Ui', 'Public/Assets/main.bundle.css')} />
+
+                <link rel="neos-xliff" href={props._xliffAsJsonUri} />
+            </head>
+            <body class="neos neos-module" style="background-color: #222">
+                {props.mediaModule}
+                {props._initScript}
+                <script src={StaticResource.uri('Neos.Neos', 'Public/JavaScript/Main.min.js')}></script>
+                <script src={StaticResource.uri('Flowpack.Media.Ui', 'Public/Assets/main.bundle.js')}></script>
+            </body>
+            </html>
+        `
+    }
+}
