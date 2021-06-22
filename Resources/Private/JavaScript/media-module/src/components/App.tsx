@@ -22,7 +22,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode }) => ({
         display: 'grid',
         // TODO: Find a way to not calculate height to allow scrolling in main grid area
-        height: `calc(100vh - 40px * 4 - 21px)`,
+        height: `calc(100vh - 48px - 61px - 41px)`, // Remove top bar, body padding and bottom bar
         gridTemplateRows: '40px 1fr',
         gridTemplateColumns: selectionMode
             ? theme.size.sidebarWidth + ' 1fr'
@@ -72,6 +72,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             '& ::-webkit-scrollbar-thumb': {
                 backgroundColor: theme.colors.scrollbarForeground,
             },
+        },
+        '.neos.neos-module-management-mediaui > .neos-module-wrap': {
+            paddingLeft: '1rem',
+            paddingRight: '1rem',
+            paddingTop: '3rem',
+            paddingBottom: '0',
         },
     },
 }));
