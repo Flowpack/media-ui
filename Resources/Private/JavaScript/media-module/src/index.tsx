@@ -34,7 +34,7 @@ setConfig({
 });
 
 window.onload = async (): Promise<void> => {
-    while (!window.NeosCMS || !window.NeosCMS.I18n.initialized) {
+    while (!window.NeosCMS?.I18n?.initialized) {
         await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
