@@ -79,6 +79,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             paddingTop: '3rem',
             paddingBottom: '0',
         },
+        // Hack to prevent a dropdown to be behind the bottom bar - issue #79
+        'body > [class*="_selectBox__contents_"]': {
+            zIndex: 99999,
+        },
     },
 }));
 
