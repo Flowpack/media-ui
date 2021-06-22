@@ -1,27 +1,29 @@
-Flowpack.Media.Ui.MediaController {
-    index = Neos.Fusion:Component {
-        data-endpoints = Neos.Fusion:DataStructure {
-            graphql = '/neos/graphql/media-assets'
-            upload = Neos.Fusion:UriBuilder {
-                package = 'Flowpack.Media.Ui'
-                controller = 'Upload'
-                action = 'upload'
-                format = 'json'
-            }
-            @process.stringify = ${Json.stringify(value)}
+prototype(Flowpack.Media.Ui:MediaModule) < prototype(Neos.Fusion:Component) {
+    data-endpoints = Neos.Fusion:DataStructure {
+        graphql = '/neos/graphql/media-assets'
+        upload = Neos.Fusion:UriBuilder {
+            package = 'Flowpack.Media.Ui'
+            controller = 'Upload'
+            action = 'upload'
+            format = 'json'
         }
-
-        data-dummy-image = Neos.Fusion:ResourceUri {
-            path = 'resource://Neos.Neos/Public/Images/dummy-image.svg'
-        }
-
-        data-features = ${Configuration.setting('Neos.Neos.Ui.frontendConfiguration')['Flowpack.Media.Ui']}
-        data-features.@process.stringify = ${Json.stringify(value)}
-
-        renderer = afx`
-            <div id="media-ui-app" {...props}>
-                Loading media ui...
-            </div>
-        `
+        @process.stringify = ${Json.stringify(value)}
     }
+
+    data-dummy-image = Neos.Fusion:ResourceUri {
+        path = 'resource://Neos.Neos/Public/Images/dummy-image.svg'
+    }
+
+    data-features = ${Configuration.setting('Neos.Neos.Ui.frontendConfiguration')['Flowpack.Media.Ui']}
+    data-features.@process.stringify = ${Json.stringify(value)}
+
+    renderer = afx`
+        <div id="media-ui-app" {...props}>
+            Loading media ui...
+        </div>
+    `
+}
+
+Flowpack.Media.Ui.MediaController {
+    index = Flowpack.Media.Ui:MediaModule
 }

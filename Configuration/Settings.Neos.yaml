@@ -34,3 +34,7 @@ Neos:
         stylesheets:
           Flowpack.Media.Ui:AssetEditor:
             resource: resource://Flowpack.Media.Ui/Public/AssetEditor/Plugin.css
+
+  Fusion:
+    defaultContext:
+      'FlowpackMediaUi.MediaChooserNeosConfig': 'Flowpack\Media\Ui\Eel\MediaChooserNeosConfigHelper'

@@ -5,3 +5,10 @@
       package: 't3n.GraphQL'
       variables:
         'endpoint': 'media-assets'
+
+- name: 'IFrame Media Chooser'
+  uriPattern: 'neos/media/asset-choice'
+  defaults:
+    '@package': 'Flowpack.Media.Ui'
+    '@controller': 'IframeMediaChooser'
+    '@action': 'index'
