@@ -19,10 +19,12 @@ import { CreateTagDialog, UploadDialog, CreateAssetCollectionDialog } from './Di
 import { AssetPreview } from '../../../asset-preview/src';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    container: ({ selectionMode }) => ({
+    container: ({ selectionMode, isInNodeCreationDialog }) => ({
         display: 'grid',
         // TODO: Find a way to not calculate height to allow scrolling in main grid area
-        height: `calc(100vh - 48px - 61px - 41px)`, // Remove top bar, body padding and bottom bar
+        height: isInNodeCreationDialog
+            ? `calc(100% - 61px - 8px)` // Remove bottom bar and add padding
+            : `calc(100vh - 48px - 61px - 41px)`, // Remove top bar, body padding and bottom bar
         gridTemplateRows: '40px 1fr',
         gridTemplateColumns: selectionMode
             ? theme.size.sidebarWidth + ' 1fr'
@@ -87,13 +89,13 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 }));
 
 const App = () => {
-    const { selectionMode, containerRef } = useMediaUi();
+    const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
     const showUploadDialog = useRecoilValue(uploadDialogVisibleState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
-    const classes = useStyles({ selectionMode });
+    const classes = useStyles({ selectionMode, isInNodeCreationDialog });
 
     return (
         <div className={classes.container} ref={containerRef}>
