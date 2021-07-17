@@ -46,17 +46,20 @@ interface MediaSelectionScreenProps {
     type: 'assets' | 'images';
     onComplete: (localAssetIdentifier: string) => void;
     isLeftSideBarHidden: boolean;
+    isNodeCreationDialogOpen: boolean;
     toggleSidebar: () => void;
     addFlashMessage: (title: string, message: string, severity?: string, timeout?: number) => void;
 }
 
 interface MediaSelectionScreenState {
     initialLeftSideBarHiddenState: boolean;
+    initialNodeCreationDialogOpenState: boolean;
 }
 
 @connect(
     $transform({
         isLeftSideBarHidden: $get('ui.leftSideBar.isHidden'),
+        isNodeCreationDialogOpen: $get('ui.nodeCreationDialog.isOpen'),
     }),
     {
         addFlashMessage: actions.UI.FlashMessages.add,
@@ -76,23 +79,25 @@ export default class MediaSelectionScreen extends React.PureComponent<
         super(props);
         this.state = {
             initialLeftSideBarHiddenState: false,
+            initialNodeCreationDialogOpenState: false,
         };
     }
 
     componentDidMount() {
-        const { isLeftSideBarHidden, toggleSidebar } = this.props;
+        const { isLeftSideBarHidden, isNodeCreationDialogOpen, toggleSidebar } = this.props;
         this.setState({
             initialLeftSideBarHiddenState: isLeftSideBarHidden,
+            initialNodeCreationDialogOpenState: isNodeCreationDialogOpen,
         });
-        if (!isLeftSideBarHidden) {
+        if (!isLeftSideBarHidden && !isNodeCreationDialogOpen) {
             toggleSidebar();
         }
     }
 
     componentWillUnmount() {
         const { isLeftSideBarHidden, toggleSidebar } = this.props;
-        const { initialLeftSideBarHiddenState } = this.state;
-        if (initialLeftSideBarHiddenState !== isLeftSideBarHidden) {
+        const { initialLeftSideBarHiddenState, initialNodeCreationDialogOpenState } = this.state;
+        if (initialLeftSideBarHiddenState !== isLeftSideBarHidden && !initialNodeCreationDialogOpenState) {
             toggleSidebar();
         }
     }
@@ -160,8 +165,10 @@ export default class MediaSelectionScreen extends React.PureComponent<
             error: (title, message = '') => addFlashMessage(title, message, 'error'),
         };
 
+        const isInNodeCreationDialog = this.state.initialNodeCreationDialogOpenState;
+
         return (
-            <div style={{ transform: 'translateZ(0)', height: '100%', padding: '1rem' }}>
+            <div style={{ transform: 'translateZ(0)', height: '100%', padding: isInNodeCreationDialog ? 0 : '1rem' }}>
                 <IntlProvider translate={this.translate}>
                     <NotifyProvider notificationApi={Notification}>
                         <ApolloProvider client={client}>
@@ -170,6 +177,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
                                     dummyImage={dummyImage}
                                     onAssetSelection={(localAssetIdentifier) => onComplete(localAssetIdentifier)}
                                     selectionMode={true}
+                                    isInNodeCreationDialog={isInNodeCreationDialog}
                                     containerRef={containerRef}
                                     featureFlags={featureFlags}
                                 >
