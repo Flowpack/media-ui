@@ -3,13 +3,15 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useRecoilState } from 'recoil';
 
-import { Button, Icon, Dialog } from '@neos-project/react-ui-components';
+import { Button, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } from '@media-ui/core/src';
 import { useConfigQuery, useUploadFiles } from '@media-ui/core/src/hooks';
 
 import { humanFileSize } from '../../helper';
 import { uploadDialogVisibleState } from '../../state';
+
+import { Dialog } from './Dialog';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     uploadArea: {
