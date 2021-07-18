@@ -17,12 +17,33 @@ const useStyles = createUseMediaUiStyles({
     },
 });
 
+const useLightBoxContainer = (defaultContainer: null | Element = null) => {
+    const lightBoxContainerRef = React.useRef<null | Element>(defaultContainer);
+
+    React.useEffect(() => {
+        if (defaultContainer === null) {
+            const newLightBoxContainer = document.createElement('div');
+            newLightBoxContainer.setAttribute('data-ignore_click_outside', 'true');
+
+            document.body.appendChild(newLightBoxContainer);
+            lightBoxContainerRef.current = newLightBoxContainer;
+
+            return () => newLightBoxContainer.remove();
+        }
+
+        lightBoxContainerRef.current = defaultContainer;
+    }, [defaultContainer]);
+
+    return lightBoxContainerRef;
+};
+
 export default function AssetPreview() {
     const classes = useStyles();
     const theme = useMediaUiTheme();
-    const { containerRef, assets } = useMediaUi();
+    const { containerRef, isInNodeCreationDialog, assets } = useMediaUi();
     const [selectedAssetForPreview, setSelectedAssetForPreview] = useRecoilState(selectedAssetForPreviewState);
     const { asset } = useAssetQuery(selectedAssetForPreview);
+    const lightBoxContainer = useLightBoxContainer(isInNodeCreationDialog ? null : containerRef.current);
 
     const [prevAsset, nextAsset] = useMemo(() => {
         if (!asset) return [null, null];
@@ -40,7 +61,7 @@ export default function AssetPreview() {
     return (
         <Lightbox
             reactModalStyle={{ overlay: { zIndex: theme.lightboxZIndex } }}
-            reactModalProps={{ parentSelector: () => containerRef.current }}
+            reactModalProps={{ parentSelector: () => lightBoxContainer.current }}
             wrapperClassName={classes.lightbox}
             mainSrc={asset.previewUrl}
             mainSrcThumbnail={asset.thumbnailUrl}

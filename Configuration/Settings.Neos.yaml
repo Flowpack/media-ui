@@ -34,3 +34,7 @@ Neos:
         stylesheets:
           Flowpack.Media.Ui:AssetEditor:
             resource: resource://Flowpack.Media.Ui/Public/AssetEditor/Plugin.css
+          # Plugin.css is missing the styles for the Lightbox used for Asset Previews,
+          # so we have to include the main bundle as well
+          Flowpack.Media.Ui:Assets:
+            resource: resource://Flowpack.Media.Ui/Public/Assets/main.bundle.css
