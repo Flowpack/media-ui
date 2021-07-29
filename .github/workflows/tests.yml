@@ -14,7 +14,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '14'
+          cache: 'yarn'
 
       - name: Install dependencies
         run: yarn
@@ -28,26 +29,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Update Composer
-        run: |
-          sudo composer self-update
-          composer --version
-
-      # Directory permissions for .composer are wrong, so we remove the complete directory
-      # https://github.com/actions/virtual-environments/issues/824
-      - name: Delete .composer directory
-        run: |
-          sudo rm -rf ~/.composer
-
       - name: Cache dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.composer/cache
           key: dependencies-composer-${{ hashFiles('composer.json') }}
 
-      - name: Install distribution
-        run: |
-          composer install --no-interaction --no-progress
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: 7.4
+          version: 2
 
       - name: PHPStan
         uses: docker://oskarstark/phpstan-ga
@@ -64,7 +56,8 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '14'
+          cache: 'yarn'
       - uses: actions/checkout@v2
 
       - name: Install dependencies
