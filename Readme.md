@@ -143,14 +143,18 @@ We need your help to develop this package. You can find supporter badges on the 
 
 To start with development make sure you have `nvm` and `yarn` installed and run the following command in the packages folder:
 
-    yarn
+```console
+yarn
+```
     
 ### Running the standalone dev server without Neos
 
 The dev server allows to run the module without a Neos instance.
 This is also the basis for running most tests and implementing new features.
 
-    yarn dev
+```console
+yarn dev
+```
     
 Enter `localhost:8000` in your browser and you will have a running media ui instance without neos.
 
@@ -158,33 +162,45 @@ Enter `localhost:8000` in your browser and you will have a running media ui inst
 
 This will create a production build of the module assets.
 
-    yarn build
+```console
+yarn build
+```
     
 ### Recompile files during development
 
 The following command will recompile and reload the media module when changes to the scripts happen:
 
-    yarn watch
+```console
+yarn watch
+```
     
 #### Only watch the backend module code
 
-    yarn watch:module
+```console
+yarn watch:module
+```
     
 #### Only watch the UI plugin
 
-    yarn watch:editor
+```console
+yarn watch:editor
+```
 
 ### Check for code quality
 
 Run the following command to verify the TypeScript files:
 
-    yarn lint
+```console
+yarn lint
+```
     
 ### Run e2e tests
 
 First start the dev server via `yarn dev` and the run the following command to execute all end-to-end tests: 
 
-    yarn e2e
+```console
+yarn e2e
+```    
 
 The test configuration is defined in `.testcaferc.json`. Change the options there if you want to use
 a different browser or make some other changes.
@@ -195,11 +211,15 @@ First make sure you have [phpstand](https://phpstan.org) installed.
 
 When the package is installed in a Neos distribution:
 
-    phpstan analyse --autoload-file ../../Libraries/autoload.php
+```console
+phpstan analyse --autoload-file ../../Libraries/autoload.php
+```
     
 When the package is standalone
 
-    composer run phpstan 
+```console
+composer run phpstan
+``` 
     
 ### Other development hints
 
