@@ -152,10 +152,11 @@ export default class MediaSelectionScreen extends React.PureComponent<
 
         const featureFlags: FeatureFlags = this.props.frontendConfiguration as FeatureFlags;
 
+        // The Neos.UI Flashmessages only support the levels 'success', 'error' and 'info'
         const Notification: Notify = {
-            info: (message) => addFlashMessage(message, message, 'error'),
-            ok: (message) => addFlashMessage(message, message, 'error'),
-            notice: (message) => addFlashMessage(message, message, 'error'),
+            info: (message) => addFlashMessage(message, message, 'info'),
+            ok: (message) => addFlashMessage(message, message, 'success'),
+            notice: (message) => addFlashMessage(message, message, 'info'),
             warning: (title, message = '') => addFlashMessage(title, message, 'error'),
             error: (title, message = '') => addFlashMessage(title, message, 'error'),
         };
