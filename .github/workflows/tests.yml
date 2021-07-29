@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        -
+
       - name: Update Composer
         run: |
           sudo composer self-update
