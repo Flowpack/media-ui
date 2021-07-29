@@ -27,6 +27,28 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        -
+      - name: Update Composer
+        run: |
+          sudo composer self-update
+          composer --version
+
+      # Directory permissions for .composer are wrong, so we remove the complete directory
+      # https://github.com/actions/virtual-environments/issues/824
+      - name: Delete .composer directory
+        run: |
+          sudo rm -rf ~/.composer
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache
+          key: dependencies-composer-${{ hashFiles('composer.json') }}
+
+      - name: Install distribution
+        run: |
+          composer install --no-interaction --no-progress
+
       - name: PHPStan
         uses: docker://oskarstark/phpstan-ga
         with:

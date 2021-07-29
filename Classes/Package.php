@@ -17,6 +17,7 @@ use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Package\Package as BasePackage;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Service\AssetService;
 
@@ -44,19 +45,27 @@ class Package extends BasePackage
         };
         $dispatcher->connect(AssetService::class, 'assetCreated',
             function (AssetInterface $asset) use ($logAssetChangeClosure) {
-                $logAssetChangeClosure($asset, $asset->getLastModified(), 'ASSET_CREATED');
+                if ($asset instanceof Asset) {
+                    $logAssetChangeClosure($asset, $asset->getLastModified(), 'ASSET_CREATED');
+                }
             });
         $dispatcher->connect(AssetService::class, 'assetUpdated',
             function (AssetInterface $asset) use ($logAssetChangeClosure) {
-                $logAssetChangeClosure($asset, $asset->getLastModified(), 'ASSET_UPDATED');
+                if ($asset instanceof Asset) {
+                    $logAssetChangeClosure($asset, $asset->getLastModified(), 'ASSET_UPDATED');
+                }
             });
         $dispatcher->connect(AssetService::class, 'assetRemoved',
             function (AssetInterface $asset) use ($logAssetChangeClosure) {
-                $logAssetChangeClosure($asset, new \DateTime(), 'ASSET_REMOVED');
+                if ($asset instanceof Asset) {
+                    $logAssetChangeClosure($asset, new \DateTime(), 'ASSET_REMOVED');
+                }
             });
         $dispatcher->connect(AssetService::class, 'assetResourceReplaced',
             function (AssetInterface $asset) use ($logAssetChangeClosure) {
-                $logAssetChangeClosure($asset, $asset->getLastModified(), 'ASSET_REPLACED');
+                if ($asset instanceof Asset) {
+                    $logAssetChangeClosure($asset, $asset->getLastModified(), 'ASSET_REPLACED');
+                }
             });
     }
 }
