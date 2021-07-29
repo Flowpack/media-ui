@@ -88,6 +88,50 @@ Neos:
           showSimilarAssets: true
 ```
     
+### choose assets by rendering media selection iFrame
+
+In Flow applications or "traditional" Neos modules which are not implemented with React, you still sometimes
+need to choose assets. The Media UI provides an extra entry point to allow this. The process works roughly as follows:
+
+1) You open an iFrame, where you display the `IFrameMediaChooser` Controller.
+
+2) The user can pick an image.
+
+3) When the image is chosen, a JavaScript callback function in your outer frame (at location `window.NeosMediaBrowserCallbacks.assetChosen`)
+   is called.
+
+
+**How to set this up in detail?**
+
+1) You need to grant the `Flowpack.Media.Ui:IframeMediaChooser` privilegeTarget if you want to use this feature.
+   Add the following to your `Policy.yaml`, and adjust the role names as you need it for your use-case:
+   
+   ```yaml
+   roles:
+    'Neos.Neos:AbstractEditor':
+      privileges:
+        -
+          privilegeTarget: 'Flowpack.Media.Ui:IframeMediaChooser'
+          permission: GRANT
+   ```
+
+2) Define the callback function `window.NeosMediaBrowserCallbacks.assetChosen(assetId)`:
+
+   ```js
+   window.NeosMediaBrowserCallbacks = {
+       assetChosen: (assetId) => {
+           // do whatever you need to do here
+       }
+   }
+   ```
+
+3) Open the `IFrameMediaChooser` controller in an iframe. To generate the URL to open,
+   you can use the following `UriBuilder` invocation:
+   
+   ```php
+   return $uriBuilder->uriFor('index', [], 'IframeMediaChooser', 'Flowpack.Media.Ui');
+   ```
+
 ## Architecture
 
 ### API / GraphQL

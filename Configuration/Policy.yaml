@@ -4,6 +4,8 @@ privilegeTargets:
       matcher: 'method(public Flowpack\Media\Ui\Controller\MediaController->(.*)Action())'
     'Flowpack.Media.Ui:Queries':
       matcher: 'method(public Flowpack\Media\Ui\GraphQL\Resolver\(.*)Resolver->.*()) || method(t3n\GraphQL\Controller\GraphQLController->queryAction())'
+    'Flowpack.Media.Ui:IframeMediaChooser':
+      matcher: 'method(public Flowpack\Media\Ui\Controller\IframeMediaChooserController->(.*)Action())'
 
   'Neos\Neos\Security\Authorization\Privilege\ModulePrivilege':
     'Flowpack.Media.Ui:Backend.Module.Management.Media':
