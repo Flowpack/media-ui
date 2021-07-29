@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { useRecoilState } from 'recoil';
 
-import { Button, TextInput, Label, Dialog } from '@neos-project/react-ui-components';
+import { Button, TextInput, Label } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, useNotify } from '@media-ui/core/src';
 import { useCreateAssetCollection } from '@media-ui/core/src/hooks';
 
 import { useCallback } from 'react';
 import { createAssetCollectionDialogState } from '../../state';
+
+import { Dialog } from './Dialog';
 
 const useStyles = createUseMediaUiStyles(() => ({
     formBody: {

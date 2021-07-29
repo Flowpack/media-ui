@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useSelectAsset } from '@media-ui/core/src/hooks';
 import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview/src';
@@ -10,8 +10,9 @@ import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview/sr
 import { ListViewItem } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    listView: {
+    listView: ({ isInNodeCreationDialog }) => ({
         overflowY: 'scroll',
+        height: isInNodeCreationDialog ? '100%' : 'auto',
         '& table': {
             borderSpacing: '0 1px',
             width: '100%',
@@ -28,7 +29,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 },
             },
         },
-    },
+    }),
 }));
 
 interface ListViewProps {
@@ -36,7 +37,8 @@ interface ListViewProps {
 }
 
 const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) => {
-    const classes = useStyles();
+    const { isInNodeCreationDialog } = useMediaUi();
+    const classes = useStyles({ isInNodeCreationDialog });
     const { translate } = useIntl();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const selectAsset = useSelectAsset();

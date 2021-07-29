@@ -19,6 +19,7 @@ const useStyles = createUseMediaUiStyles({
         justifySelf: 'center',
         listStyleType: 'none',
         textAlign: 'center',
+        padding: 0,
     },
     ellipsis: {
         lineHeight: '2.4rem',
