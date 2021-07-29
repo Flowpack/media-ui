@@ -155,6 +155,7 @@ const UploadDialog: React.FC = () => {
             Notify.warning(translate('uploadDialog.warning.fileRejected', 'The given file cannot be uploaded.'));
         },
         maxSize: config?.uploadMaxFileSize || 0,
+        maxFiles: config?.uploadMaxFileUploadLimit || 1,
         multiple: true,
         preventDropOnDocument: true,
     });
@@ -213,10 +214,16 @@ const UploadDialog: React.FC = () => {
                             "Drag 'n' drop some files here, or click to select files"
                         )}
                     </p>
-                    {config?.uploadMaxFileSize && (
+                    {config?.uploadMaxFileSize > 0 && (
                         <p>
-                            {translate('uploadDialog.maxFileSize', 'Maximum file size is ')}
-                            {humanFileSize(config.uploadMaxFileSize)}
+                            {translate(
+                                'uploadDialog.maxFileSize',
+                                'Maximum file size is {size} and file limit is {limit}',
+                                {
+                                    size: humanFileSize(config.uploadMaxFileSize),
+                                    limit: config.uploadMaxFileUploadLimit,
+                                }
+                            )}
                         </p>
                     )}
                 </div>

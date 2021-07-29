@@ -255,6 +255,7 @@ class QueryResolver implements ResolverInterface
     {
         return [
             'uploadMaxFileSize' => $this->getMaximumFileUploadSize(),
+            'uploadMaxFileUploadLimit' => $this->getMaximumFileUploadLimit(),
             'currentServerTime' => (new \DateTime())->format(DATE_W3C),
         ];
     }
@@ -274,6 +275,16 @@ class QueryResolver implements ResolverInterface
         } catch (FilesException $e) {
             return 0;
         }
+    }
+
+    /**
+     * Returns the maximum number of files that can be uploaded
+     *
+     * @return int
+     */
+    protected function getMaximumFileUploadLimit(): int
+    {
+        return (int)ini_get('upload_max_filesize') ?: 1;
     }
 
     /**

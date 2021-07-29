@@ -137,6 +137,7 @@ Configuration object containing helpful parameters for API interaction
 """
 type Config {
     uploadMaxFileSize: FileSize!
+    uploadMaxFileUploadLimit: Int!
     currentServerTime: DateTime!
 }
 

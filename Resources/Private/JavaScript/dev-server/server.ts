@@ -88,6 +88,7 @@ const resolvers = {
         tag: ($_, { id }) => tags.find((tag) => tag.id === id),
         config: () => ({
             uploadMaxFileSize: 1024 * 1024,
+            uploadMaxFileUploadLimit: 2,
             currentServerTime: new Date(),
         }),
     },
