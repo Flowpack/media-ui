@@ -66,20 +66,20 @@ const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup
                                     </a>
                                 </td>
                                 {metadataSchema.map(({ name, type }, index) => {
-                                    const { value } = assetUsage.metadata.find((usage) => usage.name == name);
-                                    return (
+                                    const usage = assetUsage.metadata.find((usage) => usage.name == name);
+                                    return usage ? (
                                         <td key={index}>
                                             {type == 'DATETIME' || type == 'DATE' ? (
-                                                new Date(value).toLocaleString()
+                                                new Date(usage.value).toLocaleString()
                                             ) : type == 'URL' ? (
-                                                <a href={value} target="_blank" rel="noreferrer">
+                                                <a href={usage.value} target="_blank" rel="noreferrer">
                                                     {name}
                                                 </a>
                                             ) : (
-                                                value
+                                                usage.value
                                             )}
                                         </td>
-                                    );
+                                    ) : null;
                                 })}
                             </tr>
                         ))}
