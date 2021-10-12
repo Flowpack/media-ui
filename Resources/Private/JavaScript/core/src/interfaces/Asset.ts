@@ -10,7 +10,7 @@ type AssetType = 'Asset';
 export default interface Asset extends GraphQlEntity {
     __typename: AssetType;
     readonly id: string;
-    readonly localId: string;
+    readonly localId?: string;
     assetSource: AssetSource;
     imported: boolean;
 
