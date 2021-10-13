@@ -146,7 +146,7 @@ An asset (Image, Document, Video or Audio)
 """
 type Asset {
     id: AssetId!
-    localId: LocalAssetId!
+    localId: LocalAssetId
     assetSource: AssetSource!
     imported: Boolean!
     isInUse: Boolean!
