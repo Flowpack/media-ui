@@ -215,7 +215,7 @@ class AssetResolver implements ResolverInterface
     {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         if (!$localAssetData instanceof Asset) {
-            return null;
+            return $assetProxy->getLastModified() ? $assetProxy->getLastModified()->format(DATE_W3C) : null;
         }
         return $localAssetData->getLastModified() ? $localAssetData->getLastModified()->format(DATE_W3C) : null;
     }
