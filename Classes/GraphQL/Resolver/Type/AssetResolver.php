@@ -213,11 +213,7 @@ class AssetResolver implements ResolverInterface
      */
     public function lastModified(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
     {
-        $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
-        if (!$localAssetData instanceof Asset) {
-            return null;
-        }
-        return $localAssetData->getLastModified() ? $localAssetData->getLastModified()->format(DATE_W3C) : null;
+        return $assetProxy->getLastModified() ? $assetProxy->getLastModified()->format(DATE_W3C) : null;
     }
 
     /**
