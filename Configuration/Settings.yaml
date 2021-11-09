@@ -1,0 +1,4 @@
+Flowpack:
+  Media:
+    Ui:
+      maximumFileUploadLimit: 10
