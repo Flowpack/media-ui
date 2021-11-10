@@ -3,3 +3,4 @@ Flowpack:
     Ui:
       maximumUploadFileCount: 10
       maximumUploadFileSize: 100MB
+      maximumUploadChunkSize: 5MB

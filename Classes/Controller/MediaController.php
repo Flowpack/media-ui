@@ -14,6 +14,7 @@ namespace Flowpack\Media\Ui\Controller;
  * source code.
  */
 
+use Flowpack\Media\Ui\Service\ConfigurationService;
 use Flowpack\Media\Ui\Tus\PartialUploadFileCacheAdapter;
 use Flowpack\Media\Ui\Tus\TusEventHandler;
 use Neos\Flow\Annotations as Flow;
@@ -23,7 +24,6 @@ use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
-use ReflectionException;
 use TusPhp\Events\TusEvent;
 use TusPhp\Tus\Server;
 
@@ -61,17 +61,17 @@ class MediaController extends AbstractModuleController
     protected $partialUploadFileCacheAdapater;
 
     /**
+     * @Flow\Inject
+     * @var ConfigurationService
+     */
+    protected $configurationService;
+
+    /**
      * @var array
      */
     protected $viewFormatToObjectNameMap = [
         'html' => FusionView::class,
     ];
-
-    /**
-     * @Flow\InjectConfiguration(package="Flowpack.Media.Ui")
-     * @var array
-     */
-    protected $settings;
 
     /**
      * Renders the media ui application
@@ -95,7 +95,7 @@ class MediaController extends AbstractModuleController
         $server = new Server();
         $server->setApiPath($this->controllerContext->getRequest()->getHttpRequest()->getUri()->getPath()) /** @phpstan-ignore-line */
             ->setUploadDir($uploadDirectory)
-            ->setMaxUploadSize($this->getMaximumFileUploadSize())
+            ->setMaxUploadSize($this->configurationService->getMaximumUploadFileSize())
             ->event()
                 ->addListener('tus-server.upload.complete', function (TusEvent $event) {
                     $this->tusEventHandler->processUploadedFile($event);
@@ -103,20 +103,5 @@ class MediaController extends AbstractModuleController
 
         $server->serve()->send();
         return '';
-    }
-
-    /**
-     * Returns the maximum size of files that can be uploaded
-     *
-     * @return int
-     */
-    protected function getMaximumFileUploadSize(): int
-    {
-        // @todo: Move it to a configuration object and unify with QueryResolver methods
-        try {
-            return (int)Files::sizeStringToBytes($this->settings['maximimFileUploadSize'] ?? '100MB');
-        } catch (FilesException $e) {
-            return 0;
-        }
     }
 }
