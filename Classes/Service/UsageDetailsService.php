@@ -295,8 +295,6 @@ class UsageDetailsService
     /**
      * Returns all assets which have no usage reference provided by `Flowpack.EntityUsage`
      *
-     * @param int $limit
-     * @param int $offset
      * @return array<AssetInterface>
      * @throws Exception
      */
@@ -341,9 +339,6 @@ class UsageDetailsService
 
     /**
      * Returns a DQL clause filtering any implementation of AssetVariantInterface
-     *
-     * @return string
-     * @var string $alias
      */
     protected function getAssetVariantFilterClause(string $alias): string
     {
@@ -357,7 +352,6 @@ class UsageDetailsService
     /**
      * Returns number of assets which have no usage reference provided by `Flowpack.EntityUsage`
      *
-     * @return int
      * @throws Exception
      */
     public function getUnusedAssetCount(): int
