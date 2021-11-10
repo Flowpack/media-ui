@@ -15,6 +15,8 @@ namespace Flowpack\Media\Ui\Tus;
 
 use Carbon\Carbon;
 use Neos\Cache\Frontend\StringFrontend;
+use Neos\Utility\Exception\PropertyNotAccessibleException;
+use Neos\Utility\ObjectAccess;
 use TusPhp\Cache\Cacheable;
 
 class PartialUploadFileCacheAdapter implements Cacheable
@@ -70,22 +72,27 @@ class PartialUploadFileCacheAdapter implements Cacheable
 
     public function delete(string $key): bool
     {
-        $this->partialUploadFileCache->remove($key);
+        return $this->partialUploadFileCache->remove($key);
     }
 
     public function deleteAll(array $keys): bool
     {
         $this->partialUploadFileCache->flush();
+        return true;
     }
 
+    /**
+     * @throws PropertyNotAccessibleException
+     */
     public function getTtl(): int
     {
-
+        return (int)ObjectAccess::getProperty($this->partialUploadFileCache->getBackend(), 'defaultLifetime', true);
     }
 
     public function keys(): array
     {
-        // TODO: Implement keys() method.
+        // @todo implement a replacement for keys() for flow cache backends
+        return [];
     }
 
     public function setPrefix(string $prefix): Cacheable
