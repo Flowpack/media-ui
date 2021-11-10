@@ -133,6 +133,7 @@ const UploadDialog: React.FC = () => {
     const { config } = useConfigQuery();
     const { uploadFiles } = useUploadFiles({
         endpoint: 'http://localhost:8081/neos/management/mediaui/upload',
+        chunkSize: config.maximumUploadChunkSize,
         onError: (error) => {
             Notify.error(translate('fileUpload.error', 'Upload failed'), error.message);
         },
@@ -173,8 +174,8 @@ const UploadDialog: React.FC = () => {
             // TODO: Show rejection reason to user
             Notify.warning(translate('uploadDialog.warning.fileRejected', 'The given file cannot be uploaded.'));
         },
-        maxSize: config?.uploadMaxFileSize || 0,
-        maxFiles: config?.uploadMaxFileUploadLimit || 1,
+        maxSize: config.maximumUploadFileSize,
+        maxFiles: config.maximumUploadFileCount,
         multiple: true,
         preventDropOnDocument: true,
     });
@@ -186,7 +187,7 @@ const UploadDialog: React.FC = () => {
     }, [files]);
 
     const handleUpload = useCallback(() => {
-        uploadFiles(files)
+        uploadFiles(files);
     }, [uploadFiles, files]);
 
     const handleRequestClose = useCallback(() => {
@@ -226,14 +227,14 @@ const UploadDialog: React.FC = () => {
                             "Drag 'n' drop some files here, or click to select files"
                         )}
                     </p>
-                    {config?.uploadMaxFileSize > 0 && (
+                    {config.maximumUploadFileSize > 0 && (
                         <p>
                             {translate(
                                 'uploadDialog.maxFileSize',
                                 'Maximum file size is {size} and file limit is {limit}',
                                 {
-                                    size: humanFileSize(config.uploadMaxFileSize),
-                                    limit: config.uploadMaxFileUploadLimit,
+                                    size: humanFileSize(config.maximumUploadFileSize),
+                                    limit: config.maximumUploadFileCount,
                                 }
                             )}
                         </p>
