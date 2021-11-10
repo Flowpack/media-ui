@@ -79,6 +79,7 @@ class MediaController extends AbstractModuleController
      * @throws Exception
      * @throws FilesException
      * @throws ReflectionException
+     * @Flow\SkipCsrfProtection
      */
     public function uploadAction(): void
     {
@@ -87,7 +88,7 @@ class MediaController extends AbstractModuleController
             Files::createDirectoryRecursively($uploadDirectory);
         }
 
-        $server = new Server($this->partialUploadFileCacheAdapater);
+        $server = new Server();
         $server->setApiPath($this->controllerContext->getRequest()->getHttpRequest()->getUri()->getPath())
             ->setUploadDir($uploadDirectory);
         // @todo: Set upload dir to data/temporary

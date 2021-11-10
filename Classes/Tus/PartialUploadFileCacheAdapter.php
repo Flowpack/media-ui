@@ -86,6 +86,7 @@ class PartialUploadFileCacheAdapter implements Cacheable
      */
     public function getTtl(): int
     {
+        return 60*60*24;
         return (int)ObjectAccess::getProperty($this->partialUploadFileCache->getBackend(), 'defaultLifetime', true);
     }
 

@@ -124,12 +124,29 @@ interface UploadedFile extends File {
 }
 
 const UploadDialog: React.FC = () => {
+    const [loading, setLoading] = useState(false);
+    const [uploadState, setUploadState] = useState([]);
     const { translate } = useIntl();
     const Notify = useNotify();
     const [dialogVisible, setDialogVisible] = useRecoilState(uploadDialogVisibleState);
     const { dummyImage } = useMediaUi();
     const { config } = useConfigQuery();
-    const { uploadFiles, uploadState, loading } = useUploadFiles();
+    const { uploadFiles } = useUploadFiles({
+        endpoint: 'http://localhost:8081/neos/management/mediaui/upload',
+        onError: (error) => {
+            Notify.error(translate('fileUpload.error', 'Upload failed'), error.message);
+        },
+        onSuccess: () => {
+            Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
+            setLoading(false);
+            refetchAssets();
+        },
+        onProgress: (bytesUploaded, bytesTotal) => {
+            setLoading(true);
+            const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
+            console.log(percentage);
+        },
+    });
     const { refetchAssets } = useMediaUi();
     const [files, setFiles] = useState<UploadedFile[]>([]);
     const uploadPossible = !loading && files.length > 0;
@@ -170,14 +187,7 @@ const UploadDialog: React.FC = () => {
 
     const handleUpload = useCallback(() => {
         uploadFiles(files)
-            .then(() => {
-                Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
-                refetchAssets();
-            })
-            .catch((error) => {
-                Notify.error(translate('fileUpload.error', 'Upload failed'), error);
-            });
-    }, [uploadFiles, Notify, translate, files, refetchAssets]);
+    }, [uploadFiles, files]);
 
     const handleRequestClose = useCallback(() => {
         setFiles([]);

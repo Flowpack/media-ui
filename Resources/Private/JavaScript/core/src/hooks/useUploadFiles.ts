@@ -1,17 +1,26 @@
-import { useMutation } from '@apollo/client';
+import * as tus from 'tus-js-client';
+import { UploadOptions } from 'tus-js-client';
 
-import { UPLOAD_FILES } from '../mutations';
-import { FileUploadResult } from '../interfaces';
+export default function useUploadFiles(options: UploadOptions) {
+    console.log('HI');
+    console.log(options.endpoint);
+    const uploadFiles = (files: File[]) => {
+        files.forEach((file) => {
+            options.metadata = {
+                filename: file.name,
+                filetype: file.type,
+            };
+            console.log(options);
+            const upload = new tus.Upload(file, options);
 
-export default function useUploadFiles() {
-    const [action, { error, data, loading }] = useMutation<{ uploadFiles: FileUploadResult[] }>(UPLOAD_FILES);
-
-    const uploadFiles = (files: File[]) =>
-        action({
-            variables: {
-                files,
-            },
+            upload.findPreviousUploads().then((previousUploads) => {
+                if(previousUploads.length) {
+                    upload.resumeFromPreviousUpload(previousUploads[0]);
+                }
+                upload.start();
+            });
         });
+    };
 
-    return { uploadFiles, uploadState: data?.uploadFiles || [], error, loading };
+    return { uploadFiles };
 }
