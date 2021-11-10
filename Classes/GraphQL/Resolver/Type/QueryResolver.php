@@ -261,9 +261,9 @@ class QueryResolver implements ResolverInterface
     public function config($_): array
     {
         return [
-            'maximumChunkUploadSize' => $this->getMaximumChunkUploadSize(),
-            'maximumFileUploadSize' => $this->getMaximumFileUploadSize(),
-            'uploadMaxFileUploadLimit' => $this->getMaximumFileUploadLimit(),
+            'maximumUploadChunkSize' => $this->getMaximumUploadChunkSize(),
+            'maximumUploadFileSize' => $this->getMaximumUploadFileSize(),
+            'maximumUploadFileCount' => $this->getMaximumUploadFileCount(),
             'currentServerTime' => (new \DateTime())->format(DATE_W3C),
         ];
     }
@@ -273,7 +273,7 @@ class QueryResolver implements ResolverInterface
      *
      * @return int
      */
-    protected function getMaximumChunkUploadSize(): int
+    protected function getMaximumUploadChunkSize(): int
     {
         try {
             return (int)min(
@@ -290,9 +290,9 @@ class QueryResolver implements ResolverInterface
      *
      * @return int
      */
-    protected function getMaximumFileUploadLimit(): int
+    protected function getMaximumUploadFileCount(): int
     {
-        return (int)($this->settings['maximumFileUploadLimit'] ?? 10);
+        return (int)($this->settings['maximumUploadFileCount'] ?? 10);
     }
 
     /**
@@ -300,10 +300,10 @@ class QueryResolver implements ResolverInterface
      *
      * @return int
      */
-    protected function getMaximumFileUploadSize(): int
+    protected function getMaximumUploadFileSize(): int
     {
         try {
-            return (int)Files::sizeStringToBytes($this->settings['maximimFileUploadSize'] ?? '100MB');
+            return (int)Files::sizeStringToBytes($this->settings['maximumUploadFileSize'] ?? '100MB');
         } catch (FilesException $e) {
             return 0;
         }
