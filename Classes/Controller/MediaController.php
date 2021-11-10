@@ -83,7 +83,6 @@ class MediaController extends AbstractModuleController
     /**
      * @throws Exception
      * @throws FilesException
-     * @throws ReflectionException
      * @Flow\SkipCsrfProtection
      */
     public function uploadAction(): string
@@ -94,13 +93,13 @@ class MediaController extends AbstractModuleController
         }
 
         $server = new Server();
-        $server->setApiPath($this->controllerContext->getRequest()->getHttpRequest()->getUri()->getPath())
+        $server->setApiPath($this->controllerContext->getRequest()->getHttpRequest()->getUri()->getPath()) /** @phpstan-ignore-line */
             ->setUploadDir($uploadDirectory)
-            ->setMaxUploadSize($this->getMaximumFileUploadSize());
-
-        $server->event()->addListener('tus-server.upload.complete', function (TusEvent $event) {
-            $this->tusEventHandler->processUploadedFile($event);
-        });
+            ->setMaxUploadSize($this->getMaximumFileUploadSize())
+            ->event()
+                ->addListener('tus-server.upload.complete', function (TusEvent $event) {
+                    $this->tusEventHandler->processUploadedFile($event);
+                });
 
         $server->serve()->send();
         return '';
