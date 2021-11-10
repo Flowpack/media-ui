@@ -18,8 +18,13 @@ use Flowpack\Media\Ui\Tus\PartialUploadFileCacheAdapter;
 use Flowpack\Media\Ui\Tus\TusEventHandler;
 use Neos\Cache\Frontend\VariableFrontend;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Utility\Environment;
+use Neos\Flow\Utility\Exception;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
+use Neos\Utility\Exception\FilesException;
+use Neos\Utility\Files;
+use ReflectionException;
 use TusPhp\Events\TusEvent;
 use TusPhp\Tus\Server;
 
@@ -33,6 +38,12 @@ class MediaController extends AbstractModuleController
      * @var TusEventHandler
      */
     protected $tusEventHandler;
+
+    /**
+     * @Flow\Inject
+     * @var Environment
+     */
+    protected $environment;
 
     /**
      * @var FusionView
@@ -65,11 +76,20 @@ class MediaController extends AbstractModuleController
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws Exception
+     * @throws FilesException
+     * @throws ReflectionException
      */
     public function uploadAction(): void
     {
+        $uploadDirectory = Files::concatenatePaths([$this->environment->getPathToTemporaryDirectory(), 'TusUpload']);
+        if (!file_exists($uploadDirectory)) {
+            Files::createDirectoryRecursively($uploadDirectory);
+        }
+
         $server = new Server($this->partialUploadFileCacheAdapater);
+        $server->setApiPath($this->controllerContext->getRequest()->getHttpRequest()->getUri()->getPath())
+            ->setUploadDir($uploadDirectory);
         // @todo: Set upload dir to data/temporary
 
         $server->event()->addListener('tus-server.upload.complete', function (TusEvent $event) {
