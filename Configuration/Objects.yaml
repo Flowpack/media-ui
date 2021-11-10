@@ -10,3 +10,13 @@
     2:
       # cache lifetime
       value: 10
+
+'Flowpack\Media\Ui\Tus\PartialUploadFileCacheAdapter':
+  properties:
+    partialUploadFileCache:
+      object:
+        factoryObjectName: Neos\Flow\Cache\CacheManager
+        factoryMethodName: getCache
+        arguments:
+          1:
+            value: Flowpack_Media_Ui_TusCache

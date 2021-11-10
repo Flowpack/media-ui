@@ -5,3 +5,11 @@
       package: 't3n.GraphQL'
       variables:
         'endpoint': 'media-assets'
+
+- name: 'Media Ui Upload'
+  uriPattern: 'neos/management/mediaui/upload'
+  defaults:
+    '@package': 'Flowpack.Media.Ui'
+    '@controller': 'Media'
+    '@format': 'json'
+    '@action': 'upload'

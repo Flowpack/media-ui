@@ -1,3 +1,7 @@
 Flowpack_Media_Ui_PollingCache:
   frontend: Neos\Cache\Frontend\StringFrontend
   backend: Neos\Cache\Backend\FileBackend
+
+Flowpack_Media_Ui_TusCache:
+  frontend: Neos\Cache\Frontend\StringFrontend
+  backend: Neos\Cache\Backend\FileBackend
