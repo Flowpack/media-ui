@@ -14,10 +14,12 @@ namespace Flowpack\Media\Ui\Tus;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\ResourceManagement\Exception;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
+use Neos\Utility\Files;
 use TusPhp\Events\TusEvent;
 
 class TusEventHandler
@@ -47,9 +49,15 @@ class TusEventHandler
      */
     protected $assetRepository;
 
+    /**
+     * @param TusEvent $event
+     * @throws Exception
+     */
     public function processUploadedFile(TusEvent $event): void
     {
         $persistentResource = $this->resourceManager->importResource($event->getFile()->getFilePath());
+        $event->getFile()->deleteFiles([$event->getFile()->getFilePath()]);
+
         $targetType = $this->assetModelMappingStrategy->map($persistentResource);
         $asset = new $targetType($persistentResource);
         $this->assetService->getRepository($asset)->add($asset);
