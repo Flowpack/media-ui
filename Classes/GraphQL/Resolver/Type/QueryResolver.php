@@ -134,9 +134,10 @@ class QueryResolver implements ResolverInterface
      * @return AssetProxyQueryInterface|null
      */
     protected function createAssetProxyQuery(
-        array $variables,
+        array              $variables,
         AssetSourceContext $assetSourceContext
-    ): ?AssetProxyQueryInterface {
+    ): ?AssetProxyQueryInterface
+    {
         [
             'assetSourceId' => $assetSourceId,
             'tagId' => $tagId,
@@ -260,7 +261,8 @@ class QueryResolver implements ResolverInterface
     public function config($_): array
     {
         return [
-            'uploadMaxFileSize' => $this->getMaximumFileUploadSize(),
+            'maximumChunkUploadSize' => $this->getMaximumChunkUploadSize(),
+            'maximumFileUploadSize' => $this->getMaximumFileUploadSize(),
             'uploadMaxFileUploadLimit' => $this->getMaximumFileUploadLimit(),
             'currentServerTime' => (new \DateTime())->format(DATE_W3C),
         ];
@@ -271,7 +273,7 @@ class QueryResolver implements ResolverInterface
      *
      * @return int
      */
-    protected function getMaximumFileUploadSize(): int
+    protected function getMaximumChunkUploadSize(): int
     {
         try {
             return (int)min(
@@ -294,6 +296,20 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
+     * Returns the maximum size of files that can be uploaded
+     *
+     * @return int
+     */
+    protected function getMaximumFileUploadSize(): int
+    {
+        try {
+            return (int)Files::sizeStringToBytes($this->settings['maximimFileUploadSize'] ?? '100MB');
+        } catch (FilesException $e) {
+            return 0;
+        }
+    }
+
+    /**
      * Provides a filterable list of asset proxies. These are the main entities for media management.
      *
      * @param $_
@@ -305,7 +321,8 @@ class QueryResolver implements ResolverInterface
         $_,
         array $variables,
         AssetSourceContext $assetSourceContext
-    ): ?AssetProxyQueryResultInterface {
+    ): ?AssetProxyQueryResultInterface
+    {
         ['limit' => $limit, 'offset' => $offset] = $variables + ['limit' => 20, 'offset' => 0];
         $query = $this->createAssetProxyQuery($variables, $assetSourceContext);
 
