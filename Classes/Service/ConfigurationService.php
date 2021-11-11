@@ -47,15 +47,13 @@ class ConfigurationService
     public function getMaximumUploadChunkSize(): int
     {
         try {
-            return max(
-                (int)($this->configuration['maximumUploadChunkSize'] ?? '5MB'),
-                (int)min(
-                    Files::sizeStringToBytes(ini_get('post_max_size')),
-                    Files::sizeStringToBytes(ini_get('upload_max_filesize'))
-                )
+            return min(
+                (int)(Files::sizeStringToBytes($this->configuration['maximumUploadChunkSize']) ?? '5MB'),
+                (int)Files::sizeStringToBytes(ini_get('post_max_size')),
+                (int)Files::sizeStringToBytes(ini_get('upload_max_filesize'))
             );
         } catch (FilesException $e) {
-            return 5*1024*1024;
+            return 5 * 1024 * 1024;
         }
     }
 

@@ -141,7 +141,7 @@ class QueryResolver implements ResolverInterface
      * @return AssetProxyQueryInterface|null
      */
     protected function createAssetProxyQuery(
-        array              $variables,
+        array $variables,
         AssetSourceContext $assetSourceContext
     ): ?AssetProxyQueryInterface
     {
