@@ -18,12 +18,14 @@ use Flowpack\Media\Ui\Service\ConfigurationService;
 use Flowpack\Media\Ui\Tus\PartialUploadFileCacheAdapter;
 use Flowpack\Media\Ui\Tus\TusEventHandler;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Log\Utility\LogEnvironment;
 use Neos\Flow\Utility\Environment;
 use Neos\Flow\Utility\Exception;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
+use Psr\Log\LoggerInterface;
 use TusPhp\Events\TusEvent;
 use TusPhp\Tus\Server;
 
@@ -67,6 +69,12 @@ class MediaController extends AbstractModuleController
     protected $configurationService;
 
     /**
+     * @Flow\Inject
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @var array
      */
     protected $viewFormatToObjectNameMap = [
@@ -93,15 +101,26 @@ class MediaController extends AbstractModuleController
         }
 
         $server = new Server();
-        $server->setApiPath($this->controllerContext->getRequest()->getHttpRequest()->getUri()->getPath()) /** @phpstan-ignore-line */
-            ->setUploadDir($uploadDirectory)
+        $server->setApiPath($this->controllerContext->getRequest()->getHttpRequest()->getUri()->getPath())/** @phpstan-ignore-line */
+        ->setUploadDir($uploadDirectory)
             ->setMaxUploadSize($this->configurationService->getMaximumUploadFileSize())
             ->event()
-                ->addListener('tus-server.upload.complete', function (TusEvent $event) {
-                    $this->tusEventHandler->processUploadedFile($event);
-                });
+            ->addListener('tus-server.upload.complete', function (TusEvent $event) {
+                $this->tusEventHandler->processUploadedFile($event);
+            });
 
-        $server->serve()->send();
+        $server->event()->addListener('tus-server.upload.created', function (TusEvent $event) {
+            $this->logger->debug(sprintf('A new TUS file upload session was started for file "%s"', $event->getFile()->getName()), LogEnvironment::fromMethodName(__METHOD__));
+        });
+
+        $server->event()->addListener('tus-server.upload.progress', function (TusEvent $event) {
+            $this->logger->debug(sprintf('Resumed TUS file upload for file "%s"', $event->getFile()->getName()), LogEnvironment::fromMethodName(__METHOD__));
+        });
+
+        $response = $server->serve();
+        $this->controllerContext->getResponse()->setStatusCode($response->getStatusCode());
+
+        $response->send();
         return '';
     }
 }

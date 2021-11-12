@@ -14,12 +14,14 @@ namespace Flowpack\Media\Ui\Tus;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Log\Utility\LogEnvironment;
 use Neos\Flow\ResourceManagement\Exception;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Utility\Files;
+use Psr\Log\LoggerInterface;
 use TusPhp\Events\TusEvent;
 
 class TusEventHandler
@@ -50,6 +52,12 @@ class TusEventHandler
     protected $assetRepository;
 
     /**
+     * @Flow\Inject
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * @param TusEvent $event
      * @throws Exception
      */
@@ -58,8 +66,15 @@ class TusEventHandler
         $persistentResource = $this->resourceManager->importResource($event->getFile()->getFilePath());
         $event->getFile()->deleteFiles([$event->getFile()->getFilePath()]);
 
+        if ($this->assetRepository->findOneByResourceSha1($persistentResource->getSha1())) {
+            $this->logger->info(sprintf('The uploaded file "%s" (Sha1: %s) already existed in the resource management.', $persistentResource->getFilename(), $persistentResource->getSha1()), LogEnvironment::fromMethodName(__METHOD__));
+            return;
+        }
+
         $targetType = $this->assetModelMappingStrategy->map($persistentResource);
         $asset = new $targetType($persistentResource);
         $this->assetService->getRepository($asset)->add($asset);
+
+        $this->logger->info(sprintf('The uploaded file "%s" (Sha1: %s) was successfully imported.', $persistentResource->getFilename(), $persistentResource->getSha1()), LogEnvironment::fromMethodName(__METHOD__));
     }
 }
