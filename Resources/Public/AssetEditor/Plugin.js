@@ -38839,10 +38839,6 @@ function (_Component) {
       var nextX = x;
       var windowWidth = getWindowWidth();
 
-      if (width > windowWidth) {
-        nextX += (windowWidth - width) / 2;
-      }
-
       var scaleFactor = zoom * (targetWidth / width);
       return {
         transform: "translate3d(".concat(nextX, "px,").concat(y, "px,0) scale3d(").concat(scaleFactor, ",").concat(scaleFactor, ",1)")
@@ -55080,7 +55076,7 @@ exports.default = selectedAssetForPreviewState;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module parse failed: Unexpected token (1:7)\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\n> extend type Query {\n|     includeUsage: Boolean!\n| }");
+module.exports = "extend type Query {\n  includeUsage: Boolean!\n}\n\nextend type Mutation {\n  includeUsage: Boolean!\n}\n"
 
 /***/ }),
 
@@ -55622,7 +55618,7 @@ exports.default = showUnusedAssetsState;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module parse failed: Unexpected token (1:7)\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\n> extend type Query {\n|     clipboard: [AssetIdentity]!\n| }");
+module.exports = "extend type Query {\n  clipboard: [AssetIdentity]!\n}\n\nextend type Asset {\n  isInClipboard: Boolean!\n}\n\nextend type Mutation {\n  toggleClipboardState(assetId: AssetId!, assetSourceId: AssetSourceId!, force: Boolean): [AssetIdentity]!\n}\n"
 
 /***/ }),
 
@@ -56364,7 +56360,7 @@ var templateObject_1;
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module parse failed: Unexpected character '#' (1:0)\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\n> # Define the apollo specific directives here to prevent schema warnings in the IDE\n| directive @client(always: Boolean!) on FIELD\n| directive @export(as: String!) on FIELD");
+module.exports = "directive @client(always: Boolean!) on FIELD\n\ndirective @export(as: String!) on FIELD\n\ntype AssetIdentity {\n  id: AssetId!\n  assetSourceId: AssetSourceId!\n}\n\nextend type Query {\n  selectedAssetSourceId: String\n  viewModeSelection: String\n}\n\nextend type Mutation {\n  setSelectedAssetSourceId(selectedAssetSourceId: String): String\n  setViewModeSelection(viewModeSelection: String): String\n}\n"
 
 /***/ }),
 
@@ -57862,25 +57858,91 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var tus = __importStar(__webpack_require__(/*! tus-js-client */ "../../../../node_modules/tus-js-client/lib.esm/browser/index.js"));
-function useUploadFiles(options) {
-    console.log('HI');
-    console.log(options.endpoint);
+var src_1 = __webpack_require__(/*! @media-ui/core/src */ "../core/src/index.ts");
+var hooks_1 = __webpack_require__(/*! @media-ui/core/src/hooks */ "../core/src/hooks/index.ts");
+var react_1 = __webpack_require__(/*! react */ "../../../../node_modules/@neos-project/neos-ui-extensibility/src/shims/vendor/react/index.js");
+function useUploadFiles() {
+    var config = hooks_1.useConfigQuery().config;
+    var refetchAssets = src_1.useMediaUi().refetchAssets;
+    var Notify = src_1.useNotify();
+    var translate = src_1.useIntl().translate;
+    var _a = react_1.useState([]), uploadState = _a[0], setUploadState = _a[1];
+    var _b = react_1.useState(false), loading = _b[0], setLoading = _b[1];
+    var numberOfFiles = 0;
+    var options = {
+        endpoint: window.location.protocol + "//" + window.location.host + "/neos/management/mediaui/upload",
+        chunkSize: config.maximumUploadChunkSize,
+        onError: function (error) {
+            numberOfFiles--;
+            if (numberOfFiles === 0) {
+                setLoading(false);
+            }
+            Notify.error(translate('fileUpload.error', 'Upload failed'), error.message);
+        },
+        onSuccess: function () {
+            numberOfFiles--;
+            if (numberOfFiles === 0) {
+                Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
+                setLoading(false);
+            }
+            refetchAssets();
+        },
+        removeFingerprintOnSuccess: true,
+    };
     var uploadFiles = function (files) {
-        console.log(files);
+        numberOfFiles = files.length;
         files.forEach(function (file) {
-            console.log(options.endpoint);
+            options.metadata = {
+                filename: file.name,
+                filetype: file.type,
+            };
+            options.onProgress = function (bytesUploaded, bytesTotal) {
+                setLoading(true);
+                var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(0);
+                setUploadState(function (prevState) {
+                    var newState = [];
+                    if (prevState.length > 0) {
+                        newState = __spreadArrays(prevState);
+                        if (newState.find(function (uploadState) { return uploadState.fileName === file.name; })) {
+                            newState.find(function (uploadState) { return uploadState.fileName === file.name; }).uploadPercentage = percentage;
+                        }
+                        else {
+                            newState.push({
+                                fileName: file.name,
+                                uploadPercentage: percentage,
+                            });
+                        }
+                    }
+                    else {
+                        newState.push({
+                            fileName: file.name,
+                            uploadPercentage: percentage,
+                        });
+                    }
+                    return newState;
+                });
+            };
             var upload = new tus.Upload(file, options);
             upload.findPreviousUploads().then(function (previousUploads) {
                 if (previousUploads.length) {
-                    upload.resumeFromPreviousUpload(previousUploads[0]);
+                    previousUploads.forEach(function (previousUpload) {
+                        upload.resumeFromPreviousUpload(previousUpload);
+                    });
                 }
                 upload.start();
             });
         });
     };
-    return { uploadFiles: uploadFiles };
+    return { uploadFiles: uploadFiles, uploadState: uploadState, loading: loading };
 }
 exports.default = useUploadFiles;
 
@@ -58802,7 +58864,7 @@ var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cook
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var client_1 = __webpack_require__(/*! @apollo/client */ "../../../../node_modules/@apollo/client/index.js");
-var CONFIG = client_1.gql(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    query CONFIG {\n        config {\n            uploadMaxFileSize\n            uploadMaxFileUploadLimit\n            currentServerTime\n        }\n    }\n"], ["\n    query CONFIG {\n        config {\n            uploadMaxFileSize\n            uploadMaxFileUploadLimit\n            currentServerTime\n        }\n    }\n"])));
+var CONFIG = client_1.gql(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    query CONFIG {\n        config {\n            maximumUploadFileSize\n            maximumUploadChunkSize\n            maximumUploadFileCount\n            currentServerTime\n        }\n    }\n"], ["\n    query CONFIG {\n        config {\n            maximumUploadFileSize\n            maximumUploadChunkSize\n            maximumUploadFileCount\n            currentServerTime\n        }\n    }\n"])));
 exports.default = CONFIG;
 var templateObject_1;
 
@@ -59986,40 +60048,31 @@ var useStyles = src_1.createUseMediaUiStyles(function (theme) { return ({
             backgroundColor: theme.colors.error,
         },
     },
+    progress: {
+        borderColor: theme.colors.warn,
+        '& $thumbInner:after': {
+            extend: 'stateOverlay',
+            backgroundColor: theme.colors.warn,
+        },
+    },
     warning: {
         color: theme.colors.warn,
     },
+    textBold: {
+        fontWeight: '600',
+    },
 }); });
 var UploadDialog = function () {
-    var _a = react_1.useState(false), loading = _a[0], setLoading = _a[1];
-    var _b = react_1.useState([]), uploadState = _b[0], setUploadState = _b[1];
     var translate = src_1.useIntl().translate;
     var Notify = src_1.useNotify();
-    var _c = recoil_1.useRecoilState(state_1.uploadDialogVisibleState), dialogVisible = _c[0], setDialogVisible = _c[1];
+    var _a = recoil_1.useRecoilState(state_1.uploadDialogVisibleState), dialogVisible = _a[0], setDialogVisible = _a[1];
     var dummyImage = src_1.useMediaUi().dummyImage;
     var config = hooks_1.useConfigQuery().config;
-    var uploadFiles = hooks_1.useUploadFiles({
-        endpoint: 'http://localhost:8081/neos/management/mediaui/upload',
-        uploadUrl: 'http://localhost:8081/neos/management/mediaui/upload',
-        onError: function (error) {
-            Notify.error(translate('fileUpload.error', 'Upload failed'), error.message);
-        },
-        onSuccess: function () {
-            Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
-            setLoading(false);
-            refetchAssets();
-        },
-        onProgress: function (bytesUploaded, bytesTotal) {
-            setLoading(true);
-            var percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
-            console.log(percentage);
-        },
-    }).uploadFiles;
-    var refetchAssets = src_1.useMediaUi().refetchAssets;
-    var _d = react_1.useState([]), files = _d[0], setFiles = _d[1];
+    var _b = hooks_1.useUploadFiles(), uploadFiles = _b.uploadFiles, uploadState = _b.uploadState, loading = _b.loading;
+    var _c = react_1.useState([]), files = _c[0], setFiles = _c[1];
     var uploadPossible = !loading && files.length > 0;
     // TODO: Define accepted mimetypes `{ accept: 'image/jpeg, image/png, video/*'}`
-    var _e = react_dropzone_1.useDropzone({
+    var _d = react_dropzone_1.useDropzone({
         onDrop: function (acceptedFiles) {
             if (acceptedFiles.length === 0)
                 return;
@@ -60042,11 +60095,11 @@ var UploadDialog = function () {
             // TODO: Show rejection reason to user
             Notify.warning(translate('uploadDialog.warning.fileRejected', 'The given file cannot be uploaded.'));
         },
-        maxSize: (config === null || config === void 0 ? void 0 : config.uploadMaxFileSize) || 0,
-        maxFiles: (config === null || config === void 0 ? void 0 : config.uploadMaxFileUploadLimit) || 1,
+        maxSize: config.maximumUploadFileSize,
+        maxFiles: config.maximumUploadFileCount,
         multiple: true,
         preventDropOnDocument: true,
-    }), getRootProps = _e.getRootProps, getInputProps = _e.getInputProps, isDragAccept = _e.isDragAccept, isDragActive = _e.isDragActive, isDragReject = _e.isDragReject;
+    }), getRootProps = _d.getRootProps, getInputProps = _d.getInputProps, isDragAccept = _d.isDragAccept, isDragActive = _d.isDragActive, isDragReject = _d.isDragReject;
     var classes = useStyles({ isDragAccept: isDragAccept, isDragActive: isDragActive, isDragReject: isDragReject });
     react_1.useEffect(function () {
         // Make sure to revoke the data uris to avoid memory leaks
@@ -60069,32 +60122,34 @@ var UploadDialog = function () {
             React.createElement("div", __assign({}, getRootProps({ className: classes.dropzone })),
                 React.createElement("input", __assign({}, getInputProps())),
                 React.createElement("p", null, translate('uploadDialog.dropzone.caption', "Drag 'n' drop some files here, or click to select files")),
-                (config === null || config === void 0 ? void 0 : config.uploadMaxFileSize) > 0 && (React.createElement("p", null, translate('uploadDialog.maxFileSize', 'Maximum file size is {size} and file limit is {limit}', {
-                    size: helper_1.humanFileSize(config.uploadMaxFileSize),
-                    limit: config.uploadMaxFileUploadLimit,
+                config.maximumUploadFileSize > 0 && (React.createElement("p", null, translate('uploadDialog.maxFileSize', 'Maximum file size is {size} and file limit is {limit}', {
+                    size: helper_1.humanFileSize(config.maximumUploadFileSize),
+                    limit: config.maximumUploadFileCount,
                 })))),
-            loading && React.createElement("p", null, "Uploading..."),
             files.length > 0 && (React.createElement("aside", { className: classes.fileList },
                 React.createElement("h4", { className: classes.fileListHeader }, translate('uploadDialog.fileList.header', 'Selected files')),
                 files.map(function (file) {
                     // TODO: cleanup and move into component
-                    var fileState = uploadState.find(function (result) { return result.filename === file.name; });
-                    var success = fileState === null || fileState === void 0 ? void 0 : fileState.success;
+                    var fileState = uploadState.find(function (result) { return result.fileName === file.name; });
+                    var success = (fileState === null || fileState === void 0 ? void 0 : fileState.uploadPercentage) === '100' && !loading;
                     var stateClassName = '';
                     if (loading)
                         stateClassName = classes.loading;
                     if (success)
                         stateClassName = classes.success;
                     if (fileState && !success)
+                        stateClassName = classes.progress;
+                    if (fileState && !success && !loading)
                         stateClassName = classes.error;
                     // TODO: Output helpful localised messages for results 'EXISTS', 'ADDED', 'ERROR'
                     return (React.createElement("div", { className: [classes.thumb, stateClassName].join(' '), key: file.name, title: file.name },
                         React.createElement("div", { className: classes.thumbInner },
                             React.createElement("img", { src: file.preview, alt: file.name, className: classes.img }),
-                            loading && React.createElement(react_ui_components_1.Icon, { icon: "spinner", spin: true }),
-                            success && React.createElement(react_ui_components_1.Icon, { icon: "check" }),
-                            fileState && !fileState.success && React.createElement(react_ui_components_1.Icon, { icon: "exclamation-circle" }),
-                            (fileState === null || fileState === void 0 ? void 0 : fileState.result) && React.createElement("span", null, fileState.result))));
+                            success && !loading && React.createElement(react_ui_components_1.Icon, { icon: "check" }),
+                            fileState && !success && !loading && React.createElement(react_ui_components_1.Icon, { icon: "exclamation-circle" }),
+                            (fileState === null || fileState === void 0 ? void 0 : fileState.uploadPercentage) && (React.createElement("span", { className: classes.textBold }, fileState === null || fileState === void 0 ? void 0 :
+                                fileState.uploadPercentage,
+                                "%")))));
                 }))))));
 };
 exports.default = React.memo(UploadDialog);

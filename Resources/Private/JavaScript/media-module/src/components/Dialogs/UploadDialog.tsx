@@ -113,8 +113,18 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             backgroundColor: theme.colors.error,
         },
     },
+    progress: {
+        borderColor: theme.colors.warn,
+        '& $thumbInner:after': {
+            extend: 'stateOverlay',
+            backgroundColor: theme.colors.warn,
+        },
+    },
     warning: {
         color: theme.colors.warn,
+    },
+    textBold: {
+        fontWeight: '600',
     },
 }));
 
@@ -124,31 +134,12 @@ interface UploadedFile extends File {
 }
 
 const UploadDialog: React.FC = () => {
-    const [loading, setLoading] = useState(false);
-    const [uploadState, setUploadState] = useState([]);
     const { translate } = useIntl();
     const Notify = useNotify();
     const [dialogVisible, setDialogVisible] = useRecoilState(uploadDialogVisibleState);
     const { dummyImage } = useMediaUi();
     const { config } = useConfigQuery();
-    const { uploadFiles } = useUploadFiles({
-        endpoint: 'http://localhost:8081/neos/management/mediaui/upload',
-        chunkSize: config.maximumUploadChunkSize,
-        onError: (error) => {
-            Notify.error(translate('fileUpload.error', 'Upload failed'), error.message);
-        },
-        onSuccess: () => {
-            Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
-            setLoading(false);
-            refetchAssets();
-        },
-        onProgress: (bytesUploaded, bytesTotal) => {
-            setLoading(true);
-            const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
-            console.log(percentage);
-        },
-    });
-    const { refetchAssets } = useMediaUi();
+    const { uploadFiles, uploadState, loading } = useUploadFiles();
     const [files, setFiles] = useState<UploadedFile[]>([]);
     const uploadPossible = !loading && files.length > 0;
 
@@ -240,7 +231,6 @@ const UploadDialog: React.FC = () => {
                         </p>
                     )}
                 </div>
-                {loading && <p>Uploading...</p>}
                 {files.length > 0 && (
                     <aside className={classes.fileList}>
                         <h4 className={classes.fileListHeader}>
@@ -248,13 +238,13 @@ const UploadDialog: React.FC = () => {
                         </h4>
                         {files.map((file: UploadedFile) => {
                             // TODO: cleanup and move into component
-                            const fileState = uploadState.find((result) => result.filename === file.name);
-                            const success = fileState?.success;
-
+                            const fileState = uploadState.find((result) => result.fileName === file.name);
+                            const success = fileState?.uploadPercentage === '100' && !loading;
                             let stateClassName = '';
                             if (loading) stateClassName = classes.loading;
                             if (success) stateClassName = classes.success;
-                            if (fileState && !success) stateClassName = classes.error;
+                            if (fileState && !success) stateClassName = classes.progress;
+                            if (fileState && !success && !loading) stateClassName = classes.error;
 
                             // TODO: Output helpful localised messages for results 'EXISTS', 'ADDED', 'ERROR'
 
@@ -266,10 +256,11 @@ const UploadDialog: React.FC = () => {
                                 >
                                     <div className={classes.thumbInner}>
                                         <img src={file.preview} alt={file.name} className={classes.img} />
-                                        {loading && <Icon icon="spinner" spin={true} />}
-                                        {success && <Icon icon="check" />}
-                                        {fileState && !fileState.success && <Icon icon="exclamation-circle" />}
-                                        {fileState?.result && <span>{fileState.result}</span>}
+                                        {success && !loading && <Icon icon="check" />}
+                                        {fileState && !success && !loading && <Icon icon="exclamation-circle" />}
+                                        {fileState?.uploadPercentage && (
+                                            <span className={classes.textBold}>{fileState?.uploadPercentage}%</span>
+                                        )}
                                     </div>
                                 </div>
                             );
