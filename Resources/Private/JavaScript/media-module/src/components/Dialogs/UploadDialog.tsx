@@ -71,6 +71,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             marginLeft: theme.spacing.half,
             userSelect: 'none',
         },
+        '& $progressBarInner': {
+            marginLeft: '0',
+        },
     },
     img: {
         position: 'absolute',
@@ -115,16 +118,15 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     progress: {
         borderColor: theme.colors.warn,
-        '& $thumbInner:after': {
-            extend: 'stateOverlay',
-            backgroundColor: theme.colors.warn,
-        },
     },
     warning: {
         color: theme.colors.warn,
     },
-    textBold: {
-        fontWeight: '600',
+    progressBarInner: {
+        extend: 'stateOverlay',
+        backgroundColor: theme.colors.warn,
+        width: '0',
+        height: '100%',
     },
 }));
 
@@ -259,7 +261,10 @@ const UploadDialog: React.FC = () => {
                                         {success && !loading && <Icon icon="check" />}
                                         {fileState && !success && !loading && <Icon icon="exclamation-circle" />}
                                         {fileState?.uploadPercentage && (
-                                            <span className={classes.textBold}>{fileState?.uploadPercentage}%</span>
+                                            <span
+                                                className={classes.progressBarInner}
+                                                style={{ width: (fileState?.uploadPercentage ?? '0') + '%' }}
+                                            />
                                         )}
                                     </div>
                                 </div>
