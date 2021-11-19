@@ -23,7 +23,7 @@ const CreateTagDialog: React.FC = () => {
     const Notify = useNotify();
     const selectedAssetCollection = useSelectedAssetCollection();
     const [dialogState, setDialogState] = useRecoilState(createTagDialogState);
-    const createPossible = true;
+    const createPossible = !!(dialogState.label && dialogState.label.trim());
     const { createTag } = useCreateTag();
 
     const handleRequestClose = useCallback(() => setDialogState({ visible: false, label: '' }), [setDialogState]);
