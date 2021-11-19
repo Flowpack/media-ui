@@ -33,7 +33,7 @@ class ConfigurationService
     public function getMaximumUploadFileSize(): int
     {
         try {
-            return (int)Files::sizeStringToBytes($this->configuration['maximimFileUploadSize'] ?? '100MB');
+            return (int)Files::sizeStringToBytes($this->configuration['maximumUploadFileSize'] ?? '100MB');
         } catch (FilesException $e) {
             return 0;
         }
