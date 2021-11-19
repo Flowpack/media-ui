@@ -15,6 +15,8 @@ namespace Flowpack\Media\Ui\Service;
  */
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Flowpack\Media\Ui\Domain\Model\Dto\AssetUsageDetails;
 use Flowpack\Media\Ui\Exception;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -353,6 +355,8 @@ class UsageDetailsService
      * Returns number of assets which have no usage reference provided by `Flowpack.EntityUsage`
      *
      * @throws Exception
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function getUnusedAssetCount(): int
     {

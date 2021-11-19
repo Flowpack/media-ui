@@ -17,6 +17,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
+use Flowpack\Media\Ui\Service\ConfigurationService;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
@@ -95,6 +96,12 @@ class QueryResolver implements ResolverInterface
     protected $persistenceManager;
 
     /**
+     * @Flow\Inject
+     * @var ConfigurationService
+     */
+    protected $configurationService;
+
+    /**
      * @Flow\InjectConfiguration(package="Flowpack.Media.Ui")
      * @var array
      */
@@ -136,7 +143,8 @@ class QueryResolver implements ResolverInterface
     protected function createAssetProxyQuery(
         array $variables,
         AssetSourceContext $assetSourceContext
-    ): ?AssetProxyQueryInterface {
+    ): ?AssetProxyQueryInterface
+    {
         [
             'assetSourceId' => $assetSourceId,
             'tagId' => $tagId,
@@ -260,37 +268,11 @@ class QueryResolver implements ResolverInterface
     public function config($_): array
     {
         return [
-            'uploadMaxFileSize' => $this->getMaximumFileUploadSize(),
-            'uploadMaxFileUploadLimit' => $this->getMaximumFileUploadLimit(),
+            'maximumUploadChunkSize' => $this->configurationService->getMaximumUploadChunkSize(),
+            'maximumUploadFileSize' => $this->configurationService->getMaximumUploadFileSize(),
+            'maximumUploadFileCount' => $this->configurationService->getMaximumUploadFileCount(),
             'currentServerTime' => (new \DateTime())->format(DATE_W3C),
         ];
-    }
-
-    /**
-     * Returns the lowest configured maximum upload file size
-     *
-     * @return int
-     */
-    protected function getMaximumFileUploadSize(): int
-    {
-        try {
-            return (int)min(
-                Files::sizeStringToBytes(ini_get('post_max_size')),
-                Files::sizeStringToBytes(ini_get('upload_max_filesize'))
-            );
-        } catch (FilesException $e) {
-            return 0;
-        }
-    }
-
-    /**
-     * Returns the maximum number of files that can be uploaded
-     *
-     * @return int
-     */
-    protected function getMaximumFileUploadLimit(): int
-    {
-        return (int)($this->settings['maximumFileUploadLimit'] ?? 10);
     }
 
     /**
@@ -305,7 +287,8 @@ class QueryResolver implements ResolverInterface
         $_,
         array $variables,
         AssetSourceContext $assetSourceContext
-    ): ?AssetProxyQueryResultInterface {
+    ): ?AssetProxyQueryResultInterface
+    {
         ['limit' => $limit, 'offset' => $offset] = $variables + ['limit' => 20, 'offset' => 0];
         $query = $this->createAssetProxyQuery($variables, $assetSourceContext);
 

@@ -3,8 +3,9 @@ import { CONFIG } from '../queries';
 
 interface ConfigQueryResult {
     config: {
-        uploadMaxFileSize: number;
-        uploadMaxFileUploadLimit: number;
+        maximumUploadFileSize: number;
+        maximumUploadChunkSize: number;
+        maximumUploadFileCount: number;
         currentServerTime: Date;
     };
 }

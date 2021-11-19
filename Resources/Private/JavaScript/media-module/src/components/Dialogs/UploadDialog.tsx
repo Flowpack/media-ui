@@ -71,6 +71,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             marginLeft: theme.spacing.half,
             userSelect: 'none',
         },
+        '& $progressBarInner': {
+            marginLeft: '0',
+        },
     },
     img: {
         position: 'absolute',
@@ -113,8 +116,17 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             backgroundColor: theme.colors.error,
         },
     },
+    progress: {
+        borderColor: theme.colors.warn,
+    },
     warning: {
         color: theme.colors.warn,
+    },
+    progressBarInner: {
+        extend: 'stateOverlay',
+        backgroundColor: theme.colors.warn,
+        width: '0',
+        height: '100%',
     },
 }));
 
@@ -130,7 +142,6 @@ const UploadDialog: React.FC = () => {
     const { dummyImage } = useMediaUi();
     const { config } = useConfigQuery();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
-    const { refetchAssets } = useMediaUi();
     const [files, setFiles] = useState<UploadedFile[]>([]);
     const uploadPossible = !loading && files.length > 0;
 
@@ -156,8 +167,8 @@ const UploadDialog: React.FC = () => {
             // TODO: Show rejection reason to user
             Notify.warning(translate('uploadDialog.warning.fileRejected', 'The given file cannot be uploaded.'));
         },
-        maxSize: config?.uploadMaxFileSize || 0,
-        maxFiles: config?.uploadMaxFileUploadLimit || 1,
+        maxSize: config.maximumUploadFileSize,
+        maxFiles: config.maximumUploadFileCount,
         multiple: true,
         preventDropOnDocument: true,
     });
@@ -169,15 +180,8 @@ const UploadDialog: React.FC = () => {
     }, [files]);
 
     const handleUpload = useCallback(() => {
-        uploadFiles(files)
-            .then(() => {
-                Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
-                refetchAssets();
-            })
-            .catch((error) => {
-                Notify.error(translate('fileUpload.error', 'Upload failed'), error);
-            });
-    }, [uploadFiles, Notify, translate, files, refetchAssets]);
+        uploadFiles(files);
+    }, [uploadFiles, files]);
 
     const handleRequestClose = useCallback(() => {
         setFiles([]);
@@ -216,20 +220,19 @@ const UploadDialog: React.FC = () => {
                             "Drag 'n' drop some files here, or click to select files"
                         )}
                     </p>
-                    {config?.uploadMaxFileSize > 0 && (
+                    {config.maximumUploadFileSize > 0 && (
                         <p>
                             {translate(
                                 'uploadDialog.maxFileSize',
                                 'Maximum file size is {size} and file limit is {limit}',
                                 {
-                                    size: humanFileSize(config.uploadMaxFileSize),
-                                    limit: config.uploadMaxFileUploadLimit,
+                                    size: humanFileSize(config.maximumUploadFileSize),
+                                    limit: config.maximumUploadFileCount,
                                 }
                             )}
                         </p>
                     )}
                 </div>
-                {loading && <p>Uploading...</p>}
                 {files.length > 0 && (
                     <aside className={classes.fileList}>
                         <h4 className={classes.fileListHeader}>
@@ -237,13 +240,13 @@ const UploadDialog: React.FC = () => {
                         </h4>
                         {files.map((file: UploadedFile) => {
                             // TODO: cleanup and move into component
-                            const fileState = uploadState.find((result) => result.filename === file.name);
-                            const success = fileState?.success;
-
+                            const fileState = uploadState.find((result) => result.fileName === file.name);
+                            const success = fileState?.uploadPercentage === '100' && !loading;
                             let stateClassName = '';
                             if (loading) stateClassName = classes.loading;
                             if (success) stateClassName = classes.success;
-                            if (fileState && !success) stateClassName = classes.error;
+                            if (fileState && !success) stateClassName = classes.progress;
+                            if (fileState && !success && !loading) stateClassName = classes.error;
 
                             // TODO: Output helpful localised messages for results 'EXISTS', 'ADDED', 'ERROR'
 
@@ -255,10 +258,14 @@ const UploadDialog: React.FC = () => {
                                 >
                                     <div className={classes.thumbInner}>
                                         <img src={file.preview} alt={file.name} className={classes.img} />
-                                        {loading && <Icon icon="spinner" spin={true} />}
-                                        {success && <Icon icon="check" />}
-                                        {fileState && !fileState.success && <Icon icon="exclamation-circle" />}
-                                        {fileState?.result && <span>{fileState.result}</span>}
+                                        {success && !loading && <Icon icon="check" />}
+                                        {fileState && !success && !loading && <Icon icon="exclamation-circle" />}
+                                        {fileState?.uploadPercentage && (
+                                            <span
+                                                className={classes.progressBarInner}
+                                                style={{ width: (fileState?.uploadPercentage ?? '0') + '%' }}
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             );
