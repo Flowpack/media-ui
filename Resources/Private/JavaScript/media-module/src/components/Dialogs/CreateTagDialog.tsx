@@ -66,7 +66,7 @@ const CreateTagDialog: React.FC = () => {
                     type="text"
                     value={dialogState.label}
                     onChange={setLabel}
-                    onEnterKey={handleCreate}
+                    onEnterKey={createPossible ? handleCreate : null}
                 />
             </div>
         </Dialog>
