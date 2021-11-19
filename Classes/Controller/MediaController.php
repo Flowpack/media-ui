@@ -100,7 +100,7 @@ class MediaController extends AbstractModuleController
             Files::createDirectoryRecursively($uploadDirectory);
         }
 
-        $server = new Server();
+        $server = new Server($this->partialUploadFileCacheAdapater);
         $server->setApiPath($this->controllerContext->getRequest()->getHttpRequest()->getUri()->getPath())/** @phpstan-ignore-line */
         ->setUploadDir($uploadDirectory)
             ->setMaxUploadSize($this->configurationService->getMaximumUploadFileSize())
