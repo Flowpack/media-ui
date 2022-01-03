@@ -95,6 +95,12 @@ class QueryResolver implements ResolverInterface
     protected $persistenceManager;
 
     /**
+     * @Flow\InjectConfiguration(package="Flowpack.Media.Ui")
+     * @var array
+     */
+    protected $settings;
+
+    /**
      * Returns total count of asset proxies in the given asset source
      *
      * @param $_
@@ -284,7 +290,7 @@ class QueryResolver implements ResolverInterface
      */
     protected function getMaximumFileUploadLimit(): int
     {
-        return (int)ini_get('upload_max_filesize') ?: 1;
+        return (int)($this->settings['maximumFileUploadLimit'] ?? 10);
     }
 
     /**
