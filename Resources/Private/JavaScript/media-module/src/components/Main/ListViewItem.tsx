@@ -57,7 +57,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         extend: 'textColumn',
         userSelect: 'text',
         '& > *': {
-            width: '200px',
+            minWidth: '200px',
         },
     },
     lastModifiedColumn: {
