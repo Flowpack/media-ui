@@ -11,7 +11,6 @@ import { ListViewItem } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: ({ isInNodeCreationDialog }) => ({
-        overflowY: 'scroll',
         height: isInNodeCreationDialog ? '100%' : 'auto',
         '& table': {
             borderSpacing: '0 1px',
@@ -30,6 +29,38 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             },
         },
     }),
+    tableHeader: {
+        position: 'sticky',
+        backgroundColor: 'var(--grayDark)',
+        top: '0px',
+        zIndex: '1',
+    },
+    table: {
+        tableLayout: 'fixed',
+    },
+    previewColumn: {
+        extend: 'tableHeader',
+        width: '40px',
+    },
+    labelColumn: {
+        extend: 'tableHeader',
+    },
+    lastModifiedColumn: {
+        extend: 'tableHeader',
+        width: '150px',
+    },
+    fileSizeColumn: {
+        extend: 'tableHeader',
+        width: '75px',
+    },
+    mediaTypeColumn: {
+        extend: 'tableHeader',
+        width: '100px',
+    },
+    actionsColumn: {
+        extend: 'tableHeader',
+        width: '160px',
+    },
 }));
 
 interface ListViewProps {
@@ -56,15 +87,21 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
 
     return (
         <section className={classes.listView}>
-            <table>
+            <table className={classes.table}>
                 <thead>
                     <tr>
-                        <th />
-                        <th>{translate('thumbnailView.header.name', 'Name')}</th>
-                        <th>{translate('thumbnailView.header.lastModified', 'Last Modified')}</th>
-                        <th>{translate('thumbnailView.header.fileSize', 'File size')}</th>
-                        <th>{translate('thumbnailView.header.mediaType', 'Type')}</th>
-                        <th />
+                        <th className={classes.previewColumn} />
+                        <th className={classes.labelColumn}>{translate('thumbnailView.header.name', 'Name')}</th>
+                        <th className={classes.lastModifiedColumn}>
+                            {translate('thumbnailView.header.lastModified', 'Last Modified')}
+                        </th>
+                        <th className={classes.fileSizeColumn}>
+                            {translate('thumbnailView.header.fileSize', 'File size')}
+                        </th>
+                        <th className={classes.mediaTypeColumn}>
+                            {translate('thumbnailView.header.mediaType', 'Type')}
+                        </th>
+                        <th className={classes.actionsColumn} />
                     </tr>
                 </thead>
                 <tbody>
