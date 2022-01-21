@@ -34,6 +34,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         userSelect: 'none',
         cursor: 'pointer',
         textOverflow: 'ellipsis',
+        width:'1px',
         overflow: 'hidden',
         '& > *': {
             verticalAlign: 'middle',
@@ -57,6 +58,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     labelColumn: {
         extend: 'textColumn',
+        display: 'table',
+        tableLayout: 'fixed',
+        width: '100%',
+        lineHeight: theme.spacing.goldenUnit,
         userSelect: 'text',
         '& > *': {
             width: '100%',
@@ -72,6 +77,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         extend: 'textColumn',
     },
     actionsColumn: {
+        extend: 'textColumn',
         textAlign: 'right',
     },
 }));
@@ -113,7 +119,7 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: 
             <td className={classes.fileSizeColumn} onClick={onSelectItem}>
                 {asset && humanFileSize(asset.file.size)}
             </td>
-            <td className={classes.mediaTypeColumn} onClick={onSelectItem} title={asset?.file.mediaType}>
+            <td className={classes.mediaTypeColumn} onClick={onSelectItem}>
                 {asset?.file.mediaType}
             </td>
             <td className={classes.actionsColumn}>

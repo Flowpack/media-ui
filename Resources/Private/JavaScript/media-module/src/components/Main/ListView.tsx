@@ -34,33 +34,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         backgroundColor: 'var(--grayDark)',
         top: '0px',
         zIndex: '1',
-    },
-    table: {
-        tableLayout: 'fixed',
-    },
-    previewColumn: {
-        extend: 'tableHeader',
-        width: '40px',
-    },
-    labelColumn: {
-        extend: 'tableHeader',
-    },
-    lastModifiedColumn: {
-        extend: 'tableHeader',
-        width: '150px',
-    },
-    fileSizeColumn: {
-        extend: 'tableHeader',
-        width: '75px',
-    },
-    mediaTypeColumn: {
-        extend: 'tableHeader',
-        width: '100px',
-    },
-    actionsColumn: {
-        extend: 'tableHeader',
-        width: '160px',
-    },
+    }
 }));
 
 interface ListViewProps {
@@ -87,21 +61,21 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
 
     return (
         <section className={classes.listView}>
-            <table className={classes.table}>
+            <table>
                 <thead>
                     <tr>
-                        <th className={classes.previewColumn} />
-                        <th className={classes.labelColumn}>{translate('thumbnailView.header.name', 'Name')}</th>
-                        <th className={classes.lastModifiedColumn}>
+                        <th className={classes.tableHeader} />
+                        <th className={classes.tableHeader}>{translate('thumbnailView.header.name', 'Name')}</th>
+                        <th className={classes.tableHeader}>
                             {translate('thumbnailView.header.lastModified', 'Last Modified')}
                         </th>
-                        <th className={classes.fileSizeColumn}>
+                        <th className={classes.tableHeader}>
                             {translate('thumbnailView.header.fileSize', 'File size')}
                         </th>
-                        <th className={classes.mediaTypeColumn}>
+                        <th className={classes.tableHeader}>
                             {translate('thumbnailView.header.mediaType', 'Type')}
                         </th>
-                        <th className={classes.actionsColumn} />
+                        <th className={classes.tableHeader} />
                     </tr>
                 </thead>
                 <tbody>
