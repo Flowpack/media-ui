@@ -22,7 +22,7 @@ const CreateAssetCollectionDialog = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
     const [dialogState, setDialogState] = useRecoilState(createAssetCollectionDialogState);
-    const createPossible = true;
+    const createPossible = !!(dialogState.title && dialogState.title.trim());
     const { createAssetCollection } = useCreateAssetCollection();
 
     const handleRequestClose = useCallback(() => setDialogState({ title: '', visible: false }), [setDialogState]);
@@ -68,7 +68,7 @@ const CreateAssetCollectionDialog = () => {
                     type="text"
                     value={dialogState.title}
                     onChange={setTitle}
-                    onEnterKey={handleCreate}
+                    onEnterKey={createPossible ? handleCreate : null}
                 />
             </div>
         </Dialog>
