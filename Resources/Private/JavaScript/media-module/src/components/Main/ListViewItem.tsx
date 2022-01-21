@@ -33,9 +33,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         whiteSpace: 'nowrap',
         userSelect: 'none',
         cursor: 'pointer',
-        textOverflow: 'ellipsis',
         width:'1px',
-        overflow: 'hidden',
         '& > *': {
             verticalAlign: 'middle',
         },
