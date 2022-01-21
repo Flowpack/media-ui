@@ -34,7 +34,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         backgroundColor: 'var(--grayDark)',
         top: '0px',
         zIndex: '1',
-    }
+    },
 }));
 
 interface ListViewProps {
@@ -72,9 +72,7 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
                         <th className={classes.tableHeader}>
                             {translate('thumbnailView.header.fileSize', 'File size')}
                         </th>
-                        <th className={classes.tableHeader}>
-                            {translate('thumbnailView.header.mediaType', 'Type')}
-                        </th>
+                        <th className={classes.tableHeader}>{translate('thumbnailView.header.mediaType', 'Type')}</th>
                         <th className={classes.tableHeader} />
                     </tr>
                 </thead>
