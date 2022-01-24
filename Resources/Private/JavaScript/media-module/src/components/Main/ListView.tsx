@@ -11,7 +11,6 @@ import { ListViewItem } from './index';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     listView: ({ isInNodeCreationDialog }) => ({
-        overflowY: 'scroll',
         height: isInNodeCreationDialog ? '100%' : 'auto',
         '& table': {
             borderSpacing: '0 1px',
@@ -30,6 +29,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             },
         },
     }),
+    tableHeader: {
+        position: 'sticky',
+        backgroundColor: 'var(--grayDark)',
+        top: '0px',
+        zIndex: '1',
+    },
 }));
 
 interface ListViewProps {
@@ -59,12 +64,16 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
             <table>
                 <thead>
                     <tr>
-                        <th />
-                        <th>{translate('thumbnailView.header.name', 'Name')}</th>
-                        <th>{translate('thumbnailView.header.lastModified', 'Last Modified')}</th>
-                        <th>{translate('thumbnailView.header.fileSize', 'File size')}</th>
-                        <th>{translate('thumbnailView.header.mediaType', 'Type')}</th>
-                        <th />
+                        <th className={classes.tableHeader} />
+                        <th className={classes.tableHeader}>{translate('thumbnailView.header.name', 'Name')}</th>
+                        <th className={classes.tableHeader}>
+                            {translate('thumbnailView.header.lastModified', 'Last Modified')}
+                        </th>
+                        <th className={classes.tableHeader}>
+                            {translate('thumbnailView.header.fileSize', 'File size')}
+                        </th>
+                        <th className={classes.tableHeader}>{translate('thumbnailView.header.mediaType', 'Type')}</th>
+                        <th className={classes.tableHeader} />
                     </tr>
                 </thead>
                 <tbody>

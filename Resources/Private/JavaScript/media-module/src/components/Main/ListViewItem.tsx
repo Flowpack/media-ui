@@ -33,6 +33,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         whiteSpace: 'nowrap',
         userSelect: 'none',
         cursor: 'pointer',
+        width: '1px',
         '& > *': {
             verticalAlign: 'middle',
         },
@@ -55,9 +56,13 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     labelColumn: {
         extend: 'textColumn',
+        display: 'table',
+        tableLayout: 'fixed',
+        width: '100%',
+        lineHeight: theme.spacing.goldenUnit,
         userSelect: 'text',
         '& > *': {
-            width: '200px',
+            width: '100%',
         },
     },
     lastModifiedColumn: {
@@ -70,8 +75,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         extend: 'textColumn',
     },
     actionsColumn: {
-        display: 'flex',
-        justifyContent: 'flex-end',
+        extend: 'textColumn',
+        textAlign: 'right',
     },
 }));
 
