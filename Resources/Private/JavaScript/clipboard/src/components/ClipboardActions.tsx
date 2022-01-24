@@ -22,7 +22,7 @@ const ClipboardActions: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const clipboardVisible = useRecoilValue(clipboardVisibleState);
-    const { clipboard, toggleClipboardState, flushClipboard } = useClipboard();
+    const { clipboard, flushClipboard } = useClipboard();
     const { deleteAsset } = useDeleteAsset();
     const Notify = useNotify();
 
