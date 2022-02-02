@@ -21,7 +21,7 @@ const CreateTagDialog: React.FC = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
-    const selectedAssetCollection = useSelectedAssetCollection();
+    const [selectedAssetCollection] = useSelectedAssetCollection();
     const [dialogState, setDialogState] = useRecoilState(createTagDialogState);
     const createPossible = !!(dialogState.label && dialogState.label.trim());
     const { createTag } = useCreateTag();

@@ -13,7 +13,7 @@ import Property from './Property';
 import InspectorContainer from './InspectorContainer';
 
 const TagInspector = () => {
-    const selectedTag = useSelectedTag();
+    const [selectedTag] = useSelectedTag();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();
     const { translate } = useIntl();

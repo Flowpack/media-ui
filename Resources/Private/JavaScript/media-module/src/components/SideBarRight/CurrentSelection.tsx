@@ -35,8 +35,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 const CurrentSelection = () => {
     const classes = useStyles();
     const selectedAsset = useSelectedAsset();
-    const selectedAssetCollection = useSelectedAssetCollection();
-    const selectedTag = useSelectedTag();
+    const [selectedAssetCollection] = useSelectedAssetCollection();
+    const [selectedTag] = useSelectedTag();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const { translate } = useIntl();
 

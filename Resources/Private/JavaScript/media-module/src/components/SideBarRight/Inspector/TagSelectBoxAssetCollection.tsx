@@ -25,7 +25,7 @@ const TagSelectBoxAssetCollection = () => {
     const { translate } = useIntl();
     const { tags: allTags } = useTagsQuery();
     const { updateAssetCollection } = useUpdateAssetCollection();
-    const selectedAssetCollection = useSelectedAssetCollection();
+    const [selectedAssetCollection] = useSelectedAssetCollection();
 
     const tagIds = useMemo(() => selectedAssetCollection?.tags.map(({ id }) => id).sort(), [
         selectedAssetCollection?.tags,

@@ -9,10 +9,14 @@ type AssetIdentity {
 
 extend type Query {
     selectedAssetSourceId: String
+    selectedTagId: String
+    selectedCollectionId: String
     viewModeSelection: String
 }
 
 extend type Mutation {
     setSelectedAssetSourceId(selectedAssetSourceId: String): String
+    setSelectedTagId(selectedTagId: String): String
+    setSelectedCollectionId(selectedCollectionId: String): String
     setViewModeSelection(viewModeSelection: String): String
 }

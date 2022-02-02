@@ -3,8 +3,8 @@ import { useRecoilValue } from 'recoil';
 
 import { ASSET_COUNT } from '../queries';
 import useSelectedTag from './useSelectedTag';
-import useSelectedAssetCollection from './useSelectedAssetCollection';
 import { searchTermState } from '../state';
+import { useSelectedAssetCollection } from './index';
 
 interface AssetCountQueryResult {
     assetCount: number;
@@ -19,8 +19,8 @@ interface AssetCountVariables {
 
 export default function useAssetCountQuery() {
     const searchTerm = useRecoilValue(searchTermState);
-    const selectedTag = useSelectedTag();
-    const selectedAssetCollection = useSelectedAssetCollection();
+    const [selectedTag] = useSelectedTag();
+    const [selectedAssetCollection] = useSelectedAssetCollection();
     const { data, loading } = useQuery<AssetCountQueryResult, AssetCountVariables>(ASSET_COUNT, {
         variables: {
             assetCollectionId: selectedAssetCollection?.id,

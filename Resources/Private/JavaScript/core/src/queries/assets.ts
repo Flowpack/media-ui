@@ -14,6 +14,8 @@ const ASSETS = gql`
         $includeUsage: Boolean = false
     ) {
         selectedAssetSourceId @client(always: true) @export(as: "assetSourceId")
+        selectedTagId @client(always: true) @export(as: "tagId")
+        selectedCollectionId @client(always: true) @export(as: "assetCollectionId")
         includeUsage @client(always: true) @export(as: "includeUsage")
         assets(
             searchTerm: $searchTerm

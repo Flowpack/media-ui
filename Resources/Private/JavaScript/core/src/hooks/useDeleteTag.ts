@@ -1,10 +1,9 @@
 import { useMutation } from '@apollo/client';
-import { useRecoilState } from 'recoil';
 
-import { selectedTagIdState } from '../state';
 import { Tag } from '../interfaces';
 import { ASSET_COLLECTIONS, TAGS } from '../queries';
 import { DELETE_TAG } from '../mutations';
+import { useSelectedTag } from './index';
 
 interface DeleteTagVariables {
     id: string;
@@ -14,7 +13,7 @@ export default function useDeleteTag() {
     const [action, { error, data }] = useMutation<{ __typename: string; deleteTag: boolean }, DeleteTagVariables>(
         DELETE_TAG
     );
-    const [selectedTagId, setSelectedTagId] = useRecoilState(selectedTagIdState);
+    const [selectedTag, setSelectedTag] = useSelectedTag();
 
     const deleteTag = (id: string) =>
         action({
@@ -44,8 +43,8 @@ export default function useDeleteTag() {
             },
         }).then((success) => {
             // Unselect currently selected tag if it was just deleted
-            if (success && id === selectedTagId) {
-                setSelectedTagId(null);
+            if (success && id === selectedTag?.id) {
+                return setSelectedTag(null);
             }
         });
 

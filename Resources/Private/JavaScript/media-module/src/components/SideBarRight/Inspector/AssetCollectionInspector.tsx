@@ -14,7 +14,7 @@ import Property from './Property';
 import InspectorContainer from './InspectorContainer';
 
 const AssetCollectionInspector = () => {
-    const selectedAssetCollection = useSelectedAssetCollection();
+    const [selectedAssetCollection] = useSelectedAssetCollection();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();
     const { translate } = useIntl();

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
-import useSelectedAssetCollection from './useSelectedAssetCollection';
 import useSelectedTag from './useSelectedTag';
 import { ASSETS_PER_PAGE } from '../constants/pagination';
 import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
@@ -14,6 +13,7 @@ import {
     initialLoadCompleteState,
 } from '../state';
 import { ASSETS } from '../queries';
+import { useSelectedAssetCollection } from './index';
 
 interface AssetsQueryResult {
     assets: Asset[];
@@ -34,8 +34,8 @@ interface AssetsQueryVariables {
 
 const useAssetsQuery = () => {
     const searchTerm = useRecoilValue(searchTermState);
-    const selectedAssetCollection = useSelectedAssetCollection();
-    const selectedTag = useSelectedTag();
+    const [selectedAssetCollection] = useSelectedAssetCollection();
+    const [selectedTag] = useSelectedTag();
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
     const currentPage = useRecoilValue(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);

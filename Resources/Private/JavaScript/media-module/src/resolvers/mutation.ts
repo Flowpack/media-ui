@@ -11,6 +11,18 @@ const buildResolvers = (updateLocalState) => {
                 updateLocalState({ selectedAssetSourceId }, cache);
                 return selectedAssetSourceId;
             },
+            setSelectedTagId: (_, { selectedTagId }, { cache }: { cache: ApolloCache<NormalizedCacheObject> }) => {
+                updateLocalState({ selectedTagId }, cache);
+                return selectedTagId;
+            },
+            setSelectedCollectionId: (
+                _,
+                { selectedCollectionId },
+                { cache }: { cache: ApolloCache<NormalizedCacheObject> }
+            ) => {
+                updateLocalState({ selectedCollectionId }, cache);
+                return selectedCollectionId;
+            },
             setViewModeSelection: (
                 _,
                 { viewModeSelection }: { viewModeSelection: string },
