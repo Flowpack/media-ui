@@ -73,7 +73,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     mediaTypeColumn: {
         extend: 'textColumn',
-        maxWidth: '150px',
+        maxWidth: '100px',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
     },
