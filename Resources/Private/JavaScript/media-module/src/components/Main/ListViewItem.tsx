@@ -73,6 +73,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     mediaTypeColumn: {
         extend: 'textColumn',
+        maxWidth: '150px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
     },
     actionsColumn: {
         extend: 'textColumn',
@@ -117,7 +120,7 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: 
             <td className={classes.fileSizeColumn} onClick={onSelectItem}>
                 {asset && humanFileSize(asset.file.size)}
             </td>
-            <td className={classes.mediaTypeColumn} onClick={onSelectItem}>
+            <td className={classes.mediaTypeColumn} onClick={onSelectItem} title={asset?.file.mediaType}>
                 {asset?.file.mediaType}
             </td>
             <td className={classes.actionsColumn}>
