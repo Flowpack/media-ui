@@ -31,6 +31,7 @@ use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
 use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
+use Neos\Media\Domain\Model\AssetSource\SupportsSortingInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\TagRepository;
@@ -143,12 +144,16 @@ class QueryResolver implements ResolverInterface
             'assetCollectionId' => $assetCollectionId,
             'mediaType' => $mediaType,
             'searchTerm' => $searchTerm,
+            'sortBy' => $sortBy,
+            'sortDirection' => $sortDirection
         ] = $variables + [
             'assetSourceId' => 'neos',
             'tagId' => null,
             'assetCollectionId' => null,
             'mediaType' => null,
-            'searchTerm' => null
+            'searchTerm' => null,
+            'sortBy' => null,
+            'sortDirection' => null,
         ];
 
         $activeAssetSource = $assetSourceContext->getAssetSource($assetSourceId);
@@ -174,7 +179,17 @@ class QueryResolver implements ResolverInterface
             }
         }
 
-        // TODO: Implement sorting via `SupportsSortingInterface`
+        if ($sortBy && $assetProxyRepository instanceof SupportsSortingInterface) {
+            switch ($sortBy) {
+                case 'name':
+                    $assetProxyRepository->orderBy(['resource.filename' => $sortDirection]);
+                    break;
+                case 'lastModified':
+                default:
+                    $assetProxyRepository->orderBy(['lastModified' => $sortDirection]);
+                    break;
+            }
+        }
 
         if ($tagId && $assetProxyRepository instanceof SupportsTaggingInterface) {
             /** @var Tag $tag */
