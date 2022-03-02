@@ -15,6 +15,8 @@ type Query {
         searchTerm: String
         limit: Int
         offset: Int
+        sortBy: SortBy
+        sortDirection: SortDirection
     ): [Asset!]!
 
     """
@@ -328,6 +330,28 @@ enum RatioMode {
     Consider an image of 320/480 being scaled to 50/50: the image will be scaled to height 50, then centered and cropped so the width will also be 50.
     """
     OUTBOUND
+}
+
+"""
+Fields to sort assets by
+"""
+enum SortBy {
+    """
+    The ressource file name
+    """
+    name
+    """
+    Last modification date
+    """
+    lastModified
+}
+
+"""
+Direction to sort fields in
+"""
+enum SortDirection {
+    ASC
+    DESC
 }
 
 """
