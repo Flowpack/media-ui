@@ -8,6 +8,7 @@ import { faAngleLeft } from '@fortawesome/free-solid-svg-icons/faAngleLeft';
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons/faAngleRight';
 import { faBan } from '@fortawesome/free-solid-svg-icons/faBan';
 import { faBox } from '@fortawesome/free-solid-svg-icons/faBox';
+import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt';
 import { faCamera } from '@fortawesome/free-solid-svg-icons/faCamera';
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { faChevronCircleDown } from '@fortawesome/free-solid-svg-icons/faChevronCircleDown';
@@ -27,12 +28,15 @@ import { faFileImage } from '@fortawesome/free-solid-svg-icons/faFileImage';
 import { faFileVideo } from '@fortawesome/free-solid-svg-icons/faFileVideo';
 import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
 import { faFolderOpen } from '@fortawesome/free-solid-svg-icons/faFolderOpen';
+import { faFont } from '@fortawesome/free-solid-svg-icons/faFont';
 import { faGripLinesVertical } from '@fortawesome/free-solid-svg-icons/faGripLinesVertical';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import { faPhotoVideo } from '@fortawesome/free-solid-svg-icons/faPhotoVideo';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons/faSpinner';
+import { faSortAmountDown } from '@fortawesome/free-solid-svg-icons/faSortAmountDown';
+import { faSortAmountUp } from '@fortawesome/free-solid-svg-icons/faSortAmountUp';
 import { faSortDown } from '@fortawesome/free-solid-svg-icons/faSortDown';
 import { faTag } from '@fortawesome/free-solid-svg-icons/faTag';
 import { faTags } from '@fortawesome/free-solid-svg-icons/faTags';
@@ -55,6 +59,7 @@ export default function loadIconLibrary() {
         faAngleRight,
         faBan,
         faBox,
+        faCalendarAlt,
         faCamera,
         faCheck,
         faChevronCircleDown,
@@ -75,6 +80,7 @@ export default function loadIconLibrary() {
         faFileVideo,
         faFolder,
         faFolderOpen,
+        faFont,
         faGripLinesVertical,
         faInfoCircle,
         faNeos,
@@ -82,6 +88,8 @@ export default function loadIconLibrary() {
         faPlus,
         faQuestion,
         faSpinner,
+        faSortAmountDown,
+        faSortAmountUp,
         faSortDown,
         faTag,
         faTags,
