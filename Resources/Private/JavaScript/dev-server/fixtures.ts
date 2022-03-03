@@ -162,7 +162,7 @@ const assets: Asset[] = range(150).map((index) => {
         tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
         collections: range(index % 2).map((i) => assetCollections[(i * 2 + index) % assetCollections.length]),
         copyrightNotice: 'The Neos team',
-        lastModified: new Date('2020-06-16 15:07:00'),
+        lastModified: new Date(`2020-06-16 15:${Math.floor((150 - index) / 60)}:${(150 - index) % 60}`),
         iptcProperties: index % 5 === 0 ? getIptcProperties(index) : [],
         width: 90,
         height: 210,
