@@ -10,6 +10,7 @@ Neos:
             icon: 'fas fa-image'
             privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
             mainStylesheet: 'Minimal'
+            position: 'before media'
             additionalResources:
               javaScripts:
                 - 'resource://Flowpack.Media.Ui/Public/Assets/main.bundle.js'
