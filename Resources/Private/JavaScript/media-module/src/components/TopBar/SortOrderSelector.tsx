@@ -4,16 +4,18 @@ import { useRecoilState } from 'recoil';
 
 import { SelectBox, IconButton } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
 
 import selectedSortOrderState, { SORT_BY, SORT_DIRECTION } from '@media-ui/core/src/state/selectedSortOrderState';
 
 const useStyles = createUseMediaUiStyles({
     sortingState: {
         display: 'flex',
+        flex: 1,
+        minWidth: 0,
     },
     selectBox: {
-        minWidth: 'auto',
+        minWidth: 0,
     },
 });
 
@@ -24,10 +26,11 @@ interface SortByOption {
 }
 
 const SortOrderSelector: React.FC = () => {
+    const { isInNodeCreationDialog, selectionMode } = useMediaUi();
     const classes = useStyles();
     const [sortOrderState, setSortOrderState] = useRecoilState(selectedSortOrderState);
     const { translate } = useIntl();
-
+    const hideOptionIcon = isInNodeCreationDialog || selectionMode;
     const handleChangeSortBy = useCallback(
         (sortBy: SORT_BY) => {
             setSortOrderState({ ...sortOrderState, sortBy });
@@ -48,25 +51,27 @@ const SortOrderSelector: React.FC = () => {
             {
                 value: SORT_BY.LastModified,
                 label: translate('sortingState.sortBy.values.lastModified', 'Last Modified'),
-                icon: 'calendar',
+                icon: hideOptionIcon ? '' : 'calendar',
             },
             {
                 value: SORT_BY.Name,
                 label: translate('sortingState.sortBy.values.name', 'Name'),
-                icon: 'font',
+                icon: hideOptionIcon ? '' : 'font',
             },
         ];
     }, [translate]);
 
     return (
         <div className={classes.sortingState}>
-            <SelectBox
-                className={classes.selectBox}
-                options={Object.values(sortByOptions)}
-                onValueChange={handleChangeSortBy}
-                value={sortOrderState.sortBy}
-                optionValueField="value"
-            />
+            <div className={classes.selectBox}>
+                <SelectBox
+                    className={classes.selectBox}
+                    options={Object.values(sortByOptions)}
+                    onValueChange={handleChangeSortBy}
+                    value={sortOrderState.sortBy}
+                    optionValueField="value"
+                />
+            </div>
             <IconButton
                 icon={sortOrderState.sortDirection === SORT_DIRECTION.Asc ? 'sort-amount-up' : 'sort-amount-down'}
                 size="regular"

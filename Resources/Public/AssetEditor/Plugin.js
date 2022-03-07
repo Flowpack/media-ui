@@ -53900,13 +53900,12 @@ var useSelectedTag_1 = __importDefault(__webpack_require__(/*! ./useSelectedTag 
 var pagination_1 = __webpack_require__(/*! ../constants/pagination */ "../core/src/constants/pagination.ts");
 var state_1 = __webpack_require__(/*! ../state */ "../core/src/state/index.ts");
 var queries_1 = __webpack_require__(/*! ../queries */ "../core/src/queries/index.ts");
-var selectedSortOrderState_1 = __importDefault(__webpack_require__(/*! ../state/selectedSortOrderState */ "../core/src/state/selectedSortOrderState.ts"));
 var useAssetsQuery = function () {
     var searchTerm = recoil_1.useRecoilValue(state_1.searchTermState);
     var selectedAssetCollection = useSelectedAssetCollection_1.default();
     var selectedTag = useSelectedTag_1.default();
     var mediaTypeFilter = recoil_1.useRecoilValue(state_1.selectedMediaTypeState);
-    var sortOrderState = recoil_1.useRecoilValue(selectedSortOrderState_1.default);
+    var sortOrderState = recoil_1.useRecoilValue(state_1.selectedSortOrderState);
     var currentPage = recoil_1.useRecoilValue(state_1.currentPageState);
     var _a = recoil_1.useRecoilState(state_1.loadingState), isLoading = _a[0], setIsLoading = _a[1];
     var setInitialLoadComplete = recoil_1.useSetRecoilState(state_1.initialLoadCompleteState);
@@ -60206,15 +60205,19 @@ var selectedSortOrderState_1 = __importStar(__webpack_require__(/*! @media-ui/co
 var useStyles = src_1.createUseMediaUiStyles({
     sortingState: {
         display: 'flex',
+        flex: 1,
+        minWidth: 0,
     },
     selectBox: {
-        minWidth: 'auto',
+        minWidth: 0,
     },
 });
 var SortOrderSelector = function () {
+    var _a = src_1.useMediaUi(), isInNodeCreationDialog = _a.isInNodeCreationDialog, selectionMode = _a.selectionMode;
     var classes = useStyles();
-    var _a = recoil_1.useRecoilState(selectedSortOrderState_1.default), sortOrderState = _a[0], setSortOrderState = _a[1];
+    var _b = recoil_1.useRecoilState(selectedSortOrderState_1.default), sortOrderState = _b[0], setSortOrderState = _b[1];
     var translate = src_1.useIntl().translate;
+    var hideOptionIcon = isInNodeCreationDialog || selectionMode;
     var handleChangeSortBy = react_1.useCallback(function (sortBy) {
         setSortOrderState(__assign(__assign({}, sortOrderState), { sortBy: sortBy }));
     }, [sortOrderState, setSortOrderState]);
@@ -60226,17 +60229,18 @@ var SortOrderSelector = function () {
             {
                 value: selectedSortOrderState_1.SORT_BY.LastModified,
                 label: translate('sortingState.sortBy.values.lastModified', 'Last Modified'),
-                icon: 'calendar',
+                icon: hideOptionIcon ? '' : 'calendar',
             },
             {
                 value: selectedSortOrderState_1.SORT_BY.Name,
                 label: translate('sortingState.sortBy.values.name', 'Name'),
-                icon: 'font',
+                icon: hideOptionIcon ? '' : 'font',
             },
         ];
     }, [translate]);
     return (React.createElement("div", { className: classes.sortingState },
-        React.createElement(react_ui_components_1.SelectBox, { className: classes.selectBox, options: Object.values(sortByOptions), onValueChange: handleChangeSortBy, value: sortOrderState.sortBy, optionValueField: "value" }),
+        React.createElement("div", { className: classes.selectBox },
+            React.createElement(react_ui_components_1.SelectBox, { className: classes.selectBox, options: Object.values(sortByOptions), onValueChange: handleChangeSortBy, value: sortOrderState.sortBy, optionValueField: "value" })),
         React.createElement(react_ui_components_1.IconButton, { icon: sortOrderState.sortDirection === selectedSortOrderState_1.SORT_DIRECTION.Asc ? 'sort-amount-up' : 'sort-amount-down', size: "regular", title: translate("sortingState.dortOrder.value." + (sortOrderState.sortDirection === selectedSortOrderState_1.SORT_DIRECTION.Asc ? selectedSortOrderState_1.SORT_DIRECTION.Desc : selectedSortOrderState_1.SORT_DIRECTION.Asc), "Switch sort direction"), style: "neutral", hoverStyle: "brand", onClick: handleSwitchSortDirection })));
 };
 exports.default = React.memo(SortOrderSelector);

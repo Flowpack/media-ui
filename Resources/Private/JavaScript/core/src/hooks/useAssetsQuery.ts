@@ -12,9 +12,10 @@ import {
     loadingState,
     currentPageState,
     initialLoadCompleteState,
+    selectedSortOrderState,
 } from '../state';
 import { ASSETS } from '../queries';
-import selectedSortOrderState, { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
+import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
 interface AssetsQueryResult {
     assets: Asset[];
     assetCollections: AssetCollection[];
