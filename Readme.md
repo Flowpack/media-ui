@@ -223,6 +223,12 @@ composer run phpstan
     
 ### Other development hints
 
+#### Before you commit
+
+Please don't add the compiled frontend assets to your commits/PRs.
+
+We will build the assets when a new release is due.
+
 #### Register additional icons
 
 Font Awesome icons are registered in `Resources/Private/JavaScript/src/lib/FontAwesome`.
