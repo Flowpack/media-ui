@@ -40,6 +40,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         `,
         gridGap: theme.spacing.full,
         lineHeight: 1.5,
+        overflow: 'hidden',
     }),
     gridColumn: {
         height: '100%',
