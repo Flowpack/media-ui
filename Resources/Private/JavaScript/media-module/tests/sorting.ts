@@ -21,6 +21,6 @@ test('The sort direction is changed on click of button', async (t) => {
         .eql('Example asset 1');
 });
 
-test.only('The sorting is changed on click of sort by name', async (t) => {
+test('The sorting is changed on click of sort by name', async (t) => {
     await t.click(sortSelectBox).click(sortByName).expect(firstThumbnail.innerText).eql('Example asset 9');
 });
