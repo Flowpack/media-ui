@@ -30,6 +30,18 @@ const filterAssets = (assetSourceId = '', tagId = '', assetCollectionId = '', me
     });
 };
 
+const sortAssets = (assets, sortBy, sortDirection) => {
+    const sorted = assets.sort((a, b) => {
+        if (sortBy === 'name') {
+            // Using the label here since teh filename is the same in every fixture
+            return a['label'].localeCompare(b['label']);
+        }
+        return new Date(a['lastModified']).getTime() - new Date(b['lastModified']).getTime();
+    });
+
+    return sortDirection === 'DESC' ? sorted.reverse() : sorted;
+};
+
 const changedAssetsResponse: AssetChangeQueryResult = {
     changedAssets: {
         lastModified: null,
@@ -57,8 +69,18 @@ const resolvers = {
                 searchTerm = '',
                 limit = 20,
                 offset = 0,
+                sortBy = 'lastModified',
+                sortDirection = 'DESC',
             }
-        ) => filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm).slice(offset, offset + limit),
+        ) =>
+            sortAssets(
+                filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm).slice(
+                    offset,
+                    offset + limit
+                ),
+                sortBy,
+                sortDirection
+            ),
         unusedAssets: ($_, { limit = 20, offset = 0 }) =>
             assets.filter(({ isInUse }) => !isInUse).slice(offset, offset + limit),
         unusedAssetCount: () => assets.filter(({ isInUse }) => !isInUse).length,

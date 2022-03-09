@@ -5,6 +5,7 @@ import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core
 import { ClipboardActions } from '@media-ui/feature-clipboard/src';
 
 import { SearchBox, TypeFilter, ViewModeSelector } from './index';
+import SortOrderSelector from './SortOrderSelector';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     topBar: {
@@ -24,7 +25,10 @@ const TopBar: React.FC = () => {
     const { selectionMode } = useMediaUi();
     const classes = useStyles({ selectionMode });
 
-    const components = useMemo(() => [ClipboardActions, SearchBox, TypeFilter, ViewModeSelector], []);
+    const components = useMemo(
+        () => [ClipboardActions, SearchBox, TypeFilter, SortOrderSelector, ViewModeSelector],
+        []
+    );
 
     return (
         <div className={classes.topBar}>

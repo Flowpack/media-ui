@@ -12,9 +12,10 @@ import {
     loadingState,
     currentPageState,
     initialLoadCompleteState,
+    selectedSortOrderState,
 } from '../state';
 import { ASSETS } from '../queries';
-
+import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
 interface AssetsQueryResult {
     assets: Asset[];
     assetCollections: AssetCollection[];
@@ -30,6 +31,8 @@ interface AssetsQueryVariables {
     tagId: string;
     limit: number;
     offset: number;
+    sortBy: SORT_BY;
+    sortDirection: SORT_DIRECTION;
 }
 
 const useAssetsQuery = () => {
@@ -37,6 +40,7 @@ const useAssetsQuery = () => {
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
+    const sortOrderState = useRecoilValue(selectedSortOrderState);
     const currentPage = useRecoilValue(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
     const setInitialLoadComplete = useSetRecoilState(initialLoadCompleteState);
@@ -54,6 +58,8 @@ const useAssetsQuery = () => {
             tagId: selectedTag?.id,
             limit,
             offset,
+            sortBy: sortOrderState.sortBy,
+            sortDirection: sortOrderState.sortDirection,
         },
     });
 
@@ -67,6 +73,8 @@ const useAssetsQuery = () => {
                     tagId: selectedTag?.id,
                     limit,
                     offset,
+                    sortBy: sortOrderState.sortBy,
+                    sortDirection: sortOrderState.sortDirection,
                 },
             });
             setIsLoading(true);
@@ -88,6 +96,7 @@ const useAssetsQuery = () => {
         selectedAssetCollection?.title,
         mediaTypeFilter,
         selectedTag?.id,
+        sortOrderState,
     ]);
 
     return { error, assets, refetch };

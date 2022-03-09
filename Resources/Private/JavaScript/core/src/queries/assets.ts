@@ -11,6 +11,8 @@ const ASSETS = gql`
         $tagId: TagId
         $limit: Int
         $offset: Int
+        $sortBy: SortBy
+        $sortDirection: SortDirection
         $includeUsage: Boolean = false
     ) {
         selectedAssetSourceId @client(always: true) @export(as: "assetSourceId")
@@ -23,6 +25,8 @@ const ASSETS = gql`
             tagId: $tagId
             limit: $limit
             offset: $offset
+            sortBy: $sortBy
+            sortDirection: $sortDirection
         ) {
             ...AssetProps
         }

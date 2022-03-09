@@ -6,6 +6,7 @@ import selectedAssetCollectionIdState from './selectedAssetCollectionIdState';
 import selectedAssetIdState from './selectedAssetIdState';
 import selectedInspectorViewState from './selectedInspectorViewState';
 import selectedMediaTypeState from './selectedMediaTypeState';
+import selectedSortOrderState from './selectedSortOrderState';
 import selectedTagIdState from './selectedTagIdState';
 
 export {
@@ -17,5 +18,6 @@ export {
     selectedAssetIdState,
     selectedInspectorViewState,
     selectedMediaTypeState,
+    selectedSortOrderState,
     selectedTagIdState,
 };
