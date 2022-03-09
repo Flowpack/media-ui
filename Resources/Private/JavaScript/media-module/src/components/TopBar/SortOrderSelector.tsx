@@ -59,7 +59,7 @@ const SortOrderSelector: React.FC = () => {
                 icon: hideOptionIcon ? '' : 'font',
             },
         ];
-    }, [translate]);
+    }, [translate, hideOptionIcon]);
 
     return (
         <div className={classes.sortingState}>

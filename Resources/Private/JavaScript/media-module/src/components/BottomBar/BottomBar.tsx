@@ -10,7 +10,7 @@ import Pagination from './Pagination/Pagination';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     bottomBar: ({ isInNodeCreationDialog, selectionMode }) => ({
         display: 'grid',
-        gridTemplateColumns: (isInNodeCreationDialog || selectionMode) ? 'repeat(3, 1fr)' : '350px 1fr 350px',
+        gridTemplateColumns: isInNodeCreationDialog || selectionMode ? 'repeat(3, 1fr)' : '350px 1fr 350px',
         gridGap: theme.spacing.goldenUnit,
         position: 'fixed',
         bottom: isInNodeCreationDialog ? -16 : 0,
