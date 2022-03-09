@@ -13,6 +13,7 @@ node_modules
 #
 .cache
 Resources/Private/JavaScript/dev-server/dist
+Resources/Public
 yarn-error.log
 
 #
