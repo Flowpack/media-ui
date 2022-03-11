@@ -7,6 +7,7 @@ import { useIntl } from '@media-ui/core/src';
 import { Asset, AssetIdentity, FeatureFlags } from '../interfaces';
 import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
+import SelectionConstraints from '../interfaces/SelectionConstraints';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
@@ -16,6 +17,7 @@ interface MediaUiProviderProps {
     containerRef: React.RefObject<HTMLDivElement>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
     featureFlags: FeatureFlags;
+    constraints?: SelectionConstraints;
 }
 
 interface MediaUiProviderValues {
@@ -28,6 +30,7 @@ interface MediaUiProviderValues {
     assets: Asset[];
     refetchAssets: () => void;
     featureFlags: FeatureFlags;
+    constraints: SelectionConstraints;
 }
 
 export const MediaUiContext = createContext({} as MediaUiProviderValues);
@@ -41,6 +44,7 @@ export function MediaUiProvider({
     onAssetSelection = null,
     containerRef,
     featureFlags,
+    constraints = {},
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
@@ -116,6 +120,7 @@ export function MediaUiProvider({
                 assets,
                 refetchAssets,
                 featureFlags,
+                constraints,
             }}
         >
             {children}

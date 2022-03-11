@@ -10,6 +10,7 @@ import GraphQlEntity from './GraphQLEntity';
 import Image from './Image';
 import IptcProperty from './IptcProperty';
 import Tag from './Tag';
+import SelectionConstraints from './SelectionConstraints';
 
 export {
     Asset,
@@ -23,5 +24,6 @@ export {
     GraphQlEntity,
     Image,
     IptcProperty,
+    SelectionConstraints,
     Tag,
 };

@@ -21,6 +21,7 @@ import {
     Notify,
     NotifyProvider,
 } from '@media-ui/core/src';
+import { FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
 import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from '@media-ui/media-module/src/core';
 import App from '@media-ui/media-module/src/components/App';
 
@@ -32,7 +33,6 @@ import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql'
 // GraphQL local resolvers
 import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
 import buildModuleResolver from '@media-ui/media-module/src/resolvers/mutation';
-import { FeatureFlags } from '@media-ui/core/src/interfaces';
 
 let apolloClient = null;
 
@@ -49,6 +49,7 @@ interface MediaSelectionScreenProps {
     isNodeCreationDialogOpen: boolean;
     toggleSidebar: () => void;
     addFlashMessage: (title: string, message: string, severity?: string, timeout?: number) => void;
+    constraints?: SelectionConstraints;
 }
 
 interface MediaSelectionScreenState {
@@ -118,7 +119,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
             const cache = CacheFactory.createCache(this.props.frontendConfiguration as FeatureFlags);
-            PersistentStateManager.restoreLocalState(cache);
+            PersistentStateManager.restoreLocalState(cache, this.props.constraints);
 
             apolloClient = new ApolloClient({
                 cache,
@@ -150,7 +151,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
     };
 
     render() {
-        const { addFlashMessage, onComplete } = this.props;
+        const { addFlashMessage, onComplete, constraints } = this.props;
         const client = this.getApolloClient();
         const { dummyImage } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
@@ -176,11 +177,12 @@ export default class MediaSelectionScreen extends React.PureComponent<
                             <RecoilRoot>
                                 <MediaUiProvider
                                     dummyImage={dummyImage}
-                                    onAssetSelection={(localAssetIdentifier) => onComplete(localAssetIdentifier)}
+                                    onAssetSelection={onComplete}
                                     selectionMode={true}
                                     isInNodeCreationDialog={isInNodeCreationDialog}
                                     containerRef={containerRef}
                                     featureFlags={featureFlags}
+                                    constraints={constraints || {}}
                                 >
                                     <MediaUiThemeProvider>
                                         <App />

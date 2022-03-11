@@ -1,12 +1,12 @@
+import { useCallback, useMemo } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { ExecutionResult } from 'graphql';
+import { useSetRecoilState } from 'recoil';
 
 import { SELECTED_ASSET_SOURCE_ID, SET_SELECTED_ASSET_SOURCE_ID } from '../queries';
 import { AssetSource } from '../interfaces';
 import { useAssetSourcesQuery } from './index';
-import { useCallback, useMemo } from 'react';
 import { currentPageState } from '../state';
-import { useSetRecoilState } from 'recoil';
 
 const useSelectAssetSource = (): [AssetSource, (assetSource: AssetSource) => Promise<ExecutionResult<any>>] => {
     const selectedAssetSourceQuery = useQuery(SELECTED_ASSET_SOURCE_ID);
@@ -28,6 +28,7 @@ const useSelectAssetSource = (): [AssetSource, (assetSource: AssetSource) => Pro
         },
         [mutateSelectedAssetSourceId, setCurrentPage]
     );
+
     return [selectedAssetSource, setSelectedAssetSource];
 };
 

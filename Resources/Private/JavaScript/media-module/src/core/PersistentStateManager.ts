@@ -7,6 +7,7 @@ import { NEOS_ASSET_SOURCE } from '@media-ui/core/src/constants/neos';
 import { VIEW_MODES } from '../hooks';
 import { VIEW_MODE_SELECTION } from '../queries';
 import { CLIPBOARD, ClipboardItems } from '@media-ui/feature-clipboard/src';
+import { SelectionConstraints } from '@media-ui/core/src/interfaces';
 
 const STORAGE_PREFIX = 'flowpack.mediaui';
 
@@ -41,15 +42,25 @@ function writeToCache(
 }
 
 export function getItem<T>(key): T {
-    return (JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}.${key}`)) as unknown) as T;
+    try {
+        return (JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}.${key}`)) as unknown) as T;
+    } catch (e) {
+        console.error(`Could not parse item "${key}" from storage`, e);
+    }
+    return undefined;
 }
 
-export function restoreLocalState(cache: ApolloCache<NormalizedCacheObject>) {
-    writeToCache(cache, {
-        selectedAssetSourceId: getItem<string>('selectedAssetSourceId') || NEOS_ASSET_SOURCE,
-        viewModeSelection: getItem<string>('viewModeSelection') || VIEW_MODES.Thumbnails,
-        clipboard: getItem<ClipboardItems>('clipboard') || {},
-    });
+export function restoreLocalState(cache: ApolloCache<NormalizedCacheObject>, constraints: SelectionConstraints = {}) {
+    let selectedAssetSourceId = getItem<string>('selectedAssetSourceId') || NEOS_ASSET_SOURCE;
+
+    if (constraints.assetSources?.length > 0 && !constraints.assetSources.includes(selectedAssetSourceId)) {
+        selectedAssetSourceId = constraints.assetSources[0];
+    }
+
+    const viewModeSelection = getItem<string>('viewModeSelection') || VIEW_MODES.Thumbnails;
+    const clipboard = getItem<ClipboardItems>('clipboard') || {};
+
+    writeToCache(cache, { selectedAssetSourceId, viewModeSelection, clipboard });
 }
 
 export function resetLocalState(cache: ApolloCache<NormalizedCacheObject>) {
