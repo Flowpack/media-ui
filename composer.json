@@ -15,7 +15,8 @@
       "flowpack/entity-usage-databasestorage": "Required for the asset usage features"
     },
     "scripts": {
-      "codestyle": "phpstan analyse"
+      "codestyle": "phpstan analyse --autoload-file ../../Libraries/autoload.php",
+      "codestyle-standalone": "phpstan analyse"
     },
     "license": "GPL-3.0-or-later",
     "autoload": {

@@ -218,7 +218,7 @@ phpstan analyse --autoload-file ../../Libraries/autoload.php
 When the package is standalone
 
 ```console
-composer run phpstan
+composer run codestyle
 ``` 
     
 ### Other development hints
