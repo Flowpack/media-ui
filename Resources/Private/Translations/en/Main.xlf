@@ -5,6 +5,10 @@
             <trans-unit id="module.label" xml:space="preserve" approved="yes">
                 <source>Media (new)</source>
             </trans-unit>
+
+            <trans-unit id="uploadDialog.maxFileSize" xml:space="preserve" approved="yes">
+                <source>Maximum file size is {size} and file limit is {limit}</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
