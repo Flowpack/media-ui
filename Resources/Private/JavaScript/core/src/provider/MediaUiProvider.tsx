@@ -1,13 +1,14 @@
 import * as React from 'react';
-import { createContext, useCallback, useContext } from 'react';
+import { createContext, useCallback, useContext, useEffect } from 'react';
 import { useApolloClient, gql } from '@apollo/client';
+import { useRecoilState } from 'recoil';
 
 import { useIntl } from '@media-ui/core/src';
 
-import { Asset, AssetIdentity, FeatureFlags } from '../interfaces';
+import { Asset, AssetIdentity, FeatureFlags, SelectionConstraints } from '../interfaces';
 import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
-import SelectionConstraints from '../interfaces/SelectionConstraints';
+import { selectedMediaTypeState } from '../state';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
@@ -18,6 +19,7 @@ interface MediaUiProviderProps {
     onAssetSelection?: (localAssetIdentifier: string) => void;
     featureFlags: FeatureFlags;
     constraints?: SelectionConstraints;
+    assetType?: AssetType;
 }
 
 interface MediaUiProviderValues {
@@ -31,6 +33,7 @@ interface MediaUiProviderValues {
     refetchAssets: () => void;
     featureFlags: FeatureFlags;
     constraints: SelectionConstraints;
+    assetType: AssetType;
 }
 
 export const MediaUiContext = createContext({} as MediaUiProviderValues);
@@ -45,6 +48,7 @@ export function MediaUiProvider({
     containerRef,
     featureFlags,
     constraints = {},
+    assetType = 'all',
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
@@ -52,6 +56,14 @@ export function MediaUiProvider({
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
     const { assets, refetch: refetchAssets } = useAssetsQuery();
+    const [selectedMediaType, setSelectedMediaType] = useRecoilState(selectedMediaTypeState);
+
+    // Set initial media type state
+    useEffect(() => {
+        if (assetType) {
+            setSelectedMediaType(assetType);
+        }
+    }, [assetType, setSelectedMediaType]);
 
     const handleDeleteAsset = useCallback(
         (asset: Asset): Promise<boolean> => {
@@ -121,6 +133,7 @@ export function MediaUiProvider({
                 refetchAssets,
                 featureFlags,
                 constraints,
+                assetType,
             }}
         >
             {children}

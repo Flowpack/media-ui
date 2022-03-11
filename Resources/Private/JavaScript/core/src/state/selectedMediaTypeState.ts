@@ -1,8 +1,8 @@
 import { atom } from 'recoil';
 
-const selectedMediaTypeState = atom<string>({
+const selectedMediaTypeState = atom<AssetType>({
     key: 'selectedMediaTypeState',
-    default: '',
+    default: 'all',
 });
 
 export default selectedMediaTypeState;

@@ -42,8 +42,7 @@ interface MediaSelectionScreenProps {
         queryAssetUsage: boolean;
     };
     neos: Record<string, unknown>;
-    // TODO: Forward and use prop in selection screen
-    type: 'assets' | 'images';
+    type: AssetType | 'images'; // The image editor sets the type to 'images'
     onComplete: (localAssetIdentifier: string) => void;
     isLeftSideBarHidden: boolean;
     isNodeCreationDialogOpen: boolean;
@@ -151,7 +150,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
     };
 
     render() {
-        const { addFlashMessage, onComplete, constraints } = this.props;
+        const { addFlashMessage, onComplete, constraints, type } = this.props;
         const client = this.getApolloClient();
         const { dummyImage } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
@@ -183,6 +182,7 @@ export default class MediaSelectionScreen extends React.PureComponent<
                                     containerRef={containerRef}
                                     featureFlags={featureFlags}
                                     constraints={constraints || {}}
+                                    assetType={type === 'images' ? 'image' : type}
                                 >
                                     <MediaUiThemeProvider>
                                         <App />

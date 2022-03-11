@@ -17,19 +17,19 @@ const useStyles = createUseMediaUiStyles({
     },
 });
 
+const UNUSED_FILTER_VALUE = 'unused';
+
 interface MediaTypeOptions {
     [type: string]: {
-        value: string;
+        value: AssetType | 'unused';
         label: string;
         icon: string;
     };
 }
 
-const UNUSED_FILTER_VALUE = 'unused';
-
 const TypeFilter: React.FC = () => {
     const classes = useStyles();
-    const { featureFlags } = useMediaUi();
+    const { featureFlags, assetType } = useMediaUi();
     const [mediaTypeFilter, setMediaTypeFilter] = useRecoilState(selectedMediaTypeState);
     const [showUnusedAssets, setShowUnusedAssets] = useRecoilState(showUnusedAssetsState);
     const setCurrentPage = useSetRecoilState(currentPageState);
@@ -52,25 +52,29 @@ const TypeFilter: React.FC = () => {
     const mediaTypeOptions = useMemo((): MediaTypeOptions => {
         const options = {
             video: {
-                value: 'video',
+                value: 'video' as AssetType,
                 label: translate('typeFilter.mediaType.values.video', 'Video'),
                 icon: 'file-video',
+                disabled: assetType !== 'all' && assetType !== 'video',
             },
             audio: {
-                value: 'audio',
+                value: 'audio' as AssetType,
                 label: translate('typeFilter.mediaType.values.audio', 'Audio'),
                 icon: 'file-audio',
+                disabled: assetType !== 'all' && assetType !== 'audio',
             },
             image: {
-                value: 'image',
+                value: 'image' as AssetType,
                 label: translate('typeFilter.mediaType.values.image', 'Images'),
                 icon: 'file-image',
+                disabled: assetType !== 'all' && assetType !== 'image',
             },
             // TODO: The Media API currently only knows "Document" internally which is not a valid mimetype
             document: {
-                value: 'document',
+                value: 'document' as AssetType,
                 label: translate('typeFilter.mediaType.values.document', 'Document'),
                 icon: 'file',
+                disabled: assetType !== 'all' && assetType !== 'document',
             },
         };
 
@@ -79,11 +83,12 @@ const TypeFilter: React.FC = () => {
                 value: UNUSED_FILTER_VALUE,
                 label: translate('typeFilter.mediaType.values.unused', 'Unused'),
                 icon: 'fab fa-creative-commons-zero',
+                disabled: assetType !== 'all',
             };
         }
 
         return options;
-    }, [translate, featureFlags]);
+    }, [translate, featureFlags, assetType]);
 
     if (![MainViewState.DEFAULT, MainViewState.UNUSED_ASSETS].includes(mainView)) return null;
 
@@ -94,7 +99,7 @@ const TypeFilter: React.FC = () => {
                 options={Object.values(mediaTypeOptions)}
                 onValueChange={onValueChange}
                 value={currentValue}
-                allowEmpty={true}
+                allowEmpty={assetType === 'all'}
                 placeholderIcon="photo-video"
                 placeholder={translate('typeFilter.mediaType.values.all', 'All')}
                 optionValueField="value"
