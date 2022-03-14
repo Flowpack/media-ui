@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
+
+import { Icon } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
@@ -46,8 +48,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             display: 'block',
             width: '100%',
             height: theme.spacing.goldenUnit,
-            '& img': {
-                display: 'block',
+            textAlign: 'center',
+            '& img, & svg': {
+                display: 'inline-block',
                 width: '100%',
                 height: '100%',
                 objectFit: 'contain',
@@ -83,7 +86,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-const dateFormatOptions = {
+const dateFormatOptions: Record<string, DateTimeFormatOption> = {
     weekday: 'short',
     year: 'numeric',
     month: 'short',
@@ -97,18 +100,23 @@ interface ListViewItemProps {
 
 const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: ListViewItemProps) => {
     const classes = useStyles();
-    const { dummyImage } = useMediaUi();
+    const { dummyImage, isAssetSelectable } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
     const [selectedAssetId] = useRecoilState(selectedAssetIdState);
     const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
 
+    const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
     const onSelectItem = useCallback(() => onSelect(assetIdentity, isSelected), [onSelect, assetIdentity, isSelected]);
 
     return (
         <tr className={[classes.listViewItem, isSelected ? classes.selected : ''].join(' ')}>
             <td className={classes.previewColumn} onClick={onSelectItem}>
                 <picture>
-                    <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label} width={40} height={36} />
+                    {canBeSelected ? (
+                        <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label} width={40} height={36} />
+                    ) : (
+                        <Icon icon="ban" color="error" />
+                    )}
                 </picture>
             </td>
             <td className={classes.labelColumn} onClick={onSelectItem}>

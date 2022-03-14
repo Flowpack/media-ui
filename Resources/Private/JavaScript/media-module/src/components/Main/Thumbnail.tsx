@@ -1,5 +1,8 @@
 import * as React from 'react';
+import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
+
+import { Icon } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
@@ -52,7 +55,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         display: 'flex',
         alignItems: 'center',
         flex: 1,
-        '& img': {
+        '& img, & svg': {
             width: '1.3rem',
             height: 'auto',
             marginRight: theme.spacing.half,
@@ -89,6 +92,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         padding: '2px 4px',
         userSelect: 'none',
     },
+    disabled: {
+        '& $picture': {
+            filter: 'grayscale(1)',
+            cursor: 'not-allowed',
+        },
+    },
 }));
 
 interface ThumbnailProps {
@@ -99,13 +108,15 @@ interface ThumbnailProps {
 const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: ThumbnailProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
-    const { dummyImage } = useMediaUi();
+    const { dummyImage, isAssetSelectable } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
 
+    const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
+
     return (
-        <figure className={classes.thumbnail}>
+        <figure className={[classes.thumbnail, !canBeSelected && classes.disabled].join(' ')} title={asset?.label}>
             {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
             <picture onClick={() => onSelect(assetIdentity, isSelected)} className={classes.picture}>
                 <img src={loading || !asset ? dummyImage : asset.thumbnailUrl} alt={asset?.label} />
@@ -113,7 +124,11 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: Thumbn
             <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
                 {asset && (
                     <>
-                        <img src={asset.file.typeIcon.url} alt={asset.file.typeIcon.alt} />
+                        {canBeSelected ? (
+                            <img src={asset.file.typeIcon.url} alt={asset.file.typeIcon.alt} />
+                        ) : (
+                            <Icon icon="ban" color="error" />
+                        )}
                         <AssetLabel label={asset.label} />
                     </>
                 )}
