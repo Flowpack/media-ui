@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { gql, useMutation, useQuery } from '@apollo/client';
 
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
@@ -8,9 +8,8 @@ import { TOGGLE_CLIPBOARD_STATE, CLIPBOARD } from '../queries/ClipboardQuery';
 export type ClipboardItems = Record<string, AssetIdentity>;
 
 export default function useClipboard() {
-    const {
-        data: { clipboard },
-    } = useQuery<{ clipboard: ClipboardItems }>(CLIPBOARD);
+    const { data } = useQuery<{ clipboard: ClipboardItems }>(CLIPBOARD);
+    const clipboard = useMemo(() => data?.clipboard ?? {}, [data]);
 
     const [mutateClipboard] = useMutation<void, { assetId: string; assetSourceId: string; force: boolean }>(
         TOGGLE_CLIPBOARD_STATE

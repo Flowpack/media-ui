@@ -9,8 +9,8 @@ import { useAssetSourcesQuery } from './index';
 import { currentPageState } from '../state';
 
 const useSelectAssetSource = (): [AssetSource, (assetSource: AssetSource) => Promise<ExecutionResult<any>>] => {
-    const selectedAssetSourceQuery = useQuery(SELECTED_ASSET_SOURCE_ID);
-    const { selectedAssetSourceId } = selectedAssetSourceQuery.data;
+    const { data } = useQuery(SELECTED_ASSET_SOURCE_ID);
+    const selectedAssetSourceId = useMemo(() => data?.selectedAssetSourceId ?? null, [data]);
     const { assetSources } = useAssetSourcesQuery();
     const setCurrentPage = useSetRecoilState(currentPageState);
     const selectedAssetSource = useMemo(
