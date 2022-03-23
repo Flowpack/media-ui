@@ -4,7 +4,7 @@
   "license": "GNU GPLv3",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.3.13",
+    "@apollo/client": "~3.4.17",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
     "@fortawesome/free-regular-svg-icons": "^5.15.1",
