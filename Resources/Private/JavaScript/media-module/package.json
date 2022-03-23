@@ -59,7 +59,7 @@
     "@types/recoil": "^0.0.1",
     "apollo-server-express": "^2.19.0",
     "babel-types": "^6.26.0",
-    "node-sass": "^5.0.0",
+    "node-sass": "^7.0.1",
     "parcel-bundler": "^1.12.4",
     "patch-package": "^6.2.2",
     "postcss-custom-properties": "^9.2.0",
