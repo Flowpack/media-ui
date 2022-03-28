@@ -15,7 +15,7 @@ import { TopBar } from './TopBar';
 import { Main } from './Main';
 import ErrorBoundary from './ErrorBoundary';
 import { createAssetCollectionDialogState, createTagDialogState, uploadDialogVisibleState } from '../state';
-import { CreateTagDialog, UploadDialog, CreateAssetCollectionDialog } from './Dialogs';
+import { CreateTagDialog, CreateAssetCollectionDialog, UploadDialog } from './Dialogs';
 import { AssetPreview } from '../../../asset-preview/src';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -91,7 +91,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 const App = () => {
     const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
-    const showUploadDialog = useRecoilValue(uploadDialogVisibleState);
+    const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);

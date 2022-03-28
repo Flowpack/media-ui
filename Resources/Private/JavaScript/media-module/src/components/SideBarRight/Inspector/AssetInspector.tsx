@@ -14,6 +14,7 @@ import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
 import { SimilarAssetsToggleButton } from '@media-ui/feature-similar-assets/src';
+import AssetReplacementButton from './AssetReplacementButton';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     textArea: {
@@ -125,6 +126,7 @@ const AssetInspector = () => {
 
             <AssetUsagesToggleButton />
             {featureFlags.showSimilarAssets && <SimilarAssetsToggleButton />}
+            {!selectedAsset.assetSource.readOnly && <AssetReplacementButton />}
 
             <MetadataView />
         </InspectorContainer>

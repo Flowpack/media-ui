@@ -1,5 +1,7 @@
 <?php
+
 /** @noinspection PhpUnusedParameterInspection */
+
 declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
@@ -30,9 +32,11 @@ use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
+use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Media\Exception\AssetServiceException;
 use Neos\Neos\Domain\Repository\SiteRepository;
+use Neos\Utility\MediaTypes;
 use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
 
@@ -89,6 +93,12 @@ class MutationResolver implements ResolverInterface
      * @var SiteRepository
      */
     protected $siteRepository;
+
+    /**
+     * @Flow\Inject
+     * @var AssetService
+     */
+    protected $assetService;
 
     /**
      * @param $_
@@ -433,6 +443,86 @@ class MutationResolver implements ResolverInterface
             $results[$file->getClientFilename()] = $this->uploadFile($_, ['file' => $file]);
         }
         return $results;
+    }
+
+    /**
+     * Replaces an asset and its usages
+     *
+     * @param $_
+     * @param array $variables
+     * @return array<array>
+     */
+    public function replaceAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?array
+    {
+        /** @var FlowUploadedFile $file */
+        [
+            'id' => $id,
+            'assetSourceId' => $assetSourceId,
+            'file' => $file,
+            'options' => [
+                'generateRedirects' => $generateRedirects,
+                'keepOriginalFilename' => $keepOriginalFilename
+            ]
+        ] = $variables;
+
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
+        if (!$assetProxy) {
+            return null;
+        }
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            throw new Exception('Cannot replace asset that was never imported', 1648046173);
+        }
+
+        if (!$asset instanceof Asset) {
+            throw new Exception('Asset type does not support replacing', 1648046186);
+        }
+
+        $success = false;
+        $result = 'ERROR';
+        $sourceMediaType = MediaTypes::parseMediaType($asset->getMediaType());
+        $replacementMediaType = MediaTypes::parseMediaType($file->getClientMediaType());
+        $filename = $file->getClientFilename();
+
+        // Prevent replacement of image, audio and video by a different mimetype because of possible rendering issues.
+        if ($sourceMediaType['type'] !== $replacementMediaType['type'] && in_array($sourceMediaType['type'], ['image', 'audio', 'video'])) {
+            $this->systemLogger->error(sprintf('Cannot replace asset of mimetype %s with mimetype %s', $sourceMediaType['type'], $replacementMediaType['type']));
+            return [
+                'filename' => $filename,
+                'success' => false,
+                'result' => $result,
+            ];
+        }
+
+        try {
+            $resource = $this->resourceManager->importResource($file->getStream()->detach());
+        } catch (\Neos\Flow\ResourceManagement\Exception $e) {
+            $this->systemLogger->error('Could not import uploaded file');
+            $resource = null;
+        }
+
+        if ($resource) {
+            $resource->setFilename($filename);
+            $resource->setMediaType($file->getClientMediaType());
+
+            try {
+                $this->assetService->replaceAssetResource($asset, $resource, [
+                    'generateRedirects' => $generateRedirects,
+                    'keepOriginalFilename' => $keepOriginalFilename
+                ]);
+                $success = true;
+                $result = 'REPLACED';
+            } catch (\Exception $exception) {
+                $this->systemLogger->error(sprintf('Asset %s could not be replaced', $asset->getIdentifier()));
+            }
+        }
+
+        return [
+            'filename' => $filename,
+            'success' => $success,
+            'result' => $result,
+        ];
     }
 
     /**

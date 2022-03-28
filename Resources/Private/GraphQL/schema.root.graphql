@@ -107,6 +107,13 @@ type Mutation {
 
     deleteAsset(id: AssetId!, assetSourceId: AssetSourceId!): Boolean!
 
+    replaceAsset(
+        id: AssetId!
+        assetSourceId: AssetSourceId!
+        file: Upload!
+        options: AssetReplacementOptionsInput!
+    ): FileUploadResult!
+
     tagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tagId: TagId!): Asset!
 
     untagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tagId: TagId!): Asset!
@@ -242,6 +249,14 @@ type AssetSource {
     readOnly: Boolean!
     supportsTagging: Boolean!
     supportsCollections: Boolean!
+}
+
+"""
+Options for asset replacement
+"""
+input AssetReplacementOptionsInput {
+    generateRedirects: Boolean!
+    keepOriginalFilename: Boolean!
 }
 
 """
