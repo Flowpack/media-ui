@@ -22,7 +22,6 @@ export default function useReplaceAsset() {
             variables: {
                 id: asset.id,
                 assetSourceId: asset.assetSource.id,
-
                 file,
                 options,
             },

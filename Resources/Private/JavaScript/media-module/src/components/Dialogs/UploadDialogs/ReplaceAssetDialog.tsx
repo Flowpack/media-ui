@@ -54,12 +54,13 @@ const ReplaceAssetDialog: React.FC = () => {
         replaceAsset({ asset: selectedAsset, file, options: replacementOptions })
             .then(() => {
                 Notify.ok(translate('uploadDialog.replacementFinished', 'Replacement finished'));
+                closeDialog();
                 refetchAssets();
             })
             .catch((error) => {
                 Notify.error(translate('assetReplacement.error', 'Replacement failed'), error);
             });
-    }, [replaceAsset, Notify, translate, dialogState, replacementOptions, refetchAssets, selectedAsset]);
+    }, [replaceAsset, Notify, translate, dialogState, replacementOptions, refetchAssets, selectedAsset, closeDialog]);
 
     return (
         <Dialog
