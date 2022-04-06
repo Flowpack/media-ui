@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
@@ -38,9 +38,13 @@ const ReplaceAssetDialog: React.FC = () => {
     });
     const uploadPossible = !loading && dialogState.files.length > 0;
     const classes = useStyles();
-    const completeMediaType = selectedAsset?.file.mediaType;
-    const regex = /^(?<type>(?:[.!#%&'`^~$*+\-|\w]+))\//;
-    const mainType = completeMediaType.match(regex)?.groups?.type;
+    const acceptedFileTypes = useMemo(() => {
+        // TODO: Extract this into a helper function
+        const completeMediaType = selectedAsset?.file.mediaType;
+        const regex = /^(?<type>(?:[.!#%&'`^~$*+\-|\w]+))\//;
+        const mainType = completeMediaType.match(regex)?.groups?.type;
+        return mainType ? mainType + '/*' : '';
+    }, [selectedAsset]);
 
     const handleUpload = useCallback(() => {
         const file = dialogState.files[0];
@@ -86,7 +90,7 @@ const ReplaceAssetDialog: React.FC = () => {
                     loading={loading}
                     onSetFiles={setFiles}
                     maxFiles={1}
-                    acceptedFileTypes={mainType ? mainType : ''}
+                    acceptedFileTypes={acceptedFileTypes}
                 />
                 <section className={classes.optionSection}>
                     <div className={classes.option}>

@@ -58,7 +58,6 @@ const UploadSection: React.FC<UploadSectionProps> = ({
         ? Math.min(maxFiles, config?.uploadMaxFileUploadLimit)
         : config?.uploadMaxFileUploadLimit || 1;
 
-    // TODO: Define accepted mimetypes `{ accept: 'image/jpeg, image/png, video/*'}`
     const { getRootProps, getInputProps, isDragAccept, isDragActive, isDragReject } = useDropzone({
         onDrop: (acceptedFiles) => {
             if (acceptedFiles.length === 0) return;
