@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { Button } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
-import { useUploadFiles } from '@media-ui/core/src/hooks';
+import { useUploadFiles } from '../../hooks';
 import { Dialog } from '@media-ui/core/src/components';
 
 import UploadSection from '../UploadSection';

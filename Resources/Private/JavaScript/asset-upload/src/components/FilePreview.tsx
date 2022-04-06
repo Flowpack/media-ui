@@ -4,7 +4,7 @@ import { Icon } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 
-import { FileUploadResult } from 'Resources/Private/JavaScript/core/src/interfaces';
+import { FileUploadResult } from '../interfaces';
 import { UploadedFile } from './UploadSection';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
