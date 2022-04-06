@@ -14,9 +14,13 @@ import {
 } from './provider';
 
 import * as Events from './events';
+import * as Components from './components';
+import * as Helper from './helper';
 
 export {
+    Components,
     Events,
+    Helper,
     I18nRegistry,
     IntlProvider,
     MediaUiProvider,

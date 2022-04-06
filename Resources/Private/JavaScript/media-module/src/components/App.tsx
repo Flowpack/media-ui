@@ -6,6 +6,9 @@ import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature
 import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing/src';
 import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets/src';
+import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/state';
+import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
+import { AssetPreview } from '@media-ui/feature-asset-preview/src';
 
 import { SideBarLeft } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
@@ -14,9 +17,8 @@ import { BottomBar } from './BottomBar';
 import { TopBar } from './TopBar';
 import { Main } from './Main';
 import ErrorBoundary from './ErrorBoundary';
-import { createAssetCollectionDialogState, createTagDialogState, uploadDialogVisibleState } from '../state';
-import { CreateTagDialog, CreateAssetCollectionDialog, UploadDialog } from './Dialogs';
-import { AssetPreview } from '../../../asset-preview/src';
+import { createAssetCollectionDialogState, createTagDialogState } from '../state';
+import { CreateTagDialog, CreateAssetCollectionDialog } from './Dialogs';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode, isInNodeCreationDialog }) => ({

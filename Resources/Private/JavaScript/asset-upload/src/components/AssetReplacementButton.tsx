@@ -5,8 +5,8 @@ import { Button } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core/src';
 
-import { uploadDialogVisibleState } from '../../../state';
-import { UPLOAD_TYPE } from '../../../state/uploadDialogVisibleState';
+import { uploadDialogVisibleState } from '../state';
+import { UPLOAD_TYPE } from '../state/uploadDialogVisibleState';
 
 const AssetReplacementButton: React.FC = () => {
     const [dialogState, setDialogState] = useRecoilState(uploadDialogVisibleState);

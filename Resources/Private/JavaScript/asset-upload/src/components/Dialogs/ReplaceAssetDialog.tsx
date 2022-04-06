@@ -4,12 +4,13 @@ import { useCallback, useMemo } from 'react';
 import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
-import { useReplaceAsset, useSelectedAsset } from '@media-ui/core/src/hooks';
-import { Dialog } from '../Dialog';
-import UploadSection from './Presentationals/UploadSection';
-import PreviewSection from './Presentationals/PreviewSection';
-import useUploadDialogState from './useUploadDialogState';
-import { AssetReplacementOptions } from 'Resources/Private/JavaScript/core/src/hooks/useReplaceAsset';
+import { useSelectedAsset } from '@media-ui/core/src/hooks';
+import { Dialog } from '@media-ui/core/src/components';
+
+import UploadSection from '../UploadSection';
+import PreviewSection from '../PreviewSection';
+import { useUploadDialogState } from '../../hooks';
+import useReplaceAsset, { AssetReplacementOptions } from '../../hooks/useReplaceAsset';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     uploadArea: {

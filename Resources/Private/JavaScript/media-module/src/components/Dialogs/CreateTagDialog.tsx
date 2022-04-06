@@ -6,10 +6,9 @@ import { Button, Label, TextInput } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, useNotify } from '@media-ui/core/src';
 import { useCreateTag, useSelectedAssetCollection } from '@media-ui/core/src/hooks';
+import { Dialog } from '@media-ui/core/src/components';
 
 import { createTagDialogState } from '../../state';
-
-import { Dialog } from './Dialog';
 
 const useStyles = createUseMediaUiStyles(() => ({
     formBody: {

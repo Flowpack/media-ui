@@ -3,8 +3,7 @@ import { useDropzone } from 'react-dropzone';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } from '@media-ui/core/src';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
-
-import { humanFileSize } from '../../../../helper';
+import { humanFileSize } from '@media-ui/core/src/helper';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     dropzone: {

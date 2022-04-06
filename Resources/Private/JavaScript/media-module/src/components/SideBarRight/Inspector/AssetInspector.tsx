@@ -7,14 +7,14 @@ import { AssetUsagesToggleButton } from '@media-ui/feature-asset-usage/src';
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core/src';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
+import { SimilarAssetsToggleButton } from '@media-ui/feature-similar-assets/src';
+import { AssetReplacementButton } from '@media-ui/feature-asset-upload/src/components';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import { useRecoilValue } from 'recoil';
 import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
-import { SimilarAssetsToggleButton } from '@media-ui/feature-similar-assets/src';
-import AssetReplacementButton from './AssetReplacementButton';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     textArea: {

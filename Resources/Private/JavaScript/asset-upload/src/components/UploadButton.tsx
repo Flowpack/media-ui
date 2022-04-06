@@ -1,12 +1,12 @@
 import * as React from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import { Button, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core/src';
 
-import { uploadDialogVisibleState } from '../../state';
-import { useSetRecoilState } from 'recoil';
-import { UPLOAD_TYPE } from '../../state/uploadDialogVisibleState';
+import { uploadDialogVisibleState } from '../state';
+import { UPLOAD_TYPE } from '../state/uploadDialogVisibleState';
 
 export default function UploadButton() {
     const { translate } = useIntl();

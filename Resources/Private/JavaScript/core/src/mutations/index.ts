@@ -4,7 +4,6 @@ import DELETE_ASSET from './deleteAsset';
 import DELETE_ASSET_COLLECTION from './deleteAssetCollection';
 import DELETE_TAG from './deleteTag';
 import IMPORT_ASSET from './importAsset';
-import REPLACE_ASSET from './replaceAsset';
 import SET_ASSET_COLLECTIONS from './setAssetCollections';
 import SET_ASSET_TAGS from './setAssetTags';
 import TAG_ASSET from './tagAsset';
@@ -12,8 +11,6 @@ import UNTAG_ASSET from './untagAsset';
 import UPDATE_ASSET from './updateAsset';
 import UPDATE_ASSET_COLLECTION from './updateAssetCollection';
 import UPDATE_TAG from './updateTag';
-import UPLOAD_FILE from './uploadFile';
-import UPLOAD_FILES from './uploadFiles';
 
 export {
     CREATE_ASSET_COLLECTION,
@@ -22,7 +19,6 @@ export {
     DELETE_ASSET_COLLECTION,
     DELETE_TAG,
     IMPORT_ASSET,
-    REPLACE_ASSET,
     SET_ASSET_COLLECTIONS,
     SET_ASSET_TAGS,
     TAG_ASSET,
@@ -30,6 +26,4 @@ export {
     UPDATE_ASSET,
     UPDATE_ASSET_COLLECTION,
     UPDATE_TAG,
-    UPLOAD_FILE,
-    UPLOAD_FILES,
 };

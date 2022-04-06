@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { uploadDialogVisibleState } from '../../state';
 import { UPLOAD_TYPE } from '../../state/uploadDialogVisibleState';
-import NewAssetDialog from './UploadDialogs/NewAssetDialog';
-import ReplaceAssetDialog from './UploadDialogs/ReplaceAssetDialog';
+import NewAssetDialog from './NewAssetDialog';
+import ReplaceAssetDialog from './ReplaceAssetDialog';
 
 const UploadDialog: React.FC = () => {
     const { visible, uploadType } = useRecoilValue(uploadDialogVisibleState);

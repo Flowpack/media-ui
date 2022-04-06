@@ -5,11 +5,11 @@ import { Button } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
 import { useUploadFiles } from '@media-ui/core/src/hooks';
+import { Dialog } from '@media-ui/core/src/components';
 
-import { Dialog } from '../Dialog';
-import UploadSection from './Presentationals/UploadSection';
-import PreviewSection from './Presentationals/PreviewSection';
-import useUploadDialogState from './useUploadDialogState';
+import UploadSection from '../UploadSection';
+import PreviewSection from '../PreviewSection';
+import { useUploadDialogState } from '../../hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     uploadArea: {

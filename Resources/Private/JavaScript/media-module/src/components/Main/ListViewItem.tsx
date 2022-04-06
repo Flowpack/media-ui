@@ -8,8 +8,8 @@ import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
+import { humanFileSize } from '@media-ui/core/src/helper';
 
-import { humanFileSize } from '../../helper';
 import { AssetActions } from './index';
 import { AssetLabel } from '../Presentation';
 import MissingAssetActions from './MissingAssetActions';
