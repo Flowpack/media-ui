@@ -11,8 +11,6 @@ import UNTAG_ASSET from './untagAsset';
 import UPDATE_ASSET from './updateAsset';
 import UPDATE_ASSET_COLLECTION from './updateAssetCollection';
 import UPDATE_TAG from './updateTag';
-import UPLOAD_FILE from './uploadFile';
-import UPLOAD_FILES from './uploadFiles';
 
 export {
     CREATE_ASSET_COLLECTION,
@@ -28,6 +26,4 @@ export {
     UPDATE_ASSET,
     UPDATE_ASSET_COLLECTION,
     UPDATE_TAG,
-    UPLOAD_FILE,
-    UPLOAD_FILES,
 };

@@ -25,8 +25,6 @@ import useUntagAsset from './useUntagAsset';
 import useUpdateAsset from './useUpdateAsset';
 import useUpdateAssetCollection from './useUpdateAssetCollection';
 import useUpdateTag from './useUpdateTag';
-import useUploadFile from './useUploadFile';
-import useUploadFiles from './useUploadFiles';
 
 export {
     useAssetCollectionsQuery,
@@ -56,6 +54,4 @@ export {
     useUpdateAsset,
     useUpdateAssetCollection,
     useUpdateTag,
-    useUploadFile,
-    useUploadFiles,
 };

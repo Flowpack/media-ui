@@ -10,6 +10,7 @@ import { Asset, AssetIdentity, FeatureFlags, SelectionConstraints } from '../int
 import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
 import { selectedMediaTypeState } from '../state';
+import { AssetMediaType } from '../state/selectedMediaTypeState';
 import { ASSET_FRAGMENT } from '../fragments/asset';
 
 interface MediaUiProviderProps {
@@ -21,7 +22,7 @@ interface MediaUiProviderProps {
     onAssetSelection?: (localAssetIdentifier: string) => void;
     featureFlags: FeatureFlags;
     constraints?: SelectionConstraints;
-    assetType?: AssetType;
+    assetType?: AssetMediaType;
 }
 
 interface MediaUiProviderValues {
@@ -35,7 +36,7 @@ interface MediaUiProviderValues {
     refetchAssets: () => void;
     featureFlags: FeatureFlags;
     constraints: SelectionConstraints;
-    assetType: AssetType;
+    assetType: AssetMediaType;
     isAssetSelectable: (asset: Asset) => boolean;
 }
 

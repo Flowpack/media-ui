@@ -7,6 +7,7 @@ import { SelectBox } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
 import { currentPageState, selectedMediaTypeState } from '@media-ui/core/src/state';
 import { showUnusedAssetsState } from '@media-ui/feature-asset-usage/src';
+import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
 
 import { MainViewState, mainViewState } from '../../state';
 
@@ -21,7 +22,7 @@ const UNUSED_FILTER_VALUE = 'unused';
 
 interface MediaTypeOptions {
     [type: string]: {
-        value: AssetType | 'unused';
+        value: AssetMediaType | 'unused';
         label: string;
         icon: string;
     };
@@ -52,26 +53,26 @@ const TypeFilter: React.FC = () => {
     const mediaTypeOptions = useMemo((): MediaTypeOptions => {
         const options = {
             video: {
-                value: 'video' as AssetType,
+                value: 'video' as AssetMediaType,
                 label: translate('typeFilter.mediaType.values.video', 'Video'),
                 icon: 'file-video',
                 disabled: assetType !== 'all' && assetType !== 'video',
             },
             audio: {
-                value: 'audio' as AssetType,
+                value: 'audio' as AssetMediaType,
                 label: translate('typeFilter.mediaType.values.audio', 'Audio'),
                 icon: 'file-audio',
                 disabled: assetType !== 'all' && assetType !== 'audio',
             },
             image: {
-                value: 'image' as AssetType,
+                value: 'image' as AssetMediaType,
                 label: translate('typeFilter.mediaType.values.image', 'Images'),
                 icon: 'file-image',
                 disabled: assetType !== 'all' && assetType !== 'image',
             },
             // TODO: The Media API currently only knows "Document" internally which is not a valid mimetype
             document: {
-                value: 'document' as AssetType,
+                value: 'document' as AssetMediaType,
                 label: translate('typeFilter.mediaType.values.document', 'Document'),
                 icon: 'file',
                 disabled: assetType !== 'all' && assetType !== 'document',

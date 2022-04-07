@@ -1,9 +1,10 @@
 import * as React from 'react';
 
 import { AssetCollectionTree } from './Tree';
-import { AssetSourceList, AssetSourceDescription, UploadButton } from './index';
+import { AssetSourceList, AssetSourceDescription } from './index';
 import { Column } from '../Presentation';
 import { useMediaUi } from '@media-ui/core/src';
+import { UploadButton } from '@media-ui/feature-asset-upload/src/components';
 
 const SideBarLeft: React.FC = () => {
     const { selectionMode } = useMediaUi();

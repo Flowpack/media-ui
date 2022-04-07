@@ -4,8 +4,8 @@ import { Headline } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core/src';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
+import { humanFileSize } from '@media-ui/core/src/helper';
 
-import { humanFileSize } from '../../../helper';
 import { IconLabel, PropertyList, PropertyListItem } from '../../Presentation';
 
 const MetadataView: React.FC = () => {

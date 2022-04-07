@@ -22,6 +22,7 @@ import {
     NotifyProvider,
 } from '@media-ui/core/src';
 import { FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
+import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
 import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from '@media-ui/media-module/src/core';
 import App from '@media-ui/media-module/src/components/App';
 
@@ -42,7 +43,7 @@ interface MediaSelectionScreenProps {
         queryAssetUsage: boolean;
     };
     neos: Record<string, unknown>;
-    type: AssetType | 'images'; // The image editor sets the type to 'images'
+    type: AssetMediaType | 'images'; // The image editor sets the type to 'images'
     onComplete: (localAssetIdentifier: string) => void;
     isLeftSideBarHidden: boolean;
     isNodeCreationDialogOpen: boolean;
