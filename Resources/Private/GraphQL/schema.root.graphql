@@ -219,13 +219,11 @@ type File {
 }
 
 """
-A tag to which assets can be assigned. Can have parent and child tags
+A tag to which assets can be assigned
 """
 type Tag {
     id: TagId!
     label: TagLabel!
-    parent: Tag
-    children: [Tag!]!
 }
 
 """

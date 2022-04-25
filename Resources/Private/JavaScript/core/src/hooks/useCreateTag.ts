@@ -23,8 +23,6 @@ export default function useCreateTag() {
             //     createTag: {
             //         __typename: 'Tag',
             //         label: label,
-            //         parent: null,
-            //         children: []
             //     }
             // },
             update: (proxy, { data: { createTag: newTag } }) => {
