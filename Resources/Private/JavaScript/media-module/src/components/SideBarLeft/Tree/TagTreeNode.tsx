@@ -40,6 +40,7 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
                 nodeDndType={dndTypes.TAG}
                 level={level}
                 onClick={handleClick}
+                hasChildren={false}
             />
         </Tree.Node>
     );
