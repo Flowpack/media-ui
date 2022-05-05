@@ -3,8 +3,12 @@ import { onError } from '@apollo/client/link/error';
 // TODO: Use NotificationHandler to show simplified error message to user
 const ApolloErrorHandler = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
-        graphQLErrors.map(({ message, locations, path }) =>
-            console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+        graphQLErrors.map((data) =>
+            console.error(
+                data.extensions.category === 'internal' ? '[Internal server error]' : '[GraphQL error]',
+                data.path,
+                data
+            )
         );
     }
 
