@@ -24,6 +24,8 @@ use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
+use Neos\Flow\Security\Exception\AccessDeniedException;
+use Neos\Flow\Security\Exception\AuthenticationRequiredException;
 use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
@@ -653,6 +655,8 @@ class MutationResolver implements ResolverInterface
             'label' => $label,
             'assetCollectionId' => $assetCollectionId
         ] = $variables + ['assetCollectionId' => null];
+
+        throw new AuthenticationRequiredException('Please login', 1651741371);
 
         $tag = $this->tagRepository->findOneByLabel($label);
         if ($tag === null) {
