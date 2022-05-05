@@ -13,9 +13,9 @@ Neos:
             position: 'before media'
             additionalResources:
               javaScripts:
-                - 'resource://Flowpack.Media.Ui/Public/Assets/main.bundle.js'
+                Flowpack.Media.Ui: 'resource://Flowpack.Media.Ui/Public/Assets/main.bundle.js'
               styleSheets:
-                - 'resource://Flowpack.Media.Ui/Public/Assets/main.bundle.css'
+                Flowpack.Media.Ui: 'resource://Flowpack.Media.Ui/Public/Assets/main.bundle.css'
 
     userInterface:
       translation:
