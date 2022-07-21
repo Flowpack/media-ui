@@ -15,12 +15,14 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  */
 
 use Flowpack\Media\Ui\Exception as MediaUiException;
+use Flowpack\Media\Ui\Domain\ImageMapper;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
@@ -32,7 +34,9 @@ use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
 use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsSortingInterface;
+use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Model\Tag;
+use Neos\Media\Domain\Model\VariantSupportInterface;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Service\AssetService;
@@ -450,6 +454,33 @@ class QueryResolver implements ResolverInterface
         ] = $variables + ['id' => null, 'assetSourceId' => null];
 
         return $assetSourceContext->getAssetProxy($id, $assetSourceId);
+    }
+
+    /**
+     * @param $_
+     * @param array $variables
+     * @param AssetSourceContext $assetSourceContext
+     * @return AssetProxyInterface|null
+     */
+    public function assetVariants($_, array $variables, AssetSourceContext $assetSourceContext): array
+    {
+        $assetProxy = $this->asset($_, $variables, $assetSourceContext);
+        if ($assetProxy === null || !($assetProxy instanceof NeosAssetProxy) || !($assetProxy->getAsset() instanceof VariantSupportInterface)) {
+            return [];
+        }
+        $asset = $this->persistenceManager->getObjectByIdentifier($assetProxy->getLocalAssetIdentifier(), Asset::class);
+
+        /** @var VariantSupportInterface $originalAsset */
+        $originalAsset = ($asset instanceof AssetVariantInterface ? $asset->getOriginalAsset() : $asset);
+
+        // $variantInformation = array_map(static function (AssetVariantInterface $imageVariant) {
+        //     return (new ImageMapper($imageVariant))->getMappingResult();
+        // }, $originalAsset->getVariants());
+
+        // var_dump($variantInformation);
+        // return [];
+
+        return $originalAsset->getVariants();
     }
 
     /**
