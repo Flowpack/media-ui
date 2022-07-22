@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-import { CROP_INFORMATION_FRAGMENT } from '../fragments/cropinformation';
+import CROP_INFORMATION_FRAGMENT from '../fragments/cropInformation';
 
 const ASSET_VARIANTS = gql`
     query ASSET_VARIANTS($id: AssetId!, $assetSourceId: AssetSourceId!) {

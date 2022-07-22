@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export const CROP_INFORMATION_FRAGMENT = gql`
+const CROP_INFORMATION_FRAGMENT = gql`
     fragment CropInformationProps on CropInformation {
         width
         height
@@ -8,3 +8,5 @@ export const CROP_INFORMATION_FRAGMENT = gql`
         y
     }
 `;
+
+export default CROP_INFORMATION_FRAGMENT;

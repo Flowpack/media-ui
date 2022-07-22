@@ -1,13 +1,14 @@
 import { useQuery } from '@apollo/client';
 
-import { AssetIdentity, AssetVariant } from '../interfaces';
-import { ASSET_VARIANTS } from '../queries';
+import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import AssetVariant from '../interfaces/AssetVariant';
+import ASSET_VARIANTS from '../queries/assetVariants';
 
 interface VariantsQueryResult {
-    assetVariants: AssetVariant;
+    assetVariants: AssetVariant[];
 }
 
-export default function useVariantsQuery(assetIdentity?: AssetIdentity) {
+export default function useAssetVariants(assetIdentity?: AssetIdentity) {
     const { data, loading, refetch } = useQuery<VariantsQueryResult, { id: string; assetSourceId: string }>(
         ASSET_VARIANTS,
         {

@@ -25,7 +25,6 @@ import useUntagAsset from './useUntagAsset';
 import useUpdateAsset from './useUpdateAsset';
 import useUpdateAssetCollection from './useUpdateAssetCollection';
 import useUpdateTag from './useUpdateTag';
-import useVariantsQuery from './useVariantsQUery';
 
 export {
     useAssetCollectionsQuery,
@@ -55,5 +54,4 @@ export {
     useUpdateAsset,
     useUpdateAssetCollection,
     useUpdateTag,
-    useVariantsQuery,
 };
