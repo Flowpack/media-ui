@@ -14,9 +14,9 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
-use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
+use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Adjustment\CropImageAdjustment;
 use Neos\Media\Domain\Model\ImageVariant;
 
@@ -33,6 +33,12 @@ class AssetVariantResolver implements ResolverInterface
      * @var PersistenceManager
      */
     public $persistenceManager;
+
+    /**
+     * @Flow\Inject
+     * @var ResourceManager
+     */
+    protected $resourceManager;
 
 
     /**

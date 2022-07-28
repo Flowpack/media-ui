@@ -11,6 +11,7 @@ const ASSET_VARIANTS = gql`
             presetIdentifier
             variantName
             hasCrop
+            previewUrl
             cropInformation {
                 ...CropInformationProps
             }
