@@ -2,6 +2,7 @@ import React from 'react';
 import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 import AssetVariant from '../interfaces/AssetVariant';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface VariantProps extends AssetVariant {}
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -48,7 +49,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-const Varaint: React.FC<VariantProps> = ({ id, presetIdentifier, variantName, width, height, previewUrl }) => {
+// eslint-disable-next-line react/prop-types
+const Variant: React.FC<VariantProps> = ({ presetIdentifier, variantName, width, height, previewUrl }) => {
     const classes = useStyles();
     return (
         <div className={classes.variantContainer}>
@@ -70,4 +72,4 @@ const Varaint: React.FC<VariantProps> = ({ id, presetIdentifier, variantName, wi
     );
 };
 
-export default Varaint;
+export default Variant;
