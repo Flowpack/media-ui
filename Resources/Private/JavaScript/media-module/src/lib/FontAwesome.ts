@@ -31,6 +31,8 @@ import { faFolderOpen } from '@fortawesome/free-solid-svg-icons/faFolderOpen';
 import { faFont } from '@fortawesome/free-solid-svg-icons/faFont';
 import { faGripLinesVertical } from '@fortawesome/free-solid-svg-icons/faGripLinesVertical';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
+import { faImages } from '@fortawesome/free-solid-svg-icons/faImages';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
 import { faPhotoVideo } from '@fortawesome/free-solid-svg-icons/faPhotoVideo';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion';
@@ -82,8 +84,10 @@ export default function loadIconLibrary() {
         faFolderOpen,
         faFont,
         faGripLinesVertical,
+        faImages,
         faInfoCircle,
         faNeos,
+        faPencilAlt,
         faPhotoVideo,
         faPlus,
         faQuestion,

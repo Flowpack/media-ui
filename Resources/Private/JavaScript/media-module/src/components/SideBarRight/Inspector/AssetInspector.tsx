@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { TextArea, TextInput } from '@neos-project/react-ui-components';
+import { Tabs, TextArea, TextInput } from '@neos-project/react-ui-components';
 
 import { AssetUsagesToggleButton } from '@media-ui/feature-asset-usage/src';
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core/src';
@@ -9,6 +9,7 @@ import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
 import { SimilarAssetsToggleButton } from '@media-ui/feature-similar-assets/src';
 import { AssetReplacementButton } from '@media-ui/feature-asset-upload/src/components';
+import VariantsInspector from '@media-ui/feature-asset-variants/src/components/VariantsInspector';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import { useRecoilValue } from 'recoil';
@@ -22,6 +23,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         '.neos textarea&': {
             padding: theme.spacing.half,
         },
+    },
+    tabContent: {
+        height: 'calc(100% - 42px)',
     },
 }));
 
@@ -80,8 +84,7 @@ const AssetInspector = () => {
     }, [selectedAsset?.id]);
 
     if (!selectedAsset || selectedInspectorView !== 'asset') return null;
-
-    return (
+    const PropertyInspector = () => (
         <InspectorContainer>
             <Property label={translate('inspector.title', 'Title')}>
                 <TextInput
@@ -130,6 +133,19 @@ const AssetInspector = () => {
 
             <MetadataView />
         </InspectorContainer>
+    );
+
+    return featureFlags.showVariantsEditor ? (
+        <Tabs theme={{ tabs__content: classes.tabContent }}>
+            <Tabs.Panel icon="pencil" key="editor" id="editor">
+                <PropertyInspector />
+            </Tabs.Panel>
+            <Tabs.Panel icon="images">
+                <VariantsInspector />
+            </Tabs.Panel>
+        </Tabs>
+    ) : (
+        <PropertyInspector />
     );
 };
 
