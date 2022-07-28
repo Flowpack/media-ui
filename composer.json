@@ -23,5 +23,10 @@
         "psr-4": {
             "Flowpack\\Media\\Ui\\": "Classes"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "neos/composer-plugin": true
+        }
     }
 }
