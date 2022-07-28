@@ -460,7 +460,7 @@ class QueryResolver implements ResolverInterface
      * @param $_
      * @param array $variables
      * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
+     * @return AssetVariantInterface[]
      */
     public function assetVariants($_, array $variables, AssetSourceContext $assetSourceContext): array
     {
@@ -472,13 +472,6 @@ class QueryResolver implements ResolverInterface
 
         /** @var VariantSupportInterface $originalAsset */
         $originalAsset = ($asset instanceof AssetVariantInterface ? $asset->getOriginalAsset() : $asset);
-
-        // $variantInformation = array_map(static function (AssetVariantInterface $imageVariant) {
-        //     return (new ImageMapper($imageVariant))->getMappingResult();
-        // }, $originalAsset->getVariants());
-
-        // var_dump($variantInformation);
-        // return [];
 
         return $originalAsset->getVariants();
     }

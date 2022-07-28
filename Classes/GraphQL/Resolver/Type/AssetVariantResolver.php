@@ -42,7 +42,7 @@ class AssetVariantResolver implements ResolverInterface
 
 
     /**
-     * @param ImageInterface $assetVariant
+     * @param ImageVariant $assetVariant
      * @return string|null
      */
     public function id(ImageVariant $assetVariant): ?string
@@ -51,7 +51,7 @@ class AssetVariantResolver implements ResolverInterface
     }
 
     /**
-     * @param ImageInterface $assetVariant
+     * @param ImageVariant $assetVariant
      * @return string
      */
     public function previewUrl(ImageVariant $assetVariant): string
@@ -112,7 +112,7 @@ class AssetVariantResolver implements ResolverInterface
 
     /**
      * @param ImageVariant $assetVariant
-     * @return bool
+     * @return array
      */
     public function cropInformation(ImageVariant $assetVariant): array
     {
