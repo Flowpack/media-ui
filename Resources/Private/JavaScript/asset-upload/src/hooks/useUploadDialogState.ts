@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
+
 import { uploadDialogVisibleState } from '../state';
 import { UploadDialogVisibleState, UPLOAD_TYPE } from '../state/uploadDialogVisibleState';
-import { UploadedFile } from '../components/UploadSection';
+import { UploadedFile } from '../interfaces';
 
 interface UploadDialogState extends UploadDialogVisibleState {
     files: UploadedFile[];
 }
+
 const useUploadDialogState = (): {
     state: UploadDialogState;
     closeDialog(): void;

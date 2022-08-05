@@ -4,6 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } from '@media-ui/core/src';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { humanFileSize } from '@media-ui/core/src/helper';
+import { UploadedFile } from '../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     dropzone: {
@@ -28,11 +29,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         transition: 'border .24s ease-in-out',
     },
 }));
-
-export interface UploadedFile extends File {
-    path?: string;
-    preview?: string;
-}
 
 interface UploadSectionProps {
     files: UploadedFile[];
@@ -84,6 +80,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
 
             const newFiles = (newAcceptedFiles as UploadedFile[]).map((file) => {
                 if (file.type.indexOf('image') === 0) {
+                    // FIXME: This generated url breaks after components using it are remounted, so they also have to use the method to get a working image
                     file.preview = URL.createObjectURL(file);
                 } else {
                     // TODO: Find better preview visualisation
@@ -133,7 +130,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
                     </p>
                 )}
             </div>
-            {loading && <p>Uploading...</p>}
+            {loading && <p>{translate('uploadDialog.label.uploading', 'Uploading…')}</p>}
         </section>
     );
 };

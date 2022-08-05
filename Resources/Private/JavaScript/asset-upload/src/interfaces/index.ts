@@ -1,3 +1,4 @@
 import FileUploadResult from './FileUploadResult';
+import UploadedFile from './UploadedFile';
 
-export { FileUploadResult };
+export { FileUploadResult, UploadedFile };

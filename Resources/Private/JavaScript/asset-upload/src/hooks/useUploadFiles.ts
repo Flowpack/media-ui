@@ -11,7 +11,7 @@ export default function useUploadFiles() {
     const tagId = useRecoilValue(selectedTagIdState);
     const assetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
 
-    const uploadFiles = (files: File[], tagId, assetCollectionId) =>
+    const uploadFiles = (files: File[]) =>
         action({
             variables: {
                 files,

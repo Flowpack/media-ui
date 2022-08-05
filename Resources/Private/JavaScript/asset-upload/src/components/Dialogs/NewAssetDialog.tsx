@@ -23,10 +23,13 @@ const NewAssetDialog: React.FC = () => {
     const { uploadFiles, uploadState, loading } = useUploadFiles();
     const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
     const { refetchAssets } = useMediaUi();
-    const uploadPossible = !loading && dialogState.files.length > 0;
+    const uploadPossible =
+        !loading &&
+        dialogState.files.filter((file) => !uploadState.some((state) => state.filename === file.name)).length > 0;
 
     const classes = useStyles();
 
+    // FIXME: move uploaded files into a separate state to prevent re-uploading the same files when upload is triggered again
     const handleUpload = useCallback(() => {
         uploadFiles(dialogState.files)
             .then(() => {

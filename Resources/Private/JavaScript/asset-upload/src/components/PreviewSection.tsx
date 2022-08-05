@@ -1,10 +1,10 @@
 import * as React from 'react';
+import { useMemo } from 'react';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 
-import { FileUploadResult } from '../interfaces';
+import { FileUploadResult, UploadedFile } from '../interfaces';
 import FilePreview from './FilePreview';
-import { UploadedFile } from './UploadSection';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     fileList: {
@@ -29,21 +29,66 @@ interface PreviewSectionProps {
 const PreviewSection: React.FC<PreviewSectionProps> = ({ files, loading, uploadState }: PreviewSectionProps) => {
     const { translate } = useIntl();
     const classes = useStyles();
+
+    const filesByState = useMemo(() => {
+        return {
+            uploaded: files.filter((file: UploadedFile) =>
+                uploadState.some((state) => state.success && state.filename === file.name)
+            ),
+            failed: files.filter((file) => uploadState.some((state) => !state.success && state.filename === file.name)),
+            ready: files.filter((file) => !uploadState.some((state) => state.filename === file.name)),
+        };
+    }, [files, uploadState]);
+
     if (files.length === 0) {
-        return;
+        return null;
     }
 
     return (
         <aside className={classes.fileList}>
-            <h4 className={classes.fileListHeader}>{translate('uploadDialog.fileList.header', 'Selected files')}</h4>
-            {files.map((file: UploadedFile) => (
-                <FilePreview
-                    file={file}
-                    loading={loading}
-                    fileState={uploadState.find((result) => result.filename === file.name)}
-                    key={file.name}
-                />
-            ))}
+            {filesByState.ready.length > 0 && (
+                <>
+                    <h4 className={classes.fileListHeader}>
+                        {translate('uploadDialog.fileList.header', 'Selected files')}
+                    </h4>
+                    {filesByState.ready.map((file) => (
+                        <FilePreview
+                            file={file}
+                            loading={loading}
+                            fileState={uploadState.find((result) => result.filename === file.name)}
+                            key={file.name}
+                        />
+                    ))}
+                </>
+            )}
+            {filesByState.failed.length > 0 && (
+                <>
+                    <h4 className={classes.fileListHeader}>
+                        {translate('uploadDialog.fileList.uploadedHeader', 'Failed uploads')}
+                    </h4>
+                    {filesByState.failed.map((file) => (
+                        <FilePreview
+                            file={file}
+                            fileState={uploadState.find((result) => result.filename === file.name)}
+                            key={file.name}
+                        />
+                    ))}
+                </>
+            )}
+            {filesByState.uploaded.length > 0 && (
+                <>
+                    <h4 className={classes.fileListHeader}>
+                        {translate('uploadDialog.fileList.uploadedHeader', 'Successful uploads')}
+                    </h4>
+                    {filesByState.uploaded.map((file) => (
+                        <FilePreview
+                            file={file}
+                            fileState={uploadState.find((result) => result.filename === file.name)}
+                            key={file.name}
+                        />
+                    ))}
+                </>
+            )}
         </aside>
     );
 };
