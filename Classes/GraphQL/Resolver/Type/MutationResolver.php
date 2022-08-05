@@ -26,6 +26,7 @@ use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\Asset;
+use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\Tag;
@@ -101,10 +102,6 @@ class MutationResolver implements ResolverInterface
     protected $assetService;
 
     /**
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return bool
      * @throws Exception
      * @throws AssetServiceException
      */
@@ -135,10 +132,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
      * @throws Exception
      */
     public function updateAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
@@ -185,10 +178,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
      * @throws Exception
      */
     public function tagAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
@@ -232,10 +221,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
      * @throws Exception
      */
     public function setAssetTags($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
@@ -279,10 +264,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
      * @throws Exception
      */
     public function setAssetCollections($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
@@ -326,10 +307,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
      * @throws Exception
      */
     public function untagAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
@@ -375,14 +352,14 @@ class MutationResolver implements ResolverInterface
     /**
      * Stores the given file and returns an array with the result
      *
-     * @param $_
-     * @param array $variables
-     * @return array
+     * @return array{filename: string, success: bool, result: string}
      */
     public function uploadFile($_, array $variables): array
     {
         /** @var FlowUploadedFile $file */
         $file = $variables['file'];
+        $tagId = $variables['tagId'] ?? null;
+        $assetCollectionId = $variables['assetCollectionId'] ?? null;
 
         $success = false;
         $result = 'ERROR';
@@ -404,9 +381,25 @@ class MutationResolver implements ResolverInterface
             } else {
                 try {
                     $className = $this->mappingStrategy->map($resource);
+                    /** @var Asset $asset */
                     $asset = new $className($resource);
 
                     if ($this->persistenceManager->isNewObject($asset)) {
+                        if ($tagId) {
+                            /** @var Tag $tag */
+                            $tag = $this->tagRepository->findByIdentifier($tagId);
+                            if ($tag) {
+                                $asset->addTag($tag);
+                            }
+                        }
+                        if ($assetCollectionId) {
+                            /** @var AssetCollection $assetCollection */
+                            $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
+                            if ($assetCollection) {
+                                $asset->setAssetCollections(new ArrayCollection([$assetCollection]));
+                            }
+                        }
+
                         $this->assetRepository->add($asset);
                         $result = 'ADDED';
                         $success = true;
@@ -429,18 +422,22 @@ class MutationResolver implements ResolverInterface
     /**
      * Stores all given files and returns an array of results for each upload
      *
-     * @param $_
-     * @param array $variables
-     * @return array<array>
+     * @return array<array{filename: string, success: bool, result: string}>
      */
     public function uploadFiles($_, array $variables): array
     {
         /** @var array<FlowUploadedFile> $files */
         $files = $variables['files'];
+        $tagId = $variables['tagId'] ?? null;
+        $assetCollectionId = $variables['assetCollectionId'] ?? null;
 
         $results = [];
         foreach ($files as $file) {
-            $results[$file->getClientFilename()] = $this->uploadFile($_, ['file' => $file]);
+            $results[$file->getClientFilename()] = $this->uploadFile($_, [
+                'file' => $file,
+                'tagId' => $tagId,
+                'assetCollectionId' => $assetCollectionId,
+            ]);
         }
         return $results;
     }
@@ -448,9 +445,8 @@ class MutationResolver implements ResolverInterface
     /**
      * Replaces an asset and its usages
      *
-     * @param $_
-     * @param array $variables
-     * @return array<array>
+     * @return array{filename: string, success: bool, result: string}
+     * @throws Exception
      */
     public function replaceAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?array
     {
@@ -526,10 +522,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
      * @throws Exception
      */
     public function importAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
@@ -548,9 +540,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return AssetCollection
      * @throws IllegalObjectTypeException
      */
     public function createAssetCollection($_, array $variables): AssetCollection
@@ -569,9 +558,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return array
      * @throws Exception|IllegalObjectTypeException
      */
     public function deleteAssetCollection($_, array $variables): array
@@ -600,10 +586,7 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return AssetCollection|null
-     * @throws Exception
+     * @throws Exception|IllegalObjectTypeException
      */
     public function updateAssetCollection($_, array $variables): ?AssetCollection
     {
@@ -642,9 +625,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return Tag
      * @throws Exception|IllegalObjectTypeException
      */
     public function createTag($_, array $variables): Tag
@@ -675,10 +655,7 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return Tag
-     * @throws Exception
+     * @throws Exception|IllegalObjectTypeException
      */
     public function updateTag($_, array $variables): ?Tag
     {
@@ -704,9 +681,6 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return bool
      * @throws Exception|IllegalObjectTypeException|InvalidQueryException
      */
     public function deleteTag($_, array $variables): bool
