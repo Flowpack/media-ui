@@ -12,8 +12,13 @@ import { MainViewState, mainViewState } from '../../state';
 const useStyles = createUseMediaUiStyles({
     searchBox: {
         flex: 1,
-        '& input': {
+        '& input[type="search"]': {
+            '-webkit-appearance': 'auto',
             width: '100%',
+            '&::-webkit-search-cancel-button': {
+                '-webkit-appearance': 'searchfield-cancel-button',
+                cursor: 'pointer',
+            },
         },
     },
 });
