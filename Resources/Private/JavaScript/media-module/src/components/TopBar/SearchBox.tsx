@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useCallback, useState } from 'react';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
-import { searchTermState } from '@media-ui/core/src/state';
+import { currentPageState, searchTermState } from '@media-ui/core/src/state';
 
 import { MainViewState, mainViewState } from '../../state';
 
@@ -26,9 +26,15 @@ const useStyles = createUseMediaUiStyles({
 const SearchBox: React.FC = () => {
     const classes = useStyles();
     const [searchTerm, setSearchTerm] = useRecoilState(searchTermState);
+    const setCurrentPage = useSetRecoilState(currentPageState);
     const [searchValue, setSearchValue] = useState(searchTerm);
     const { translate } = useIntl();
     const mainView = useRecoilValue(mainViewState);
+
+    const handleSearch = useCallback(() => {
+        setSearchTerm(searchValue);
+        setCurrentPage(1);
+    }, [searchValue, setCurrentPage, setSearchTerm]);
 
     if (mainView !== MainViewState.DEFAULT) return null;
 
@@ -38,7 +44,7 @@ const SearchBox: React.FC = () => {
                 value={searchValue}
                 type="search"
                 onChange={(value) => setSearchValue(value)}
-                onEnterKey={() => setSearchTerm(searchValue)}
+                onEnterKey={handleSearch}
                 placeholder={translate('searchBox.placeholder', 'Search')}
             />
         </div>
