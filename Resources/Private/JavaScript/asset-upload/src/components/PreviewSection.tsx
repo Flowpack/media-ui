@@ -2,9 +2,8 @@ import * as React from 'react';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 
-import { FileUploadResult } from '../interfaces';
+import { FilesUploadState, FileUploadResult } from '../interfaces';
 import FilePreview from './FilePreview';
-import { UploadedFile } from './UploadSection';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     fileList: {
@@ -21,7 +20,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 }));
 
 interface PreviewSectionProps {
-    files: UploadedFile[];
+    files: FilesUploadState;
     loading: boolean;
     uploadState: FileUploadResult[];
 }
@@ -29,21 +28,54 @@ interface PreviewSectionProps {
 const PreviewSection: React.FC<PreviewSectionProps> = ({ files, loading, uploadState }: PreviewSectionProps) => {
     const { translate } = useIntl();
     const classes = useStyles();
-    if (files.length === 0) {
-        return;
-    }
+
+    // FIXME: Mapping the uploadState to the files name is not the best solution as the same filename might be used multiple times
 
     return (
         <aside className={classes.fileList}>
-            <h4 className={classes.fileListHeader}>{translate('uploadDialog.fileList.header', 'Selected files')}</h4>
-            {files.map((file: UploadedFile) => (
-                <FilePreview
-                    file={file}
-                    loading={loading}
-                    fileState={uploadState.find((result) => result.filename === file.name)}
-                    key={file.name}
-                />
-            ))}
+            {files.selected.length > 0 && (
+                <>
+                    <h4 className={classes.fileListHeader}>
+                        {translate('uploadDialog.fileList.header', 'Selected files')}
+                    </h4>
+                    {files.selected.map((file) => (
+                        <FilePreview
+                            file={file}
+                            loading={loading}
+                            fileState={uploadState.find((result) => result.filename === file.name)}
+                            key={file.id}
+                        />
+                    ))}
+                </>
+            )}
+            {files.rejected.length > 0 && (
+                <>
+                    <h4 className={classes.fileListHeader}>
+                        {translate('uploadDialog.fileList.uploadedHeader', 'Failed uploads')}
+                    </h4>
+                    {files.rejected.map((file) => (
+                        <FilePreview
+                            file={file}
+                            fileState={uploadState.find((result) => result.filename === file.name)}
+                            key={file.id}
+                        />
+                    ))}
+                </>
+            )}
+            {files.finished.length > 0 && (
+                <>
+                    <h4 className={classes.fileListHeader}>
+                        {translate('uploadDialog.fileList.uploadedHeader', 'Successful uploads')}
+                    </h4>
+                    {files.finished.map((file) => (
+                        <FilePreview
+                            file={file}
+                            fileState={uploadState.find((result) => result.filename === file.name)}
+                            key={file.id}
+                        />
+                    ))}
+                </>
+            )}
         </aside>
     );
 };

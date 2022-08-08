@@ -126,9 +126,9 @@ type Mutation {
 
     createTag(label: TagLabel!, assetCollectionId: AssetCollectionId): Tag!
 
-    uploadFile(file: Upload!): FileUploadResult!
+    uploadFile(file: Upload!, tagId: TagId, assetCollectionId: AssetCollectionId): FileUploadResult!
 
-    uploadFiles(files: [Upload!]!): [FileUploadResult!]!
+    uploadFiles(files: [Upload!]!, tagId: TagId, assetCollectionId: AssetCollectionId): [FileUploadResult!]!
 
     importAsset(id: AssetId!, assetSourceId: AssetSourceId!): Asset!
 

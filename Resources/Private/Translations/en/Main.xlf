@@ -9,6 +9,9 @@
             <trans-unit id="uploadDialog.maxFileSize" xml:space="preserve" approved="yes">
                 <source>Maximum file size is {size} and file limit is {limit}</source>
             </trans-unit>
+            <trans-unit id="uploadDialog.label.uploading" xml:space="preserve" approved="yes">
+                <source>Uploading…</source>
+            </trans-unit>
 
             <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
                 <source>You can only select any of the following types: {types}</source>

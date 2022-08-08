@@ -4,6 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } from '@media-ui/core/src';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { humanFileSize } from '@media-ui/core/src/helper';
+import { UploadedFile } from '../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     dropzone: {
@@ -28,11 +29,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         transition: 'border .24s ease-in-out',
     },
 }));
-
-export interface UploadedFile extends File {
-    path?: string;
-    preview?: string;
-}
 
 interface UploadSectionProps {
     files: UploadedFile[];
@@ -83,6 +79,8 @@ const UploadSection: React.FC<UploadSectionProps> = ({
                 acceptedFiles.length < spotsLeft ? acceptedFiles : acceptedFiles.slice(0, spotsLeft);
 
             const newFiles = (newAcceptedFiles as UploadedFile[]).map((file) => {
+                // Generate a unique id for the file to prevent errors with duplicate file names
+                file.id = `${file.name}-${file.size}-${file.lastModified}`;
                 if (file.type.indexOf('image') === 0) {
                     file.preview = URL.createObjectURL(file);
                 } else {
@@ -133,7 +131,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
                     </p>
                 )}
             </div>
-            {loading && <p>Uploading...</p>}
+            {loading && <p>{translate('uploadDialog.label.uploading', 'Uploading…')}</p>}
         </section>
     );
 };

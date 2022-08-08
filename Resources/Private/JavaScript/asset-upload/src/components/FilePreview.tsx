@@ -4,8 +4,7 @@ import { Icon } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 
-import { FileUploadResult } from '../interfaces';
-import { UploadedFile } from './UploadSection';
+import { FileUploadResult, UploadedFile } from '../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     fileList: {
@@ -90,19 +89,19 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 interface FilePreviewProps {
     file: UploadedFile;
-    loading: boolean;
+    loading?: boolean;
     fileState: FileUploadResult;
 }
 
-const FilePreview: React.FC<FilePreviewProps> = ({ file, loading, fileState }: FilePreviewProps) => {
+const FilePreview: React.FC<FilePreviewProps> = ({ file, loading = false, fileState }: FilePreviewProps) => {
     const classes = useStyles();
     const success = fileState?.success;
     const error = fileState && !success;
     let stateClassName;
 
-    if (loading) stateClassName = classes.loading;
-    if (success) stateClassName = classes.success;
     if (error) stateClassName = classes.error;
+    else if (success) stateClassName = classes.success;
+    else if (loading) stateClassName = classes.loading;
 
     // TODO: Output helpful localised messages for results 'EXISTS', 'ADDED', 'ERROR'
     return (
