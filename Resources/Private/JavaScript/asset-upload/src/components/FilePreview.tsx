@@ -107,7 +107,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file, loading = false, fileSt
     return (
         <div className={[classes.thumb, stateClassName].join(' ')} title={file.name}>
             <div className={classes.thumbInner}>
-                <img src={URL.createObjectURL(file)} alt={file.name} className={classes.img} />
+                <img src={file.preview} alt={file.name} className={classes.img} />
                 {loading && <Icon icon="spinner" spin={true} />}
                 {success && <Icon icon="check" />}
                 {error && <Icon icon="exclamation-circle" />}

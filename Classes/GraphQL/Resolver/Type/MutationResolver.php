@@ -412,6 +412,7 @@ class MutationResolver implements ResolverInterface
             }
         }
 
+        // FIXME: The filename is not unique enough for multiple uploads, we need an id instead
         return [
             'filename' => $filename,
             'success' => $success,

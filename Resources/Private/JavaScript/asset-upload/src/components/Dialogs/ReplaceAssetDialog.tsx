@@ -11,6 +11,7 @@ import UploadSection from '../UploadSection';
 import PreviewSection from '../PreviewSection';
 import { useUploadDialogState } from '../../hooks';
 import useReplaceAsset, { AssetReplacementOptions } from '../../hooks/useReplaceAsset';
+import { UploadedFile } from '../../interfaces';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     uploadArea: {
@@ -37,7 +38,7 @@ const ReplaceAssetDialog: React.FC = () => {
         keepOriginalFilename: false,
         generateRedirects: false,
     });
-    const uploadPossible = !loading && dialogState.files.length > 0;
+    const uploadPossible = !loading && dialogState.files.selected.length > 0;
     const classes = useStyles();
     const acceptedFileTypes = useMemo(() => {
         // TODO: Extract this into a helper function
@@ -48,10 +49,10 @@ const ReplaceAssetDialog: React.FC = () => {
     }, [selectedAsset]);
 
     const handleUpload = useCallback(() => {
-        const file = dialogState.files[0];
-        if (!file) {
+        if (dialogState.files.selected.length === 0) {
             return;
         }
+        const file = dialogState.files.selected[0];
         replaceAsset({ asset: selectedAsset, file, options: replacementOptions })
             .then(() => {
                 Notify.ok(translate('uploadDialog.replacementFinished', 'Replacement finished'));
@@ -62,6 +63,15 @@ const ReplaceAssetDialog: React.FC = () => {
                 Notify.error(translate('assetReplacement.error', 'Replacement failed'), error);
             });
     }, [replaceAsset, Notify, translate, dialogState, replacementOptions, refetchAssets, selectedAsset, closeDialog]);
+
+    const handleSetFiles = useCallback(
+        (files: UploadedFile[]) => {
+            setFiles((prev) => {
+                return { ...prev, selected: files };
+            });
+        },
+        [setFiles]
+    );
 
     return (
         <Dialog
@@ -88,9 +98,9 @@ const ReplaceAssetDialog: React.FC = () => {
         >
             <section className={classes.uploadArea}>
                 <UploadSection
-                    files={dialogState.files}
+                    files={dialogState.files.selected}
                     loading={loading}
-                    onSetFiles={setFiles}
+                    onSetFiles={handleSetFiles}
                     maxFiles={1}
                     acceptedFileTypes={acceptedFileTypes}
                 />

@@ -79,8 +79,9 @@ const UploadSection: React.FC<UploadSectionProps> = ({
                 acceptedFiles.length < spotsLeft ? acceptedFiles : acceptedFiles.slice(0, spotsLeft);
 
             const newFiles = (newAcceptedFiles as UploadedFile[]).map((file) => {
+                // Generate a unique id for the file to prevent errors with duplicate file names
+                file.id = `${file.name}-${file.size}-${file.lastModified}`;
                 if (file.type.indexOf('image') === 0) {
-                    // FIXME: This generated url breaks after components using it are remounted, so they also have to use the method to get a working image
                     file.preview = URL.createObjectURL(file);
                 } else {
                     // TODO: Find better preview visualisation
