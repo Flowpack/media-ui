@@ -41,64 +41,36 @@ class AssetVariantResolver implements ResolverInterface
     protected $resourceManager;
 
 
-    /**
-     * @param ImageVariant $assetVariant
-     * @return string|null
-     */
     public function id(ImageVariant $assetVariant): ?string
     {
         return (string)$this->persistenceManager->getIdentifierByObject($assetVariant);
     }
 
-    /**
-     * @param ImageVariant $assetVariant
-     * @return string
-     */
     public function previewUrl(ImageVariant $assetVariant): string
     {
         return (string)$this->resourceManager->getPublicPersistentResourceUri($assetVariant->getResource());
     }
 
-    /**
-     * @param ImageVariant $assetVariant
-     * @return int
-     */
     public function width(ImageVariant $assetVariant): int
     {
         return $assetVariant->getWidth();
     }
 
-    /**
-     * @param ImageVariant $assetVariant
-     * @return int
-     */
     public function height(ImageVariant $assetVariant): int
     {
         return $assetVariant->getHeight();
     }
 
-    /**
-     * @param ImageVariant $assetVariant
-     * @return string
-     */
     public function presetIdentifier(ImageVariant $assetVariant): ?string
     {
         return $assetVariant->getPresetIdentifier();
     }
 
-    /**
-     * @param ImageVariant $assetVariant
-     * @return string
-     */
     public function variantName(ImageVariant $assetVariant): ?string
     {
         return $assetVariant->getPresetVariantName();
     }
 
-    /**
-     * @param ImageVariant $assetVariant
-     * @return bool
-     */
     public function hasCrop(ImageVariant $assetVariant): bool
     {
         foreach ($assetVariant->getAdjustments() as $adjustment) {
@@ -110,10 +82,6 @@ class AssetVariantResolver implements ResolverInterface
         return false;
     }
 
-    /**
-     * @param ImageVariant $assetVariant
-     * @return array
-     */
     public function cropInformation(ImageVariant $assetVariant): array
     {
         $cropInformation = [];
