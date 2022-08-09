@@ -49,13 +49,18 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-// eslint-disable-next-line react/prop-types
-const Variant: React.FC<VariantProps> = ({ presetIdentifier, variantName, width, height, previewUrl }) => {
+const Variant: React.FC<VariantProps> = ({
+    presetIdentifier,
+    variantName,
+    width,
+    height,
+    previewUrl,
+}: VariantProps) => {
     const classes = useStyles();
     return (
         <div className={classes.variantContainer}>
             <picture className={classes.picture}>
-                <img className={classes.image} src={previewUrl} />
+                <img className={classes.image} src={previewUrl} alt={variantName} />
             </picture>
             <figcaption className={classes.caption}>
                 <div className={classes.infoContainer}>
