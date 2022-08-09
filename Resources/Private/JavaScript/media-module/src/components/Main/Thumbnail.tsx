@@ -132,7 +132,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: Thumbn
             <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
                 {asset && (
                     <>
-                        {canBeSelected ? (
+                        {canBeSelected && asset.file ? (
                             <img src={asset.file.typeIcon.url} alt={asset.file.typeIcon.alt} />
                         ) : (
                             <Icon icon="ban" color="error" />
