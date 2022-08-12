@@ -153,7 +153,6 @@ type Config {
     uploadMaxFileSize: FileSize!
     uploadMaxFileUploadLimit: Int!
     currentServerTime: DateTime!
-    variantsTabFeatureEnabled: Boolean!
 }
 
 """
