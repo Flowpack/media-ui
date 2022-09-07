@@ -12,11 +12,13 @@
     "baseUrl": "./",
     "paths": {
       "@media-ui/feature-asset-usage/src/*": ["./Resources/Private/JavaScript/asset-usage/src/*"],
+      "@media-ui/feature-asset-variants/src/*": ["./Resources/Private/JavaScript/asset-variants/src/*"],
     }
   },
   "include": [
     "./Resources/Private/JavaScript/**/*",
-    "node_modules/@media-ui/feature-asset-usage/src/**/*"
+    "node_modules/@media-ui/feature-asset-usage/src/**/*",
+    "node_modules/@media-ui/feature-asset-variants/src/**/*"
   ],
   "exclude": [
     "node_modules",

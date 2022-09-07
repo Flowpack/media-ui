@@ -3,4 +3,5 @@ export default interface FeatureFlags {
     pollForChanges: boolean;
     useNewMediaSelection: boolean;
     showSimilarAssets: boolean;
+    showVariantsEditor: boolean;
 }

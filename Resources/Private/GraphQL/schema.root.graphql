@@ -31,6 +31,11 @@ type Query {
     ): Int!
 
     """
+    all asset varinats for given asset
+    """
+    assetVariants(id: AssetId!, assetSourceId: AssetSourceId!): [AssetVariant!]!
+
+    """
     unused local assets
 
     NOTE: This query is only available when `Flowpack.Neos.AssetUsage` is installed
@@ -181,6 +186,29 @@ type Asset {
     thumbnailUrl: Url
     previewUrl: Url
     thumbnail(maximumWidth: Int, maximumHeight: Int, ratioMode: RatioMode, allowUpScaling: Boolean): Image
+}
+
+"""
+An asset variant
+"""
+type AssetVariant {
+    id: AssetId!
+    # width in pixels
+    width: Int!
+    # height in pixels
+    height: Int!
+    previewUrl: Url!
+    presetIdentifier: VariantPresetIdentifier
+    variantName: VariantName
+    hasCrop: Boolean!
+    cropInformation: CropInformation!
+}
+
+type CropInformation {
+    width: Int
+    height: Int
+    x: Int
+    y: Int
 }
 
 type UsageDetailsGroup {
@@ -450,6 +478,16 @@ scalar TagLabel
 A file upload from the browser
 """
 scalar Upload
+
+"""
+Variant Preset Identifier
+"""
+scalar VariantPresetIdentifier
+
+"""
+Variant Name
+"""
+scalar VariantName
 
 schema {
     query: Query

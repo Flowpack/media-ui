@@ -7,3 +7,4 @@ Neos:
           queryAssetUsage: false
           pollForChanges: true
           showSimilarAssets: false
+          showVariantsEditor: false
