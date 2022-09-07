@@ -35,6 +35,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         display: 'flex',
         flexDirection: 'column',
         minWidth: 0,
+        maxWidth: theme.size.sidebarWidth,
     },
     info: {
         whiteSpace: 'nowrap',
@@ -43,9 +44,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
     variantSizes: {
         fontSize: theme.fontSize.small,
-        display: 'flex',
-        flexDirection: 'column',
-        flex: '0 0 auto',
     },
 }));
 
@@ -66,11 +64,9 @@ const Variant: React.FC<VariantProps> = ({
                 <div className={classes.infoContainer}>
                     {presetIdentifier ? <span className={classes.info}>Preset: {presetIdentifier}</span> : null}
                     {variantName ? <span className={classes.info}>Variant: {variantName}</span> : null}
-                </div>
-
-                <div className={classes.variantSizes}>
-                    <span>W: {width}</span>
-                    <span>H: {height}</span>
+                    <span className={classes.variantSizes}>
+                        W: {width} H: {height}
+                    </span>
                 </div>
             </figcaption>
         </div>
