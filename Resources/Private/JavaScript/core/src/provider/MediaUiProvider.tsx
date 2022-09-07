@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createContext, useCallback, useContext, useEffect } from 'react';
 import { useApolloClient, gql } from '@apollo/client';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { isMatch } from 'matcher';
 
 import { useIntl } from '@media-ui/core/src';
@@ -60,7 +60,7 @@ export function MediaUiProvider({
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
     const { assets, refetch: refetchAssets } = useAssetsQuery();
-    const [selectedMediaType, setSelectedMediaType] = useRecoilState(selectedMediaTypeState);
+    const setSelectedMediaType = useSetRecoilState(selectedMediaTypeState);
 
     // Set initial media type state
     useEffect(() => {
