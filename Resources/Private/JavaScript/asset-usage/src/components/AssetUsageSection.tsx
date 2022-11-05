@@ -7,7 +7,10 @@ import { UsageDetailsGroup } from '../interfaces/UsageDetails';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     usageSection: {
         '& h2': {
+            fontSize: theme.fontSize.base,
             fontWeight: 'bold',
+            margin: 0,
+            padding: 0,
         },
     },
     usageTable: {
@@ -15,6 +18,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         marginTop: theme.spacing.full,
         '& th': {
             fontWeight: 'bold',
+            textAlign: 'left',
         },
         '& td, & th': {
             padding: theme.spacing.quarter,
@@ -25,7 +29,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 paddingRight: 0,
             },
         },
-        '.neos & a': {
+        // `&&` is for specificity, otherwise `.neos.neos-module a` would override
+        // this link style in the backend module
+        '&& a': {
             color: theme.colors.primary,
             '&:hover': {
                 color: theme.colors.primary,

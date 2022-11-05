@@ -14,6 +14,7 @@ import AssetUsageSection from './AssetUsageSection';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetUsage: {
         padding: theme.spacing.full,
+        lineHeight: '1em',
         '& section + section': {
             marginTop: theme.spacing.full,
         },
@@ -22,6 +23,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         width: '100%',
         '& th': {
             fontWeight: 'bold',
+            textAlign: 'left',
         },
         '& td, & th': {
             padding: theme.spacing.quarter,

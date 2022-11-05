@@ -27,6 +27,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         cursor: 'pointer',
         userSelect: 'none',
         transition: 'border .24s ease-in-out',
+        '& p': {
+            margin: 0,
+            lineHeight: 1.6,
+        },
     },
 }));
 

@@ -25,6 +25,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         marginTop: theme.spacing.half,
         marginBottom: theme.spacing.half,
     },
+    label: {
+        display: 'flex',
+    },
 }));
 
 const ReplaceAssetDialog: React.FC = () => {
@@ -107,7 +110,7 @@ const ReplaceAssetDialog: React.FC = () => {
                 <section className={classes.optionSection}>
                     {featureFlags.createAssetRedirectsOption && (
                         <div className={classes.option}>
-                            <Label>
+                            <Label className={classes.label}>
                                 <CheckBox
                                     isChecked={replacementOptions.generateRedirects}
                                     onChange={(generateRedirects) =>
@@ -119,7 +122,7 @@ const ReplaceAssetDialog: React.FC = () => {
                         </div>
                     )}
                     <div className={classes.option}>
-                        <Label>
+                        <Label className={classes.label}>
                             <CheckBox
                                 isChecked={replacementOptions.keepOriginalFilename}
                                 onChange={(keepOriginalFilename) =>
