@@ -54,6 +54,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             backgroundPosition: '0 0, 10px 10px',
             backgroundSize: '20px 20px',
             maxHeight: '250px',
+            maxWidth: '100%',
         },
     },
     caption: {
