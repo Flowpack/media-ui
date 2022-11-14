@@ -11,12 +11,12 @@
     "lint": "eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
     "test": "testcafe",
     "dev": "yarn workspace @media-ui/dev-server run dev",
-    "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:editor\"",
+    "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:plugin\"",
     "watch:module": "yarn workspace @media-ui/media-module run watch",
-    "watch:editor": "yarn workspace @media-ui/media-selection-screen run watch",
-    "build": "yarn build:module && yarn build:editor",
+    "watch:plugin": "yarn workspace @media-ui/neos-ui-plugin run watch",
+    "build": "yarn build:module && yarn build:plugin",
     "build:module": "yarn workspace @media-ui/media-module run build",
-    "build:editor": "yarn workspace @media-ui/media-selection-screen run build",
+    "build:plugin": "yarn workspace @media-ui/neos-ui-plugin run build",
     "test:github-actions": "xvfb-run --server-args=\"-screen 0 1280x720x24\" yarn testcafe chrome"
   },
   "workspaces": [

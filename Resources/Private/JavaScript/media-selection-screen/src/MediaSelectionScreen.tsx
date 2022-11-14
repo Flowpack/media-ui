@@ -72,7 +72,7 @@ interface MediaSelectionScreenState {
     frontendConfiguration: globalRegistry.get('frontendConfiguration').get('Flowpack.Media.Ui'),
 }))
 // eslint-disable-next-line prettier/prettier
-export default class MediaSelectionScreen extends React.PureComponent<
+export class MediaSelectionScreen extends React.PureComponent<
     MediaSelectionScreenProps,
     MediaSelectionScreenState
 > {

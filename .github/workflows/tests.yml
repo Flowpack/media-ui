@@ -72,8 +72,8 @@ jobs:
       - name: Build main module
         run: yarn build:module
 
-      - name: Build secondary editor for Neos UI
-        run: yarn build:editor
+      - name: Build plugin for Neos UI
+        run: yarn build:plugin
 
       - name: Run TestCafe
         run: yarn test:github-actions
