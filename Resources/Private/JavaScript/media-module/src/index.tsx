@@ -9,7 +9,13 @@ import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
 import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
-import { IntlProvider, MediaUiProvider, MediaUiThemeProvider, NotifyProvider } from '@media-ui/core/src';
+import {
+    InteractionProvider,
+    IntlProvider,
+    MediaUiProvider,
+    MediaUiThemeProvider,
+    NotifyProvider,
+} from '@media-ui/core/src';
 import { FeatureFlags } from '@media-ui/core/src/interfaces';
 
 // GraphQL type definitions
@@ -82,23 +88,25 @@ window.onload = async (): Promise<void> => {
     render(
         <IntlProvider translate={translate}>
             <NotifyProvider notificationApi={Notification}>
-                <ApolloProvider client={client}>
-                    <RecoilRoot>
-                        <ErrorBoundary>
-                            <MediaUiProvider
-                                dummyImage={dummyImage}
-                                containerRef={containerRef}
-                                featureFlags={featureFlags}
-                            >
-                                <MediaUiThemeProvider>
-                                    <DndProvider backend={HTML5Backend}>
-                                        <AppWithHmr />
-                                    </DndProvider>
-                                </MediaUiThemeProvider>
-                            </MediaUiProvider>
-                        </ErrorBoundary>
-                    </RecoilRoot>
-                </ApolloProvider>
+                <InteractionProvider>
+                    <ApolloProvider client={client}>
+                        <RecoilRoot>
+                            <ErrorBoundary>
+                                <MediaUiProvider
+                                    dummyImage={dummyImage}
+                                    containerRef={containerRef}
+                                    featureFlags={featureFlags}
+                                >
+                                    <MediaUiThemeProvider>
+                                        <DndProvider backend={HTML5Backend}>
+                                            <AppWithHmr />
+                                        </DndProvider>
+                                    </MediaUiThemeProvider>
+                                </MediaUiProvider>
+                            </ErrorBoundary>
+                        </RecoilRoot>
+                    </ApolloProvider>
+                </InteractionProvider>
             </NotifyProvider>
         </IntlProvider>,
         root

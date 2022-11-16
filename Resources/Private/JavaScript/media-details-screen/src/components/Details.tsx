@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { useSelectAsset } from '@media-ui/core/src/hooks';
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
@@ -69,6 +69,7 @@ const Details = ({ assetIdentity }: DetailsProps) => {
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
             {showSimilarAssetsModal && <SimilarAssetsModal />}
 
+            <InteractionDialogRenderer />
             <ClipboardWatcher />
             <ConcurrentChangeMonitor />
         </div>

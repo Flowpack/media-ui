@@ -28,7 +28,10 @@ const AssetInspector = () => {
     const selectedAsset = useSelectedAsset();
     const Notify = useNotify();
     const { translate } = useIntl();
-    const { featureFlags } = useMediaUi();
+    const {
+        featureFlags,
+        approvalAttainmentStrategy: { obtainApprovalToUpdateAsset },
+    } = useMediaUi();
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
     const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
@@ -50,26 +53,32 @@ const AssetInspector = () => {
         }
     }, [selectedAsset, setLabel, setCaption, setCopyrightNotice]);
 
-    const handleApply = useCallback(() => {
+    const handleApply = useCallback(async () => {
         if (
             label !== selectedAsset.label ||
             caption !== selectedAsset.caption ||
             copyrightNotice !== selectedAsset.copyrightNotice
         ) {
-            updateAsset({
+            const hasApprovalToUpdateAsset = await obtainApprovalToUpdateAsset({
                 asset: selectedAsset,
-                label,
-                caption,
-                copyrightNotice,
-            })
-                .then(() => {
+            });
+
+            if (hasApprovalToUpdateAsset) {
+                try {
+                    await updateAsset({
+                        asset: selectedAsset,
+                        label,
+                        caption,
+                        copyrightNotice,
+                    });
+
                     Notify.ok(translate('actions.updateAsset.success', 'The asset has been updated'));
-                })
-                .catch(({ message }) => {
+                } catch ({ message }) {
                     Notify.error(translate('actions.deleteAsset.error', 'Error while updating the asset'), message);
-                });
+                }
+            }
         }
-    }, [Notify, translate, caption, copyrightNotice, label, selectedAsset, updateAsset]);
+    }, [Notify, translate, caption, copyrightNotice, label, selectedAsset, updateAsset, obtainApprovalToUpdateAsset]);
 
     useEffect(() => {
         handleDiscard();

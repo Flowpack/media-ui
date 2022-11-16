@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing/src';
@@ -137,6 +137,7 @@ const App = () => {
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
             {showSimilarAssetsModal && <SimilarAssetsModal />}
 
+            <InteractionDialogRenderer />
             <ClipboardWatcher />
             <ConcurrentChangeMonitor />
         </div>

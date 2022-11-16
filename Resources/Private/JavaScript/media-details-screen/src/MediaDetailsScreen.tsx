@@ -15,6 +15,7 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 // Media UI dependencies
 import {
     I18nRegistry,
+    InteractionProvider,
     IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,
@@ -34,6 +35,7 @@ import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql'
 // GraphQL local resolvers
 import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
 import buildModuleResolver from '@media-ui/media-module/src/resolvers/mutation';
+import { MediaDetailsScreenApprovalAttainmentStrategyFactory } from './strategy';
 
 let apolloClient = null;
 
@@ -145,28 +147,33 @@ export class MediaDetailsScreen extends React.PureComponent<
             <div style={{ transform: 'translateZ(0)', height: '100%', padding: '1rem' }}>
                 <IntlProvider translate={this.translate}>
                     <NotifyProvider notificationApi={Notification}>
-                        <ApolloProvider client={client}>
-                            <RecoilRoot>
-                                <MediaUiProvider
-                                    dummyImage={dummyImage}
-                                    onAssetSelection={onComplete}
-                                    selectionMode={true}
-                                    containerRef={containerRef}
-                                    featureFlags={featureFlags}
-                                    constraints={constraints || {}}
-                                    assetType={type === 'images' ? 'image' : type}
-                                >
-                                    <MediaUiThemeProvider>
-                                        <Details
-                                            assetIdentity={{
-                                                assetId: this.props.imageIdentity,
-                                                assetSourceId: '',
-                                            }}
-                                        />
-                                    </MediaUiThemeProvider>
-                                </MediaUiProvider>
-                            </RecoilRoot>
-                        </ApolloProvider>
+                        <InteractionProvider>
+                            <ApolloProvider client={client}>
+                                <RecoilRoot>
+                                    <MediaUiProvider
+                                        dummyImage={dummyImage}
+                                        onAssetSelection={onComplete}
+                                        selectionMode={true}
+                                        containerRef={containerRef}
+                                        featureFlags={featureFlags}
+                                        constraints={constraints || {}}
+                                        assetType={type === 'images' ? 'image' : type}
+                                        approvalAttainmentStrategyFactory={
+                                            MediaDetailsScreenApprovalAttainmentStrategyFactory
+                                        }
+                                    >
+                                        <MediaUiThemeProvider>
+                                            <Details
+                                                assetIdentity={{
+                                                    assetId: this.props.imageIdentity,
+                                                    assetSourceId: '',
+                                                }}
+                                            />
+                                        </MediaUiThemeProvider>
+                                    </MediaUiProvider>
+                                </RecoilRoot>
+                            </ApolloProvider>
+                        </InteractionProvider>
                     </NotifyProvider>
                 </IntlProvider>
             </div>
