@@ -4,8 +4,9 @@ import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@medi
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 
-import { AssetActions } from '@media-ui/media-module/src/components/Main';
 import MissingAssetActions from '@media-ui/media-module/src/components/Main/MissingAssetActions';
+
+import PreviewActions from './PreviewActions';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     preview: {
@@ -101,7 +102,7 @@ const Preview: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) =>
                 <div className={classes.toolBar}>
                     {!loading &&
                         (asset ? (
-                            <AssetActions asset={asset} />
+                            <PreviewActions asset={asset} />
                         ) : (
                             <MissingAssetActions assetIdentity={assetIdentity} />
                         ))}
