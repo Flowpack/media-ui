@@ -4,4 +4,5 @@ export default interface FeatureFlags {
     useNewMediaSelection: boolean;
     showSimilarAssets: boolean;
     showVariantsEditor: boolean;
+    createAssetRedirectsOption: boolean;
 }

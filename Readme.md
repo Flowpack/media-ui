@@ -87,6 +87,19 @@ Neos:
         Flowpack.Media.Ui:
           showSimilarAssets: true
 ```
+
+### Disable asset redirect checkbox
+
+If you don't want to or can't use the automatic generation of redirects for assets you can disable it with the following setting:
+
+```yaml
+Neos:
+  Neos:
+    Ui:
+      frontendConfiguration:
+        Flowpack.Media.Ui:
+          createAssetRedirectsOption: false
+```
     
 ## Architecture
 

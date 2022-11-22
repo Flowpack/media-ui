@@ -8,3 +8,4 @@ Neos:
           pollForChanges: true
           showSimilarAssets: false
           showVariantsEditor: false
+          createAssetRedirectsOption: true
