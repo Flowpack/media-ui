@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@media-ui/core": "*",
-    "@neos-project/neos-ui-extensibility": "^5.3.4",
-    "@media-ui/media-module": "*"
+    "@media-ui/media-module": "*",
+    "@neos-project/neos-ui-extensibility": "^5.3.4"
   },
   "devDependencies": {
     "webpack": "^4.44.2",
