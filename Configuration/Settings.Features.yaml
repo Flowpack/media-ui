@@ -9,3 +9,6 @@ Neos:
           showSimilarAssets: false
           showVariantsEditor: false
           createAssetRedirectsOption: true
+          pagination:
+            assetsPerPage: 20
+            maximumLinks: 5

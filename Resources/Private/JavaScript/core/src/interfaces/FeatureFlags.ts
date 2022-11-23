@@ -5,4 +5,5 @@ export default interface FeatureFlags {
     showSimilarAssets: boolean;
     showVariantsEditor: boolean;
     createAssetRedirectsOption: boolean;
+    pagination: PaginationConfig;
 }

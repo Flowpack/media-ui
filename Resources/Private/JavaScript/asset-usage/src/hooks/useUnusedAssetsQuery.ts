@@ -4,10 +4,10 @@ import { useLazyQuery } from '@apollo/client';
 
 import { currentPageState, loadingState } from '@media-ui/core/src/state';
 import { Asset } from '@media-ui/core/src/interfaces';
-import { ASSETS_PER_PAGE } from '@media-ui/core/src/constants/pagination';
 
 import UNUSED_ASSETS from '../queries/unusedAssets';
 import showUnusedAssetsState from '../state/showUnusedAssetsState';
+import { useMediaUi } from '@media-ui/core/src';
 
 interface UnusedAssetsQueryResult {
     unusedAssets: Asset[];
@@ -19,13 +19,17 @@ interface UnusedAssetsQueryVariables {
 }
 
 const useUnusedAssetsQuery = () => {
+    const {
+        featureFlags: {
+            pagination: { assetsPerPage },
+        },
+    } = useMediaUi();
     const currentPage = useRecoilValue(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
     const showUnusedAssets = useRecoilValue(showUnusedAssetsState);
     const [assets, setAssets] = useState<Asset[]>([]);
 
-    const limit = ASSETS_PER_PAGE;
-    const offset = (currentPage - 1) * ASSETS_PER_PAGE;
+    const offset = (currentPage - 1) * assetsPerPage;
 
     const [query, { loading, error, data, refetch }] = useLazyQuery<
         UnusedAssetsQueryResult,
@@ -33,7 +37,7 @@ const useUnusedAssetsQuery = () => {
     >(UNUSED_ASSETS, {
         notifyOnNetworkStatusChange: false,
         variables: {
-            limit,
+            limit: assetsPerPage,
             offset,
         },
     });
@@ -42,7 +46,7 @@ const useUnusedAssetsQuery = () => {
         if (showUnusedAssets && !loading && !isLoading) {
             query({
                 variables: {
-                    limit,
+                    limit: assetsPerPage,
                     offset,
                 },
             });
@@ -55,7 +59,7 @@ const useUnusedAssetsQuery = () => {
         }
         // Don't include `isLoading` to prevent constant reloads
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [query, data, loading, offset, limit, showUnusedAssets]);
+    }, [query, data, loading, offset, showUnusedAssets]);
 
     return { error, assets, refetch };
 };

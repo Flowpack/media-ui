@@ -4,7 +4,7 @@ import { useLazyQuery } from '@apollo/client';
 
 import useSelectedAssetCollection from './useSelectedAssetCollection';
 import useSelectedTag from './useSelectedTag';
-import { ASSETS_PER_PAGE } from '../constants/pagination';
+import { useMediaUi } from '../provider';
 import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
 import {
     searchTermState,
@@ -36,6 +36,11 @@ interface AssetsQueryVariables {
 }
 
 const useAssetsQuery = () => {
+    const {
+        featureFlags: {
+            pagination: { assetsPerPage },
+        },
+    } = useMediaUi();
     const searchTerm = useRecoilValue(searchTermState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
@@ -46,8 +51,7 @@ const useAssetsQuery = () => {
     const setInitialLoadComplete = useSetRecoilState(initialLoadCompleteState);
     const [assets, setAssets] = useState<Asset[]>([]);
 
-    const limit = ASSETS_PER_PAGE;
-    const offset = (currentPage - 1) * ASSETS_PER_PAGE;
+    const offset = (currentPage - 1) * assetsPerPage;
 
     const [query, { loading, error, data, refetch }] = useLazyQuery<AssetsQueryResult, AssetsQueryVariables>(ASSETS, {
         notifyOnNetworkStatusChange: false,
@@ -56,7 +60,7 @@ const useAssetsQuery = () => {
             assetCollectionId: selectedAssetCollection?.id,
             mediaType: mediaTypeFilter,
             tagId: selectedTag?.id,
-            limit,
+            limit: assetsPerPage,
             offset,
             sortBy: sortOrderState.sortBy,
             sortDirection: sortOrderState.sortDirection,
@@ -71,7 +75,7 @@ const useAssetsQuery = () => {
                     assetCollectionId: selectedAssetCollection?.id,
                     mediaType: mediaTypeFilter,
                     tagId: selectedTag?.id,
-                    limit,
+                    limit: assetsPerPage,
                     offset,
                     sortBy: sortOrderState.sortBy,
                     sortDirection: sortOrderState.sortDirection,
@@ -91,7 +95,6 @@ const useAssetsQuery = () => {
         data,
         loading,
         offset,
-        limit,
         searchTerm,
         selectedAssetCollection?.title,
         mediaTypeFilter,

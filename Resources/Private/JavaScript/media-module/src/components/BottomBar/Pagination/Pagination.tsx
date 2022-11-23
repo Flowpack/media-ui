@@ -2,9 +2,8 @@ import * as React from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, useMediaUi } from '@media-ui/core/src';
 import { currentPageState } from '@media-ui/core/src/state';
-import { ASSETS_PER_PAGE, PAGINATION_MAXIMUM_LINKS } from '@media-ui/core/src/constants/pagination';
 
 import PaginationItem from './PaginationItem';
 import { MainViewState, mainViewState } from '../../../state';
@@ -30,11 +29,16 @@ const Pagination: React.FC = () => {
     const classes = useStyles();
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const assetCount = useAssetCount();
+    const {
+        featureFlags: {
+            pagination: { assetsPerPage, maximumLinks },
+        },
+    } = useMediaUi();
     const { translate } = useIntl();
     const mainView = useRecoilValue(mainViewState);
 
     const disabled = ![MainViewState.DEFAULT, MainViewState.UNUSED_ASSETS].includes(mainView);
-    const numberOfPages = Math.ceil(assetCount / ASSETS_PER_PAGE);
+    const numberOfPages = Math.ceil(assetCount / assetsPerPage);
     const [displayRange, setDisplayRange] = useState({
         start: 0,
         end: 0,
@@ -49,7 +53,7 @@ const Pagination: React.FC = () => {
 
     // Calculates visible display range
     useMemo(() => {
-        const maxLinks = Math.min(PAGINATION_MAXIMUM_LINKS, numberOfPages);
+        const maxLinks = Math.min(maximumLinks, numberOfPages);
         const delta = Math.floor(maxLinks / 2);
 
         let start = currentPage - delta;
