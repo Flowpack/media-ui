@@ -11,10 +11,10 @@
     "lint": "eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
     "test": "testcafe",
     "dev": "yarn workspace @media-ui/dev-server run dev",
-    "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:editor\"",
+    "watch": "turbo run watch",
     "watch:module": "yarn workspace @media-ui/media-module run watch",
     "watch:editor": "yarn workspace @media-ui/media-selection-screen run watch",
-    "build": "yarn build:module && yarn build:editor",
+    "build": "turbo run build",
     "build:module": "yarn workspace @media-ui/media-module run build",
     "build:editor": "yarn workspace @media-ui/media-selection-screen run build",
     "test:github-actions": "xvfb-run --server-args=\"-screen 0 1280x720x24\" yarn testcafe chrome"
@@ -23,18 +23,18 @@
     "Resources/Private/JavaScript/*"
   ],
   "devDependencies": {
-    "patch-package": "^6.2.2",
     "@neos-project/eslint-config-neos": "*",
     "@typescript-eslint/eslint-plugin": "^4.11.0",
     "@typescript-eslint/parser": "^4.11.0",
-    "concurrently": "^6.0.0",
     "eslint": "^7.16.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-testcafe": "^0.2.1",
-    "prettier": "^2.2.1"
+    "patch-package": "^6.2.2",
+    "prettier": "^2.2.1",
+    "turbo": "^1.6.3"
   },
   "packageManager": "yarn@1.22.19"
 }

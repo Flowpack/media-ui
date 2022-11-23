@@ -1,0 +1,17 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "outputs": [
+        "../../../Public/AssetEditor/**",
+        "../../../Public/Assets/**"
+      ]
+    },
+    "watch": {
+      "outputs": [
+        "../../../Public/AssetEditor/**",
+        "../../../Public/Assets/**"
+      ]
+    }
+  }
+}
