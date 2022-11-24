@@ -38,5 +38,8 @@
     "testcafe": "^2.1.0",
     "ts-node": "^10.9.1"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@1.22.19",
+  "browserslist": [
+    "defaults and > 1%"
+  ]
 }

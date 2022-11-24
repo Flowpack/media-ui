@@ -72,9 +72,6 @@
   "alias": {
     "@neos-project/react-ui-components/*": "@neos-project/react-ui-components/lib-esm/*"
   },
-  "browserslist": [
-    "defaults and > 1% and not ie <= 11"
-  ],
   "scripts": {
     "watch": "parcel watch src/index.tsx --public-url . --out-dir ../../../Public/Assets -o main.bundle.js",
     "build": "parcel build src/index.tsx --public-url . --out-dir ../../../Public/Assets -o main.bundle.js"
