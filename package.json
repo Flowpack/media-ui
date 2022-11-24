@@ -34,7 +34,9 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-testcafe": "^0.2.1",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "testcafe": "^2.1.0",
+    "ts-node": "^10.9.1"
   },
   "packageManager": "yarn@1.22.19"
 }
