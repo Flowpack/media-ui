@@ -1,3 +1,5 @@
+import { ReactSelector } from 'testcafe-react-selectors';
+
 import page from './page-model';
 import { SERVER_NAME } from './helpers';
 
@@ -15,9 +17,11 @@ test('Tagging works', async (t) => {
         .click(page.firstThumbnail)
         .scrollIntoView(page.tagSelection)
         .click(page.tagSelection)
-        .click(page.tagSelection.findReact('ListPreviewElement').withText('Example tag 1'))
+        .click(ReactSelector('ListPreviewElement').withText('Example tag 1'))
         .click(page.inspectorActions.findReact('Button').withText('Apply'));
 }).after(async (t) => {
     const { log } = await t.getBrowserConsoleMessages();
-    await t.expect(log.includes('The asset has been tagged')).ok('');
+    await t
+        .expect(log.includes('The asset has been tagged'))
+        .ok('There should be a success response from the server in the logs');
 });
