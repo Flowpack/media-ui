@@ -6,7 +6,7 @@ import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     column: {
         display: 'grid',
-        gridAutoRows: 'minmax(0, min-content)',
+        gridAutoRows: 'minmax(min-content, max-content)',
         gridGap: theme.spacing.full,
         overflowY: 'auto',
         overflowX: 'hidden',
