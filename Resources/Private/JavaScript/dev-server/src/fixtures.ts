@@ -1,7 +1,8 @@
-import cloneDeep from 'lodash.clonedeep';
+const cloneDeep = require('lodash.clonedeep');
 
-import { Asset, AssetCollection, AssetSource, Image, IptcProperty, Tag } from '@media-ui/core/src/interfaces';
-import { UsageDetailsGroup } from '@media-ui/feature-asset-usage/src';
+// FIXME: type annotations are missing as they couldn't be included anymore while making the devserver work again
+// import { Asset, AssetCollection, AssetSource, Image, IptcProperty, Tag } from '@media-ui/core/src/interfaces';
+// import { UsageDetailsGroup } from '@media-ui/feature-asset-usage/src';
 
 const exampleImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
 
@@ -9,7 +10,7 @@ const range = (length: number) => [...Array(length)].map((val, i) => i);
 const getExampleFilename = (seed = 0) => exampleImages[seed % exampleImages.length];
 const getExampleImagePath = (filename) => `Assets/${filename}`;
 
-const getIptcProperties = (seed: number): IptcProperty[] => [
+const getIptcProperties = (seed: number) => [
     {
         __typename: 'IptcProperty',
         propertyName: 'Camera',
@@ -27,7 +28,7 @@ const getIptcProperties = (seed: number): IptcProperty[] => [
     },
 ];
 
-const typeIcons: { [key: string]: Image } = {
+const typeIcons = {
     jpg: {
         __typename: 'Image',
         width: 16,
@@ -37,7 +38,7 @@ const typeIcons: { [key: string]: Image } = {
     },
 };
 
-const assetSources: AssetSource[] = [
+const assetSources = [
     {
         __typename: 'AssetSource',
         id: 'neos',
@@ -60,7 +61,7 @@ const assetSources: AssetSource[] = [
     },
 ];
 
-const tags: Tag[] = range(10).map((index) => ({
+const tags = range(10).map((index) => ({
     __typename: 'Tag',
     id: `index ${index + 1}`,
     label: `Example tag ${index + 1}`,
@@ -68,7 +69,7 @@ const tags: Tag[] = range(10).map((index) => ({
     children: [],
 }));
 
-const assetCollections: AssetCollection[] = range(3).map((index) => ({
+const assetCollections = range(3).map((index) => ({
     __typename: 'AssetCollection',
     id: `someId_${index}`,
     title: `Example collection ${index + 1}`,
@@ -143,10 +144,10 @@ const getUsageDetailsForAsset = (assetId: string) => {
                 };
             }),
         },
-    ] as UsageDetailsGroup[];
+    ];
 };
 
-const assets: Asset[] = range(150).map((index) => {
+const assets = range(150).map((index) => {
     const isCloud = index > 120;
     const filename = getExampleFilename(index);
 
@@ -185,11 +186,12 @@ const assets: Asset[] = range(150).map((index) => {
 
 const loadFixtures = () => {
     return {
-        assets: cloneDeep(assets) as Asset[],
-        assetCollections: cloneDeep(assetCollections) as AssetCollection[],
-        assetSources: cloneDeep(assetSources) as AssetSource[],
-        tags: cloneDeep(tags) as Tag[],
+        assets: cloneDeep(assets),
+        assetCollections: cloneDeep(assetCollections),
+        assetSources: cloneDeep(assetSources),
+        tags: cloneDeep(tags),
     };
 };
 
-export { loadFixtures, getUsageDetailsForAsset };
+exports.loadFixtures = loadFixtures;
+exports.getUsageDetailsForAsset = getUsageDetailsForAsset;

@@ -25,7 +25,6 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
 }: TagTreeNodeProps) => {
     const handleClick = useCallback(() => onClick(tag, assetCollection), [onClick, tag, assetCollection]);
 
-    // TODO: Adjust rendering for nested tags
     return (
         <Tree.Node>
             <Tree.Node.Header

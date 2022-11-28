@@ -1,22 +1,19 @@
-import { Selector } from 'testcafe';
-
+import page from './page-model';
 import { SERVER_NAME } from './helpers';
 
-fixture('Media Ui').page(SERVER_NAME);
-
-const treeSelector = '[class^="tree-"]';
-const firstTagSelector = '[title="Example tag 1"]';
-const firstThumbnailSelector = '[class^="thumbnail-"] [class^="caption-"]';
-const paginationItemsSelector = '[class^="pagination-"] [class^="list-"] [class^="item-"]';
-const assetCountSelector = '[class^="assetCount-"]';
+fixture('Tags').page(SERVER_NAME);
 
 test('Clicking first tag updates list and only assets should be shown that are assigned to it', async (t) => {
     await t
-        .click(Selector(treeSelector).find(firstTagSelector))
-        .expect(Selector(firstThumbnailSelector).innerText)
+        .expect(page.tags.withExactText('Example tag 1').exists)
+        .ok('Tag "Example tag 1" should exist')
+        // FIXME: For some reason it only works when we click the element twice
+        .click(page.tags.withExactText('Example tag 1'))
+        .click(page.tags.withExactText('Example tag 1'))
+        .expect(page.firstThumbnail.innerText)
         .eql('Example asset 11')
-        .expect(Selector(paginationItemsSelector).count)
+        .expect(page.paginationItems.count)
         .eql(3) // one item and the two navigation buttons
-        .expect(Selector(assetCountSelector).innerText)
+        .expect(page.assetCount.innerText)
         .eql('12 assets');
 });

@@ -23,7 +23,6 @@
     "Resources/Private/JavaScript/*"
   ],
   "devDependencies": {
-    "patch-package": "^6.2.2",
     "@neos-project/eslint-config-neos": "*",
     "@typescript-eslint/eslint-plugin": "^4.11.0",
     "@typescript-eslint/parser": "^4.11.0",
@@ -34,7 +33,14 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-testcafe": "^0.2.1",
-    "prettier": "^2.2.1"
+    "patch-package": "^6.2.2",
+    "prettier": "^2.2.1",
+    "testcafe": "^2.1.0",
+    "testcafe-react-selectors": "^5.0.2",
+    "ts-node": "^10.9.1"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@1.22.19",
+  "browserslist": [
+    "defaults and > 1%"
+  ]
 }
