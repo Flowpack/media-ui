@@ -1,25 +1,22 @@
-import { Selector } from 'testcafe';
-
+import page from './page-model';
 import { SERVER_NAME } from './helpers';
 
-fixture('Media Ui').page(SERVER_NAME);
-
-const firstThumbnail = Selector('[class^="thumbnail-"]');
-const inspector = Selector('[class^="inspector-"]');
-const currentSelection = Selector('[class^="currentSelection-"]');
-const tagSelection = inspector.find('[class^="tagSelection-"]');
-const actions = inspector.find('[class^="actions-"]');
+fixture('Inspector').page(SERVER_NAME);
 
 test('Inspector appears and shows first asset', async (t) => {
-    await t.click(firstThumbnail).expect(currentSelection.find('[class^="label-"]').innerText).eql('Example asset 1');
+    await t
+        .click(page.firstThumbnail)
+        .expect(page.currentSelection.withText('Example asset 1').exists)
+        .ok('The first asset should be selected');
 });
 
 test('Tagging works', async (t) => {
     await t
-        .click(firstThumbnail)
-        .click(tagSelection)
-        .click(Selector('[class^="_dropDown_"] span[title="Example tag 1"]'))
-        .click(actions.child().withText('Apply'));
+        .click(page.firstThumbnail)
+        .scrollIntoView(page.tagSelection)
+        .click(page.tagSelection)
+        .click(page.tagSelection.findReact('ListPreviewElement').withText('Example tag 1'))
+        .click(page.inspectorActions.findReact('Button').withText('Apply'));
 }).after(async (t) => {
     const { log } = await t.getBrowserConsoleMessages();
     await t.expect(log.includes('The asset has been tagged')).ok('');

@@ -1,11 +1,9 @@
-import { Selector } from 'testcafe';
+import page from './page-model';
 
 import { SERVER_NAME } from './helpers';
 
-fixture('Media Ui').page(SERVER_NAME);
-
-const firstThumbnail = Selector('[class^="thumbnail-"] [class^="caption-"]');
+fixture('Thumbnails').page(SERVER_NAME);
 
 test('The first example asset appears as thumbnail', async (t) => {
-    await t.expect(firstThumbnail.innerText).eql('Example asset 1');
+    await t.expect(page.firstThumbnail.innerText).eql('Example asset 1');
 });

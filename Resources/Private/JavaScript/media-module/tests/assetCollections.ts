@@ -1,22 +1,16 @@
-import { Selector } from 'testcafe';
-
+import page from './page-model';
 import { SERVER_NAME } from './helpers';
 
-fixture('Media Ui').page(SERVER_NAME);
-
-const collectionTree = Selector('[class^="tree-"]');
-const firstThumbnail = Selector('[class^="thumbnail-"] [class^="caption-"]');
-const firstTag = collectionTree.find('[title="Example collection 1"]');
-const paginationPages = Selector('[class^="pagination-"] [class^="list-"] [class^="item-"]');
-const assetCount = Selector('[class^="assetCount-"]');
+fixture('Asset collections').page(SERVER_NAME);
 
 test('Clicking first collection updates list and only assets should be shown that are assigned to it', async (t) => {
     await t
-        .click(firstTag)
-        .expect(firstThumbnail.withText('Example asset 4').exists)
-        .ok('Asset 4 is not the first visible asset')
-        .expect(paginationPages.withText('3').exists)
-        .ok('Number of pages should be 3')
-        .expect(assetCount.withText('20 assets').exists)
-        .ok('Asset count does not show 20 items');
+        .scrollIntoView(page.firstCollection)
+        .click(page.assetCollections.withText('Example collection 1'))
+        .expect(page.firstThumbnail.innerText)
+        .eql('Example asset 4')
+        .expect(page.paginationItems.count)
+        .eql(3) // one item and the two navigation buttons
+        .expect(page.assetCount.innerText)
+        .eql('20 assets');
 });

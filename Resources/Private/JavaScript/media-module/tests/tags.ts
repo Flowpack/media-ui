@@ -1,22 +1,19 @@
-import { Selector } from 'testcafe';
-
+import page from './page-model';
 import { SERVER_NAME } from './helpers';
 
-fixture('Media Ui').page(SERVER_NAME);
-
-const treeSelector = Selector('[class^="tree-"]');
-const firstTagSelector = '[title="Example tag 1"]';
-const firstThumbnailSelector = Selector('[class^="thumbnail-"] [class^="caption-"]');
-const paginationItemsSelector = Selector('[class^="pagination-"] [class^="list-"] [class^="item-"]');
-const assetCountSelector = Selector('[class^="assetCount-"]');
+fixture('Tags').page(SERVER_NAME);
 
 test('Clicking first tag updates list and only assets should be shown that are assigned to it', async (t) => {
     await t
-        .click(treeSelector.find(firstTagSelector))
-        .expect(firstThumbnailSelector.withText('Example asset 11').exists)
-        .ok('The first thumbnail should have shown asset 11')
-        .expect(paginationItemsSelector.count)
+        .expect(page.tags.withExactText('Example tag 1').exists)
+        .ok('Tag "Example tag 1" should exist')
+        // FIXME: For some reason it only works when we click the element twice
+        .click(page.tags.withExactText('Example tag 1'))
+        .click(page.tags.withExactText('Example tag 1'))
+        .expect(page.firstThumbnail.innerText)
+        .eql('Example asset 11')
+        .expect(page.paginationItems.count)
         .eql(3) // one item and the two navigation buttons
-        .expect(assetCountSelector.withText('12 assets').exists)
-        .ok('12 assets should have been shown');
+        .expect(page.assetCount.innerText)
+        .eql('12 assets');
 });

@@ -1,12 +1,8 @@
-import { Selector } from 'testcafe';
-
+import page from './page-model';
 import { SERVER_NAME } from './helpers';
 
-fixture('Media Ui').page(SERVER_NAME);
-
-const firstThumbnail = Selector('[class^="thumbnail-"] [class^="caption-"]');
-const paginationPage2 = Selector('[class^="pagination-"] [class^="list-"] [class^="item-"]:nth-child(3)');
+fixture('Pagination').page(SERVER_NAME);
 
 test('Clicking next page shows more thumbnails', async (t) => {
-    await t.click(paginationPage2).expect(firstThumbnail.innerText).eql('Example asset 21');
+    await t.click(page.paginationItems.withText('2')).expect(page.thumbnails.nth(0).innerText).eql('Example asset 21');
 });
