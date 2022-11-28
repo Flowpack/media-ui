@@ -32,7 +32,7 @@ const ReplaceAssetDialog: React.FC = () => {
     const Notify = useNotify();
     const selectedAsset = useSelectedAsset();
     const { replaceAsset, uploadState, loading } = useReplaceAsset();
-    const { refetchAssets } = useMediaUi();
+    const { refetchAssets, featureFlags } = useMediaUi();
     const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
     const [replacementOptions, setReplacementOptions] = React.useState<AssetReplacementOptions>({
         keepOriginalFilename: false,
@@ -105,17 +105,19 @@ const ReplaceAssetDialog: React.FC = () => {
                     acceptedFileTypes={acceptedFileTypes}
                 />
                 <section className={classes.optionSection}>
-                    <div className={classes.option}>
-                        <Label>
-                            <CheckBox
-                                isChecked={replacementOptions.generateRedirects}
-                                onChange={(generateRedirects) =>
-                                    setReplacementOptions({ ...replacementOptions, generateRedirects })
-                                }
-                            />
-                            <span>{translate('uploadDialog.generateRedirects', 'Generate redirects')}</span>
-                        </Label>
-                    </div>
+                    {featureFlags.createAssetRedirectsOption && (
+                        <div className={classes.option}>
+                            <Label>
+                                <CheckBox
+                                    isChecked={replacementOptions.generateRedirects}
+                                    onChange={(generateRedirects) =>
+                                        setReplacementOptions({ ...replacementOptions, generateRedirects })
+                                    }
+                                />
+                                <span>{translate('uploadDialog.generateRedirects', 'Generate redirects')}</span>
+                            </Label>
+                        </div>
+                    )}
                     <div className={classes.option}>
                         <Label>
                             <CheckBox
