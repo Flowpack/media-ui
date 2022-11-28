@@ -9,5 +9,7 @@
     "takeOnFails": true
   },
   "hostname": "localhost",
-  "retryTestPages": true
+  "retryTestPages": true,
+  "pageLoadTimeout": 10000,
+  "pageRequestTimeout": 60000
 }

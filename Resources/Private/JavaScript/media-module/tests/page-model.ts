@@ -16,12 +16,16 @@ class Page {
     public tagSelection: Selector;
     public assetInspector: Selector;
     public inspectorActions: Selector;
+    public assetSourceList: Selector;
 
     constructor() {
         // Collection tree
         this.collectionTree = ReactSelector('AssetCollectionTree');
         this.assetCollections = this.collectionTree.findReact('AssetCollectionTreeNode');
         this.tags = this.assetCollections.withText('All').findReact('TagTreeNode');
+
+        // Asset sources
+        this.assetSourceList = ReactSelector('AssetSourceList');
 
         // Main area
         this.thumbnails = ReactSelector('Thumbnail');
