@@ -1,5 +1,8 @@
 {
   "browsers": "chromium",
   "src": ["Resources/Private/JavaScript/media-module/tests/**/*.ts"],
-  "appCommand": "yarn ts-node --project Resources/Private/JavaScript/dev-server/tsconfig.json Resources/Private/JavaScript/dev-server/src/server.ts"
+  "appCommand": "yarn ts-node --project Resources/Private/JavaScript/dev-server/tsconfig.json Resources/Private/JavaScript/dev-server/src/server.ts",
+  "screenshots": {
+    "takeOnFails": true
+  }
 }

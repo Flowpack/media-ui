@@ -75,3 +75,10 @@ jobs:
 
       - name: Run TestCafe
         run: yarn test:github-actions
+
+      - name: Archive failure screenshots
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-failure-screenshots
+          path: screenshots
