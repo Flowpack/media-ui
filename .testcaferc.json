@@ -7,5 +7,7 @@
   "appCommand": "yarn ts-node --project Resources/Private/JavaScript/dev-server/tsconfig.json Resources/Private/JavaScript/dev-server/src/server.ts",
   "screenshots": {
     "takeOnFails": true
-  }
+  },
+  "hostname": "localhost",
+  "retryTestPages": true
 }
