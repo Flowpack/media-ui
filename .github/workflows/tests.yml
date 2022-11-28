@@ -15,6 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
+          cache: 'yarn'
 
       - name: Install dependencies
         run: yarn
@@ -59,10 +60,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - uses: actions/checkout@v3
+          cache: 'yarn'
 
       - name: Install dependencies
         run: yarn
