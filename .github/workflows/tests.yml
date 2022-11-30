@@ -52,6 +52,32 @@ jobs:
           php_version: 7.4
           command: analyse
 
+  php-unit-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.composer/cache
+          key: dependencies-composer-${{ hashFiles('composer.json') }}
+
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: 7.4
+          version: 2
+
+      - name: Run PHPUnit tests
+        run: composer test
+
   e2e:
     env:
       # Solves error when parcel tries to count cpus via lscpu
