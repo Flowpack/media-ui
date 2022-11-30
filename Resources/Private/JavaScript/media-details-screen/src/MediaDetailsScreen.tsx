@@ -22,7 +22,7 @@ import {
     Notify,
     NotifyProvider,
 } from '@media-ui/core/src';
-import { FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
+import { Asset, FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
 import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
 import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from '@media-ui/media-module/src/core';
 import { Details } from './components';
@@ -88,6 +88,7 @@ export class MediaDetailsScreen extends React.PureComponent<
             },
             // TODO: Generate image uri from Neos
             dummyImage: '/_Resources/Static/Packages/Neos.Neos/Images/dummy-image.svg',
+            buildLinkToMediaUi: (asset: Asset) => `/neos/management/mediaui?searchTerm=id:${asset.id}`,
         };
     }
 
@@ -129,7 +130,7 @@ export class MediaDetailsScreen extends React.PureComponent<
     render() {
         const { addFlashMessage, onComplete, constraints, type } = this.props;
         const client = this.getApolloClient();
-        const { dummyImage } = this.getConfig();
+        const { dummyImage, buildLinkToMediaUi } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
 
         const featureFlags: FeatureFlags = this.props.frontendConfiguration as FeatureFlags;
@@ -164,9 +165,10 @@ export class MediaDetailsScreen extends React.PureComponent<
                                     >
                                         <MediaUiThemeProvider>
                                             <Details
+                                                buildLinkToMediaUi={buildLinkToMediaUi}
                                                 assetIdentity={{
                                                     assetId: this.props.imageIdentity,
-                                                    assetSourceId: '',
+                                                    assetSourceId: 'neos',
                                                 }}
                                             />
                                         </MediaUiThemeProvider>

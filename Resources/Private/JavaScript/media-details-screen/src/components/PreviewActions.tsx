@@ -8,14 +8,23 @@ import { useClipboard } from '@media-ui/feature-clipboard/src';
 
 interface PreviewActionsProps {
     asset: Asset;
+    buildLinkToMediaUi: (asset: Asset) => string;
 }
 
-const PreviewActions: React.FC<PreviewActionsProps> = ({ asset }: PreviewActionsProps) => {
+const PreviewActions: React.FC<PreviewActionsProps> = ({ asset, buildLinkToMediaUi }: PreviewActionsProps) => {
     const { translate } = useIntl();
     const { toggleClipboardState } = useClipboard();
 
     return (
         <>
+            <a
+                href={buildLinkToMediaUi(asset)}
+                title={translate('previewActions.openInMediaModule', 'Open asset in media module')}
+                target="_blank"
+                rel="noreferrer noopener"
+            >
+                <IconButton icon="image" size="regular" style="transparent" hoverStyle="brand" />
+            </a>
             {asset.file?.url && (
                 <a
                     href={asset.file.url}

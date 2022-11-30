@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 
 import MissingAssetActions from '@media-ui/media-module/src/components/Main/MissingAssetActions';
@@ -86,9 +86,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 interface ThumbnailProps {
     assetIdentity: AssetIdentity;
+    buildLinkToMediaUi: (asset: Asset) => string;
 }
 
-const Preview: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) => {
+const Preview: React.FC<ThumbnailProps> = ({ assetIdentity, buildLinkToMediaUi }: ThumbnailProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { dummyImage } = useMediaUi();
@@ -102,7 +103,7 @@ const Preview: React.FC<ThumbnailProps> = ({ assetIdentity }: ThumbnailProps) =>
                 <div className={classes.toolBar}>
                     {!loading &&
                         (asset ? (
-                            <PreviewActions asset={asset} />
+                            <PreviewActions asset={asset} buildLinkToMediaUi={buildLinkToMediaUi} />
                         ) : (
                             <MissingAssetActions assetIdentity={assetIdentity} />
                         ))}

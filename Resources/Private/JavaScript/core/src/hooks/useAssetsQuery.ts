@@ -52,7 +52,7 @@ const useAssetsQuery = () => {
     const [query, { loading, error, data, refetch }] = useLazyQuery<AssetsQueryResult, AssetsQueryVariables>(ASSETS, {
         notifyOnNetworkStatusChange: false,
         variables: {
-            searchTerm,
+            searchTerm: searchTerm.toString(),
             assetCollectionId: selectedAssetCollection?.id,
             mediaType: mediaTypeFilter,
             tagId: selectedTag?.id,
@@ -67,7 +67,7 @@ const useAssetsQuery = () => {
         if (!loading && !isLoading) {
             query({
                 variables: {
-                    searchTerm,
+                    searchTerm: searchTerm.toString(),
                     assetCollectionId: selectedAssetCollection?.id,
                     mediaType: mediaTypeFilter,
                     tagId: selectedTag?.id,

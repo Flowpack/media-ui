@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { useSelectAsset } from '@media-ui/core/src/hooks';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing/src';
@@ -36,9 +36,10 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 interface DetailsProps {
     assetIdentity: AssetIdentity;
+    buildLinkToMediaUi: (asset: Asset) => string;
 }
 
-const Details = ({ assetIdentity }: DetailsProps) => {
+const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
     const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
@@ -59,7 +60,7 @@ const Details = ({ assetIdentity }: DetailsProps) => {
             <div className={classes.main}>
                 <ErrorBoundary>
                     <AssetInspector />
-                    <Preview assetIdentity={assetIdentity} />
+                    <Preview assetIdentity={assetIdentity} buildLinkToMediaUi={buildLinkToMediaUi} />
                 </ErrorBoundary>
             </div>
 

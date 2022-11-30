@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+import { useSelectAsset, useSelectAssetSource } from '@media-ui/core/src/hooks';
+import { searchTermState } from '@media-ui/core/src/state';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing/src';
@@ -98,7 +100,20 @@ const App = () => {
     const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
+    const searchTerm = useRecoilValue(searchTermState);
+    const selectAsset = useSelectAsset();
+    const [, selectAssetSource] = useSelectAssetSource();
     const classes = useStyles({ selectionMode, isInNodeCreationDialog });
+
+    React.useEffect(() => {
+        const assetId = searchTerm.getAssetIdentifierIfPresent();
+        if (assetId) {
+            selectAsset(assetId);
+            selectAssetSource('neos');
+        }
+        // Don't include `selectAsset` and `selectAssetSource` to prevent constant reloads
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchTerm]);
 
     return (
         <div className={classes.container} ref={containerRef}>
