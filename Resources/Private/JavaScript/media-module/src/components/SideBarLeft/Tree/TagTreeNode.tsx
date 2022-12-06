@@ -17,6 +17,7 @@ export interface TagTreeNodeProps extends TreeNodeProps {
 const TagTreeNode: React.FC<TagTreeNodeProps> = ({
     tag,
     isActive,
+    isFocused,
     assetCollection,
     label,
     title,
@@ -30,7 +31,7 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
             <Tree.Node.Header
                 isActive={isActive}
                 isCollapsed={true}
-                isFocused={isActive}
+                isFocused={isFocused !== undefined ? isFocused : isActive}
                 isLoading={false}
                 hasError={false}
                 label={label || tag.label}

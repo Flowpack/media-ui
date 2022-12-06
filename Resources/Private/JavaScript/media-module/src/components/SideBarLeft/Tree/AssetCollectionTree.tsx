@@ -167,7 +167,8 @@ const AssetCollectionTree = () => {
                         assetCollection={assetCollection}
                         onClick={selectAssetCollection}
                         level={1}
-                        isActive={assetCollection.title == selectedAssetCollection?.title && !selectedTag}
+                        isActive={assetCollection.title == selectedAssetCollection?.title}
+                        isFocused={assetCollection.title == selectedAssetCollection?.title && !selectedTag}
                     >
                         {assetCollection.tags?.map((tag) => (
                             <TagTreeNode
