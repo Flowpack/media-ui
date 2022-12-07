@@ -15,6 +15,7 @@ export interface AssetCollectionTreeNodeProps extends TreeNodeProps {
 
 const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     isActive,
+    isFocused,
     assetCollection,
     label,
     title,
@@ -31,12 +32,12 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
             <Tree.Node.Header
                 isActive={isActive}
                 isCollapsed={children.length === 0 || collapsed}
-                isFocused={isActive}
+                isFocused={isFocused !== undefined ? isFocused : isActive}
                 isLoading={false}
                 hasError={false}
                 label={label || assetCollection.title}
                 title={title || assetCollection.title}
-                icon="folder"
+                icon={isActive ? 'folder-open' : 'folder'}
                 nodeDndType={dndTypes.COLLECTION}
                 level={level}
                 onToggle={handleToggle}
