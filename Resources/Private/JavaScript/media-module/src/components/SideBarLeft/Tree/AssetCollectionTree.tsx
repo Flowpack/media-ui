@@ -143,7 +143,8 @@ const AssetCollectionTree = () => {
 
             <Tree className={classes.tree}>
                 <AssetCollectionTreeNode
-                    isActive={!selectedAssetCollection && !selectedTag}
+                    isActive={!selectedAssetCollection}
+                    isFocused={!selectedAssetCollection && !selectedTag}
                     label={translate('assetCollectionList.showAll', 'All')}
                     title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
                     level={1}
