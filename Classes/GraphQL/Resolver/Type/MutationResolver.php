@@ -362,6 +362,9 @@ class MutationResolver implements ResolverInterface
         $file = $variables['file'];
         $tagId = $variables['tagId'] ?? null;
         $assetCollectionId = $variables['assetCollectionId'] ?? null;
+        $copyrightNotice = $variables['uploadProperties']['copyrightNotice'] ?? '';
+        $title = $variables['uploadProperties']['title'] ?? '';
+        $caption = $variables['uploadProperties']['caption'] ?? '';
 
         $success = false;
         $result = 'ERROR';
@@ -387,6 +390,16 @@ class MutationResolver implements ResolverInterface
                     $asset = new $className($resource);
 
                     if ($this->persistenceManager->isNewObject($asset)) {
+                        if ($copyrightNotice !== '') {
+                            $asset->setCopyrightNotice($copyrightNotice);
+                        }
+                        if ($title !== '') {
+                            $asset->setTitle($title);
+                        }
+                        if ($caption !== '') {
+                            $asset->setCaption($caption);
+                        }
+
                         if ($tagId) {
                             /** @var Tag $tag */
                             $tag = $this->tagRepository->findByIdentifier($tagId);
@@ -431,6 +444,15 @@ class MutationResolver implements ResolverInterface
     {
         /** @var array<FlowUploadedFile> $files */
         $files = $variables['files'];
+        $uploadProperties = $variables['uploadProperties'];
+        $sortedUploadProperties = [];
+        foreach ($uploadProperties as $property) {
+            $sortedUploadProperties[$property['filename']] = [
+                'copyrightNotice' => $property['copyrightNotice'] ?? '',
+                'title' => $property['title'] ?? '',
+                'caption' => $property['caption'] ?? '',
+            ];
+        }
         $tagId = $variables['tagId'] ?? null;
         $assetCollectionId = $variables['assetCollectionId'] ?? null;
 
@@ -440,6 +462,7 @@ class MutationResolver implements ResolverInterface
                 'file' => $file,
                 'tagId' => $tagId,
                 'assetCollectionId' => $assetCollectionId,
+                'uploadProperties' => $sortedUploadProperties[$file->getClientFilename()] ?? '',
             ]);
         }
         return $results;

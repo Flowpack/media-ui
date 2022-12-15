@@ -24,8 +24,8 @@ const ReplaceAssetDialog: React.FC = () => {
     const {
         approvalAttainmentStrategy: { obtainApprovalToReplaceAsset },
     } = useMediaUi();
+    const { state: dialogState, closeDialog, setFiles, setUploadPossible } = useUploadDialogState();
     const featureFlags = useRecoilValue(featureFlagsState);
-    const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
     const [replacementOptions, setReplacementOptions] = React.useState<AssetReplacementOptions>({
         keepOriginalFilename: false,
         generateRedirects: false,
@@ -141,6 +141,9 @@ const ReplaceAssetDialog: React.FC = () => {
                     files={dialogState.files}
                     loading={loading}
                     uploadState={uploadState ? [uploadState] : []}
+                    dialogState={dialogState}
+                    setFiles={setFiles}
+                    setUploadPossible={setUploadPossible}
                 />
             </section>
         </Dialog>

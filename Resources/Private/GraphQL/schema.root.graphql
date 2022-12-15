@@ -142,7 +142,7 @@ type Mutation {
 
     uploadFile(file: Upload!, tagId: TagId, assetCollectionId: AssetCollectionId): FileUploadResult!
 
-    uploadFiles(files: [Upload!]!, tagId: TagId, assetCollectionId: AssetCollectionId): [FileUploadResult!]!
+    uploadFiles(files: [Upload!]!, tagId: TagId, assetCollectionId: AssetCollectionId, uploadProperties: [UploadProperties]): [FileUploadResult!]!
 
     importAsset(id: AssetId!, assetSourceId: AssetSourceId!): Asset!
 
@@ -516,6 +516,13 @@ scalar VariantPresetIdentifier
 Variant Name
 """
 scalar VariantName
+
+input UploadProperties {
+    filename: String!
+    copyrightNotice: String
+    title: String
+    caption: String
+}
 
 schema {
     query: Query

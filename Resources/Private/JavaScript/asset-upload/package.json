@@ -6,5 +6,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@media-ui/core": "workspace:*"
+    "@media-ui/core": "*",
+    "@media-ui/media-module": "*"
   }
 }

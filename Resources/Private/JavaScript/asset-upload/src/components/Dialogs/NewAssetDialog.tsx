@@ -16,9 +16,9 @@ const NewAssetDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
+    const { state: dialogState, closeDialog, setFiles, setUploadPossible } = useUploadDialogState();
     const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
     const { refetch } = useAssetsQuery();
-    const uploadPossible = !loading && dialogState.files.selected.length > 0;
 
     const handleUpload = useCallback(() => {
         uploadFiles(dialogState.files.selected)
@@ -84,7 +84,7 @@ const NewAssetDialog: React.FC = () => {
                     key="upload"
                     style="success"
                     hoverStyle="success"
-                    disabled={!uploadPossible}
+                    disabled={!dialogState.uploadPossible}
                     onClick={handleUpload}
                 >
                     {translate('uploadDialog.upload', 'Upload')}
@@ -94,7 +94,14 @@ const NewAssetDialog: React.FC = () => {
         >
             <section className={classes.uploadArea}>
                 <UploadSection files={dialogState.files.selected} loading={loading} onSetFiles={handleSetFiles} />
-                <PreviewSection files={dialogState.files} loading={loading} uploadState={uploadState} />
+                <PreviewSection
+                    files={dialogState.files}
+                    loading={loading}
+                    uploadState={uploadState}
+                    dialogState={dialogState}
+                    setFiles={setFiles}
+                    setUploadPossible={setUploadPossible}
+                />
             </section>
         </Dialog>
     );

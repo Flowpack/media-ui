@@ -7,4 +7,8 @@ interface UploadedFile extends File {
     name: string;
     size: number;
     type: string;
+    copyrightNotice?: string;
+    copyrightNoticeNotNeeded?: boolean;
+    title?: string;
+    caption?: string;
 }
