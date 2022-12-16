@@ -182,6 +182,7 @@ class QueryResolver implements ResolverInterface
             'uploadMaxFileSize' => $this->getMaximumFileUploadSize(),
             'uploadMaxFileUploadLimit' => $this->getMaximumFileUploadLimit(),
             'currentServerTime' => (new \DateTime())->format(DATE_W3C),
+            'uploadProperties' => $this->getUploadProperties(),
         ];
     }
 
@@ -206,6 +207,24 @@ class QueryResolver implements ResolverInterface
     protected function getMaximumFileUploadLimit(): int
     {
         return (int)($this->settings['maximumFileUploadLimit'] ?? 10);
+    }
+
+    /**
+     * Returns the additionally required fields for the file upload like the copyright notice
+     *
+     * @return string[]
+     */
+    protected function getUploadProperties(): array
+    {
+        $data = [];
+        foreach ($this->settings['upload']['properties'] as $fieldName => $config) {
+            $data[] = [
+                'name' => $fieldName,
+                'show' => $config['show'] ?? false,
+                'required' =>  $config['required'] ?? false,
+            ];
+        }
+        return $data;
     }
 
     /**

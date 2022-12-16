@@ -164,6 +164,13 @@ type Config {
     uploadMaxFileSize: FileSize!
     uploadMaxFileUploadLimit: Int!
     currentServerTime: DateTime!
+    uploadProperties: [UploadPropertiesConfig]
+}
+
+type UploadPropertiesConfig {
+    name: String!
+    show: Boolean!
+    required: Boolean!
 }
 
 """
