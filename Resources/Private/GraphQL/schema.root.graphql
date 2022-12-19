@@ -119,6 +119,7 @@ type Mutation {
         assetSourceId: AssetSourceId!
         file: Upload!
         options: AssetReplacementOptionsInput!
+        uploadProperties: UploadProperties
     ): FileUploadResult!
 
     editAsset(

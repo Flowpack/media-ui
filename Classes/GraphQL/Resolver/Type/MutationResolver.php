@@ -484,7 +484,8 @@ class MutationResolver implements ResolverInterface
             'options' => [
                 'generateRedirects' => $generateRedirects,
                 'keepOriginalFilename' => $keepOriginalFilename
-            ]
+            ],
+            'uploadProperties' => $uploadProperties
         ] = $variables;
 
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
@@ -533,6 +534,20 @@ class MutationResolver implements ResolverInterface
                     'generateRedirects' => $generateRedirects,
                     'keepOriginalFilename' => $keepOriginalFilename
                 ]);
+                $copyrightNotice = $uploadProperties['copyrightNotice'] ?? '';
+                $title = $uploadProperties['title'] ?? '';
+                $caption = $uploadProperties['caption'] ?? '';
+
+                if ($copyrightNotice !== '') {
+                    $asset->setCopyrightNotice($copyrightNotice);
+                }
+                if ($title !== '') {
+                    $asset->setTitle($title);
+                }
+                if ($caption !== '') {
+                    $asset->setCaption($caption);
+                }
+
                 $success = true;
                 $result = 'REPLACED';
             } catch (\Exception $exception) {

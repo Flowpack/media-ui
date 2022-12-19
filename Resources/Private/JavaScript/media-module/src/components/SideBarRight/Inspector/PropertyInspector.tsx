@@ -13,6 +13,11 @@ import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
 import Tasks from './Tasks';
+import { IconLabel } from '../../Presentation';
+import { useRecoilState } from 'recoil';
+import selectedAssetLabelState from '../../../state/selectedAssetLabelState';
+import selectedAssetCopyrightNoticeState from '../../../state/selectedAssetCopyrightNoticeState';
+import selectedAssetCaptionState from '../../../state/selectedAssetCaptionState';
 
 import classes from './PropertyInspector.module.css';
 import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
@@ -26,9 +31,9 @@ const PropertyInspector = () => {
         approvalAttainmentStrategy: { obtainApprovalToUpdateAsset },
     } = useMediaUi();
     const featureFlags = useRecoilValue(featureFlagsState);
-    const [label, setLabel] = useState<string>(null);
-    const [caption, setCaption] = useState<string>(null);
-    const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
+    const [label, setLabel] = useRecoilState(selectedAssetLabelState);
+    const [caption, setCaption] = useRecoilState(selectedAssetCaptionState);
+    const [copyrightNotice, setCopyrightNotice] = useRecoilState(selectedAssetCopyrightNoticeState);
     const [propertyEditorCollapsed, setPropertyEditorCollapsed] = useState<boolean>(
         featureFlags.propertyEditor.collapsed
     );

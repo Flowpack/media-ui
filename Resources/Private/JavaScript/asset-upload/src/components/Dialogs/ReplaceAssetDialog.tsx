@@ -12,6 +12,13 @@ import UploadSection from '../UploadSection';
 import PreviewSection from '../PreviewSection';
 import { useUploadDialogState } from '../../hooks';
 import useReplaceAsset, { AssetReplacementOptions } from '../../hooks/useReplaceAsset';
+import { UploadedFile } from '../../interfaces';
+import { useSetRecoilState } from 'recoil';
+import {
+    selectedAssetLabelState,
+    selectedAssetCaptionState,
+    selectedAssetCopyrightNoticeState,
+} from '@media-ui/media-module/src/state';
 
 import classes from './ReplaceAssetDialog.module.css';
 
@@ -30,6 +37,10 @@ const ReplaceAssetDialog: React.FC = () => {
         keepOriginalFilename: false,
         generateRedirects: false,
     });
+    const classes = useStyles();
+    const setLabel = useSetRecoilState(selectedAssetLabelState);
+    const setCaption = useSetRecoilState(selectedAssetCaptionState);
+    const setCopyrightNotice = useSetRecoilState(selectedAssetCopyrightNoticeState);
     const uploadPossible = !loading && dialogState.files.selected.length > 0;
     const acceptedFileTypes = useMemo(() => {
         // TODO: Extract this into a helper function
@@ -51,10 +62,14 @@ const ReplaceAssetDialog: React.FC = () => {
         if (hasApprovalToReplaceAsset) {
             try {
                 await replaceAsset({ asset: selectedAsset, file, options: replacementOptions });
-
                 Notify.ok(translate('uploadDialog.replacementFinished', 'Replacement finished'));
                 closeDialog();
                 void refetch();
+                if (result?.data.replaceAsset.success) {
+                    setLabel(file.title);
+                    setCaption(file.caption);
+                    setCopyrightNotice(file.copyrightNotice);
+                }
             } catch (error) {
                 Notify.error(translate('assetReplacement.error', 'Replacement failed'), error);
             }
@@ -69,6 +84,9 @@ const ReplaceAssetDialog: React.FC = () => {
         selectedAsset,
         closeDialog,
         obtainApprovalToReplaceAsset,
+        setLabel,
+        setCaption,
+        setCopyrightNotice,
     ]);
 
     const handleSetFiles = useCallback(
@@ -95,7 +113,7 @@ const ReplaceAssetDialog: React.FC = () => {
                     key="upload"
                     style="success"
                     hoverStyle="success"
-                    disabled={!uploadPossible}
+                    disabled={!dialogState.uploadPossible}
                     onClick={handleUpload}
                 >
                     {translate('uploadDialog.replace', 'Replace')}
