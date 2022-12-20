@@ -16,6 +16,7 @@ const UPLOAD_FILES = gql`
             filename
             success
             result
+            assetId
         }
     }
 `;

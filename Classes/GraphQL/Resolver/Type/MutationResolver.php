@@ -368,6 +368,7 @@ class MutationResolver implements ResolverInterface
 
         $success = false;
         $result = 'ERROR';
+        $assetUuid = '';
 
         $filename = $file->getClientFilename();
         try {
@@ -421,6 +422,7 @@ class MutationResolver implements ResolverInterface
                     } else {
                         $result = 'EXISTS';
                     }
+                    $assetUuid = $asset->getIdentifier();
                 } catch (IllegalObjectTypeException $e) {
                     $this->systemLogger->error('Type of uploaded file cannot be stored');
                 }
@@ -432,6 +434,7 @@ class MutationResolver implements ResolverInterface
             'filename' => $filename,
             'success' => $success,
             'result' => $result,
+            'assetId' => $assetUuid,
         ];
     }
 
@@ -504,6 +507,7 @@ class MutationResolver implements ResolverInterface
 
         $success = false;
         $result = 'ERROR';
+        $assetUuid = $asset->getIdentifier();
         $sourceMediaType = MediaTypes::parseMediaType($asset->getMediaType());
         $replacementMediaType = MediaTypes::parseMediaType($file->getClientMediaType());
         $filename = $file->getClientFilename();
@@ -515,6 +519,7 @@ class MutationResolver implements ResolverInterface
                 'filename' => $filename,
                 'success' => false,
                 'result' => $result,
+                'assetId' => $assetUuid,
             ];
         }
 
@@ -550,6 +555,7 @@ class MutationResolver implements ResolverInterface
 
                 $success = true;
                 $result = 'REPLACED';
+                $assetUuid = $asset->getIdentifier();
             } catch (\Exception $exception) {
                 $this->systemLogger->error(sprintf('Asset %s could not be replaced', $asset->getIdentifier()), [$exception]);
             }
@@ -559,6 +565,7 @@ class MutationResolver implements ResolverInterface
             'filename' => $filename,
             'success' => $success,
             'result' => $result,
+            'assetId' => $assetUuid,
         ];
     }
 

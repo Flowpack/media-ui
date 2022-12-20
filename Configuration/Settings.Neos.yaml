@@ -32,6 +32,8 @@ Neos:
         javascript:
           Flowpack.Media.Ui:AssetEditor:
             resource: resource://Flowpack.Media.Ui/Public/AssetEditor/Plugin.js
+          Flowpack.Media.Ui:ImageUpload:
+            resource: resource://Flowpack.Media.Ui/Public/ImageUpload/Plugin.js
         stylesheets:
           Flowpack.Media.Ui:AssetEditor:
             resource: resource://Flowpack.Media.Ui/Public/AssetEditor/Plugin.css

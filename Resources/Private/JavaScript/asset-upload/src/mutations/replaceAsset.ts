@@ -18,6 +18,7 @@ const REPLACE_ASSET = gql`
             filename
             success
             result
+            assetId
         }
     }
 `;

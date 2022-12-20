@@ -343,6 +343,7 @@ type FileUploadResult {
     filename: Filename!
     success: Boolean!
     result: String!
+    assetId: AssetId!
 }
 
 """
