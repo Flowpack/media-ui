@@ -148,6 +148,29 @@ Neos:
         Flowpack.Media.Ui:
           createAssetRedirectsOption: false
 ```
+
+### Add additional field to the upload dialog
+
+You can add additional fields to the upload dialog to add property data while uploading a file. Add the moment the fields title, caption and copyright notice can be used. 
+This additional the fields can be configured to be required for the upload. See the following settings example:
+
+
+```yaml
+Flowpack:
+  Media:
+    Ui:
+      upload:
+        properties:
+          copyrightNotice:
+            show: true
+            required: true
+          title:
+            show: true
+            required: false
+          caption:
+            show: true
+            required: false
+```
     
 ## Architecture
 
