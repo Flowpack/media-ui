@@ -1616,10 +1616,10 @@
   resolved "https://registry.yarnpkg.com/@neos-project/positional-array-sorter/-/positional-array-sorter-5.2.5.tgz#4647842d99414c598479d752f9625a0fff5f4c97"
   integrity sha512-dhcXB/o6hzDHAl01XmtpT42LbU3Z9tOFhE9ZlxlJOHu8Z9Lsg8sbxNLbnTnIzaODwdJiA1UlJGLZXQqMUg6IBg==
 
-"@neos-project/react-ui-components@5.3.7":
-  version "5.3.7"
-  resolved "https://registry.yarnpkg.com/@neos-project/react-ui-components/-/react-ui-components-5.3.7.tgz#44d703adc2898d94d6f1780e1344591086c0d8fe"
-  integrity sha512-GDoss4oHH2tUnUc2vZMtQ9KR6M7M1A3eZLBmjmD40ytS+3T7+lNY9NNvWIPT+nc6xUwbHkAA0G+Le++S8wACKQ==
+"@neos-project/react-ui-components@5.3.13":
+  version "5.3.13"
+  resolved "https://registry.yarnpkg.com/@neos-project/react-ui-components/-/react-ui-components-5.3.13.tgz#422cbc046277cdf131fe62e0e3e22b08dac403bf"
+  integrity sha512-PTXZ/WI48JUlAMJivcYwS+xR6dOysFYXabCF+JFlx01iZPKNLnHMlYE6M9zSWhPfUxVwrsPbD0b+ExNtdG2haw==
 
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
