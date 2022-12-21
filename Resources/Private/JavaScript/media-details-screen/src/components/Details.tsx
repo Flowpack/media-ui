@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
+import cx from 'classnames';
 
 import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { useSelectAsset } from '@media-ui/core/src/hooks';
+import { useSelectAsset, useAssetQuery } from '@media-ui/core/src/hooks';
 import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
@@ -29,8 +30,19 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         display: 'grid',
         gridTemplateColumns: `${theme.size.sidebarWidth} 1fr`,
         height: '100%',
-        overflow: 'auto',
         gridGap: theme.spacing.full,
+    },
+    inspector: {
+        height: '100%',
+        overflow: 'auto',
+    },
+    loading: {
+        '&$container': {
+            cursor: 'wait',
+        },
+        '&$main': {
+            pointerEvents: 'none',
+        },
     },
 }));
 
@@ -47,6 +59,7 @@ const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const selectAsset = useSelectAsset();
+    const { asset, loading } = useAssetQuery(assetIdentity);
     const classes = useStyles({ selectionMode, isInNodeCreationDialog });
 
     React.useEffect(() => {
@@ -54,13 +67,15 @@ const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
     }, [assetIdentity, selectAsset]);
 
     return (
-        <div className={classes.container} ref={containerRef}>
+        <div className={cx(classes.container, loading && classes.loading)} ref={containerRef}>
             <LoadingIndicator />
 
-            <div className={classes.main}>
+            <div className={cx(classes.main, loading && classes.loading)}>
                 <ErrorBoundary>
-                    <AssetInspector />
-                    <Preview assetIdentity={assetIdentity} buildLinkToMediaUi={buildLinkToMediaUi} />
+                    <div className={classes.inspector}>
+                        <AssetInspector />
+                    </div>
+                    <Preview asset={asset} loading={loading} buildLinkToMediaUi={buildLinkToMediaUi} />
                 </ErrorBoundary>
             </div>
 

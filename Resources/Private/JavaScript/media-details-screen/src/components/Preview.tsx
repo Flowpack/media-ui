@@ -1,25 +1,25 @@
 import * as React from 'react';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
-import { useAssetQuery } from '@media-ui/core/src/hooks';
-
-import MissingAssetActions from '@media-ui/media-module/src/components/Main/MissingAssetActions';
+import { Asset } from '@media-ui/core/src/interfaces';
 
 import PreviewActions from './PreviewActions';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     preview: {
-        width: `calc(100% - ${theme.size.sidebarWidth})`,
         minWidth: theme.size.sidebarWidth,
         margin: '0',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
     },
+    loading: {
+        opacity: 0.1,
+        '& img': {
+            width: '100%',
+        },
+    },
     picture: {
-        position: 'sticky',
-        top: '0',
         width: '100%',
         display: 'flex',
         alignItems: 'center',
@@ -84,33 +84,31 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-interface ThumbnailProps {
-    assetIdentity: AssetIdentity;
+interface PreviewProps {
+    asset: null | Asset;
+    loading: boolean;
     buildLinkToMediaUi: (asset: Asset) => string;
 }
 
-const Preview: React.FC<ThumbnailProps> = ({ assetIdentity, buildLinkToMediaUi }: ThumbnailProps) => {
+const Preview: React.FC<PreviewProps> = ({ asset, loading, buildLinkToMediaUi }: PreviewProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { dummyImage } = useMediaUi();
-    const { asset, loading } = useAssetQuery(assetIdentity);
 
     return (
-        <figure className={classes.preview} title={asset?.label}>
+        <figure
+            className={[classes.preview, loading && classes.loading].filter(Boolean).join(' ')}
+            title={asset?.label}
+        >
             {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
             <picture className={classes.picture}>
                 <img src={loading || !asset ? dummyImage : asset.previewUrl} alt={asset?.label} />
                 <div className={classes.toolBar}>
-                    {!loading &&
-                        (asset ? (
-                            <PreviewActions asset={asset} buildLinkToMediaUi={buildLinkToMediaUi} />
-                        ) : (
-                            <MissingAssetActions assetIdentity={assetIdentity} />
-                        ))}
+                    {!loading && asset && <PreviewActions asset={asset} buildLinkToMediaUi={buildLinkToMediaUi} />}
                 </div>
             </picture>
         </figure>
     );
 };
 
-export default React.memo(Preview, (prev, next) => prev.assetIdentity.assetId === next.assetIdentity.assetId);
+export default React.memo(Preview, (prev, next) => prev.asset?.id === next.asset?.id);
