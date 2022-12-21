@@ -4,7 +4,7 @@ Neos:
       frontendConfiguration:
         Flowpack.Media.Ui:
           useNewMediaSelection: true
-          useNewMediaUpload: true
+          useNewAssetUpload: true
           queryAssetUsage: false
           pollForChanges: true
           showSimilarAssets: false
