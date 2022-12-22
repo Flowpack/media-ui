@@ -24,6 +24,7 @@ interface MediaUiProviderProps {
     dummyImage: string;
     selectionMode?: boolean;
     isInNodeCreationDialog?: boolean;
+    isInMediaDetailsScreen?: boolean;
     containerRef: React.RefObject<HTMLDivElement>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
     featureFlags: FeatureFlags;
@@ -39,6 +40,7 @@ interface MediaUiProviderValues {
     handleSelectAsset: (assetIdentity: AssetIdentity) => void;
     selectionMode: boolean;
     isInNodeCreationDialog: boolean;
+    isInMediaDetailsScreen: boolean;
     assets: Asset[];
     refetchAssets: () => void;
     featureFlags: FeatureFlags;
@@ -56,6 +58,7 @@ export function MediaUiProvider({
     dummyImage,
     selectionMode = false,
     isInNodeCreationDialog = false,
+    isInMediaDetailsScreen = false,
     onAssetSelection = null,
     containerRef,
     featureFlags,
@@ -186,6 +189,7 @@ export function MediaUiProvider({
                 handleSelectAsset,
                 selectionMode,
                 isInNodeCreationDialog,
+                isInMediaDetailsScreen,
                 assets,
                 refetchAssets,
                 featureFlags,

@@ -31,6 +31,7 @@ const AssetInspector = () => {
     const {
         featureFlags,
         approvalAttainmentStrategy: { obtainApprovalToUpdateAsset },
+        isInMediaDetailsScreen,
     } = useMediaUi();
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
@@ -130,7 +131,7 @@ const AssetInspector = () => {
 
             <AssetUsagesToggleButton />
             {featureFlags.showSimilarAssets && <SimilarAssetsToggleButton />}
-            {!selectedAsset.assetSource.readOnly && <AssetReplacementButton />}
+            {!selectedAsset.assetSource.readOnly && !isInMediaDetailsScreen && <AssetReplacementButton />}
 
             <MetadataView />
         </InspectorContainer>

@@ -162,6 +162,7 @@ export class MediaDetailsScreen extends React.PureComponent<
                                         approvalAttainmentStrategyFactory={
                                             MediaDetailsScreenApprovalAttainmentStrategyFactory
                                         }
+                                        isInMediaDetailsScreen={true}
                                     >
                                         <MediaUiThemeProvider>
                                             <Details
