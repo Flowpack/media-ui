@@ -6,6 +6,10 @@
                 <source>Media (new)</source>
             </trans-unit>
 
+            <trans-unit id="module.description" xml:space="preserve" approved="yes">
+                <source>The Media Module allows you to manage all your images, including documents, videos, and audio files.</source>
+            </trans-unit>
+
             <trans-unit id="uploadDialog.maxFileSize" xml:space="preserve" approved="yes">
                 <source>Maximum file size is {size} and file limit is {limit}</source>
             </trans-unit>
