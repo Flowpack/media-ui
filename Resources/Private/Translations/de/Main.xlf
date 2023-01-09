@@ -8,8 +8,8 @@
             </trans-unit>
 
             <trans-unit id="module.description" xml:space="preserve" approved="yes">
-                <source>The Media Module allows you to manage all your images, including documents, videos, and audio files.</source>
-                <target>Mit dem Medienmodul können alle Bilder, einschließlich Dokumente, Videos und Audiodateien, verwaltet werden.</target>
+                <source>The Media Module allows you to manage all your assets, including images, documents, videos, and audio files.</source>
+                <target>Mit dem Medienmodul können alle Dateien, einschließlich Bilder, Dokumente, Videos und Audiodateien, verwaltet werden.</target>
             </trans-unit>
 
             <trans-unit id="uploadDialog.maxFileSize" xml:space="preserve" approved="yes">
@@ -24,7 +24,7 @@
 
             <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
                 <source>You can only select any of the following types: {types}</source>
-                <target>Du kannst nur einen der folgenden Typen auswählen: {types}</target>
+                <target>Sie können nur einen der folgenden Typen auswählen: {types}</target>
             </trans-unit>
         </body>
     </file>
