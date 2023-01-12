@@ -17,6 +17,10 @@ setTimeout(() => {
             queryAssetUsage: true,
             pollForChanges: true,
             useNewMediaSelection: true,
+            pagination: {
+                assetsPerPage: 20,
+                maximumLinks: 5,
+            },
         } as FeatureFlags)
     );
     app.setAttribute('data-dummy-image', '/dummy-image.svg');
