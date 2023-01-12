@@ -27,4 +27,4 @@ interface Window {
 type PaginationConfig = {
     assetsPerPage: number;
     maximumLinks: number;
-}
+};
