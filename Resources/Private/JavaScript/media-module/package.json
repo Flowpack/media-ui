@@ -19,7 +19,7 @@
     "@media-ui/feature-clipboard": "*",
     "@media-ui/feature-concurrent-editing": "*",
     "@media-ui/feature-similar-assets": "*",
-    "@neos-project/react-ui-components": "5.3.7",
+    "@neos-project/react-ui-components": "5.3.13",
     "apollo-upload-client": "^14.1.3",
     "classnames": "^2.2.6",
     "graphql": "^15.5.0",

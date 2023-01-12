@@ -25,7 +25,7 @@ export default function useAssetCountQuery() {
         variables: {
             assetCollectionId: selectedAssetCollection?.id,
             tagId: selectedTag?.id,
-            searchTerm: searchTerm,
+            searchTerm: searchTerm.toString(),
         },
     });
     return { assetCount: data?.assetCount || 0, loading };

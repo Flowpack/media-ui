@@ -15,6 +15,7 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 // Media UI dependencies
 import {
     I18nRegistry,
+    InteractionProvider,
     IntlProvider,
     MediaUiProvider,
     MediaUiThemeProvider,
@@ -72,7 +73,7 @@ interface MediaSelectionScreenState {
     frontendConfiguration: globalRegistry.get('frontendConfiguration').get('Flowpack.Media.Ui'),
 }))
 // eslint-disable-next-line prettier/prettier
-export default class MediaSelectionScreen extends React.PureComponent<
+export class MediaSelectionScreen extends React.PureComponent<
     MediaSelectionScreenProps,
     MediaSelectionScreenState
 > {
@@ -173,24 +174,26 @@ export default class MediaSelectionScreen extends React.PureComponent<
             <div style={{ transform: 'translateZ(0)', height: '100%', padding: isInNodeCreationDialog ? 0 : '1rem' }}>
                 <IntlProvider translate={this.translate}>
                     <NotifyProvider notificationApi={Notification}>
-                        <ApolloProvider client={client}>
-                            <RecoilRoot>
-                                <MediaUiProvider
-                                    dummyImage={dummyImage}
-                                    onAssetSelection={onComplete}
-                                    selectionMode={true}
-                                    isInNodeCreationDialog={isInNodeCreationDialog}
-                                    containerRef={containerRef}
-                                    featureFlags={featureFlags}
-                                    constraints={constraints || {}}
-                                    assetType={type === 'images' ? 'image' : type}
-                                >
-                                    <MediaUiThemeProvider>
-                                        <App />
-                                    </MediaUiThemeProvider>
-                                </MediaUiProvider>
-                            </RecoilRoot>
-                        </ApolloProvider>
+                        <InteractionProvider>
+                            <ApolloProvider client={client}>
+                                <RecoilRoot>
+                                    <MediaUiProvider
+                                        dummyImage={dummyImage}
+                                        onAssetSelection={onComplete}
+                                        selectionMode={true}
+                                        isInNodeCreationDialog={isInNodeCreationDialog}
+                                        containerRef={containerRef}
+                                        featureFlags={featureFlags}
+                                        constraints={constraints || {}}
+                                        assetType={type === 'images' ? 'image' : type}
+                                    >
+                                        <MediaUiThemeProvider>
+                                            <App />
+                                        </MediaUiThemeProvider>
+                                    </MediaUiProvider>
+                                </RecoilRoot>
+                            </ApolloProvider>
+                        </InteractionProvider>
                     </NotifyProvider>
                 </IntlProvider>
             </div>

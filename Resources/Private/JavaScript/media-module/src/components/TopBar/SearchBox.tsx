@@ -6,6 +6,7 @@ import { TextInput } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
 import { currentPageState, searchTermState } from '@media-ui/core/src/state';
+import { SearchTerm } from '@media-ui/core/src/domain/SearchTerm';
 
 import { MainViewState, mainViewState } from '../../state';
 
@@ -27,12 +28,12 @@ const SearchBox: React.FC = () => {
     const classes = useStyles();
     const [searchTerm, setSearchTerm] = useRecoilState(searchTermState);
     const setCurrentPage = useSetRecoilState(currentPageState);
-    const [searchValue, setSearchValue] = useState(searchTerm);
+    const [searchValue, setSearchValue] = useState(searchTerm.toString());
     const { translate } = useIntl();
     const mainView = useRecoilValue(mainViewState);
 
     const handleSearch = useCallback(() => {
-        setSearchTerm(searchValue);
+        setSearchTerm(SearchTerm.fromString(searchValue));
         setCurrentPage(1);
     }, [searchValue, setCurrentPage, setSearchTerm]);
 

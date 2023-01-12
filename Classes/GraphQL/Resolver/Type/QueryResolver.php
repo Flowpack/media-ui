@@ -16,7 +16,11 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\Domain\ImageMapper;
+use Flowpack\Media\Ui\Domain\Model\AssetProxyIteratorAggregate;
+use Flowpack\Media\Ui\Domain\Model\SearchTerm;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
+use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyListIterator;
+use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyQueryIterator;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
@@ -116,19 +120,14 @@ class QueryResolver implements ResolverInterface
      */
     public function assetCount($_, array $variables, AssetSourceContext $assetSourceContext): int
     {
-        $query = $this->createAssetProxyQuery($variables, $assetSourceContext);
+        $iterator = $this->createAssetProxyIterator($variables, $assetSourceContext);
 
-        if (!$query) {
+        if (!$iterator) {
             $this->systemLogger->error('Could not build asset query for given variables', $variables);
             return 0;
         }
 
-        try {
-            return $query->execute()->count();
-        } catch (\Exception $e) {
-            // TODO: Handle that not every asset source implements the count method => Introduce countable interface?
-        }
-        return 0;
+        return count($iterator);
     }
 
     /**
@@ -136,12 +135,12 @@ class QueryResolver implements ResolverInterface
      *
      * @param array $variables
      * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyQueryInterface|null
+     * @return AssetProxyIteratorAggregate|null
      */
-    protected function createAssetProxyQuery(
+    protected function createAssetProxyIterator(
         array $variables,
         AssetSourceContext $assetSourceContext
-    ): ?AssetProxyQueryInterface {
+    ): ?AssetProxyIteratorAggregate {
         [
             'assetSourceId' => $assetSourceId,
             'tagId' => $tagId,
@@ -199,15 +198,27 @@ class QueryResolver implements ResolverInterface
             /** @var Tag $tag */
             $tag = $this->tagRepository->findByIdentifier($tagId);
             if ($tag) {
-                return $assetProxyRepository->findByTag($tag)->getQuery();
+                return AssetProxyQueryIterator::from(
+                    $assetProxyRepository->findByTag($tag)->getQuery()
+                );
             }
         }
 
-        if (is_string($searchTerm) && !empty($searchTerm)) {
-            return $assetProxyRepository->findBySearchTerm($searchTerm)->getQuery();
+        if ($searchTerm = SearchTerm::from($searchTerm)) {
+            if ($identifier = $searchTerm->getAssetIdentifierIfPresent()) {
+                return AssetProxyListIterator::of(
+                    $assetProxyRepository->getAssetProxy($identifier)
+                );
+            } else {
+                return AssetProxyQueryIterator::from(
+                    $assetProxyRepository->findBySearchTerm((string) $searchTerm)->getQuery()
+                );
+            }
         }
 
-        return $assetProxyRepository->findAll()->getQuery();
+        return AssetProxyQueryIterator::from(
+            $assetProxyRepository->findAll()->getQuery()
+        );
     }
 
     /**
@@ -318,33 +329,25 @@ class QueryResolver implements ResolverInterface
      * @param $_
      * @param array $variables
      * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyQueryResultInterface|null
+     * @return AssetProxyIteratorAggregate|null
      */
     public function assets(
         $_,
         array $variables,
         AssetSourceContext $assetSourceContext
-    ): ?AssetProxyQueryResultInterface {
+    ): ?AssetProxyIteratorAggregate {
         ['limit' => $limit, 'offset' => $offset] = $variables + ['limit' => 20, 'offset' => 0];
-        $query = $this->createAssetProxyQuery($variables, $assetSourceContext);
+        $iterator = $this->createAssetProxyIterator($variables, $assetSourceContext);
 
-        if (!$query) {
+        if (!$iterator) {
             $this->systemLogger->error('Could not build assets query for given variables', $variables);
             return null;
         }
 
-        try {
-            // TODO: Check if it's an issue to execute the query a second time just to get the correct number of results?
-            $offset = $offset < $query->execute()->count() ? $offset : 0;
-        } catch (\Exception $e) {
-            // TODO: Handle that not every asset source implements the count method => Introduce countable interface?
-        }
+        $iterator->setOffset($offset);
+        $iterator->setLimit($limit);
 
-        $query->setOffset($offset);
-        $query->setLimit($limit);
-
-        // TODO: It's not possible to use `toArray` here as not all asset sources implement it
-        return $query->execute();
+        return $iterator;
     }
 
     /**

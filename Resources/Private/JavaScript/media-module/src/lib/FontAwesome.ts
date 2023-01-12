@@ -21,7 +21,9 @@ import { faClipboardList } from '@fortawesome/free-solid-svg-icons/faClipboardLi
 import { faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons/faCloudDownloadAlt';
 import { faDownload } from '@fortawesome/free-solid-svg-icons/faDownload';
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons/faExclamationCircle';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons/faExclamationTriangle';
 import { faExpandAlt } from '@fortawesome/free-solid-svg-icons/faExpandAlt';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons/faExternalLinkAlt';
 import { faFile } from '@fortawesome/free-solid-svg-icons/faFile';
 import { faFileAudio } from '@fortawesome/free-solid-svg-icons/faFileAudio';
 import { faFileImage } from '@fortawesome/free-solid-svg-icons/faFileImage';
@@ -75,7 +77,9 @@ export default function loadIconLibrary() {
         faCreativeCommonsZero,
         faDownload,
         faExclamationCircle,
+        faExclamationTriangle,
         faExpandAlt,
+        faExternalLinkAlt,
         faFile,
         faFileAudio,
         faFileImage,

@@ -54,7 +54,7 @@ export default function AssetSourceList() {
                 >
                     <a
                         className={selectedAssetSource?.id === assetSource.id ? classes.itemSelected : null}
-                        onClick={() => setSelectedAssetSource(assetSource)}
+                        onClick={() => setSelectedAssetSource(assetSource.id)}
                     >
                         {assetSource.id === 'neos' ? translate('assetsource.local', 'Local') : assetSource.label}
                     </a>

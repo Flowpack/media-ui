@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
-import { useIntl, useNotify } from '@media-ui/core/src';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
 import { Asset, Tag } from '@media-ui/core/src/interfaces';
 import { useSelectedAsset, useSetAssetTags, useTagsQuery } from '@media-ui/core/src/hooks';
 
@@ -23,29 +23,46 @@ const tagsMatchAsset = (tags: Tag[], asset: Asset) => {
 const TagSelectBoxAsset = () => {
     const Notify = useNotify();
     const { translate } = useIntl();
+    const {
+        approvalAttainmentStrategy: { obtainApprovalToSetAssetTags },
+    } = useMediaUi();
     const { tags: allTags } = useTagsQuery();
     const { setAssetTags, loading } = useSetAssetTags();
     const selectedAsset = useSelectedAsset();
 
-    const selectedTagIds = useMemo(() => selectedAsset?.tags.map(({ id }) => id).sort(), [selectedAsset?.tags]);
+    const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+    const syncSelectedTagIds = useCallback(() => setSelectedTagIds(selectedAsset?.tags.map(({ id }) => id).sort()), [
+        selectedAsset?.tags,
+    ]);
 
     const handleChange = useCallback(
-        (newTags) => {
+        async (newTags) => {
             if (!tagsMatchAsset(newTags, selectedAsset)) {
-                setAssetTags({
+                const hasApprovalToSetAssetTags = await obtainApprovalToSetAssetTags({
                     asset: selectedAsset,
-                    tags: newTags,
-                })
-                    .then(() => {
+                    newTags,
+                });
+
+                if (hasApprovalToSetAssetTags) {
+                    try {
+                        await setAssetTags({
+                            asset: selectedAsset,
+                            tags: newTags,
+                        });
+
                         Notify.ok(translate('actions.setAssetTags.success', 'The asset has been tagged'));
-                    })
-                    .catch(({ message }) => {
+                    } catch ({ message }) {
                         Notify.error(translate('actions.setAssetTags.error', 'Error while tagging the asset'), message);
-                    });
+                    }
+                } else {
+                    syncSelectedTagIds();
+                }
             }
         },
-        [Notify, selectedAsset, setAssetTags, translate]
+        [Notify, selectedAsset, setAssetTags, translate, syncSelectedTagIds, obtainApprovalToSetAssetTags]
     );
+
+    useEffect(() => syncSelectedTagIds(), [syncSelectedTagIds]);
 
     if (!selectedAsset) return null;
 

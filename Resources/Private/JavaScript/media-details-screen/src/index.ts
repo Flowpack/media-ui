@@ -1,0 +1,1 @@
+export { MediaDetailsScreen } from './MediaDetailsScreen';
