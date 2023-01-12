@@ -23,3 +23,8 @@ interface Window {
         Notification: NeosNotification;
     };
 }
+
+type PaginationConfig = {
+    assetsPerPage: number;
+    maximumLinks: number;
+}
