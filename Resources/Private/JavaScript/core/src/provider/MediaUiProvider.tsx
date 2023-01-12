@@ -42,7 +42,7 @@ interface MediaUiProviderValues {
     isInNodeCreationDialog: boolean;
     isInMediaDetailsScreen: boolean;
     assets: Asset[];
-    refetchAssets: () => void;
+    refetchAssets: () => Promise<any>;
     featureFlags: FeatureFlags;
     constraints: SelectionConstraints;
     assetType: AssetMediaType;
@@ -72,7 +72,7 @@ export function MediaUiProvider({
     const client = useApolloClient();
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
-    const { assets, refetch: refetchAssets } = useAssetsQuery();
+    const { assets, refetch: refetchAssets } = useAssetsQuery(featureFlags.pagination);
     const setSelectedMediaType = useSetRecoilState(selectedMediaTypeState);
     const approvalAttainmentStrategy = useMemo(
         () =>

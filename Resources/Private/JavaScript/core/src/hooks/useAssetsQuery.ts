@@ -4,7 +4,6 @@ import { useLazyQuery } from '@apollo/client';
 
 import useSelectedAssetCollection from './useSelectedAssetCollection';
 import useSelectedTag from './useSelectedTag';
-import { useMediaUi } from '../provider';
 import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
 import {
     searchTermState,
@@ -16,6 +15,7 @@ import {
 } from '../state';
 import { ASSETS } from '../queries';
 import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
+
 interface AssetsQueryResult {
     assets: Asset[];
     assetCollections: AssetCollection[];
@@ -35,12 +35,8 @@ interface AssetsQueryVariables {
     sortDirection: SORT_DIRECTION;
 }
 
-const useAssetsQuery = () => {
-    const {
-        featureFlags: {
-            pagination: { assetsPerPage },
-        },
-    } = useMediaUi();
+const useAssetsQuery = (paginationConfig: PaginationConfig) => {
+    const { assetsPerPage } = paginationConfig;
     const searchTerm = useRecoilValue(searchTermState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
