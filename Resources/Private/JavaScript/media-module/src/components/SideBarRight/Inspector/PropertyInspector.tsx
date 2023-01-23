@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { TextArea, TextInput } from '@neos-project/react-ui-components';
+import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
 import { AssetUsagesToggleButton } from '@media-ui/feature-asset-usage/src';
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core/src';
@@ -13,6 +13,7 @@ import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
+import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     textArea: {
@@ -21,9 +22,27 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             padding: theme.spacing.half,
         },
     },
+    propertyPanel: {},
+    propertyPanelHeader: {
+        '& h2': {
+            padding: 0,
+        },
+        '& button': {
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+    },
+    propertyPanelContents: {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 0,
+        gap: theme.spacing.full,
+    },
 }));
 
-const AssetInspector = () => {
+const PropertyInspector = () => {
     const classes = useStyles();
     const selectedAsset = useSelectedAsset();
     const Notify = useNotify();
@@ -88,43 +107,50 @@ const AssetInspector = () => {
 
     return (
         <InspectorContainer>
-            <Property label={translate('inspector.title', 'Title')}>
-                <TextInput
-                    disabled={!isEditable}
-                    type="text"
-                    value={label || ''}
-                    onChange={setLabel}
-                    onEnterKey={handleApply}
-                />
-            </Property>
-            <Property label={translate('inspector.caption', 'Caption')}>
-                <TextArea
-                    className={classes.textArea}
-                    disabled={!isEditable}
-                    minRows={3}
-                    expandedRows={6}
-                    value={caption || ''}
-                    onChange={setCaption}
-                />
-            </Property>
-            <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
-                <TextArea
-                    className={classes.textArea}
-                    disabled={!isEditable}
-                    minRows={2}
-                    expandedRows={4}
-                    value={copyrightNotice || ''}
-                    onChange={setCopyrightNotice}
-                />
-            </Property>
+            <ToggablePanel closesToBottom={true} className={classes.propertyPanel}>
+                <ToggablePanel.Header className={classes.propertyPanelHeader}>
+                    <IconLabel icon="pencil" label={translate('propertyPanel.header', 'Properties')} />
+                </ToggablePanel.Header>
+                <ToggablePanel.Contents className={classes.propertyPanelContents}>
+                    <Property label={translate('inspector.title', 'Title')}>
+                        <TextInput
+                            disabled={!isEditable}
+                            type="text"
+                            value={label || ''}
+                            onChange={setLabel}
+                            onEnterKey={handleApply}
+                        />
+                    </Property>
+                    <Property label={translate('inspector.caption', 'Caption')}>
+                        <TextArea
+                            className={classes.textArea}
+                            disabled={!isEditable}
+                            minRows={3}
+                            expandedRows={6}
+                            value={caption || ''}
+                            onChange={setCaption}
+                        />
+                    </Property>
+                    <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
+                        <TextArea
+                            className={classes.textArea}
+                            disabled={!isEditable}
+                            minRows={2}
+                            expandedRows={4}
+                            value={copyrightNotice || ''}
+                            onChange={setCopyrightNotice}
+                        />
+                    </Property>
 
-            {isEditable && (
-                <Actions
-                    handleApply={handleApply}
-                    handleDiscard={handleDiscard}
-                    hasUnpublishedChanges={hasUnpublishedChanges}
-                />
-            )}
+                    {isEditable && (
+                        <Actions
+                            handleApply={handleApply}
+                            handleDiscard={handleDiscard}
+                            hasUnpublishedChanges={hasUnpublishedChanges}
+                        />
+                    )}
+                </ToggablePanel.Contents>
+            </ToggablePanel>
 
             {selectedAsset.assetSource.supportsCollections && <CollectionSelectBox />}
             {selectedAsset.assetSource.supportsTagging && <TagSelectBoxAsset />}
@@ -138,4 +164,4 @@ const AssetInspector = () => {
     );
 };
 
-export default React.memo(AssetInspector);
+export default React.memo(PropertyInspector);

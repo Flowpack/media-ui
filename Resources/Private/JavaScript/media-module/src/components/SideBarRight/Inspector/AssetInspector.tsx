@@ -25,7 +25,7 @@ const AssetInspector = () => {
 
     return featureFlags.showVariantsEditor ? (
         <Tabs theme={{ tabs__content: classes.tabContent }}>
-            <Tabs.Panel icon="pencil" key="editor" id="editor">
+            <Tabs.Panel icon="info-circle" key="editor" id="editor">
                 <PropertyInspector />
             </Tabs.Panel>
             <Tabs.Panel icon="images">
