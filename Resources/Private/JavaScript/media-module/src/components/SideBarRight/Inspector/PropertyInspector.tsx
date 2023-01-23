@@ -55,6 +55,9 @@ const PropertyInspector = () => {
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
     const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
+    const [propertyEditorCollapsed, setPropertyEditorCollapsed] = useState<boolean>(
+        featureFlags.propertyEditor.collapsed
+    );
 
     const { updateAsset, loading } = useUpdateAsset();
 
@@ -107,7 +110,12 @@ const PropertyInspector = () => {
 
     return (
         <InspectorContainer>
-            <ToggablePanel closesToBottom={true} className={classes.propertyPanel}>
+            <ToggablePanel
+                closesToBottom={true}
+                className={classes.propertyPanel}
+                isOpen={!propertyEditorCollapsed}
+                onPanelToggle={() => setPropertyEditorCollapsed((prev) => !prev)}
+            >
                 <ToggablePanel.Header className={classes.propertyPanelHeader}>
                     <IconLabel icon="pencil" label={translate('propertyPanel.header', 'Properties')} />
                 </ToggablePanel.Header>

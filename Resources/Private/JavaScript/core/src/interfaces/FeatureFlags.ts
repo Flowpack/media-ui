@@ -6,4 +6,7 @@ export default interface FeatureFlags {
     showVariantsEditor: boolean;
     createAssetRedirectsOption: boolean;
     pagination: PaginationConfig;
+    propertyEditor: {
+        collapsed: boolean;
+    };
 }

@@ -12,3 +12,5 @@ Neos:
           pagination:
             assetsPerPage: 20
             maximumLinks: 5
+          propertyEditor:
+            collapsed: false
