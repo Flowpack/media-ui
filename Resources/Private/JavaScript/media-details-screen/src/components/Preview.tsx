@@ -28,22 +28,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         backgroundColor: theme.colors.assetBackground,
         aspectRatio: '16 / 9',
 
-        '&:hover $toolBar': {
-            pointerEvents: 'all',
-            backgroundColor: 'rgba(0.15, 0.15, 0.15, 0.25)',
-            '& button': {
-                opacity: 1,
-                '&[disabled]': {
-                    opacity: 0.5,
-                },
-                '&.button--active': {
-                    '& svg': {
-                        color: 'white',
-                    },
-                },
-            },
-        },
-
         '& img': {
             maxWidth: '100%',
             maxHeight: `calc(100vh - 3 * ${theme.spacing.goldenUnit} - 2 * ${theme.spacing.full})`,
@@ -59,16 +43,16 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         position: 'absolute',
         top: theme.spacing.quarter,
         right: theme.spacing.quarter,
-        pointerEvents: 'none',
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(0.15, 0.15, 0.15, 0.25)',
         transition: 'background-color .1s ease-in',
-        '& button, & button[disabled]': {
-            transition: 'opacity .1s ease-in',
-            opacity: 0,
+        '& button': {
+            opacity: 1,
+            '&[disabled]': {
+                opacity: 0.5,
+            },
             '&.button--active': {
-                opacity: 1,
                 '& svg': {
-                    color: theme.colors.primary,
+                    color: 'white',
                 },
             },
         },
