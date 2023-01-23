@@ -17,6 +17,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     panelHeader: {
         '& button': {
             position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
         },
     },
 }));
