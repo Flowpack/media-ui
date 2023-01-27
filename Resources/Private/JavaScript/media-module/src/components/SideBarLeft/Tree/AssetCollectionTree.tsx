@@ -5,6 +5,7 @@ import { useSetRecoilState } from 'recoil';
 import { IconButton, Tree, Headline } from '@neos-project/react-ui-components';
 
 import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagIdState } from '@media-ui/core/src/state';
+import { AssetCollection } from '@media-ui/core/src/interfaces';
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify } from '@media-ui/core/src';
 import {
     useAssetCollectionsQuery,
@@ -17,6 +18,7 @@ import {
     useSelectTag,
     useTagsQuery,
 } from '@media-ui/core/src/hooks';
+import { clipboardVisibleState } from '@media-ui/feature-clipboard/src';
 
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import TagTreeNode from './TagTreeNode';
@@ -55,6 +57,7 @@ const AssetCollectionTree = () => {
     const selectedTag = useSelectedTag();
     const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
     const setSelectedTagId = useSetRecoilState(selectedTagIdState);
+    const setClipboardVisibleState = useSetRecoilState(clipboardVisibleState);
     const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAssetSource] = useSelectAssetSource();
@@ -119,6 +122,14 @@ const AssetCollectionTree = () => {
         deleteAssetCollection,
     ]);
 
+    const handleSelectAssetCollection = React.useCallback(
+        (assetCollection: AssetCollection) => {
+            selectAssetCollection(assetCollection);
+            setClipboardVisibleState(false);
+        },
+        [selectAssetCollection, setClipboardVisibleState]
+    );
+
     if (!selectedAssetSource?.supportsCollections) return null;
 
     return (
@@ -148,7 +159,7 @@ const AssetCollectionTree = () => {
                     label={translate('assetCollectionList.showAll', 'All')}
                     title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
                     level={1}
-                    onClick={selectAssetCollection}
+                    onClick={handleSelectAssetCollection}
                     assetCollection={null}
                     collapsedByDefault={false}
                 >
@@ -166,7 +177,7 @@ const AssetCollectionTree = () => {
                     <AssetCollectionTreeNode
                         key={index}
                         assetCollection={assetCollection}
-                        onClick={selectAssetCollection}
+                        onClick={handleSelectAssetCollection}
                         level={1}
                         isActive={assetCollection.title == selectedAssetCollection?.title}
                         isFocused={assetCollection.title == selectedAssetCollection?.title && !selectedTag}

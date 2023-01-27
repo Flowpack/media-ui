@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import { Headline } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 import { useAssetSourcesQuery, useSelectAssetSource } from '@media-ui/core/src/hooks';
+import { clipboardVisibleState } from '@media-ui/feature-clipboard/src';
 
 import { IconLabel } from '../Presentation';
 
@@ -36,6 +38,15 @@ export default function AssetSourceList() {
     const { assetSources } = useAssetSourcesQuery();
     const { translate } = useIntl();
     const [selectedAssetSource, setSelectedAssetSource] = useSelectAssetSource();
+    const setClipboardVisibleState = useSetRecoilState(clipboardVisibleState);
+
+    const handleSelectAssetSource = React.useCallback(
+        (assetSourceId: string) => {
+            setSelectedAssetSource(assetSourceId);
+            setClipboardVisibleState(false);
+        },
+        [setSelectedAssetSource, setClipboardVisibleState]
+    );
 
     // We don't show the source selection if there is only one
     if (!assetSources || assetSources.length < 2) return null;
@@ -54,7 +65,7 @@ export default function AssetSourceList() {
                 >
                     <a
                         className={selectedAssetSource?.id === assetSource.id ? classes.itemSelected : null}
-                        onClick={() => setSelectedAssetSource(assetSource.id)}
+                        onClick={() => handleSelectAssetSource(assetSource.id)}
                     >
                         {assetSource.id === 'neos' ? translate('assetsource.local', 'Local') : assetSource.label}
                     </a>
