@@ -120,6 +120,12 @@ class UsageDetailsService
      */
     protected $packageManager;
 
+    /**
+     * @Flow\InjectConfiguration(path="contentDimensions", package="Neos.ContentRepository")
+     * @var array
+     */
+    protected $contentDimensionsConfiguration;
+
     private $accessibleWorkspaces = [];
 
     public function resolveUsagesForAsset(AssetInterface $asset): array
@@ -176,7 +182,7 @@ class UsageDetailsService
             [
                 'name' => 'contentDimensions',
                 'label' => 'Content Dimensions',
-                'type' => 'TEXT',
+                'type' => 'JSON',
             ],
             [
                 'name' => 'lastModified',
@@ -222,12 +228,25 @@ class UsageDetailsService
                 ],
                 [
                     'name' => 'contentDimensions',
-                    'value' => json_encode(array_values($node->getDimensions())),
+                    'value' => json_encode($this->resolveDimensionValuesForNode($node)),
                 ],
             ];
         }
 
         return new AssetUsageDetails($label, $url, $metadata);
+    }
+
+    protected function resolveDimensionValuesForNode(NodeInterface $node): array
+    {
+        $dimensionValues = [];
+        foreach ($node->getDimensions() as $dimensionName => $dimensionValuesForName) {
+            $dimensionValues[$this->contentDimensionsConfiguration[$dimensionName]['label'] ?? $dimensionName] = array_map(function (
+                $dimensionValue
+            ) use ($dimensionName) {
+                return $this->contentDimensionsConfiguration[$dimensionName]['presets'][$dimensionValue]['label'] ?? $dimensionValue;
+            }, $dimensionValuesForName);
+        }
+        return $dimensionValues;
     }
 
     protected function getNodeFrom(AssetUsageInNodeProperties $assetUsage): ?NodeInterface

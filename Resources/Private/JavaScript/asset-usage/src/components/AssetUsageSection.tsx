@@ -16,12 +16,14 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     usageTable: {
         width: '100%',
         marginTop: theme.spacing.full,
+        lineHeight: 1.5,
         '& th': {
             fontWeight: 'bold',
             textAlign: 'left',
         },
         '& td, & th': {
             padding: theme.spacing.quarter,
+            verticalAlign: 'baseline',
             '&:first-child': {
                 paddingLeft: 0,
             },
@@ -38,11 +40,43 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 textDecoration: 'underline',
             },
         },
+        '& li': {
+            listStyleType: 'disc',
+            '& ul': {
+                paddingLeft: '1rem',
+                '& li': {
+                    display: 'list-item',
+                },
+            },
+        },
     },
 }));
 
 interface AssetUsageSectionProps {
     usageDetailsGroup: UsageDetailsGroup;
+}
+
+// Recursive function to render an object as a nested list
+function renderObject(data: Record<string, any>) {
+    return Array.isArray(data) ? (
+        <ul>
+            {data.map((item, index) => (
+                <li key={index}>{renderObject(item)}</li>
+            ))}
+        </ul>
+    ) : typeof data === 'object' ? (
+        <ul>
+            {Object.keys(data).map((key) => (
+                <li key={key}>
+                    <strong>{key}:</strong> {renderObject(data[key])}
+                </li>
+            ))}
+        </ul>
+    ) : typeof data === 'string' ? (
+        data
+    ) : (
+        JSON.stringify(data)
+    );
 }
 
 const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup }: AssetUsageSectionProps) => {
@@ -81,6 +115,8 @@ const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup
                                                 <a href={usage.value} target="_blank" rel="noreferrer">
                                                     {name}
                                                 </a>
+                                            ) : type == 'JSON' ? (
+                                                renderObject(JSON.parse(usage.value))
                                             ) : (
                                                 usage.value
                                             )}
