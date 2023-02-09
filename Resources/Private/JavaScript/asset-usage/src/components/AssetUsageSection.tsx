@@ -86,12 +86,12 @@ const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup
 
     return (
         <section className={classes.usageSection}>
-            <h2>{label}</h2>
+            <h2>{label} ({usages.length})</h2>
             {usages.length > 0 && (
                 <table className={classes.usageTable}>
                     <thead>
                         <tr>
-                            <th>{translate('assetUsageSection.label', 'Label')}</th>
+                            <th>{translate('assetUsage.header.label', 'Label')}</th>
                             {metadataSchema.map((schema, index) => (
                                 <th key={index}>{schema.label}</th>
                             ))}

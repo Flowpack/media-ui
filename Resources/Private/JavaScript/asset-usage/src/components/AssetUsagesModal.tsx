@@ -58,12 +58,12 @@ const AssetUsagesModal: React.FC = () => {
     return (
         <Dialog
             isOpen={isOpen}
-            title={translate('assetUsage.title', `Usage details for ${asset.label}`, { asset: asset.label })}
+            title={translate('assetUsage.header', `Usage details for ${asset.label}`, { asset: asset.label })}
             onRequestClose={handleRequestClose}
             style="wide"
             actions={[
                 <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>
-                    {translate('assetUsage.cancel', 'Cancel')}
+                    {translate('assetUsage.close', 'Close')}
                 </Button>,
             ]}
         >
@@ -75,7 +75,7 @@ const AssetUsagesModal: React.FC = () => {
                 ) : (
                     <span>
                         {loading
-                            ? translate('assetUsagesModal.loading', 'Loading...')
+                            ? translate('assetUsagesModal.loading', 'Loading…')
                             : translate('assetUsagesModal.noResults', 'No results')}
                     </span>
                 )}

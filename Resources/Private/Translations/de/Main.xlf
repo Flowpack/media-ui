@@ -26,6 +26,51 @@
                 <source>You can only select any of the following types: {types}</source>
                 <target>Sie können nur einen der folgenden Typen auswählen: {types}</target>
             </trans-unit>
+
+            <trans-unit id="assetUsage.header" xml:space="preserve" approved="yes">
+                <source>Usage details for "{asset}"</source>
+                <target>Details zur Nutzung von "{asset}"</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.strategy.assetUsageInNodeProperties.label" xml:space="preserve" approved="yes">
+                <source>Neos documents and content</source>
+                <target>Neos Seiten und Inhalte</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.label" xml:space="preserve" approved="yes">
+                <source>Label</source>
+                <target>Bezeichnung</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.site" xml:space="preserve" approved="yes">
+                <source>Site</source>
+                <target>Webseite</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.contentDimensions" xml:space="preserve" approved="yes">
+                <source>Content dimensions</source>
+                <target>Inhaltsdimensionen</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.workspace" xml:space="preserve" approved="yes">
+                <source>Workspace</source>
+                <target>Arbeitsbereich</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.lastModified" xml:space="preserve" approved="yes">
+                <source>Last modified</source>
+                <target>Letzte Änderung</target>
+            </trans-unit>
+            <trans-unit id="assetUsagesModal.loading" xml:space="preserve" approved="yes">
+                <source>Loading…</source>
+                <target>Lädt…</target>
+            </trans-unit>
+            <trans-unit id="assetUsagesModal.noResults" xml:space="preserve" approved="yes">
+                <source>No results</source>
+                <target>Keine Ergebnisse</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.close" xml:space="preserve" approved="yes">
+                <source>Close</source>
+                <target>Schließen</target>
+            </trans-unit>
+            <trans-unit id="assetUsageList.toggle" xml:space="preserve" approved="yes">
+                <source>Show usages</source>
+                <target>Verwendungen anzeigen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

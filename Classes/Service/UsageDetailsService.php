@@ -24,6 +24,7 @@ use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception as FlowException;
+use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
@@ -33,6 +34,7 @@ use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetUsageStrategyInterface;
+use Neos\Neos\Controller\BackendUserTranslationTrait;
 use Neos\Neos\Controller\CreateContentContextTrait;
 use Neos\Neos\Domain\Model\Dto\AssetUsageInNodeProperties;
 use Neos\Neos\Domain\Repository\SiteRepository;
@@ -48,6 +50,7 @@ use Neos\Neos\Service\UserService;
 class UsageDetailsService
 {
     use CreateContentContextTrait;
+    use BackendUserTranslationTrait;
 
     /**
      * @Flow\Inject
@@ -126,11 +129,20 @@ class UsageDetailsService
      */
     protected $contentDimensionsConfiguration;
 
+    /**
+     * @Flow\Inject
+     * @var Translator
+     */
+    protected $translator;
+
     private $accessibleWorkspaces = [];
 
     public function resolveUsagesForAsset(AssetInterface $asset): array
     {
-        return array_filter(array_map(function ($strategy) use ($asset) {
+        $includeSites = $this->siteRepository->countAll() > 1;
+        $includeDimensions = count($this->contentDimensionsConfiguration) > 0;
+
+        return array_filter(array_map(function ($strategy) use ($asset, $includeSites, $includeDimensions) {
             // TODO: At some point the strategy should be able to create the AssetUsageDetails DTO and headers for us, until then we build them manually for the strategies we know
             $usageByStrategy = [
                 'serviceId' => get_class($strategy),
@@ -146,17 +158,19 @@ class UsageDetailsService
             // Should be solved via an interface in the future
             if (method_exists($strategy, 'getLabel')) {
                 $usageByStrategy['label'] = $strategy->getLabel();
-            } else {
-                if ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
-                    $usageByStrategy['label'] = 'Neos documents and content';
-                }
+            } elseif ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
+                $usageByStrategy['label'] = $this->translateById('assetUsage.strategy.assetUsageInNodeProperties.label');
             }
 
             $usageReferences = $strategy->getUsageReferences($asset);
             if (count($usageReferences) && $usageReferences[0] instanceof AssetUsageInNodeProperties) {
-                $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema();
-                $usageByStrategy['usages'] = array_map(function (AssetUsageInNodeProperties $usage) {
-                    return $this->getNodePropertiesUsageDetails($usage);
+                $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema($includeSites,
+                    $includeDimensions);
+                $usageByStrategy['usages'] = array_map(function (AssetUsageInNodeProperties $usage) use (
+                    $includeSites,
+                    $includeDimensions
+                ) {
+                    return $this->getNodePropertiesUsageDetails($usage, $includeSites, $includeDimensions);
                 }, $usageReferences);
             }
             return $usageByStrategy;
@@ -165,35 +179,45 @@ class UsageDetailsService
         });
     }
 
-    protected function getNodePropertiesUsageMetadataSchema(): array
+    protected function getNodePropertiesUsageMetadataSchema(bool $includeSites, bool $includeDimensions): array
     {
-        // TODO: Translate headers
-        return [
-            [
+        $schema = [];
+
+        if ($includeSites) {
+            $schema[] = [
                 'name' => 'site',
-                'label' => 'Site',
+                'label' => $this->translateById('assetUsage.header.site'),
                 'type' => 'TEXT',
-            ],
-            [
-                'name' => 'workspace',
-                'label' => 'Workspace',
-                'type' => 'TEXT',
-            ],
-            [
-                'name' => 'contentDimensions',
-                'label' => 'Content Dimensions',
-                'type' => 'JSON',
-            ],
-            [
-                'name' => 'lastModified',
-                'label' => 'Last modified',
-                'type' => 'DATETIME',
-            ],
+            ];
+        }
+
+        $schema[] = [
+            'name' => 'workspace',
+            'label' => $this->translateById('assetUsage.header.workspace'),
+            'type' => 'TEXT',
         ];
+
+        if ($includeDimensions) {
+            $schema[] = [
+                'name' => 'contentDimensions',
+                'label' => $this->translateById('assetUsage.header.contentDimensions'),
+                'type' => 'JSON',
+            ];
+        }
+
+        $schema[] = [
+            'name' => 'lastModified',
+            'label' => $this->translateById('assetUsage.header.lastModified'),
+            'type' => 'DATETIME',
+        ];
+        return $schema;
     }
 
-    protected function getNodePropertiesUsageDetails(AssetUsageInNodeProperties $usage): AssetUsageDetails
-    {
+    protected function getNodePropertiesUsageDetails(
+        AssetUsageInNodeProperties $usage,
+        bool $includeSites,
+        bool $includeDimensions
+    ): AssetUsageDetails {
         /** @var Node $node */
         $node = $this->getNodeFrom($usage);
         $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
@@ -213,23 +237,30 @@ class UsageDetailsService
             /** @var ContentContext $context */
             $context = $node->getContext();
             $site = $context->getCurrentSite();
-            $metadata = [
-                [
-                    'name' => 'workspace',
-                    'value' => $usage->getWorkspaceName(),
-                ],
-                [
+
+            if ($includeSites) {
+                $metadata[] = [
                     'name' => 'site',
-                    'value' => $site ? $site->getName() : 'n/a',
-                ],
-                [
-                    'name' => 'lastModified',
-                    'value' => $node->getLastPublicationDateTime() ? $node->getLastModificationDateTime()->format(DATE_W3C) : null,
-                ],
-                [
+                    'value' => $site->getName(),
+                ];
+            }
+
+            $metadata[] = [
+                'name' => 'workspace',
+                'value' => $usage->getWorkspaceName(),
+            ];
+
+            // Only add content dimensions if they are configured
+            if ($includeDimensions) {
+                $metadata[] = [
                     'name' => 'contentDimensions',
                     'value' => json_encode($this->resolveDimensionValuesForNode($node)),
-                ],
+                ];
+            }
+
+            $metadata[] = [
+                'name' => 'lastModified',
+                'value' => $node->getLastPublicationDateTime() ? $node->getLastModificationDateTime()->format(DATE_W3C) : null,
             ];
         }
 
@@ -393,5 +424,10 @@ class UsageDetailsService
         ', $this->getAssetVariantFilterClause('a')))
             ->setParameter('assetSourceIdentifier', 'neos')
             ->getSingleScalarResult();
+    }
+
+    protected function translateById(string $id): ?string
+    {
+        return $this->translator->translateById($id, [], null, null, 'Main', 'Flowpack.Media.Ui') ?? $id;
     }
 }
