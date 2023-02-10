@@ -61,7 +61,8 @@ const ReplaceAssetDialog: React.FC = () => {
 
         if (hasApprovalToReplaceAsset) {
             try {
-                await replaceAsset({ asset: selectedAsset, file, options: replacementOptions });
+                const result = await replaceAsset({ asset: selectedAsset, file, options: replacementOptions });
+
                 Notify.ok(translate('uploadDialog.replacementFinished', 'Replacement finished'));
                 closeDialog();
                 void refetch();
