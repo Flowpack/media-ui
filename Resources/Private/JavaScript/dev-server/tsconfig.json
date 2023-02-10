@@ -10,7 +10,6 @@
     "node_modules"
   ],
   "compilerOptions": {
-    "rootDir": "src",
     "jsx": "react",
     "module": "esnext",
     "esModuleInterop": true,

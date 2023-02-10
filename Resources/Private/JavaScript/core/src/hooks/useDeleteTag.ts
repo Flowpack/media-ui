@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import { useRecoilState } from 'recoil';
 
 import { selectedTagIdState } from '../state';
-import { Tag } from '../interfaces';
+import { AssetCollection, Tag } from '../interfaces';
 import { ASSET_COLLECTIONS, TAGS } from '../queries';
 import { DELETE_TAG } from '../mutations';
 
@@ -25,7 +25,9 @@ export default function useDeleteTag() {
             },
             update: (proxy, { data: { deleteTag: success } }) => {
                 if (!success) return;
-                const { assetCollections } = proxy.readQuery({ query: ASSET_COLLECTIONS });
+                const { assetCollections } = proxy.readQuery<{ assetCollections: AssetCollection[] }>({
+                    query: ASSET_COLLECTIONS,
+                });
                 const updatedAssetCollections = assetCollections.map((assetCollection) => {
                     return { ...assetCollection, tags: assetCollection.tags.filter((tag) => tag?.id !== id) };
                 });

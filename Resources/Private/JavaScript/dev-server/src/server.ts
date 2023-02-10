@@ -104,6 +104,10 @@ const Fixtures = require('./fixtures');
             assetUsageDetails: ($_, { id }) => {
                 return Fixtures.getUsageDetailsForAsset(id);
             },
+            assetVariants: ($_, { id }) => {
+                // TODO: Implement assetVariants
+                return [];
+            },
             assetSources: () => assetSources,
             assetCollections: () => assetCollections,
             assetCollection: ($_, { id }) => assetCollections.find((assetCollection) => assetCollection.id === id),

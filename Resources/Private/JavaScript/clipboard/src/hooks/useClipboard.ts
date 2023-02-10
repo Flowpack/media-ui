@@ -49,7 +49,7 @@ export default function useClipboard() {
 
     const flushClipboard = useCallback(() => {
         Object.values(clipboard).map((assetIdentity) => {
-            toggleClipboardState(assetIdentity, false);
+            void toggleClipboardState(assetIdentity, false);
         });
     }, [clipboard, toggleClipboardState]);
 

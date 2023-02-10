@@ -86,7 +86,9 @@ const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup
 
     return (
         <section className={classes.usageSection}>
-            <h2>{label} ({usages.length})</h2>
+            <h2>
+                {label} ({usages.length})
+            </h2>
             {usages.length > 0 && (
                 <table className={classes.usageTable}>
                     <thead>

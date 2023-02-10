@@ -55,7 +55,7 @@ export default function useChangedAssetsQuery() {
         if (lastModified) setLastUpdate(lastModified);
 
         const relevantChanges = changes.filter((change) => {
-            // New assets are always relevant and we surely have no previous version in the cache
+            // New assets are always relevant, and we surely have no previous version in the cache
             if (change.type === AssetChangeType.ASSET_CREATED) {
                 return true;
             }

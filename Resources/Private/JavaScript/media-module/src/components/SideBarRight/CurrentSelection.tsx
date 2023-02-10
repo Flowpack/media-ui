@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { fromString as getMediaTypeFromString } from 'media-type';
 
 import { Headline, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
-import { useSelectedAsset, useSelectedAssetCollection, useSelectedTag } from '@media-ui/core/src/hooks';
+import { useSelectedAssetCollection, useSelectedTag } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -34,7 +33,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
 const CurrentSelection = () => {
     const classes = useStyles();
-    const selectedAsset = useSelectedAsset();
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
@@ -53,7 +51,7 @@ const CurrentSelection = () => {
         }
 
         return { icon, label };
-    }, [selectedAsset, selectedTag, selectedAssetCollection, selectedInspectorView]);
+    }, [selectedTag, selectedAssetCollection, selectedInspectorView]);
 
     if (!selection.label || selectedInspectorView === 'asset') return null;
 

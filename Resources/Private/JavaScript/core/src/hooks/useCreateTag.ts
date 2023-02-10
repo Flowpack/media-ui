@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 
-import { Tag } from '../interfaces';
+import { AssetCollection, Tag } from '../interfaces';
 import { ASSET_COLLECTIONS, TAGS } from '../queries';
 import { CREATE_TAG } from '../mutations';
 
@@ -26,7 +26,9 @@ export default function useCreateTag() {
             //     }
             // },
             update: (proxy, { data: { createTag: newTag } }) => {
-                const { assetCollections } = proxy.readQuery({ query: ASSET_COLLECTIONS });
+                const { assetCollections } = proxy.readQuery<{ assetCollections: AssetCollection[] }>({
+                    query: ASSET_COLLECTIONS,
+                });
                 const updatedAssetCollections = assetCollections.map((assetCollection) => {
                     if (assetCollection.id === assetCollectionId) {
                         return { ...assetCollection, tags: [...assetCollection.tags, newTag] };
@@ -38,7 +40,7 @@ export default function useCreateTag() {
                     data: { assetCollections: updatedAssetCollections },
                 });
 
-                const { tags } = proxy.readQuery({ query: TAGS });
+                const { tags } = proxy.readQuery<{ tags: Tag[] }>({ query: TAGS });
                 if (!tags.find((tag) => tag?.label === newTag?.label)) {
                     proxy.writeQuery({
                         query: TAGS,

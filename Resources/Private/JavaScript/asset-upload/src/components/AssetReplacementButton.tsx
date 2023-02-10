@@ -19,7 +19,7 @@ const AssetReplacementButton: React.FC = () => {
             hoverStyle="brand"
             onClick={() => setDialogState({ visible: true, uploadType: UPLOAD_TYPE.update })}
         >
-            {translate('asssetReplacement.toggle', 'Replace asset')}
+            {translate('assetReplacement.toggle', 'Replace asset')}
         </Button>
     );
 };

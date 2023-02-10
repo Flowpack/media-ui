@@ -135,7 +135,7 @@ export class MediaDetailsScreen extends React.PureComponent<
 
         const featureFlags: FeatureFlags = this.props.frontendConfiguration as FeatureFlags;
 
-        // The Neos.UI Flashmessages only support the levels 'success', 'error' and 'info'
+        // The Neos.UI FlashMessages only support the levels 'success', 'error' and 'info'
         const Notification: Notify = {
             info: (message) => addFlashMessage(message, message, 'info'),
             ok: (message) => addFlashMessage(message, message, 'success'),

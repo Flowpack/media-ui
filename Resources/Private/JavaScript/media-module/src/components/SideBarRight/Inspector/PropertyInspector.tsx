@@ -122,6 +122,7 @@ const PropertyInspector = () => {
                 <ToggablePanel.Contents className={classes.propertyPanelContents}>
                     <Property label={translate('inspector.title', 'Title')}>
                         <TextInput
+                            name="label"
                             disabled={!isEditable}
                             type="text"
                             value={label || ''}
@@ -131,6 +132,7 @@ const PropertyInspector = () => {
                     </Property>
                     <Property label={translate('inspector.caption', 'Caption')}>
                         <TextArea
+                            name="caption"
                             className={classes.textArea}
                             disabled={!isEditable}
                             minRows={3}
@@ -141,6 +143,7 @@ const PropertyInspector = () => {
                     </Property>
                     <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
                         <TextArea
+                            name="copyrightNotice"
                             className={classes.textArea}
                             disabled={!isEditable}
                             minRows={2}

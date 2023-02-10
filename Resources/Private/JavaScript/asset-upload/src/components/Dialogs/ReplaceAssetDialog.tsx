@@ -70,7 +70,7 @@ const ReplaceAssetDialog: React.FC = () => {
 
                 Notify.ok(translate('uploadDialog.replacementFinished', 'Replacement finished'));
                 closeDialog();
-                refetchAssets();
+                void refetchAssets();
             } catch (error) {
                 Notify.error(translate('assetReplacement.error', 'Replacement failed'), error);
             }

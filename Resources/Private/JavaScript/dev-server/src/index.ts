@@ -21,6 +21,13 @@ setTimeout(() => {
                 assetsPerPage: 20,
                 maximumLinks: 5,
             },
+            propertyEditor: {
+                collapsed: false,
+            },
+            createAssetRedirectsOption: true,
+            showSimilarAssets: true,
+            showAssetUsage: true,
+            showVariantsEditor: true,
         } as FeatureFlags)
     );
     app.setAttribute('data-dummy-image', '/dummy-image.svg');
@@ -28,6 +35,7 @@ setTimeout(() => {
     document.getElementById('content').appendChild(app);
 
     // Apply mock
+    // @ts-ignore
     window.NeosCMS = {
         I18n: {
             initialized: true,
