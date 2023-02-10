@@ -9,11 +9,11 @@ import PropertyInspector from './PropertyInspector';
 
 import { useRecoilValue } from 'recoil';
 
-const useStyles = createUseMediaUiStyles(() => ({
+const useStyles = createUseMediaUiStyles({
     tabContent: {
         height: 'calc(100% - 42px)',
     },
-}));
+});
 
 const AssetInspector = () => {
     const classes = useStyles();

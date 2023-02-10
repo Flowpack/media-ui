@@ -8,7 +8,7 @@ fixture('Inspector').page(SERVER_NAME);
 test('Inspector appears and shows first asset', async (t) => {
     await t
         .click(page.firstThumbnail)
-        .expect(page.currentSelection.withText('Example asset 1').exists)
+        .expect(page.assetInspector.find('input[name="label"]').withAttribute('value', 'Example asset 1').exists)
         .ok('The first asset should be selected');
 });
 

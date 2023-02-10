@@ -8,6 +8,7 @@
   "screenshots": {
     "takeOnFails": true
   },
+  "stopOnFirstFail": true,
   "hostname": "localhost",
   "retryTestPages": true,
   "pageLoadTimeout": 10000,
