@@ -69,7 +69,7 @@ interface AssetUploadScreenState {
     i18nRegistry: globalRegistry.get('i18n'),
     frontendConfiguration: globalRegistry.get('frontendConfiguration').get('Flowpack.Media.Ui'),
 }))
-export default class AssetUploadScreen extends React.PureComponent<AssetUploadScreenProps, AssetUploadScreenState> {
+export class AssetUploadScreen extends React.PureComponent<AssetUploadScreenProps, AssetUploadScreenState> {
     constructor(props) {
         super(props);
     }
