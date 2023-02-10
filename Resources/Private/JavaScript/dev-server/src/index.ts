@@ -28,6 +28,7 @@ setTimeout(() => {
     document.getElementById('content').appendChild(app);
 
     // Apply mock
+    // @ts-ignore
     window.NeosCMS = {
         I18n: {
             initialized: true,

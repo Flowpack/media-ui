@@ -42,7 +42,7 @@ export default function AssetSourceList() {
 
     const handleSelectAssetSource = React.useCallback(
         (assetSourceId: string) => {
-            setSelectedAssetSource(assetSourceId);
+            void setSelectedAssetSource(assetSourceId);
             setClipboardVisibleState(false);
         },
         [setSelectedAssetSource, setClipboardVisibleState]
@@ -67,7 +67,7 @@ export default function AssetSourceList() {
                         className={selectedAssetSource?.id === assetSource.id ? classes.itemSelected : null}
                         onClick={() => handleSelectAssetSource(assetSource.id)}
                     >
-                        {assetSource.id === 'neos' ? translate('assetsource.local', 'Local') : assetSource.label}
+                        {assetSource.id === 'neos' ? translate('assetSource.local', 'Local') : assetSource.label}
                     </a>
                 </IconLabel>
             ))}

@@ -78,7 +78,7 @@ const Pagination: React.FC = () => {
             hasMorePages: end + 1 < numberOfPages,
             pages,
         });
-    }, [numberOfPages, currentPage]);
+    }, [maximumLinks, numberOfPages, currentPage]);
 
     return (
         <nav className={classes.pagination}>

@@ -15,7 +15,7 @@ const ClipboardWatcher = () => {
 
     useEffect(() => {
         const onAssetDelete = (topic, assetIdentity: AssetIdentity) => {
-            toggleClipboardState(assetIdentity, false);
+            void toggleClipboardState(assetIdentity, false);
         };
 
         const token = assetRemoved.subscribe(onAssetDelete);

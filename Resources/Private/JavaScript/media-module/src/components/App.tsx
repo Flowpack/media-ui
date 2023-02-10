@@ -109,7 +109,7 @@ const App = () => {
         const assetId = searchTerm.getAssetIdentifierIfPresent();
         if (assetId) {
             selectAsset(assetId);
-            selectAssetSource('neos');
+            void selectAssetSource('neos');
         }
         // Don't include `selectAsset` and `selectAssetSource` to prevent constant reloads
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang='en'>
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <title>Media UI - Dev server</title>
-    <script>var parcelRequire;</script>
+    <script>let parcelRequire;</script>
 </head>
 
 <body class="neos neos-module neos-controls">
@@ -14,6 +14,7 @@
 </div>
 
 <script>
+    /** @namespace document */
     // This prevents parcel to bundle the css
     const style = document.createElement('link');
     style.rel = 'stylesheet';
@@ -21,7 +22,7 @@
     document.head.appendChild(style);
 </script>
 
-<script>var exports = {};</script>
+<script>let exports = {};</script>
 
 <script src="./index.ts"></script>
 <script src="../../media-module/src/index.tsx"></script>
