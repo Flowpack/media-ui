@@ -706,4 +706,20 @@ class MutationResolver implements ResolverInterface
 
         return true;
     }
+
+        /**
+     * @throws Exception|IllegalObjectTypeException
+     */
+    public function updateVariant($_, array $variables): ?Tag
+    {
+        [
+            'id' => $id,
+            'cropInformation' => $cropInformation,
+        ] = $variables;
+
+        $variant = $this->assetRepository->findByIdentifier($id);
+
+
+        return $variant;
+    }
 }
