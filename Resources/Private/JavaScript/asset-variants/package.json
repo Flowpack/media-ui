@@ -5,6 +5,7 @@
   "private": true,
   "main": "src/index.ts",
   "dependencies": {
-    "@media-ui/core": "*"
+    "@media-ui/core": "*",
+    "react-image-crop": "^10.0.7"
   }
 }

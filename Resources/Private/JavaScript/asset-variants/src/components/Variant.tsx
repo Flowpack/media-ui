@@ -1,14 +1,16 @@
 import React from 'react';
 import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 import AssetVariant from '../interfaces/AssetVariant';
+import useSelectVariant from '../hooks/useSelectVariant';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface VariantProps extends AssetVariant {}
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    variantContainer: {
+    variantContainer: ({ isCroppable }) => ({
         backgroundColor: theme.colors.assetBackground,
-    },
+        cursor: isCroppable ? 'pointer' : 'default',
+    }),
     picture: {
         height: 200,
         display: 'flex',
@@ -54,10 +56,18 @@ const Variant: React.FC<VariantProps> = ({
     width,
     height,
     previewUrl,
+    id,
+    hasCrop,
 }: VariantProps) => {
-    const classes = useStyles();
+    // TODO: Find out why we need to check both
+    const isCroppable = presetIdentifier && hasCrop;
+    const classes = useStyles({ isCroppable });
+    const selectVariant = useSelectVariant();
+    const handleVariantClick = () => {
+        selectVariant(id);
+    };
     return (
-        <div className={classes.variantContainer}>
+        <div className={classes.variantContainer} onClick={isCroppable && handleVariantClick}>
             <picture className={classes.picture}>
                 <img className={classes.image} src={previewUrl} alt={variantName} />
             </picture>

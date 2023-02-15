@@ -4975,6 +4975,11 @@ clone@^2.1.1:
   resolved "https://registry.yarnpkg.com/clone/-/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
   integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
 
+clsx@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
+  integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+
 coa@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/coa/-/coa-2.0.2.tgz#43f6c21151b4ef2bf57187db0d73de229e3e7ec3"
@@ -12744,6 +12749,13 @@ react-hot-loader@^4.13.0:
     react-lifecycles-compat "^3.0.4"
     shallowequal "^1.1.0"
     source-map "^0.7.3"
+
+react-image-crop@^10.0.7:
+  version "10.0.7"
+  resolved "https://registry.yarnpkg.com/react-image-crop/-/react-image-crop-10.0.7.tgz#79ae04ac8886f93c5945c9378bfc38ef3b29df2d"
+  integrity sha512-doV3sz101q9IaTWlx+DlErJ+BUknJ5CMVIRV72thWC3Fn5bg2XWoft7FbbrFGIr46zYrKKS9QuWNEzNkaqRvfQ==
+  dependencies:
+    clsx "^1.2.1"
 
 react-image-lightbox@^5.1.1:
   version "5.1.1"
