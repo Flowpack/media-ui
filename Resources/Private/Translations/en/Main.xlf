@@ -6,6 +6,10 @@
                 <source>Media (new)</source>
             </trans-unit>
 
+            <trans-unit id="module.description" xml:space="preserve" approved="yes">
+                <source>The Media Module allows you to manage all your assets, including images, documents, videos, and audio files.</source>
+            </trans-unit>
+
             <trans-unit id="uploadDialog.maxFileSize" xml:space="preserve" approved="yes">
                 <source>Maximum file size is {size} and file limit is {limit}</source>
             </trans-unit>
@@ -15,6 +19,45 @@
 
             <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
                 <source>You can only select any of the following types: {types}</source>
+            </trans-unit>
+
+            <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
+                <source>You can only select any of the following types: {types}</source>
+            </trans-unit>
+
+            <!-- Labels for the asset-usage package -->
+            <trans-unit id="assetUsage.header" xml:space="preserve" approved="yes">
+                <source>Usage details for "{asset}"</source>
+            </trans-unit>
+            <trans-unit id="assetUsage.strategy.assetUsageInNodeProperties.label" xml:space="preserve" approved="yes">
+                <source>Neos documents and content</source>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.label" xml:space="preserve" approved="yes">
+                <source>Label</source>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.site" xml:space="preserve" approved="yes">
+                <source>Site</source>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.contentDimensions" xml:space="preserve" approved="yes">
+                <source>Content dimensions</source>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.workspace" xml:space="preserve" approved="yes">
+                <source>Workspace</source>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.lastModified" xml:space="preserve" approved="yes">
+                <source>Last modified</source>
+            </trans-unit>
+            <trans-unit id="assetUsagesModal.loading" xml:space="preserve" approved="yes">
+                <source>Loading…</source>
+            </trans-unit>
+            <trans-unit id="assetUsagesModal.noResults" xml:space="preserve" approved="yes">
+                <source>No results</source>
+            </trans-unit>
+            <trans-unit id="assetUsage.close" xml:space="preserve" approved="yes">
+                <source>Close</source>
+            </trans-unit>
+            <trans-unit id="assetUsageList.toggle" xml:space="preserve" approved="yes">
+                <source>Show usages</source>
             </trans-unit>
         </body>
     </file>

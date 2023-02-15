@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "license": "GNU GPLv3",
   "private": true,
+  "main": "src/index.ts",
   "dependencies": {
     "@media-ui/core": "*",
     "react-image-crop": "^10.0.7"

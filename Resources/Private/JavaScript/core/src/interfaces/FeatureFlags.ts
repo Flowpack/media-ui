@@ -4,4 +4,9 @@ export default interface FeatureFlags {
     useNewMediaSelection: boolean;
     showSimilarAssets: boolean;
     showVariantsEditor: boolean;
+    createAssetRedirectsOption: boolean;
+    pagination: PaginationConfig;
+    propertyEditor: {
+        collapsed: boolean;
+    };
 }

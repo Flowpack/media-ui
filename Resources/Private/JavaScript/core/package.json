@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "license": "GNU GPLv3",
   "private": true,
+  "main": "src/index.ts",
   "dependencies": {
-    "pubsub-js": "^1.9.3",
-    "matcher": "^5.0.0"
+    "matcher": "^5.0.0",
+    "pubsub-js": "^1.9.3"
   },
   "devDependencies": {
     "@types/pubsub-js": "^1.8.2"

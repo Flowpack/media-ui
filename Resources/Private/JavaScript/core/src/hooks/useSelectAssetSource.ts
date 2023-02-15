@@ -8,7 +8,7 @@ import { AssetSource } from '../interfaces';
 import { useAssetSourcesQuery } from './index';
 import { currentPageState } from '../state';
 
-const useSelectAssetSource = (): [AssetSource, (assetSource: AssetSource) => Promise<ExecutionResult<any>>] => {
+const useSelectAssetSource = (): [AssetSource, (assetSourceId: string) => Promise<ExecutionResult<any>>] => {
     const selectedAssetSourceQuery = useQuery(SELECTED_ASSET_SOURCE_ID);
     const { selectedAssetSourceId } = selectedAssetSourceQuery.data;
     const { assetSources } = useAssetSourcesQuery();
@@ -20,10 +20,10 @@ const useSelectAssetSource = (): [AssetSource, (assetSource: AssetSource) => Pro
 
     const [mutateSelectedAssetSourceId] = useMutation(SET_SELECTED_ASSET_SOURCE_ID);
     const setSelectedAssetSource = useCallback(
-        (assetSource: AssetSource) => {
+        (assetSourceId: string) => {
             setCurrentPage(1);
             return mutateSelectedAssetSourceId({
-                variables: { selectedAssetSourceId: assetSource.id },
+                variables: { selectedAssetSourceId: assetSourceId },
             });
         },
         [mutateSelectedAssetSourceId, setCurrentPage]

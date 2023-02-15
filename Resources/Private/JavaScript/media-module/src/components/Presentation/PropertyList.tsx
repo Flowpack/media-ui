@@ -14,7 +14,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             padding: `${theme.spacing.half} ${theme.spacing.half} 0`,
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
-            width: `calc(${theme.size.sidebarWidth} - ${theme.spacing.full})`,
         },
         '& dd': {
             backgroundColor: theme.colors.alternatingBackground,
@@ -24,7 +23,6 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
             textOverflow: 'ellipsis',
             overflowX: 'hidden',
             whiteSpace: 'nowrap',
-            width: `calc(${theme.size.sidebarWidth} - ${theme.spacing.full})`,
         },
     },
 }));

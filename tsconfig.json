@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "lib": ["es5", "es2015", "dom"],
+    "lib": ["es6", "dom"],
     "skipLibCheck": true,
-    "target": "es5",
-    "module": "commonjs",
+    "target": "ES6",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "jsx": "react",
@@ -13,12 +13,14 @@
     "paths": {
       "@media-ui/feature-asset-usage/src/*": ["./Resources/Private/JavaScript/asset-usage/src/*"],
       "@media-ui/feature-asset-variants/src/*": ["./Resources/Private/JavaScript/asset-variants/src/*"],
+      "@media-ui/feature-concurrent-editing/src/*": ["./Resources/Private/JavaScript/concurrent-editing/src/*"],
     }
   },
   "include": [
     "./Resources/Private/JavaScript/**/*",
     "node_modules/@media-ui/feature-asset-usage/src/**/*",
-    "node_modules/@media-ui/feature-asset-variants/src/**/*"
+    "node_modules/@media-ui/feature-asset-variants/src/**/*",
+    "node_modules/@media-ui/feature-concurrent-editing/src/**/*"
   ],
   "exclude": [
     "node_modules",

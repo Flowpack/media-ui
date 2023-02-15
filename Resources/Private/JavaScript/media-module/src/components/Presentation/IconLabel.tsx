@@ -5,13 +5,17 @@ import { Icon } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
+    wrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        height: theme.spacing.goldenUnit,
+        gap: theme.spacing.half,
+    },
     iconWrap: {
-        verticalAlign: 'middle',
+        display: 'flex',
     },
     label: {
         fontWeight: 'bold',
-        lineHeight: theme.spacing.goldenUnit,
-        paddingLeft: theme.spacing.half,
         userSelect: 'none',
     },
     imgIcon: {
@@ -38,12 +42,12 @@ const IconLabel: React.FC<IconLabelProps> = ({
     const classes = useStyles();
 
     return (
-        <div className={className}>
+        <span className={[classes.wrapper, className].join(' ')}>
             <span className={classes.iconWrap}>
                 {iconUri ? <img src={iconUri} alt={label} className={classes.imgIcon} /> : <Icon icon={icon} />}
             </span>
             <span className={classes.label}>{children || label || ''}</span>
-        </div>
+        </span>
     );
 };
 

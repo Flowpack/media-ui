@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Dialog } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 
 import assetUsageDetailsModalState from '../state/assetUsageDetailsModalState';
@@ -14,6 +14,7 @@ import AssetUsageSection from './AssetUsageSection';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetUsage: {
         padding: theme.spacing.full,
+        lineHeight: '1em',
         '& section + section': {
             marginTop: theme.spacing.full,
         },
@@ -22,6 +23,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         width: '100%',
         '& th': {
             fontWeight: 'bold',
+            textAlign: 'left',
         },
         '& td, & th': {
             padding: theme.spacing.quarter,
@@ -56,12 +58,12 @@ const AssetUsagesModal: React.FC = () => {
     return (
         <Dialog
             isOpen={isOpen}
-            title={translate('assetUsage.title', `Usage details for ${asset.label}`, { asset: asset.label })}
+            title={translate('assetUsage.header', `Usage details for ${asset.label}`, { asset: asset.label })}
             onRequestClose={handleRequestClose}
             style="wide"
             actions={[
                 <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>
-                    {translate('assetUsage.cancel', 'Cancel')}
+                    {translate('assetUsage.close', 'Close')}
                 </Button>,
             ]}
         >
@@ -73,7 +75,7 @@ const AssetUsagesModal: React.FC = () => {
                 ) : (
                     <span>
                         {loading
-                            ? translate('assetUsagesModal.loading', 'Loading...')
+                            ? translate('assetUsagesModal.loading', 'Loading…')
                             : translate('assetUsagesModal.noResults', 'No results')}
                     </span>
                 )}

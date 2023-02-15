@@ -9,6 +9,11 @@ import Variant from './Variant';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     variantsContainer: {
         padding: `${theme.spacing.full} ${theme.spacing.half}`,
+        '& h1': {
+            fontSize: theme.fontSize.base,
+            margin: 0,
+            padding: 0,
+        },
     },
     variantItem: {
         marginTop: theme.spacing.full,

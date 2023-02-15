@@ -20,6 +20,10 @@ const MetadataView: React.FC = () => {
                 <IconLabel icon="info-circle" label={translate('inspector.metadata', 'Metadata')} />
             </Headline>
             <PropertyList>
+                <PropertyListItem
+                    label={translate('inspector.property.dimensions', 'Dimensions')}
+                    value={`${selectedAsset.width}px x ${selectedAsset.height}px`}
+                />
                 {selectedAsset.file.size > 0 && (
                     <PropertyListItem
                         label={translate('inspector.property.fileSize', 'Size')}
@@ -27,20 +31,16 @@ const MetadataView: React.FC = () => {
                     />
                 )}
                 <PropertyListItem
+                    label={translate('inspector.property.filename', 'Filename')}
+                    value={selectedAsset.filename}
+                />
+                <PropertyListItem
                     label={translate('inspector.property.lastModified', 'Last modified')}
                     value={new Date(selectedAsset.lastModified).toLocaleString()}
                 />
                 <PropertyListItem
-                    label={translate('inspector.property.dimensions', 'Dimensions')}
-                    value={`${selectedAsset.width}px x ${selectedAsset.height}px`}
-                />
-                <PropertyListItem
                     label={translate('inspector.property.mediaType', 'MIME type')}
                     value={selectedAsset.file.mediaType}
-                />
-                <PropertyListItem
-                    label={translate('inspector.property.filename', 'Filename')}
-                    value={selectedAsset.filename}
                 />
             </PropertyList>
         </div>

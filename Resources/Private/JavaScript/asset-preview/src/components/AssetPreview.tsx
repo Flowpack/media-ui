@@ -54,7 +54,7 @@ export default function AssetPreview() {
         ];
     }, [assets, asset]);
 
-    // TODO: Handle pdf fiels with pdf viewer https://github.com/Flowpack/media-ui/issues/29
+    // TODO: Handle pdf fields with pdf viewer https://github.com/Flowpack/media-ui/issues/29
 
     if (!asset) return null;
 

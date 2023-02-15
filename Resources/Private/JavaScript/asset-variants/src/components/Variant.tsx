@@ -18,6 +18,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         justifyContent: 'center',
     },
     image: {
+        maxWidth: '100%',
         maxHeight: '100%',
         objectFit: 'contain',
         display: 'block',

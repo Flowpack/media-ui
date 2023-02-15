@@ -6,6 +6,7 @@ export default interface TreeNodeProps {
     onClick: ([string]: any) => void;
     level: number;
     isActive: boolean;
+    isFocused?: boolean;
     children?: React.ReactElement[];
     collapsedByDefault?: boolean;
 }

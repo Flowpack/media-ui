@@ -5,6 +5,7 @@ export enum UsageDetailsMetadataType {
     DATE = 'DATE',
     DATETIME = 'DATETIME',
     URL = 'URL',
+    JSON = 'JSON',
 }
 
 export interface UsageDetailsMetadataSchema {

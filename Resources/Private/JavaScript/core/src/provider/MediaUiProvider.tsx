@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createContext, useCallback, useContext, useEffect } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useApolloClient, gql } from '@apollo/client';
 import { useSetRecoilState } from 'recoil';
 import { isMatch } from 'matcher';
@@ -9,20 +9,28 @@ import { useIntl } from '@media-ui/core/src';
 import { Asset, AssetIdentity, FeatureFlags, SelectionConstraints } from '../interfaces';
 import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
+import { useInteraction } from './Interaction';
 import { selectedMediaTypeState } from '../state';
 import { AssetMediaType } from '../state/selectedMediaTypeState';
 import { ASSET_FRAGMENT } from '../fragments/asset';
+import {
+    ApprovalAttainmentStrategy,
+    ApprovalAttainmentStrategyFactory,
+    DefaultApprovalAttainmentStrategyFactory,
+} from '../strategy';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
     dummyImage: string;
     selectionMode?: boolean;
     isInNodeCreationDialog?: boolean;
+    isInMediaDetailsScreen?: boolean;
     containerRef: React.RefObject<HTMLDivElement>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
     featureFlags: FeatureFlags;
     constraints?: SelectionConstraints;
     assetType?: AssetMediaType;
+    approvalAttainmentStrategyFactory?: ApprovalAttainmentStrategyFactory;
 }
 
 interface MediaUiProviderValues {
@@ -32,12 +40,14 @@ interface MediaUiProviderValues {
     handleSelectAsset: (assetIdentity: AssetIdentity) => void;
     selectionMode: boolean;
     isInNodeCreationDialog: boolean;
+    isInMediaDetailsScreen: boolean;
     assets: Asset[];
-    refetchAssets: () => void;
+    refetchAssets: () => Promise<any>;
     featureFlags: FeatureFlags;
     constraints: SelectionConstraints;
     assetType: AssetMediaType;
     isAssetSelectable: (asset: Asset) => boolean;
+    approvalAttainmentStrategy: ApprovalAttainmentStrategy;
 }
 
 export const MediaUiContext = createContext({} as MediaUiProviderValues);
@@ -48,19 +58,30 @@ export function MediaUiProvider({
     dummyImage,
     selectionMode = false,
     isInNodeCreationDialog = false,
+    isInMediaDetailsScreen = false,
     onAssetSelection = null,
     containerRef,
     featureFlags,
     constraints = {},
     assetType = 'all',
+    approvalAttainmentStrategyFactory = DefaultApprovalAttainmentStrategyFactory,
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
+    const Interaction = useInteraction();
     const client = useApolloClient();
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
-    const { assets, refetch: refetchAssets } = useAssetsQuery();
+    const { assets, refetch: refetchAssets } = useAssetsQuery(featureFlags.pagination);
     const setSelectedMediaType = useSetRecoilState(selectedMediaTypeState);
+    const approvalAttainmentStrategy = useMemo(
+        () =>
+            approvalAttainmentStrategyFactory({
+                interaction: Interaction,
+                intl: { translate },
+            }),
+        [approvalAttainmentStrategyFactory, Interaction, translate]
+    );
 
     // Set initial media type state
     useEffect(() => {
@@ -70,30 +91,29 @@ export function MediaUiProvider({
     }, [assetType, setSelectedMediaType]);
 
     const handleDeleteAsset = useCallback(
-        (asset: Asset): Promise<boolean> => {
-            // TODO: Use custom modal
-            const confirm = window.confirm(
-                translate('action.deleteAsset.confirm', 'Do you really want to delete the asset ' + asset.label, [
-                    asset.label,
-                ])
-            );
-            if (!confirm) return new Promise(() => false);
+        async (asset: Asset): Promise<boolean> => {
+            const canDeleteAsset = await approvalAttainmentStrategy.obtainApprovalToDeleteAsset({
+                asset,
+            });
 
-            return deleteAsset({ assetId: asset.id, assetSourceId: asset.assetSource.id })
-                .then(() => {
+            if (canDeleteAsset) {
+                try {
+                    await deleteAsset({ assetId: asset.id, assetSourceId: asset.assetSource.id });
+
                     Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
+
                     return true;
-                })
-                .catch(({ message }) => {
-                    // TODO: translate possible error message or generate one on server
+                } catch ({ message }) {
                     Notify.error(
                         translate('action.deleteAsset.error', 'Error while trying to delete the asset'),
                         message
                     );
-                    return false;
-                });
+                }
+            }
+
+            return false;
         },
-        [Notify, translate, deleteAsset]
+        [Notify, translate, deleteAsset, approvalAttainmentStrategy]
     );
 
     const isAssetSelectable = useCallback(
@@ -169,12 +189,14 @@ export function MediaUiProvider({
                 handleSelectAsset,
                 selectionMode,
                 isInNodeCreationDialog,
+                isInMediaDetailsScreen,
                 assets,
                 refetchAssets,
                 featureFlags,
                 constraints,
                 assetType,
                 isAssetSelectable,
+                approvalAttainmentStrategy,
             }}
         >
             {children}

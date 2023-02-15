@@ -59,7 +59,7 @@ const NewAssetDialog: React.FC = () => {
 
                 // Refresh list of files if any file was uploaded
                 if (uploadFiles.some((result) => result.success)) {
-                    refetchAssets();
+                    void refetchAssets();
                 }
             })
             .catch((error) => {

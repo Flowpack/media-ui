@@ -8,3 +8,9 @@ Neos:
           pollForChanges: true
           showSimilarAssets: false
           showVariantsEditor: false
+          createAssetRedirectsOption: true
+          pagination:
+            assetsPerPage: 20
+            maximumLinks: 5
+          propertyEditor:
+            collapsed: false

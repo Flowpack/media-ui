@@ -1,8 +1,11 @@
 import { atom } from 'recoil';
 
-const searchTermState = atom<string>({
+import { SearchTerm } from '../domain/SearchTerm';
+
+const searchTermState = atom<SearchTerm>({
     key: 'searchTermState',
-    default: '',
+    default:
+        typeof window === 'undefined' ? SearchTerm.fromString('') : SearchTerm.fromUrl(new URL(window.location.href)),
 });
 
 export default searchTermState;

@@ -25,6 +25,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         marginTop: theme.spacing.half,
         marginBottom: theme.spacing.half,
     },
+    label: {
+        display: 'flex',
+    },
 }));
 
 const ReplaceAssetDialog: React.FC = () => {
@@ -32,7 +35,11 @@ const ReplaceAssetDialog: React.FC = () => {
     const Notify = useNotify();
     const selectedAsset = useSelectedAsset();
     const { replaceAsset, uploadState, loading } = useReplaceAsset();
-    const { refetchAssets } = useMediaUi();
+    const {
+        refetchAssets,
+        featureFlags,
+        approvalAttainmentStrategy: { obtainApprovalToReplaceAsset },
+    } = useMediaUi();
     const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
     const [replacementOptions, setReplacementOptions] = React.useState<AssetReplacementOptions>({
         keepOriginalFilename: false,
@@ -48,21 +55,37 @@ const ReplaceAssetDialog: React.FC = () => {
         return mainType ? mainType + '/*' : '';
     }, [selectedAsset]);
 
-    const handleUpload = useCallback(() => {
+    const handleUpload = useCallback(async () => {
         if (dialogState.files.selected.length === 0) {
             return;
         }
         const file = dialogState.files.selected[0];
-        replaceAsset({ asset: selectedAsset, file, options: replacementOptions })
-            .then(() => {
+        const hasApprovalToReplaceAsset = await obtainApprovalToReplaceAsset({
+            asset: selectedAsset,
+        });
+
+        if (hasApprovalToReplaceAsset) {
+            try {
+                await replaceAsset({ asset: selectedAsset, file, options: replacementOptions });
+
                 Notify.ok(translate('uploadDialog.replacementFinished', 'Replacement finished'));
                 closeDialog();
-                refetchAssets();
-            })
-            .catch((error) => {
+                void refetchAssets();
+            } catch (error) {
                 Notify.error(translate('assetReplacement.error', 'Replacement failed'), error);
-            });
-    }, [replaceAsset, Notify, translate, dialogState, replacementOptions, refetchAssets, selectedAsset, closeDialog]);
+            }
+        }
+    }, [
+        replaceAsset,
+        Notify,
+        translate,
+        dialogState,
+        replacementOptions,
+        refetchAssets,
+        selectedAsset,
+        closeDialog,
+        obtainApprovalToReplaceAsset,
+    ]);
 
     const handleSetFiles = useCallback(
         (files: UploadedFile[]) => {
@@ -105,19 +128,21 @@ const ReplaceAssetDialog: React.FC = () => {
                     acceptedFileTypes={acceptedFileTypes}
                 />
                 <section className={classes.optionSection}>
+                    {featureFlags.createAssetRedirectsOption && (
+                        <div className={classes.option}>
+                            <Label className={classes.label}>
+                                <CheckBox
+                                    isChecked={replacementOptions.generateRedirects}
+                                    onChange={(generateRedirects) =>
+                                        setReplacementOptions({ ...replacementOptions, generateRedirects })
+                                    }
+                                />
+                                <span>{translate('uploadDialog.generateRedirects', 'Generate redirects')}</span>
+                            </Label>
+                        </div>
+                    )}
                     <div className={classes.option}>
-                        <Label>
-                            <CheckBox
-                                isChecked={replacementOptions.generateRedirects}
-                                onChange={(generateRedirects) =>
-                                    setReplacementOptions({ ...replacementOptions, generateRedirects })
-                                }
-                            />
-                            <span>{translate('uploadDialog.generateRedirects', 'Generate redirects')}</span>
-                        </Label>
-                    </div>
-                    <div className={classes.option}>
-                        <Label>
+                        <Label className={classes.label}>
                             <CheckBox
                                 isChecked={replacementOptions.keepOriginalFilename}
                                 onChange={(keepOriginalFilename) =>

@@ -26,7 +26,9 @@ export default function useDeleteAssetCollection() {
                 },
             },
             update(cache) {
-                const { assetCollections } = cache.readQuery({ query: ASSET_COLLECTIONS });
+                const { assetCollections } = cache.readQuery<{ assetCollections: AssetCollection[] }>({
+                    query: ASSET_COLLECTIONS,
+                });
                 cache.writeQuery({
                     query: ASSET_COLLECTIONS,
                     data: { assetCollections: assetCollections.filter((c: AssetCollection) => c.id !== id) },

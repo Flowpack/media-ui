@@ -9,11 +9,11 @@ import PropertyInspector from './PropertyInspector';
 
 import { useRecoilValue } from 'recoil';
 
-const useStyles = createUseMediaUiStyles(() => ({
+const useStyles = createUseMediaUiStyles({
     tabContent: {
         height: 'calc(100% - 42px)',
     },
-}));
+});
 
 const AssetInspector = () => {
     const classes = useStyles();
@@ -25,7 +25,7 @@ const AssetInspector = () => {
 
     return featureFlags.showVariantsEditor ? (
         <Tabs theme={{ tabs__content: classes.tabContent }}>
-            <Tabs.Panel icon="pencil" key="editor" id="editor">
+            <Tabs.Panel icon="info-circle" key="editor" id="editor">
                 <PropertyInspector />
             </Tabs.Panel>
             <Tabs.Panel icon="images">

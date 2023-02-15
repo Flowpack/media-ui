@@ -7,17 +7,23 @@ import { UsageDetailsGroup } from '../interfaces/UsageDetails';
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     usageSection: {
         '& h2': {
+            fontSize: theme.fontSize.base,
             fontWeight: 'bold',
+            margin: 0,
+            padding: 0,
         },
     },
     usageTable: {
         width: '100%',
         marginTop: theme.spacing.full,
+        lineHeight: 1.5,
         '& th': {
             fontWeight: 'bold',
+            textAlign: 'left',
         },
         '& td, & th': {
             padding: theme.spacing.quarter,
+            verticalAlign: 'baseline',
             '&:first-child': {
                 paddingLeft: 0,
             },
@@ -25,11 +31,22 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
                 paddingRight: 0,
             },
         },
-        '.neos & a': {
+        // `&&` is for specificity, otherwise `.neos.neos-module a` would override
+        // this link style in the backend module
+        '&& a': {
             color: theme.colors.primary,
             '&:hover': {
                 color: theme.colors.primary,
                 textDecoration: 'underline',
+            },
+        },
+        '& li': {
+            listStyleType: 'disc',
+            '& ul': {
+                paddingLeft: '1rem',
+                '& li': {
+                    display: 'list-item',
+                },
             },
         },
     },
@@ -39,6 +56,29 @@ interface AssetUsageSectionProps {
     usageDetailsGroup: UsageDetailsGroup;
 }
 
+// Recursive function to render an object as a nested list
+function renderObject(data: Record<string, any>) {
+    return Array.isArray(data) ? (
+        <ul>
+            {data.map((item, index) => (
+                <li key={index}>{renderObject(item)}</li>
+            ))}
+        </ul>
+    ) : typeof data === 'object' ? (
+        <ul>
+            {Object.keys(data).map((key) => (
+                <li key={key}>
+                    <strong>{key}:</strong> {renderObject(data[key])}
+                </li>
+            ))}
+        </ul>
+    ) : typeof data === 'string' ? (
+        data
+    ) : (
+        JSON.stringify(data)
+    );
+}
+
 const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup }: AssetUsageSectionProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
@@ -46,12 +86,14 @@ const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup
 
     return (
         <section className={classes.usageSection}>
-            <h2>{label}</h2>
+            <h2>
+                {label} ({usages.length})
+            </h2>
             {usages.length > 0 && (
                 <table className={classes.usageTable}>
                     <thead>
                         <tr>
-                            <th>{translate('assetUsageSection.label', 'Label')}</th>
+                            <th>{translate('assetUsage.header.label', 'Label')}</th>
                             {metadataSchema.map((schema, index) => (
                                 <th key={index}>{schema.label}</th>
                             ))}
@@ -75,6 +117,8 @@ const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup
                                                 <a href={usage.value} target="_blank" rel="noreferrer">
                                                     {name}
                                                 </a>
+                                            ) : type == 'JSON' ? (
+                                                renderObject(JSON.parse(usage.value))
                                             ) : (
                                                 usage.value
                                             )}

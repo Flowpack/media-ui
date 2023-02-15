@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 
 import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, useNotify } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, useNotify, useMediaUi } from '@media-ui/core/src';
 import { Asset } from '@media-ui/core/src/interfaces';
 import { useAssetCollectionsQuery, useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
 
@@ -22,6 +22,9 @@ const CollectionSelectBox = () => {
     const classes = useStyles();
     const Notify = useNotify();
     const { translate } = useIntl();
+    const {
+        approvalAttainmentStrategy: { obtainApprovalToSetAssetCollections },
+    } = useMediaUi();
     const { assetCollections } = useAssetCollectionsQuery();
     const { setAssetCollections, loading } = useSetAssetCollections();
     const selectedAsset = useSelectedAsset();
@@ -31,24 +34,36 @@ const CollectionSelectBox = () => {
         [assetCollections]
     );
 
-    const assetCollectionIds = useMemo(() => selectedAsset?.collections.map(({ id }) => id), [selectedAsset]);
+    const [selectedAssetCollectionIds, setSelectedAssetCollectionIds] = useState<string[]>([]);
+    const syncSelectedAssetCollectionIds = useCallback(
+        () => setSelectedAssetCollectionIds(selectedAsset?.collections.map(({ id }) => id)),
+        [selectedAsset?.collections]
+    );
 
     const handleChange = useCallback(
-        (newAssetCollectionIds) => {
+        async (newAssetCollectionIds) => {
             if (!collectionsMatchAsset(newAssetCollectionIds, selectedAsset)) {
-                setAssetCollections({
-                    asset: selectedAsset,
-                    assetCollections: assetCollections.filter((c) => newAssetCollectionIds.includes(c.id)),
-                })
-                    .then(() => {
+                const asset = selectedAsset;
+                const newAssetCollections = assetCollections.filter((c) => newAssetCollectionIds.includes(c.id));
+                const hasApprovalToSetAssetCollections = await obtainApprovalToSetAssetCollections({
+                    asset,
+                    newAssetCollections,
+                });
+
+                if (hasApprovalToSetAssetCollections) {
+                    try {
+                        await setAssetCollections({
+                            asset,
+                            assetCollections: newAssetCollections,
+                        });
+
                         Notify.ok(
                             translate(
                                 'actions.setAssetCollections.success',
                                 'The collections for the asset have been set'
                             )
                         );
-                    })
-                    .catch(({ message }) => {
+                    } catch ({ message }) {
                         Notify.error(
                             translate(
                                 'actions.setAssetCollections.error',
@@ -56,11 +71,24 @@ const CollectionSelectBox = () => {
                             ),
                             message
                         );
-                    });
+                    }
+                } else {
+                    syncSelectedAssetCollectionIds();
+                }
             }
         },
-        [Notify, selectedAsset, setAssetCollections, assetCollections, translate]
+        [
+            Notify,
+            selectedAsset,
+            setAssetCollections,
+            assetCollections,
+            translate,
+            syncSelectedAssetCollectionIds,
+            obtainApprovalToSetAssetCollections,
+        ]
     );
+
+    useEffect(() => syncSelectedAssetCollectionIds(), [syncSelectedAssetCollectionIds]);
 
     if (!selectedAsset) return null;
 
@@ -73,7 +101,7 @@ const CollectionSelectBox = () => {
                 className={classes.collectionSelection}
                 disabled={loading || selectedAsset.assetSource.readOnly}
                 placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                values={assetCollectionIds}
+                values={selectedAssetCollectionIds}
                 optionValueField="id"
                 options={assetCollectionsWithLabel}
                 searchOptions={assetCollectionsWithLabel}

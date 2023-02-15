@@ -1,17 +1,17 @@
-import { Selector } from 'testcafe';
-
+import page from './page-model';
 import { SERVER_NAME } from './helpers';
 
-fixture('Media Ui').page(SERVER_NAME);
-
-const firstThumbnail = Selector('[class^="thumbnail-"]');
-const firstThumbnailPreviewAction = firstThumbnail.find('button[title="Preview asset"]');
-const lightbox = Selector('.ril-outer');
+fixture('Lightbox').page(SERVER_NAME);
 
 test('Preview opens lightbox', async (t) => {
     await t
-        .hover(firstThumbnail)
-        .click(firstThumbnailPreviewAction)
-        .expect(lightbox.find('.ril-image-current').getAttribute('src'))
-        .eql(await firstThumbnail.find('picture img').getAttribute('src'));
+        .hover(page.firstThumbnail)
+        .click(
+            page.firstThumbnail
+                .findReact('AssetActions')
+                .findReact('IconButton')
+                .withAttribute('title', 'Preview asset')
+        )
+        .expect(page.lightbox.find('.ril-image-current').getAttribute('src'))
+        .eql(await page.firstThumbnail.find('picture img').getAttribute('src'));
 });

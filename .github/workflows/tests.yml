@@ -2,17 +2,17 @@ name: Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   lint:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'yarn'
@@ -24,6 +24,35 @@ jobs:
         run: yarn lint
 
   codestyle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.composer/cache
+          key: dependencies-composer-${{ hashFiles('composer.json') }}
+
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: 7.4
+          version: 2
+
+      - name: PHPStan
+        uses: php-actions/phpstan@v3
+        with:
+          php_version: 7.4
+          command: analyse
+
+  php-unit-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -46,17 +75,10 @@ jobs:
           php_version: 7.4
           version: 2
 
-      - name: PHPStan
-        uses: php-actions/phpstan@v3
-        with:
-          php_version: 7.4
-          command: analyse
+      - name: Run PHPUnit tests
+        run: composer test
 
-  e2e:
-    env:
-      # Solves error when parcel tries to count cpus via lscpu
-      PARCEL_WORKERS: 1
-
+  js-unit-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -69,11 +91,38 @@ jobs:
       - name: Install dependencies
         run: yarn
 
+      - name: Run mocha tests
+        run: yarn test:unit
+
+  e2e:
+    env:
+      # Solves error when parcel tries to count cpus via lscpu
+      PARCEL_WORKERS: 1
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn
+
       - name: Build main module
         run: yarn build:module
 
-      - name: Build secondary editor for Neos UI
-        run: yarn build:editor
+      - name: Build plugin for Neos UI
+        run: yarn build:plugin
 
       - name: Run TestCafe
         run: yarn test:github-actions
+
+      - name: Archive failure screenshots
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-failure-screenshots
+          path: screenshots

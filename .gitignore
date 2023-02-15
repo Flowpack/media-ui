@@ -7,6 +7,11 @@
 # Application & development dependencies.
 #
 node_modules
+.yarn/cache
+.yarn/install-state.gz
+Packages
+vendor
+composer.lock
 
 #
 # Compiled assets.
@@ -21,3 +26,4 @@ yarn-error.log
 #
 .vscode/
 .idea/
+/screenshots

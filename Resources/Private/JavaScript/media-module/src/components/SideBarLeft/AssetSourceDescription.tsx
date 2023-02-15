@@ -17,6 +17,9 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     panelHeader: {
         '& button': {
             position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
         },
     },
 }));
@@ -33,7 +36,7 @@ export default function AssetSourceDescription() {
             <ToggablePanel.Header className={classes.panelHeader}>
                 <IconLabel
                     icon="info-circle"
-                    label={translate('assetSourceDe' + 'scription.header', 'Media source description')}
+                    label={translate('assetSourceDescription.header', 'Media source description')}
                 />
             </ToggablePanel.Header>
             <ToggablePanel.Contents>
