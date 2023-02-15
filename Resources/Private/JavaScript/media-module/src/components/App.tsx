@@ -9,6 +9,7 @@ import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-s
 import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/state';
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
 import { AssetPreview } from '@media-ui/feature-asset-preview/src';
+import { assetVariantModalState, VariantModal } from '@media-ui/feature-asset-variants/src';
 
 import { SideBarLeft } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
@@ -98,6 +99,7 @@ const App = () => {
     const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
+    const showVariantModal = useRecoilValue(assetVariantModalState);
     const classes = useStyles({ selectionMode, isInNodeCreationDialog });
 
     return (
@@ -136,6 +138,7 @@ const App = () => {
             {showCreateTagDialog && <CreateTagDialog />}
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
             {showSimilarAssetsModal && <SimilarAssetsModal />}
+            {showVariantModal && <VariantModal />}
 
             <ClipboardWatcher />
             <ConcurrentChangeMonitor />

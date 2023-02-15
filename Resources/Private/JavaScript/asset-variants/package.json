@@ -4,6 +4,7 @@
   "license": "GNU GPLv3",
   "private": true,
   "dependencies": {
-    "@media-ui/core": "*"
+    "@media-ui/core": "*",
+    "react-image-crop": "^10.0.7"
   }
 }
