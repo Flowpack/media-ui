@@ -145,7 +145,7 @@ type Mutation {
 
     updateTag(id: TagId!, label: String): Tag!
 
-    updateVariant(id: AssetId!, cropInformation: CropInformation!): AssetVariant!
+    updateVariant(id: AssetId!, cropInformation: CropInformationInput!): AssetVariant!
 }
 
 """
@@ -207,6 +207,13 @@ type AssetVariant {
 }
 
 type CropInformation {
+    width: Int
+    height: Int
+    x: Int
+    y: Int
+}
+
+input CropInformationInput {
     width: Int
     height: Int
     x: Int
