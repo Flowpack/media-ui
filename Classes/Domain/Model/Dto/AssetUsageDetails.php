@@ -13,26 +13,18 @@ namespace Flowpack\Media\Ui\Domain\Model\Dto;
  * source code.
  */
 
+use Neos\Flow\Annotations as Flow;
+
 /**
- * @internal
+ * @Flow\Proxy(false)
+ * @api
  */
 final class AssetUsageDetails implements \JsonSerializable
 {
 
-    /**
-     * @var string
-     */
-    private $label;
-
-    /**
-     * @var array
-     */
-    private $metadata;
-
-    /**
-     * @var string
-     */
-    private $url;
+    private string $label;
+    private array $metadata;
+    private string $url;
 
     public function __construct(string $label, string $url, array $metadata)
     {

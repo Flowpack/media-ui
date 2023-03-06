@@ -13,26 +13,18 @@ namespace Flowpack\Media\Ui\Domain\Model\Dto;
  * source code.
  */
 
+use Neos\Flow\Annotations as Flow;
+
 /**
- * @internal
+ * @Flow\Proxy(false)
+ * @api
  */
 final class AssetUsage
 {
 
-    /**
-     * @var string
-     */
-    private $assetId;
-
-    /**
-     * @var string
-     */
-    private $serviceId;
-
-    /**
-     * @var array
-     */
-    private $metadata;
+    private string $assetId;
+    private string $serviceId;
+    private array $metadata;
 
     public function __construct(string $assetId, string $serviceId, array $metadata)
     {
@@ -41,25 +33,16 @@ final class AssetUsage
         $this->metadata = $metadata;
     }
 
-    /**
-     * @return string
-     */
     public function getAssetId(): string
     {
         return $this->assetId;
     }
 
-    /**
-     * @return string
-     */
     public function getServiceId(): string
     {
         return $this->serviceId;
     }
 
-    /**
-     * @return array
-     */
     public function getMetadata(): array
     {
         return $this->metadata;
