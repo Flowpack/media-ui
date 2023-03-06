@@ -8,7 +8,7 @@
   },
   "scripts": {
     "postinstall": "patch-package",
-    "lint": "eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
+    "lint": "tsc --noemit && eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
     "test": "testcafe",
     "test:unit": "mocha -r ts-node/register ./Resources/Private/JavaScript/**/*.spec.ts",
     "dev": "yarn workspace @media-ui/dev-server run dev",
