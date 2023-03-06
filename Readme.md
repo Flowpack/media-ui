@@ -127,7 +127,7 @@ The GraphQL schema can be found [here](Resources/Private/GraphQL/schema.root.gra
 
 ### Interface
 
-This module uses React for the implementation of the UI. Currently all components are built with hooks and
+This module uses React for the implementation of the UI. Currently, all components are built with hooks and
 integrate with other plugins via hooks.
 This gives a lot of flexibility for future extensions and during the current prototype phase of this package.
 
@@ -162,7 +162,7 @@ We need your help to develop this package. You can find supporter badges on the 
 
 ## Contributing
 
-To start with development make sure you have `nvm` and `yarn` installed and run the following command in the packages folder:
+To start with development make sure you have `nvm` and `yarn` installed and run the following command in the package's folder:
 
 ```console
 yarn
@@ -177,7 +177,7 @@ This is also the basis for running most tests and implementing new features.
 yarn dev
 ```
     
-Enter `localhost:8000` in your browser and you will have a running media ui instance without neos.
+Enter `localhost:8000` in your browser, and you will have a running media ui instance without neos.
 
 ### Building the module assets
 
@@ -228,7 +228,7 @@ a different browser or make some other changes.
 
 ### Run phpstan for codestyle checks
 
-First make sure you have [phpstand](https://phpstan.org) installed.
+First make sure you have [phpstan](https://phpstan.org) installed.
 
 When the package is installed in a Neos distribution:
 
@@ -263,7 +263,7 @@ Additional patches can be generated and stored there with the same tool if neces
 #### Connection between the backend module and UI plugin
 
 The codebase is 99% reused between the backend module and the asset selection in the Neos UI.
-Make sure changes work in both worlds or provide a compatiblity layer in the corresponding initialisation.
+Make sure changes work in both worlds or provide a compatibility layer in the corresponding initialisation.
     
 ### Development helpers
 
