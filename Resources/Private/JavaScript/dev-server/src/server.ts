@@ -104,6 +104,7 @@ const Fixtures = require('./fixtures');
             assetUsageDetails: ($_, { id }) => {
                 return Fixtures.getUsageDetailsForAsset(id);
             },
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assetVariants: ($_, { id }) => {
                 // TODO: Implement assetVariants
                 return [];
