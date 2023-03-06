@@ -68,6 +68,14 @@ Neos:
 Now the "delete" action for assets will be disabled if an asset is in use, and the filter dropdown contains a new item "Unused". 
 Selecting it will switch the main view to show all unused assets.
 
+### Customise usage details
+
+The usage calculation mechanism in Neos already supports custom usage providers via the `AssetUsageStrategyInterface`.
+When your strategy implements this interface the Media UI will show the usages separately for each strategy.
+
+By also implementing the `UsageDetailsProviderInterface` you can provide a custom label for the strategy
+and also custom headers and values for each entry.
+
 ### Show similar assets
 
 This package provides a `SimilarAssetStrategyInterface`. 

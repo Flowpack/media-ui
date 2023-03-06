@@ -26,6 +26,9 @@
             </trans-unit>
 
             <!-- Labels for the asset-usage package -->
+            <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.label" xml:space="preserve" approved="yes">
+                <source>Neos documents and content</source>
+            </trans-unit>
             <trans-unit id="assetUsage.header" xml:space="preserve" approved="yes">
                 <source>Usage details for "{asset}"</source>
             </trans-unit>
@@ -37,6 +40,9 @@
             </trans-unit>
             <trans-unit id="assetUsage.header.site" xml:space="preserve" approved="yes">
                 <source>Site</source>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.document" xml:space="preserve" approved="yes">
+                <source>Document</source>
             </trans-unit>
             <trans-unit id="assetUsage.header.contentDimensions" xml:space="preserve" approved="yes">
                 <source>Content dimensions</source>

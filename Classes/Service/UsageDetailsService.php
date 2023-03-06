@@ -16,12 +16,14 @@ namespace Flowpack\Media\Ui\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Flowpack\Media\Ui\Domain\Model\Dto\AssetUsageDetails;
+use Flowpack\Media\Ui\Domain\Model\Dto\UsageMetadataSchema;
 use Flowpack\Media\Ui\Exception;
 use GuzzleHttp\Psr7\ServerRequest;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
+use Neos\ContentRepository\Exception\NodeConfigurationException;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception as FlowException;
 use Neos\Flow\I18n\Translator;
@@ -135,15 +137,17 @@ class UsageDetailsService
      */
     protected $translator;
 
-    private $accessibleWorkspaces = [];
+    private array $accessibleWorkspaces = [];
 
+    /**
+     * @return AssetUsageDetails[]
+     */
     public function resolveUsagesForAsset(AssetInterface $asset): array
     {
         $includeSites = $this->siteRepository->countAll() > 1;
         $includeDimensions = count($this->contentDimensionsConfiguration) > 0;
 
         return array_filter(array_map(function ($strategy) use ($asset, $includeSites, $includeDimensions) {
-            // TODO: At some point the strategy should be able to create the AssetUsageDetails DTO and headers for us, until then we build them manually for the strategies we know
             $usageByStrategy = [
                 'serviceId' => get_class($strategy),
                 'label' => get_class($strategy),
@@ -158,20 +162,29 @@ class UsageDetailsService
             // Should be solved via an interface in the future
             if (method_exists($strategy, 'getLabel')) {
                 $usageByStrategy['label'] = $strategy->getLabel();
-            } elseif ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
-                $usageByStrategy['label'] = $this->translateById('assetUsage.strategy.assetUsageInNodeProperties.label');
+            } else if ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
+                $usageByStrategy['label'] = $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.label');
             }
 
-            $usageReferences = $strategy->getUsageReferences($asset);
-            if (count($usageReferences) && $usageReferences[0] instanceof AssetUsageInNodeProperties) {
-                $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema($includeSites,
-                    $includeDimensions);
-                $usageByStrategy['usages'] = array_map(function (AssetUsageInNodeProperties $usage) use (
-                    $includeSites,
-                    $includeDimensions
-                ) {
-                    return $this->getNodePropertiesUsageDetails($usage, $includeSites, $includeDimensions);
-                }, $usageReferences);
+            if ($strategy instanceof UsageDetailsProviderInterface) {
+                $usageByStrategy['metadataSchema'] = $strategy->getUsageMetadataSchema()->toArray();
+                $usageByStrategy['usages'] = $strategy->getUsageDetails($asset);
+            } else {
+                // If the strategy does not implement the UsageDetailsProviderInterface, we provide some default usage data
+                try {
+                    $usageReferences = $strategy->getUsageReferences($asset);
+                    if (count($usageReferences) && $usageReferences[0] instanceof AssetUsageInNodeProperties) {
+                        $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema($includeSites, $includeDimensions)->toArray();
+                        $usageByStrategy['usages'] = array_map(function (AssetUsageInNodeProperties $usage) use (
+                            $includeSites,
+                            $includeDimensions
+                        ) {
+                            return $this->getNodePropertiesUsageDetails($usage, $includeSites, $includeDimensions);
+                        }, $usageReferences);
+                    }
+                } catch (NodeConfigurationException $e) {
+                    // TODO: Handle error
+                }
             }
             return $usageByStrategy;
         }, $this->getUsageStrategies()), static function ($usageByStrategy) {
@@ -179,37 +192,22 @@ class UsageDetailsService
         });
     }
 
-    protected function getNodePropertiesUsageMetadataSchema(bool $includeSites, bool $includeDimensions): array
+    protected function getNodePropertiesUsageMetadataSchema(bool $includeSites, bool $includeDimensions): UsageMetadataSchema
     {
-        $schema = [];
+        $schema = new UsageMetadataSchema();
 
         if ($includeSites) {
-            $schema[] = [
-                'name' => 'site',
-                'label' => $this->translateById('assetUsage.header.site'),
-                'type' => 'TEXT',
-            ];
+            $schema->withMetadata('site', $this->translateById('assetUsage.header.site'), UsageMetadataSchema::TYPE_TEXT);
         }
 
-        $schema[] = [
-            'name' => 'workspace',
-            'label' => $this->translateById('assetUsage.header.workspace'),
-            'type' => 'TEXT',
-        ];
+        $schema
+            ->withMetadata('document', $this->translateById('assetUsage.header.document'), UsageMetadataSchema::TYPE_TEXT)
+            ->withMetadata('workspace', $this->translateById('assetUsage.header.workspace'), UsageMetadataSchema::TYPE_TEXT)
+            ->withMetadata('lastModified', $this->translateById('assetUsage.header.lastModified'), UsageMetadataSchema::TYPE_DATETIME);
 
         if ($includeDimensions) {
-            $schema[] = [
-                'name' => 'contentDimensions',
-                'label' => $this->translateById('assetUsage.header.contentDimensions'),
-                'type' => 'JSON',
-            ];
+            $schema->withMetadata('contentDimensions', $this->translateById('assetUsage.header.contentDimensions'), UsageMetadataSchema::TYPE_JSON);
         }
-
-        $schema[] = [
-            'name' => 'lastModified',
-            'label' => $this->translateById('assetUsage.header.lastModified'),
-            'type' => 'DATETIME',
-        ];
         return $schema;
     }
 
@@ -238,12 +236,17 @@ class UsageDetailsService
             $context = $node->getContext();
             $site = $context->getCurrentSite();
 
-            if ($includeSites) {
+            if ($includeSites && $site) {
                 $metadata[] = [
                     'name' => 'site',
                     'value' => $site->getName(),
                 ];
             }
+
+            $metadata[] = [
+                'name' => 'document',
+                'value' => $closestDocumentNode->getLabel(),
+            ];
 
             $metadata[] = [
                 'name' => 'workspace',
@@ -330,7 +333,7 @@ class UsageDetailsService
     }
 
     /**
-     * @return array<AssetUsageStrategyInterface>
+     * @return AssetUsageStrategyInterface[]
      */
     protected function getUsageStrategies(): array
     {

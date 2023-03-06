@@ -27,6 +27,10 @@
                 <target>Sie können nur einen der folgenden Typen auswählen: {types}</target>
             </trans-unit>
 
+            <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.label" xml:space="preserve" approved="yes">
+                <source>Neos documents and content</source>
+                <target>Neos Dokumente und Inhalte</target>
+            </trans-unit>
             <trans-unit id="assetUsage.header" xml:space="preserve" approved="yes">
                 <source>Usage details for "{asset}"</source>
                 <target>Details zur Nutzung von "{asset}"</target>
@@ -42,6 +46,10 @@
             <trans-unit id="assetUsage.header.site" xml:space="preserve" approved="yes">
                 <source>Site</source>
                 <target>Webseite</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.document" xml:space="preserve" approved="yes">
+                <source>Document</source>
+                <target>Dokument</target>
             </trans-unit>
             <trans-unit id="assetUsage.header.contentDimensions" xml:space="preserve" approved="yes">
                 <source>Content dimensions</source>
