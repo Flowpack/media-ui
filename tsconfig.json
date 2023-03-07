@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "lib": ["es6", "dom"],
     "skipLibCheck": true,
-    "target": "ES6",
-    "module": "CommonJS",
+    "target": "ES2019",
+    "module": "ES2020",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "jsx": "react",
@@ -17,7 +16,7 @@
     }
   },
   "include": [
-    "./Resources/Private/JavaScript/**/*",
+    "./Resources/Private/JavaScript/*/src/**/*",
     "node_modules/@media-ui/feature-asset-usage/src/**/*",
     "node_modules/@media-ui/feature-asset-variants/src/**/*",
     "node_modules/@media-ui/feature-concurrent-editing/src/**/*"
