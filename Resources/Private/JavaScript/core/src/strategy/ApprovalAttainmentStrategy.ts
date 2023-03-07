@@ -10,6 +10,7 @@ export interface ApprovalAttainmentStrategy {
     }) => Promise<boolean>;
     obtainApprovalToDeleteAsset: (given: { asset: Asset }) => Promise<boolean>;
     obtainApprovalToReplaceAsset: (given: { asset: Asset }) => Promise<boolean>;
+    obtainApprovalToEditAsset: (given: { asset: Asset }) => Promise<boolean>;
 }
 
 const assumeApproval = () => Promise.resolve(true);
@@ -20,6 +21,7 @@ export const AssumeApprovalForEveryAction: ApprovalAttainmentStrategy = {
     obtainApprovalToSetAssetCollections: assumeApproval,
     obtainApprovalToDeleteAsset: assumeApproval,
     obtainApprovalToReplaceAsset: assumeApproval,
+    obtainApprovalToEditAsset: assumeApproval,
 };
 
 export interface ApprovalAttainmentStrategyFactory {

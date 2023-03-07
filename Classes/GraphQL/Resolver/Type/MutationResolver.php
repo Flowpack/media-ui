@@ -449,7 +449,7 @@ class MutationResolver implements ResolverInterface
      * @return array{filename: string, success: bool, result: string}
      * @throws Exception
      */
-    public function replaceAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?array
+    public function replaceAsset($_, array $variables, AssetSourceContext $assetSourceContext): array
     {
         /** @var FlowUploadedFile $file */
         [
@@ -464,7 +464,7 @@ class MutationResolver implements ResolverInterface
 
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
-            return null;
+            throw new Exception('No proxy found for asset', 1678113903);
         }
         $asset = $assetSourceContext->getAssetForProxy($assetProxy);
 
@@ -511,7 +511,7 @@ class MutationResolver implements ResolverInterface
                 $success = true;
                 $result = 'REPLACED';
             } catch (\Exception $exception) {
-                $this->systemLogger->error(sprintf('Asset %s could not be replaced', $asset->getIdentifier()));
+                $this->systemLogger->error(sprintf('Asset %s could not be replaced', $asset->getIdentifier()), [$exception]);
             }
         }
 
@@ -519,6 +519,68 @@ class MutationResolver implements ResolverInterface
             'filename' => $filename,
             'success' => $success,
             'result' => $result,
+        ];
+    }
+
+    /**
+     * @throws Exception|\Neos\Flow\ResourceManagement\Exception
+     */
+    public function editAsset($_, array $variables, AssetSourceContext $assetSourceContext): array
+    {
+        [
+            'id' => $id,
+            'assetSourceId' => $assetSourceId,
+            'filename' => $filename,
+            'options' => [
+                'generateRedirects' => $generateRedirects,
+            ]
+        ] = $variables;
+
+        $filename = trim($filename);
+        if (!$filename) {
+            throw new Exception('Filename was empty', 1678156902);
+        }
+
+        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
+        if (!$assetProxy) {
+            throw new Exception('No proxy found for asset', 1678113903);
+        }
+        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
+
+        if (!$asset) {
+            throw new Exception('Cannot rename asset that was never imported', 1678155884);
+        }
+
+        if (!$asset instanceof Asset) {
+            throw new Exception('Asset type does not support renaming', 1678155887);
+        }
+
+        // Make sure the filename has the same extension as before
+        if (!strpos($filename, $asset->getFileExtension())) {
+            $filename .= '.' . $asset->getFileExtension();
+        }
+
+        $success = false;
+
+        // Copy the resource to a new one with the new filename
+        $originalResource = $asset->getResource();
+        $originalResourceStream = $originalResource->getStream();
+        $resource = $this->resourceManager->importResource($originalResourceStream, $originalResource->getCollectionName());
+        fclose($originalResourceStream);
+        $resource->setFilename($filename);
+        $resource->setMediaType($originalResource->getMediaType());
+
+        try {
+            $this->assetService->replaceAssetResource($asset, $resource, [
+                'generateRedirects' => $generateRedirects,
+            ]);
+            $success = true;
+        } catch (\Exception $exception) {
+            $this->systemLogger->error(sprintf('Asset %s could not be replace with the renamed copy', $asset->getIdentifier()), [$exception]);
+        }
+
+        return [
+            'success' => $success,
         ];
     }
 

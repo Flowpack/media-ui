@@ -21,6 +21,7 @@ import { Main } from './Main';
 import ErrorBoundary from './ErrorBoundary';
 import { createAssetCollectionDialogState, createTagDialogState } from '../state';
 import { CreateTagDialog, CreateAssetCollectionDialog } from './Dialogs';
+import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode, isInNodeCreationDialog }) => ({
@@ -98,6 +99,7 @@ const App = () => {
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
+    const showEditAssetDialog = useRecoilValue(editAssetDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const searchTerm = useRecoilValue(searchTermState);
@@ -148,6 +150,7 @@ const App = () => {
             <AssetPreview />
             {showAssetUsagesModal && <AssetUsagesModal />}
             {showUploadDialog && <UploadDialog />}
+            {showEditAssetDialog && <EditAssetDialog />}
             {showCreateTagDialog && <CreateTagDialog />}
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
             {showSimilarAssetsModal && <SimilarAssetsModal />}

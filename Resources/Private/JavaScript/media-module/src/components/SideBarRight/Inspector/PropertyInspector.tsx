@@ -14,6 +14,7 @@ import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
 import { IconLabel } from '../../Presentation';
+import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     textArea: {
@@ -165,10 +166,10 @@ const PropertyInspector = () => {
 
             {selectedAsset.assetSource.supportsCollections && <CollectionSelectBox />}
             {selectedAsset.assetSource.supportsTagging && <TagSelectBoxAsset />}
-
             <AssetUsagesToggleButton />
             {featureFlags.showSimilarAssets && <SimilarAssetsToggleButton />}
             {!selectedAsset.assetSource.readOnly && !isInMediaDetailsScreen && <AssetReplacementButton />}
+            {!selectedAsset.assetSource.readOnly && !isInMediaDetailsScreen && <OpenAssetEditDialogButton />}
 
             <MetadataView />
         </InspectorContainer>

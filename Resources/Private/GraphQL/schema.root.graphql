@@ -119,6 +119,13 @@ type Mutation {
         options: AssetReplacementOptionsInput!
     ): FileUploadResult!
 
+    editAsset(
+        id: AssetId!
+        assetSourceId: AssetSourceId!
+        filename: Filename!
+        options: AssetEditOptionsInput!
+    ): EditAssetResult!
+
     tagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tagId: TagId!): Asset!
 
     untagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tagId: TagId!): Asset!
@@ -286,6 +293,13 @@ input AssetReplacementOptionsInput {
 }
 
 """
+Options for asset editing
+"""
+input AssetEditOptionsInput {
+    generateRedirects: Boolean!
+}
+
+"""
 IPTC metadata of an asset that implements the SupportsIptcMetadataInterface (see https://www.iptc.org/))
 """
 type IptcProperty {
@@ -310,6 +324,13 @@ type FileUploadResult {
     filename: Filename!
     success: Boolean!
     result: String!
+}
+
+"""
+The result of a single file upload
+"""
+type EditAssetResult {
+    success: Boolean!
 }
 
 """

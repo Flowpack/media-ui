@@ -1,0 +1,10 @@
+{
+  "name": "@media-ui/feature-asset-editing",
+  "version": "1.0.0",
+  "license": "GNU GPLv3",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "@media-ui/core": "*"
+  }
+}
