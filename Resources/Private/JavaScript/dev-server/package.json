@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "license": "GNU GPLv3",
   "dependencies": {
-    "@media-ui/feature-asset-usage": "*",
-    "@media-ui/feature-concurrent-editing": "*",
-    "@media-ui/media-module": "*"
+    "@media-ui/feature-asset-usage": "workspace:*",
+    "@media-ui/feature-concurrent-editing": "workspace:*",
+    "@media-ui/media-module": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^16.18.3",

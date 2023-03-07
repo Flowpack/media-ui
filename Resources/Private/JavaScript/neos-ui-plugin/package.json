@@ -11,8 +11,8 @@
     "watch": "neos-react-scripts watch"
   },
   "dependencies": {
-    "@media-ui/media-details-screen": "*",
-    "@media-ui/media-selection-screen": "*",
+    "@media-ui/media-details-screen": "workspace:*",
+    "@media-ui/media-selection-screen": "workspace:*",
     "@neos-project/neos-ui-extensibility": "^5.3.4"
   },
   "devDependencies": {

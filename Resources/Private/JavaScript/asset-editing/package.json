@@ -5,6 +5,6 @@
   "private": true,
   "main": "src/index.ts",
   "dependencies": {
-    "@media-ui/core": "*"
+    "@media-ui/core": "workspace:*"
   }
 }
