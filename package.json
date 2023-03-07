@@ -51,5 +51,11 @@
   "packageManager": "yarn@3.4.1",
   "browserslist": [
     "defaults and > 1%"
-  ]
+  ],
+  "prettier": {
+    "printWidth": 120,
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 4
+  }
 }
