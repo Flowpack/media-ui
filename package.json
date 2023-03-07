@@ -23,6 +23,11 @@
   "workspaces": [
     "Resources/Private/JavaScript/*"
   ],
+  "dependencies": {
+    "@media-ui/dev-server": "workspace:*",
+    "@media-ui/media-module": "workspace:*",
+    "@media-ui/neos-ui-plugin": "workspace:*"
+  },
   "devDependencies": {
     "@neos-project/eslint-config-neos": "*",
     "@types/chai": "^4.3.4",
@@ -43,7 +48,7 @@
     "testcafe-react-selectors": "^5.0.2",
     "ts-node": "^10.9.1"
   },
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "yarn@3.4.1",
   "browserslist": [
     "defaults and > 1%"
   ]
