@@ -12,7 +12,12 @@ import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState'
 import { MainViewState, mainViewState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
-    typeFilter: {},
+    typeFilter: {
+        '& svg': {
+            // TODO: This is a workaround for a bug in the SelectBoxHeader which sets the svg height to 100%
+            height: '1em !important',
+        },
+    },
     selectBox: {
         minWidth: 'auto',
     },
