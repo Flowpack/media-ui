@@ -14,10 +14,10 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
-use Flowpack\Media\Ui\Exception as MediaUiException;
-use Flowpack\Media\Ui\Domain\ImageMapper;
+use Doctrine\ORM\ORMException;
 use Flowpack\Media\Ui\Domain\Model\AssetProxyIteratorAggregate;
 use Flowpack\Media\Ui\Domain\Model\SearchTerm;
+use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyListIterator;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyQueryIterator;
@@ -29,15 +29,13 @@ use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
-use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
-use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetTypeFilter;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
 use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
-use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsSortingInterface;
+use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
 use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Model\VariantSupportInterface;
@@ -45,6 +43,7 @@ use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Utility\Exception\FilesException;
+use Neos\Utility\Exception\PropertyNotAccessibleException;
 use Neos\Utility\Files;
 use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
@@ -111,11 +110,6 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Returns total count of asset proxies in the given asset source
-     *
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return int
      * @noinspection PhpUnusedParameterInspection
      */
     public function assetCount($_, array $variables, AssetSourceContext $assetSourceContext): int
@@ -132,10 +126,6 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Helper to create a asset proxy query for other methods
-     *
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyIteratorAggregate|null
      */
     protected function createAssetProxyIterator(
         array $variables,
@@ -209,11 +199,11 @@ class QueryResolver implements ResolverInterface
                 return AssetProxyListIterator::of(
                     $assetProxyRepository->getAssetProxy($identifier)
                 );
-            } else {
-                return AssetProxyQueryIterator::from(
-                    $assetProxyRepository->findBySearchTerm((string) $searchTerm)->getQuery()
-                );
             }
+
+            return AssetProxyQueryIterator::from(
+                $assetProxyRepository->findBySearchTerm((string)$searchTerm)->getQuery()
+            );
         }
 
         return AssetProxyQueryIterator::from(
@@ -223,11 +213,6 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Returns a list of accessible and inaccessible relations for the given asset
-     *
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return array
      */
     public function assetUsageDetails($_, array $variables, AssetSourceContext $assetSourceContext): array
     {
@@ -253,11 +238,6 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Returns the total usage count for the given asset
-     *
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return int
      */
     public function assetUsageCount($_, array $variables, AssetSourceContext $assetSourceContext): int
     {
@@ -283,9 +263,6 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Returns an array with helpful configurations for interacting with the API
-     *
-     * @param $_
-     * @return array
      */
     public function config($_): array
     {
@@ -298,8 +275,6 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Returns the lowest configured maximum upload file size
-     *
-     * @return int
      */
     protected function getMaximumFileUploadSize(): int
     {
@@ -315,8 +290,6 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Returns the maximum number of files that can be uploaded
-     *
-     * @return int
      */
     protected function getMaximumFileUploadLimit(): int
     {
@@ -325,11 +298,6 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Provides a filterable list of asset proxies. These are the main entities for media management.
-     *
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyIteratorAggregate|null
      */
     public function assets(
         $_,
@@ -352,11 +320,7 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Provides a list of all unused assets in local asset source
-     *
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return array<AssetProxyInterface>
+     * @return AssetProxyInterface[]
      * @throws MediaUiException
      */
     public function unusedAssets($_, array $variables, AssetSourceContext $assetSourceContext): array
@@ -373,8 +337,6 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Provides number of unused assets in local asset source
-     *
-     * @return int
      * @throws MediaUiException
      */
     public function unusedAssetCount(): int
@@ -384,10 +346,7 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Provides a list of all tags
-     *
-     * @param $_
-     * @param array $variables
-     * @return array<Tag>
+     * @return Tag[]
      */
     public function tags($_, array $variables): array
     {
@@ -395,9 +354,7 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return Tag|null
+     * Get tag by id
      */
     public function tag($_, array $variables): ?Tag
     {
@@ -409,11 +366,7 @@ class QueryResolver implements ResolverInterface
 
     /**
      * Returns the list of all registered asset sources. By default the asset source `neos` should always exist.
-     *
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return array<AssetSourceInterface>
+     * @return AssetSourceInterface[]
      */
     public function assetSources($_, array $variables, AssetSourceContext $assetSourceContext): array
     {
@@ -421,9 +374,8 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return array<AssetCollection>
+     * Returns all asset collections
+     * @return AssetCollection[]
      */
     public function assetCollections($_, array $variables): array
     {
@@ -431,9 +383,7 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return AssetCollection|null
+     * Returns an asset collection by id
      */
     public function assetCollection($_, array $variables): ?AssetCollection
     {
@@ -444,10 +394,7 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
-     * @return AssetProxyInterface|null
+     * Returns an asset proxy by id
      */
     public function asset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
     {
@@ -460,15 +407,14 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @param AssetSourceContext $assetSourceContext
+     * Retrieves the variants of an asset
      * @return AssetVariantInterface[]
+     * @throws ORMException
      */
     public function assetVariants($_, array $variables, AssetSourceContext $assetSourceContext): array
     {
         $assetProxy = $this->asset($_, $variables, $assetSourceContext);
-        if ($assetProxy === null || !($assetProxy instanceof NeosAssetProxy) || !($assetProxy->getAsset() instanceof VariantSupportInterface)) {
+        if (!($assetProxy instanceof NeosAssetProxy) || !($assetProxy->getAsset() instanceof VariantSupportInterface)) {
             return [];
         }
         $asset = $this->persistenceManager->getObjectByIdentifier($assetProxy->getLocalAssetIdentifier(), Asset::class);
@@ -480,9 +426,7 @@ class QueryResolver implements ResolverInterface
     }
 
     /**
-     * @param $_
-     * @param array $variables
-     * @return array
+     * Returns a list of changes to assets since a given timestamp
      */
     public function changedAssets($_, array $variables): array
     {
@@ -508,6 +452,11 @@ class QueryResolver implements ResolverInterface
         ];
     }
 
+    /**
+     * Returns a list of similar asset to the given asset
+     * @return AssetProxyInterface[]
+     * @throws PropertyNotAccessibleException
+     */
     public function similarAssets($_, array $variables, AssetSourceContext $assetSourceContext): array
     {
         [
