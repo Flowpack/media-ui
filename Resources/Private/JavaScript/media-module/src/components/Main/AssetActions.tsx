@@ -34,6 +34,8 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             });
     }, [importAsset, asset, Notify, translate]);
 
+    if (!asset) return null;
+
     return (
         <>
             <IconButton
