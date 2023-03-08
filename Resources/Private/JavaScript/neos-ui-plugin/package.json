@@ -13,10 +13,10 @@
   "dependencies": {
     "@media-ui/media-details-screen": "workspace:*",
     "@media-ui/media-selection-screen": "workspace:*",
-    "@neos-project/neos-ui-extensibility": "^5.3.4"
+    "@neos-project/neos-ui-extensibility": "^5.3.18"
   },
   "devDependencies": {
-    "webpack": "^4.44.2",
+    "webpack": "^4.46.0",
     "webpack-graphql-loader": "^1.0.2"
   },
   "browserslist": [

@@ -16,7 +16,7 @@
     }
   },
   "include": [
-    "./Resources/Private/JavaScript/*/src/**/*",
+    "./Resources/Private/JavaScript/**/*",
     "node_modules/@media-ui/feature-asset-usage/src/**/*",
     "node_modules/@media-ui/feature-asset-variants/src/**/*",
     "node_modules/@media-ui/feature-concurrent-editing/src/**/*"

@@ -1,6 +1,9 @@
 module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
+    parserOptions: {
+        ecmaFeatures: { jsx: true },
+    },
     extends: [
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
@@ -8,7 +11,7 @@ module.exports = {
         'plugin:testcafe/recommended',
         'plugin:prettier/recommended',
     ],
-    plugins: ['testcafe', 'prettier', 'react', 'react-hooks'],
+    plugins: ['@typescript-eslint', 'testcafe', 'prettier', 'react', 'react-hooks'],
     settings: {
         react: {
             version: 'detect',
