@@ -83,7 +83,8 @@ window.onload = async (): Promise<void> => {
         return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
     };
 
-    const AppWithHmr = hot(module)(App);
+    // @ts-ignore
+    const AppWithHmr = module.hot ? hot(module)(App) : App;
 
     render(
         <IntlProvider translate={translate}>
