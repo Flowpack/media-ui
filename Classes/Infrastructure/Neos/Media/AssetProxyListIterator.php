@@ -27,15 +27,8 @@ final class AssetProxyListIterator implements AssetProxyIteratorAggregate
      */
     private $assetProxies;
 
-    /**
-     * @var integer
-     */
-    private $offset = 0;
-
-    /**
-     * @var null|integer
-     */
-    private $limit = null;
+    private int $offset = 0;
+    private ?int $limit = null;
 
     private function __construct(AssetProxyInterface ...$assetProxies)
     {

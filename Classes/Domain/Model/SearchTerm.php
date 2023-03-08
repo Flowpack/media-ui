@@ -19,17 +19,11 @@ namespace Flowpack\Media\Ui\Domain\Model;
   */
 final class SearchTerm
 {
-    const ASSET_IDENTIFIER_PATTERN = '/id:([0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12})/';
+    public const ASSET_IDENTIFIER_PATTERN = '/id:([0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12})/';
 
-    /**
-     * @var string
-     */
-    private $value;
+    private string $value;
 
-    /**
-     * @var null|string
-     */
-    private $assetIdentifier = null;
+    private ?string $assetIdentifier = null;
 
     private function __construct(string $value)
     {
@@ -42,10 +36,6 @@ final class SearchTerm
         }
     }
 
-    /**
-     * @param mixed $any
-     * @return null|self
-     */
     public static function from($any): ?self
     {
         if (is_string($any) && !empty($any)) {

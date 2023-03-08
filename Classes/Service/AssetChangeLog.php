@@ -33,10 +33,7 @@ final class AssetChangeLog
      */
     private $cache;
 
-    /**
-     * @var int
-     */
-    private $cacheLifetime;
+    private int $cacheLifetime;
 
     public function __construct(StringFrontend $cache, int $cacheLifetime)
     {
