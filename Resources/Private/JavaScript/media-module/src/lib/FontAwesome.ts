@@ -52,6 +52,11 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons/faTimesCircle';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload';
+import { faTasks } from '@fortawesome/free-solid-svg-icons/faTasks';
+import { faEdit } from '@fortawesome/free-solid-svg-icons/faEdit';
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons/faExchangeAlt';
+import { faEquals } from '@fortawesome/free-solid-svg-icons/faEquals';
+import { faLink } from '@fortawesome/free-solid-svg-icons/faLink';
 
 import { faNeos } from '@fortawesome/free-brands-svg-icons/faNeos';
 import { faCreativeCommonsZero } from '@fortawesome/free-brands-svg-icons/faCreativeCommonsZero';
@@ -109,6 +114,11 @@ export default function loadIconLibrary() {
         faTimes,
         faTimesCircle,
         faTrashAlt,
-        faUpload
+        faUpload,
+        faTasks,
+        faEdit,
+        faExchangeAlt,
+        faEquals,
+        faLink
     );
 }

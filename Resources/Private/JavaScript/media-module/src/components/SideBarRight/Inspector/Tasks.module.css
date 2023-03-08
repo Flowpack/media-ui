@@ -1,0 +1,11 @@
+.tasks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--theme-spacing-Half);
+}
+
+.tasks button {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}

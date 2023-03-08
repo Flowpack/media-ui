@@ -3,18 +3,15 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
-import { AssetUsagesToggleButton } from '@media-ui/feature-asset-usage/src';
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core/src';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
-import { SimilarAssetsToggleButton } from '@media-ui/feature-similar-assets/src';
-import { AssetReplacementButton } from '@media-ui/feature-asset-upload/src/components';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
 import { IconLabel } from '../../Presentation';
-import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
+import Tasks from './Tasks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     textArea: {
@@ -51,7 +48,6 @@ const PropertyInspector = () => {
     const {
         featureFlags,
         approvalAttainmentStrategy: { obtainApprovalToUpdateAsset },
-        isInMediaDetailsScreen,
     } = useMediaUi();
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
@@ -166,11 +162,8 @@ const PropertyInspector = () => {
 
             {selectedAsset.assetSource.supportsCollections && <CollectionSelectBox />}
             {selectedAsset.assetSource.supportsTagging && <TagSelectBoxAsset />}
-            <AssetUsagesToggleButton />
-            {featureFlags.showSimilarAssets && <SimilarAssetsToggleButton />}
-            {!selectedAsset.assetSource.readOnly && !isInMediaDetailsScreen && <AssetReplacementButton />}
-            {!selectedAsset.assetSource.readOnly && !isInMediaDetailsScreen && <OpenAssetEditDialogButton />}
 
+            <Tasks />
             <MetadataView />
         </InspectorContainer>
     );

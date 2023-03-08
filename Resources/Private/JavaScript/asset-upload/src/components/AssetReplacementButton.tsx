@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilState } from 'recoil';
 
-import { Button } from '@neos-project/react-ui-components';
+import { Button, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core/src';
 
@@ -19,6 +19,7 @@ const AssetReplacementButton: React.FC = () => {
             hoverStyle="brand"
             onClick={() => setDialogState({ visible: true, uploadType: UPLOAD_TYPE.update })}
         >
+            <Icon icon="exchange-alt" />
             {translate('assetReplacement.toggle', 'Replace asset')}
         </Button>
     );
