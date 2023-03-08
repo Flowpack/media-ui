@@ -10,7 +10,7 @@
     "postinstall": "patch-package",
     "lint": "tsc --noemit && eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
     "test": "testcafe",
-    "test:unit": "mocha -r ts-node/register ./Resources/Private/JavaScript/**/*.spec.ts",
+    "test:unit": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha",
     "dev": "yarn workspace @media-ui/dev-server run dev",
     "watch": "concurrently -k \"yarn watch:module\" \"yarn watch:plugin\"",
     "watch:module": "yarn workspace @media-ui/media-module run watch",

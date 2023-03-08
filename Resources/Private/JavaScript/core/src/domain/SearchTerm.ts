@@ -10,7 +10,7 @@ export class SearchTerm {
         if (matches && matches[1]) {
             this.assetIdentifier = matches[1];
         } else {
-            this.assetIdentifier = 'hallo';
+            this.assetIdentifier = null;
         }
     }
 
