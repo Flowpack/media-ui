@@ -3,9 +3,16 @@ import { AssetIdentity } from '../interfaces';
 const ASSET_IDENTIFIER_PATTERN = /id:([0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12})/;
 
 export class SearchTerm {
-    private assetIdentifier: undefined | null | string = undefined;
+    private readonly assetIdentifier: undefined | null | string = undefined;
 
-    private constructor(private readonly value: string) {}
+    private constructor(private readonly value: string) {
+        const matches = ASSET_IDENTIFIER_PATTERN.exec(this.value);
+        if (matches && matches[1]) {
+            this.assetIdentifier = matches[1];
+        } else {
+            this.assetIdentifier = 'hallo';
+        }
+    }
 
     public static fromString(string: string): SearchTerm {
         return new SearchTerm(string);
@@ -18,15 +25,6 @@ export class SearchTerm {
     }
 
     public readonly getAssetIdentifierIfPresent = (): null | AssetIdentity => {
-        if (this.assetIdentifier === undefined) {
-            const matches = ASSET_IDENTIFIER_PATTERN.exec(this.value);
-            if (matches && matches[1]) {
-                this.assetIdentifier = matches[1];
-            } else {
-                this.assetIdentifier = null;
-            }
-        }
-
         return this.assetIdentifier
             ? {
                   assetId: this.assetIdentifier,
