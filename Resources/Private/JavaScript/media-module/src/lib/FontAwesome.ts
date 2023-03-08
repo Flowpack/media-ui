@@ -61,6 +61,7 @@ config.replacementClass = 'svg-inline--fa';
 
 export default function loadIconLibrary() {
     library.add(
+        // @ts-ignore
         faAngleLeft,
         faAngleRight,
         faBan,

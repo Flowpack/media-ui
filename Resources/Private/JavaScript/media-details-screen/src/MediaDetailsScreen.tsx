@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { RecoilRoot } from 'recoil';
 import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
-import { $get, $transform } from 'plow-js';
 
 // Neos dependencies are provided by the UI
 // @ts-ignore
@@ -60,25 +59,7 @@ interface MediaDetailsScreenState {
     initialNodeCreationDialogOpenState: boolean;
 }
 
-@connect(
-    $transform({
-        isLeftSideBarHidden: $get('ui.leftSideBar.isHidden'),
-        isNodeCreationDialogOpen: $get('ui.nodeCreationDialog.isOpen'),
-    }),
-    {
-        addFlashMessage: actions.UI.FlashMessages.add,
-        toggleSidebar: actions.UI.LeftSideBar.toggle,
-    }
-)
-@neos((globalRegistry) => ({
-    i18nRegistry: globalRegistry.get('i18n'),
-    frontendConfiguration: globalRegistry.get('frontendConfiguration').get('Flowpack.Media.Ui'),
-}))
-// eslint-disable-next-line prettier/prettier
-export class MediaDetailsScreen extends React.PureComponent<
-    MediaDetailsScreenProps,
-    MediaDetailsScreenState
-> {
+export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenProps, MediaDetailsScreenState> {
     getConfig() {
         return {
             endpoints: {
@@ -183,3 +164,20 @@ export class MediaDetailsScreen extends React.PureComponent<
         );
     }
 }
+
+const mapStateToProps = (state: any) => ({
+    isLeftSideBarHidden: state.ui.leftSideBar.isHidden,
+    isNodeCreationDialogOpen: state.ui.nodeCreationDialog.isOpen,
+});
+
+const mapDispatchToProps = () => ({
+    addFlashMessage: actions.UI.FlashMessages.add,
+    toggleSidebar: actions.UI.LeftSideBar.toggle,
+});
+
+const mapGlobalRegistryToProps = neos((globalRegistry: any) => ({
+    i18nRegistry: globalRegistry.get('i18n'),
+    frontendConfiguration: globalRegistry.get('frontendConfiguration').get('Flowpack.Media.Ui'),
+}));
+
+export default connect(mapStateToProps, mapDispatchToProps)(mapGlobalRegistryToProps(MediaDetailsScreen));

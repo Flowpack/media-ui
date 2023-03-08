@@ -1,1 +1,1 @@
-export { MediaSelectionScreen } from './MediaSelectionScreen';
+export { default as MediaSelectionScreen } from './MediaSelectionScreen';
