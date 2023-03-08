@@ -31,9 +31,10 @@ const TagSelectBoxAsset = () => {
     const selectedAsset = useSelectedAsset();
 
     const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
-    const syncSelectedTagIds = useCallback(() => setSelectedTagIds(selectedAsset?.tags.map(({ id }) => id).sort()), [
-        selectedAsset?.tags,
-    ]);
+    const syncSelectedTagIds = useCallback(
+        () => setSelectedTagIds(selectedAsset?.tags.map(({ id }) => id).sort()),
+        [selectedAsset?.tags]
+    );
 
     const handleChange = useCallback(
         async (newTags) => {

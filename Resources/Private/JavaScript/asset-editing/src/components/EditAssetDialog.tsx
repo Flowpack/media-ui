@@ -97,7 +97,12 @@ const EditAssetDialog: React.FC = () => {
             <section className={classes.editArea}>
                 <Label className={classes.label}>
                     {translate('EditAssetDialog.filename', 'Filename')}
-                    <input className={classes.filenameInput} type="text" ref={inputRef} defaultValue={filenameWithoutExtension} />
+                    <input
+                        className={classes.filenameInput}
+                        type="text"
+                        ref={inputRef}
+                        defaultValue={filenameWithoutExtension}
+                    />
                 </Label>
                 <Label className={classes.label}>
                     <CheckBox

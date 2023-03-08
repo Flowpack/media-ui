@@ -27,9 +27,10 @@ const TagSelectBoxAssetCollection = () => {
     const { updateAssetCollection } = useUpdateAssetCollection();
     const selectedAssetCollection = useSelectedAssetCollection();
 
-    const tagIds = useMemo(() => selectedAssetCollection?.tags.map(({ id }) => id).sort(), [
-        selectedAssetCollection?.tags,
-    ]);
+    const tagIds = useMemo(
+        () => selectedAssetCollection?.tags.map(({ id }) => id).sort(),
+        [selectedAssetCollection?.tags]
+    );
 
     const handleChange = useCallback(
         (newTags: Tag[]) => {

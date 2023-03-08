@@ -43,7 +43,7 @@ function writeToCache(
 
 export function getItem<T>(key): T {
     try {
-        return (JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}.${key}`)) as unknown) as T;
+        return JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}.${key}`)) as unknown as T;
     } catch (e) {
         console.error(`Could not parse item "${key}" from storage`, e);
     }
