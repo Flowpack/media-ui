@@ -1,0 +1,9 @@
+/**
+ * Define theme variables by using the ones provided by Neos with a fallback to the default values.
+ */
+.mediaModuleApp {
+    --theme-spacing-GoldenUnit: var(--spacing-Half, 40px);
+    --theme-spacing-Full: var(--spacing-Half, 16px);
+    --theme-spacing-Half: var(--spacing-Half, 8px);
+    --theme-spacing-Quarter: var(--spacing-Half, 4px);
+}

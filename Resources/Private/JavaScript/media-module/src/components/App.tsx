@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
+import classNames from 'classnames';
 
 import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { useSelectAsset, useSelectAssetSource } from '@media-ui/core/src/hooks';
@@ -22,6 +23,8 @@ import ErrorBoundary from './ErrorBoundary';
 import { createAssetCollectionDialogState, createTagDialogState } from '../state';
 import { CreateTagDialog, CreateAssetCollectionDialog } from './Dialogs';
 import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
+
+import * as styles from './App.module.css';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode, isInNodeCreationDialog }) => ({
@@ -118,7 +121,7 @@ const App = () => {
     }, [searchTerm]);
 
     return (
-        <div className={classes.container} ref={containerRef}>
+        <div className={classNames(classes.container, styles.mediaModuleApp)} ref={containerRef}>
             <LoadingIndicator />
 
             <div className={classes.gridLeft}>
