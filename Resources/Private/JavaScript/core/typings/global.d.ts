@@ -1,3 +1,5 @@
+declare module '*.module.css';
+
 interface NeosI18n {
     translate: (
         id: string,

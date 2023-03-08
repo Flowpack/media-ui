@@ -13,7 +13,12 @@
       "@media-ui/feature-asset-usage/src/*": ["./Resources/Private/JavaScript/asset-usage/src/*"],
       "@media-ui/feature-asset-variants/src/*": ["./Resources/Private/JavaScript/asset-variants/src/*"],
       "@media-ui/feature-concurrent-editing/src/*": ["./Resources/Private/JavaScript/concurrent-editing/src/*"],
-    }
+    },
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ]
   },
   "include": [
     "./Resources/Private/JavaScript/**/*",
