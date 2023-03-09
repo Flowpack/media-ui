@@ -1,9 +1,9 @@
 import { useRecoilValue } from 'recoil';
 import { useQuery } from '@apollo/client';
 
-import { Tag } from '../interfaces';
-import { selectedTagIdState } from '../state';
-import { TAG } from '../queries';
+import Tag from '../interfaces/Tag';
+import selectedTagIdState from '../state/selectedTagIdState';
+import TAG from '../queries/tag';
 
 interface TagQueryResult {
     tag: Tag;

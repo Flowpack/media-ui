@@ -1,4 +1,7 @@
-import { Asset, AssetCollection, Tag } from '../interfaces';
+import { AssetCollection } from '@media-ui/feature-asset-collections';
+import { Tag } from '@media-ui/feature-asset-tags';
+
+import { Asset } from '../interfaces';
 import { I18nRegistry, Interaction } from '../provider';
 
 export interface ApprovalAttainmentStrategy {

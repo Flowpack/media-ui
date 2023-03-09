@@ -4,11 +4,10 @@ import { useApolloClient, gql } from '@apollo/client';
 import { useSetRecoilState } from 'recoil';
 import { isMatch } from 'matcher';
 
-import { useIntl } from '@media-ui/core/src';
-
 import { Asset, AssetIdentity, FeatureFlags, SelectionConstraints } from '../interfaces';
 import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
+import { useIntl } from './Intl';
 import { useInteraction } from './Interaction';
 import { selectedMediaTypeState } from '../state';
 import { AssetMediaType } from '../state/selectedMediaTypeState';

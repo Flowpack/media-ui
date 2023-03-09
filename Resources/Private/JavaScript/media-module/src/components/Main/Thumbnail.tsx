@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
+import { selectorFamily, useRecoilValue } from 'recoil';
 
 import { Icon } from '@neos-project/react-ui-components';
 
@@ -114,15 +114,22 @@ interface ThumbnailProps {
     onSelect: (assetIdentity: AssetIdentity, openPreview: boolean) => void;
 }
 
+const thumbnailSelectionState = selectorFamily<boolean, string>({
+    key: 'ThumbnailSelection',
+    get:
+        (assetId) =>
+        ({ get }) => {
+            return get(selectedAssetIdState)?.assetId === assetId;
+        },
+});
+
 const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: ThumbnailProps) => {
     const classes = useStyles();
     const { translate } = useIntl();
     const { dummyImage, isAssetSelectable } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
-    const selectedAssetId = useRecoilValue(selectedAssetIdState);
-    const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
-
-    const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
+    const isSelected = useRecoilValue(thumbnailSelectionState(assetIdentity.assetId));
+    const canBeSelected = true;//useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
 
     return (
         <figure className={[classes.thumbnail, !canBeSelected && classes.disabled].join(' ')} title={asset?.label}>

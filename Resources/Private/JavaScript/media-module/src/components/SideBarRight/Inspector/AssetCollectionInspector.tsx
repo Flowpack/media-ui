@@ -1,18 +1,19 @@
-import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify } from '@media-ui/core/src';
-import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
+import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/feature-asset-collections';
 
 import { TagSelectBoxAssetCollection } from '.';
-import { useRecoilValue } from 'recoil';
 import Actions from './Actions';
 import Property from './Property';
 import InspectorContainer from './InspectorContainer';
+import ParentCollectionSelectBox from './ParentCollectionSelectBox';
 
+// TASK: Move into media module package
 const AssetCollectionInspector = () => {
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
@@ -70,6 +71,7 @@ const AssetCollectionInspector = () => {
             />
 
             <TagSelectBoxAssetCollection />
+            <ParentCollectionSelectBox />
         </InspectorContainer>
     );
 };

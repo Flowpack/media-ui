@@ -1,11 +1,12 @@
 import { useMutation } from '@apollo/client';
 
-import { ASSET_COLLECTIONS } from '../queries';
-import { AssetCollection } from '../interfaces';
-import { CREATE_ASSET_COLLECTION } from '../mutations';
+import CREATE_ASSET_COLLECTION from '../mutations/createAssetCollection';
+import AssetCollection from '../interfaces/AssetCollection';
+import ASSET_COLLECTIONS from '../queries/assetCollections';
 
 interface CreateAssetCollectionVariables {
     title: string;
+    parent: string | null;
 }
 
 export default function useCreateAssetCollection() {
@@ -14,10 +15,11 @@ export default function useCreateAssetCollection() {
         CreateAssetCollectionVariables
     >(CREATE_ASSET_COLLECTION);
 
-    const createAssetCollection = (title: string) =>
+    const createAssetCollection = (title: string, parentCollectionId: string = null) =>
         action({
             variables: {
                 title,
+                parent: parentCollectionId,
             },
             update(cache, { data }) {
                 const { assetCollections } = cache.readQuery<{ assetCollections: AssetCollection[] }>({

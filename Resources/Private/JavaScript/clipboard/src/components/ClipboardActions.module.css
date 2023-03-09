@@ -1,0 +1,5 @@
+.clipboardActions {
+    display: flex;
+    align-items: baseline;
+    background-color: var(--theme-colors-ContrastNeutral);
+}

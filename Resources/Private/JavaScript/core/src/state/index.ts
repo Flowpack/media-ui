@@ -1,23 +1,8 @@
-import currentPageState from './currentPageState';
-import initialLoadCompleteState from './initialLoadComplete';
-import loadingState from './loadingState';
-import searchTermState from './searchTermState';
-import selectedAssetCollectionIdState from './selectedAssetCollectionIdState';
-import selectedAssetIdState from './selectedAssetIdState';
-import selectedInspectorViewState from './selectedInspectorViewState';
-import selectedMediaTypeState from './selectedMediaTypeState';
-import selectedSortOrderState from './selectedSortOrderState';
-import selectedTagIdState from './selectedTagIdState';
-
-export {
-    currentPageState,
-    initialLoadCompleteState,
-    loadingState,
-    searchTermState,
-    selectedAssetCollectionIdState,
-    selectedAssetIdState,
-    selectedInspectorViewState,
-    selectedMediaTypeState,
-    selectedSortOrderState,
-    selectedTagIdState,
-};
+export { default as currentPageState } from './currentPageState';
+export { default as initialLoadCompleteState } from './initialLoadComplete';
+export { default as loadingState } from './loadingState';
+export { default as searchTermState } from './searchTermState';
+export { default as selectedAssetIdState } from './selectedAssetIdState';
+export { default as selectedInspectorViewState } from './selectedInspectorViewState';
+export { default as selectedMediaTypeState } from './selectedMediaTypeState';
+export { default as selectedSortOrderState } from './selectedSortOrderState';

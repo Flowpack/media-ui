@@ -1,27 +1,8 @@
-import Asset from './Asset';
-import AssetCollection from './AssetCollection';
-import AssetFile from './AssetFile';
-import AssetIdentity from './AssetIdentity';
-import AssetSource from './AssetSource';
-import DeleteAssetCollectionResult from './DeleteAssetCollectionResult';
-import FeatureFlags from './FeatureFlags';
-import GraphQlEntity from './GraphQLEntity';
-import Image from './Image';
-import IptcProperty from './IptcProperty';
-import Tag from './Tag';
-import SelectionConstraints from './SelectionConstraints';
-
-export {
-    Asset,
-    AssetCollection,
-    AssetFile,
-    AssetIdentity,
-    AssetSource,
-    DeleteAssetCollectionResult,
-    FeatureFlags,
-    GraphQlEntity,
-    Image,
-    IptcProperty,
-    SelectionConstraints,
-    Tag,
-};
+export { default as Asset } from './Asset';
+export { default as AssetFile } from './AssetFile';
+export { default as AssetIdentity } from './AssetIdentity';
+export { default as AssetSource } from './AssetSource';
+export { default as FeatureFlags } from './FeatureFlags';
+export { default as Image } from './Image';
+export { default as IptcProperty } from './IptcProperty';
+export { default as SelectionConstraints } from './SelectionConstraints';

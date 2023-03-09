@@ -1,9 +1,9 @@
 import { useRecoilValue } from 'recoil';
 import { useQuery } from '@apollo/client';
 
-import { AssetCollection } from '../interfaces';
-import { selectedAssetCollectionIdState } from '../state';
-import { ASSET_COLLECTION } from '../queries';
+import AssetCollection from '../interfaces/AssetCollection';
+import selectedAssetCollectionIdState from '../state/selectedAssetCollectionIdState';
+import ASSET_COLLECTION from '../queries/assetCollection';
 
 interface AssetCollectionQueryResult {
     assetCollection: AssetCollection;

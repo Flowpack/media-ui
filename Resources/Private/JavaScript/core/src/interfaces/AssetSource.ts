@@ -1,5 +1,3 @@
-import GraphQlEntity from './GraphQLEntity';
-
 type AssetSourceType = 'AssetSource';
 
 export default interface AssetSource extends GraphQlEntity {

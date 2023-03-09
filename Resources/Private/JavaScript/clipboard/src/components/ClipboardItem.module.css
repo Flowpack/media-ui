@@ -1,0 +1,13 @@
+.clipboardItem {
+    cursor: pointer;
+    min-width: var(--theme-spacing-GoldenUnit);
+    width: var(--theme-spacing-GoldenUnit);
+    height: var(--theme-spacing-GoldenUnit);
+}
+
+.clipboardItem img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

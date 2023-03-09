@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 
-import { TAGS } from '../queries';
-import { Tag } from '../interfaces';
+import TAGS from '../queries/tags';
+import Tag from '../interfaces/Tag';
 
 interface TagsQueryResult {
     tags: Tag[];

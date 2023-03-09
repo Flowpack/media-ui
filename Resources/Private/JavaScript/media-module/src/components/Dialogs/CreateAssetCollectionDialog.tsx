@@ -4,8 +4,8 @@ import { useRecoilState } from 'recoil';
 import { Button, TextInput, Label } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, useNotify } from '@media-ui/core/src';
-import { useCreateAssetCollection } from '@media-ui/core/src/hooks';
 import { Dialog } from '@media-ui/core/src/components';
+import { useCreateAssetCollection, useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
 
 import { useCallback } from 'react';
 import { createAssetCollectionDialogState } from '../../state';
@@ -23,11 +23,12 @@ const CreateAssetCollectionDialog = () => {
     const [dialogState, setDialogState] = useRecoilState(createAssetCollectionDialogState);
     const createPossible = !!(dialogState.title && dialogState.title.trim());
     const { createAssetCollection } = useCreateAssetCollection();
+    const selectedAssetCollection = useSelectedAssetCollection();
 
     const handleRequestClose = useCallback(() => setDialogState({ title: '', visible: false }), [setDialogState]);
     const handleCreate = useCallback(() => {
         setDialogState((state) => ({ ...state, visible: false }));
-        createAssetCollection(dialogState.title)
+        createAssetCollection(dialogState.title, selectedAssetCollection.id)
             .then(() => {
                 Notify.ok(translate('assetCollectionActions.create.success', 'Asset collection was created'));
             })
@@ -43,7 +44,9 @@ const CreateAssetCollectionDialog = () => {
     return (
         <Dialog
             isOpen={dialogState.visible}
-            title={translate('createAssetCollectionDialog.title', 'Create Asset Collection')}
+            title={translate('createAssetCollectionDialog.title', 'Create Asset Collection in "{location}"', {
+                location: selectedAssetCollection?.title || 'Root',
+            })}
             onRequestClose={handleRequestClose}
             actions={[
                 <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>

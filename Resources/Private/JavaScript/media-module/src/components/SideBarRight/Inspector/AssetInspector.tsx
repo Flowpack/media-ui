@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { Tabs } from '@neos-project/react-ui-components';
 import { createUseMediaUiStyles, useMediaUi } from '@media-ui/core/src';
@@ -6,8 +7,6 @@ import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
 import VariantsInspector from '@media-ui/feature-asset-variants/src/components/VariantsInspector';
 import PropertyInspector from './PropertyInspector';
-
-import { useRecoilValue } from 'recoil';
 
 const useStyles = createUseMediaUiStyles({
     tabContent: {

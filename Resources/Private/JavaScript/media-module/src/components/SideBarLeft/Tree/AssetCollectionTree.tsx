@@ -1,27 +1,21 @@
 import * as React from 'react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import { IconButton, Tree, Headline } from '@neos-project/react-ui-components';
+import { Headline, IconButton, Tree } from '@neos-project/react-ui-components';
 
-import { selectedAssetCollectionIdState, selectedAssetIdState, selectedTagIdState } from '@media-ui/core/src/state';
-import { AssetCollection } from '@media-ui/core/src/interfaces';
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify } from '@media-ui/core/src';
+import { selectedAssetIdState } from '@media-ui/core/src/state';
+import { createUseMediaUiStyles, MediaUiTheme, useIntl, useNotify } from '@media-ui/core/src';
+import { useSelectAssetSource } from '@media-ui/core/src/hooks';
+import { useDeleteTag, useSelectedTag, selectedTagIdState } from '@media-ui/feature-asset-tags';
 import {
-    useAssetCollectionsQuery,
     useDeleteAssetCollection,
-    useDeleteTag,
-    useSelectAssetCollection,
-    useSelectAssetSource,
+    useAssetCollectionsQuery,
     useSelectedAssetCollection,
-    useSelectedTag,
-    useSelectTag,
-    useTagsQuery,
-} from '@media-ui/core/src/hooks';
-import { clipboardVisibleState } from '@media-ui/feature-clipboard/src';
+    selectedAssetCollectionIdState,
+} from '@media-ui/feature-asset-collections';
 
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
-import TagTreeNode from './TagTreeNode';
 import { IconLabel } from '../../Presentation';
 import AddAssetCollectionButton from './AddAssetCollectionButton';
 import AddTagButton from './AddTagButton';
@@ -50,19 +44,14 @@ const AssetCollectionTree = () => {
     const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
-    const selectAssetCollection = useSelectAssetCollection();
-    const selectTag = useSelectTag();
     const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
     const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
     const setSelectedTagId = useSetRecoilState(selectedTagIdState);
-    const setClipboardVisibleState = useSetRecoilState(clipboardVisibleState);
-    const { tags } = useTagsQuery();
     const { assetCollections } = useAssetCollectionsQuery();
     const [selectedAssetSource] = useSelectAssetSource();
     const { deleteTag } = useDeleteTag();
-
     const { deleteAssetCollection } = useDeleteAssetCollection();
 
     const onClickDelete = useCallback(() => {
@@ -122,13 +111,9 @@ const AssetCollectionTree = () => {
         deleteAssetCollection,
     ]);
 
-    const handleSelectAssetCollection = React.useCallback(
-        (assetCollection: AssetCollection) => {
-            selectAssetCollection(assetCollection);
-            setClipboardVisibleState(false);
-        },
-        [selectAssetCollection, setClipboardVisibleState]
-    );
+    const assetCollectionsWithoutParent = useMemo(() => {
+        return assetCollections.filter((assetCollection) => !assetCollection.parent);
+    }, [assetCollections]);
 
     if (!selectedAssetSource?.supportsCollections) return null;
 
@@ -154,47 +139,14 @@ const AssetCollectionTree = () => {
 
             <Tree className={classes.tree}>
                 <AssetCollectionTreeNode
-                    isActive={!selectedAssetCollection}
-                    isFocused={!selectedAssetCollection && !selectedTag}
                     label={translate('assetCollectionList.showAll', 'All')}
                     title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
                     level={1}
-                    onClick={handleSelectAssetCollection}
-                    assetCollection={null}
+                    assetCollectionId={null}
                     collapsedByDefault={false}
-                >
-                    {tags?.map((tag) => (
-                        <TagTreeNode
-                            key={tag.id}
-                            tag={tag}
-                            isActive={!selectedAssetCollection && tag.id == selectedTag?.id}
-                            level={2}
-                            onClick={selectTag}
-                        />
-                    ))}
-                </AssetCollectionTreeNode>
-                {assetCollections.map((assetCollection, index) => (
-                    <AssetCollectionTreeNode
-                        key={index}
-                        assetCollection={assetCollection}
-                        onClick={handleSelectAssetCollection}
-                        level={1}
-                        isActive={assetCollection.title == selectedAssetCollection?.title}
-                        isFocused={assetCollection.title == selectedAssetCollection?.title && !selectedTag}
-                    >
-                        {assetCollection.tags?.map((tag) => (
-                            <TagTreeNode
-                                key={tag.id}
-                                tag={tag}
-                                assetCollection={assetCollection}
-                                isActive={
-                                    assetCollection.id == selectedAssetCollection?.id && tag.id == selectedTag?.id
-                                }
-                                level={2}
-                                onClick={selectTag}
-                            />
-                        ))}
-                    </AssetCollectionTreeNode>
+                />
+                {assetCollectionsWithoutParent.map((assetCollection, index) => (
+                    <AssetCollectionTreeNode key={index} assetCollectionId={assetCollection.id} level={1} />
                 ))}
             </Tree>
         </nav>

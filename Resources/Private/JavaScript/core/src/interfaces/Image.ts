@@ -1,5 +1,3 @@
-import GraphQlEntity from './GraphQLEntity';
-
 type ImageType = 'Image';
 
 export default interface Image extends GraphQlEntity {

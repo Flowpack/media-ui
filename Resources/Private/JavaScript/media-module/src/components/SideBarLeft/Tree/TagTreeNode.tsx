@@ -1,45 +1,43 @@
 import * as React from 'react';
-import { useCallback } from 'react';
 
 import { Tree } from '@neos-project/react-ui-components';
 
-import { AssetCollection, Tag } from '@media-ui/core/src/interfaces';
 import dndTypes from '@media-ui/core/src/constants/dndTypes';
+import { useSelectTag } from '@media-ui/core/src/hooks';
 
 import TreeNodeProps from './TreeNodeProps';
 
 export interface TagTreeNodeProps extends TreeNodeProps {
-    tag: Tag;
-    assetCollection?: AssetCollection;
-    onClick: (tag: Tag, assetCollection?: AssetCollection) => void;
+    tagId: string;
+    label: string;
+    isFocused: boolean;
+    assetCollectionId?: string;
+    level: number;
 }
 
 const TagTreeNode: React.FC<TagTreeNodeProps> = ({
-    tag,
-    isActive,
+    tagId,
     isFocused,
-    assetCollection,
+    assetCollectionId,
     label,
-    title,
-    onClick,
     level,
 }: TagTreeNodeProps) => {
-    const handleClick = useCallback(() => onClick(tag, assetCollection), [onClick, tag, assetCollection]);
+    const selectTag = useSelectTag();
 
     return (
         <Tree.Node>
             <Tree.Node.Header
-                isActive={isActive}
+                isActive={isFocused}
                 isCollapsed={true}
-                isFocused={isFocused !== undefined ? isFocused : isActive}
+                isFocused={isFocused}
                 isLoading={false}
                 hasError={false}
-                label={label || tag.label}
-                title={title || tag.label}
+                label={label}
+                title={label}
                 icon="tag"
                 nodeDndType={dndTypes.TAG}
                 level={level}
-                onClick={handleClick}
+                onClick={() => selectTag(tagId, assetCollectionId)}
                 hasChildren={false}
             />
         </Tree.Node>

@@ -1,4 +1,3 @@
-import GraphQlEntity from './GraphQLEntity';
 import Image from './Image';
 
 type AssetFileType = 'AssetFile';

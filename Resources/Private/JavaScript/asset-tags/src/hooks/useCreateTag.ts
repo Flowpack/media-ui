@@ -1,8 +1,10 @@
 import { useMutation } from '@apollo/client';
 
-import { AssetCollection, Tag } from '../interfaces';
-import { ASSET_COLLECTIONS, TAGS } from '../queries';
-import { CREATE_TAG } from '../mutations';
+import { ASSET_COLLECTIONS, AssetCollection } from '@media-ui/feature-asset-collections';
+
+import Tag from '../interfaces/Tag';
+import TAGS from '../queries/tags';
+import CREATE_TAG from '../mutations/createTag';
 
 interface CreateTagVariables {
     label: string;

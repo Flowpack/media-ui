@@ -1,10 +1,7 @@
 {
   "extends": "../../../../tsconfig.json",
   "include": [
-    "src/**/*.ts",
-    "node_modules/@media-ui/feature-asset-usage/src/**/*",
-    "node_modules/@media-ui/feature-asset-variants/src/**/*",
-    "node_modules/@media-ui/feature-concurrent-editing/src/**/*"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"

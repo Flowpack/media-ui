@@ -1,6 +1,8 @@
 import { useMutation } from '@apollo/client';
 
-import { Asset, Tag } from '../interfaces';
+import { Tag } from '@media-ui/feature-asset-tags';
+
+import { Asset } from '../interfaces';
 import { SET_ASSET_TAGS } from '../mutations';
 
 interface SetAssetTagsProps {

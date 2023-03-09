@@ -5,8 +5,9 @@ import { useRecoilValue } from 'recoil';
 import { Headline, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
-import { useSelectedAssetCollection, useSelectedTag } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
+import { useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
+import { useSelectedTag } from '@media-ui/feature-asset-tags';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     currentSelection: {

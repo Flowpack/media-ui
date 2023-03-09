@@ -144,11 +144,11 @@ type Mutation {
 
     importAsset(id: AssetId!, assetSourceId: AssetSourceId!): Asset!
 
-    createAssetCollection(title: String!): AssetCollection!
+    createAssetCollection(title: String!, parent: AssetCollectionId): AssetCollection!
 
     deleteAssetCollection(id: AssetCollectionId!): DeleteAssetCollectionResult!
 
-    updateAssetCollection(id: AssetCollectionId!, title: String, tagIds: [TagId]): AssetCollection!
+    updateAssetCollection(id: AssetCollectionId!, title: String, tagIds: [TagId], parent: AssetCollectionId): AssetCollection!
 
     updateTag(id: TagId!, label: String): Tag!
 }
@@ -268,6 +268,8 @@ type AssetCollection {
     id: AssetCollectionId
     title: AssetCollectionTitle!
     assets: [Asset!]!
+    parent: AssetCollection
+    children: [AssetCollection!]!
     tags: [Tag!]!
 }
 

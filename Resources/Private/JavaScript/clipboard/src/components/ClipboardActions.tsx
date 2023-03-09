@@ -4,22 +4,15 @@ import { useRecoilValue } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core/src';
 import { useDeleteAsset } from '@media-ui/core/src/hooks';
 
 import useClipboard from '../hooks/useClipboard';
 import clipboardVisibleState from '../state/clipboardVisibleState';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    clipboardActions: {
-        display: 'flex',
-        alignItems: 'baseline',
-        backgroundColor: theme.colors.captionBackground,
-    },
-}));
+import * as styles from './ClipboardActions.module.css';
 
 const ClipboardActions: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const clipboardVisible = useRecoilValue(clipboardVisibleState);
     const { clipboard, flushClipboard } = useClipboard();
@@ -49,7 +42,7 @@ const ClipboardActions: React.FC = () => {
     if (!clipboardVisible) return null;
 
     return (
-        <div className={classes.clipboardActions}>
+        <div className={styles.clipboardActions}>
             <IconButton
                 title={translate('clipboard.deleteAsset', 'Delete all assets in clipboard')}
                 icon="trash"

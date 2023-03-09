@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
-import { Tag } from '@media-ui/core/src/interfaces';
+import { Tag } from '@media-ui/feature-asset-tags';
 
 import { IconLabel } from '../../Presentation';
 

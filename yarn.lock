@@ -2104,12 +2104,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@media-ui/dev-server@workspace:Resources/Private/JavaScript/dev-server"
   dependencies:
-    "@media-ui/feature-asset-usage": "workspace:*"
-    "@media-ui/feature-concurrent-editing": "workspace:*"
     "@media-ui/media-module": "workspace:*"
     "@types/node": ^16.18.3
     express: ^4.18.2
     nodemon: ^2.0.21
+  languageName: unknown
+  linkType: soft
+
+"@media-ui/feature-asset-collections@workspace:*, @media-ui/feature-asset-collections@workspace:Resources/Private/JavaScript/asset-collections":
+  version: 0.0.0-use.local
+  resolution: "@media-ui/feature-asset-collections@workspace:Resources/Private/JavaScript/asset-collections"
+  dependencies:
+    "@media-ui/feature-asset-tags": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -2126,6 +2132,12 @@ __metadata:
   resolution: "@media-ui/feature-asset-preview@workspace:Resources/Private/JavaScript/asset-preview"
   dependencies:
     "@media-ui/core": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@media-ui/feature-asset-tags@workspace:*, @media-ui/feature-asset-tags@workspace:Resources/Private/JavaScript/asset-tags":
+  version: 0.0.0-use.local
+  resolution: "@media-ui/feature-asset-tags@workspace:Resources/Private/JavaScript/asset-tags"
   languageName: unknown
   linkType: soft
 
@@ -2183,8 +2195,6 @@ __metadata:
   dependencies:
     "@apollo/client": ^3.3.13
     "@media-ui/core": "workspace:*"
-    "@media-ui/feature-asset-usage": "workspace:*"
-    "@media-ui/feature-clipboard": "workspace:*"
     "@media-ui/media-module": "workspace:*"
     apollo-upload-client: ^14.1.3
     react: ^17.0.2
@@ -2207,8 +2217,10 @@ __metadata:
     "@fortawesome/react-fontawesome": ^0.2.0
     "@friendsofreactjs/react-css-themr": ^4.3.3
     "@media-ui/core": "workspace:*"
+    "@media-ui/feature-asset-collections": "workspace:*"
     "@media-ui/feature-asset-editing": "workspace:*"
     "@media-ui/feature-asset-preview": "workspace:*"
+    "@media-ui/feature-asset-tags": "workspace:*"
     "@media-ui/feature-asset-upload": "workspace:*"
     "@media-ui/feature-asset-usage": "workspace:*"
     "@media-ui/feature-asset-variants": "workspace:*"

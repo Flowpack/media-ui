@@ -1,10 +1,12 @@
 import { useMutation } from '@apollo/client';
 import { useRecoilState } from 'recoil';
 
-import { selectedTagIdState } from '../state';
-import { AssetCollection, Tag } from '../interfaces';
-import { ASSET_COLLECTIONS, TAGS } from '../queries';
-import { DELETE_TAG } from '../mutations';
+import { AssetCollection, ASSET_COLLECTIONS } from '@media-ui/feature-asset-collections';
+
+import selectedTagIdState from '../state/selectedTagIdState';
+import Tag from '../interfaces/Tag';
+import TAGS from '../queries/tags';
+import DELETE_TAG from '../mutations/deleteTag';
 
 interface DeleteTagVariables {
     id: string;

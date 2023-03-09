@@ -1,10 +1,13 @@
 import { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import { AssetCollection, Tag } from '../interfaces';
-import { currentPageState, selectedAssetCollectionIdState, selectedAssetIdState, selectedTagIdState } from '../state';
+import { selectedTagIdState } from '@media-ui/feature-asset-tags';
+import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
+
+import { currentPageState, selectedAssetIdState } from '../state';
 import selectedInspectorViewState from '../state/selectedInspectorViewState';
 
+// TODO: Move this hook into the tags package when the side effects can be triggered indirectly
 const useSelectTag = () => {
     const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
     const setSelectedTagId = useSetRecoilState(selectedTagIdState);
@@ -13,10 +16,10 @@ const useSelectTag = () => {
     const setCurrentPage = useSetRecoilState(currentPageState);
 
     return useCallback(
-        (tag: Tag, assetCollection: AssetCollection = null) => {
+        (tagId: string | null, assetCollectionId: string | null) => {
             setSelectedInspectorView('tag');
-            setSelectedAssetCollectionId(assetCollection?.id);
-            setSelectedTagId(tag?.id);
+            setSelectedAssetCollectionId(assetCollectionId);
+            setSelectedTagId(tagId);
             setCurrentPage(1);
             setSelectedAssetId(null);
         },

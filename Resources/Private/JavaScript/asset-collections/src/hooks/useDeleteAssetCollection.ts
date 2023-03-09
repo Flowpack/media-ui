@@ -1,8 +1,9 @@
 import { useMutation } from '@apollo/client';
 
-import { ASSET_COLLECTIONS } from '../queries';
-import { AssetCollection, DeleteAssetCollectionResult } from '../interfaces';
-import { DELETE_ASSET_COLLECTION } from '../mutations';
+import DeleteAssetCollectionResult from '../interfaces/DeleteAssetCollectionResult';
+import AssetCollection from '../interfaces/AssetCollection';
+import ASSET_COLLECTIONS from '../queries/assetCollections';
+import DELETE_ASSET_COLLECTION from '../mutations/deleteAssetCollection';
 
 interface DeleteAssetCollectionVariables {
     id: string;

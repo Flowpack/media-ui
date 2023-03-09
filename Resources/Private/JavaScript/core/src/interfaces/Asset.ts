@@ -1,7 +1,7 @@
-import GraphQlEntity from './GraphQLEntity';
+import { AssetCollection } from '@media-ui/feature-asset-collections';
+import { Tag } from '@media-ui/feature-asset-tags';
+
 import AssetSource from './AssetSource';
-import Tag from './Tag';
-import AssetCollection from './AssetCollection';
 import IptcProperty from './IptcProperty';
 import AssetFile from './AssetFile';
 

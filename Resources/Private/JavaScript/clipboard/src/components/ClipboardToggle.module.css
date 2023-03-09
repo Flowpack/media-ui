@@ -1,0 +1,13 @@
+.clipboardToggle {
+    height: 100%;
+    align-self: flex-end;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    margin: 0 -.3rem;
+}
+
+.clipboardToggle > * {
+    margin: 0 .3rem;
+}

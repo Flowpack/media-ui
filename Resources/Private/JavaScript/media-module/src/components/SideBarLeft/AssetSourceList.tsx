@@ -33,7 +33,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-export default function AssetSourceList() {
+const AssetSourceList: React.FC = () => {
     const classes = useStyles();
     const { assetSources } = useAssetSourcesQuery();
     const { translate } = useIntl();
@@ -74,3 +74,5 @@ export default function AssetSourceList() {
         </nav>
     );
 }
+
+export default React.memo(AssetSourceList);

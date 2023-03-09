@@ -1,5 +1,3 @@
-import { GraphQlEntity } from './index';
-
 type DeleteAssetCollectionResultType = 'DeleteAssetCollectionResult';
 
 export default interface DeleteAssetCollectionResult extends GraphQlEntity {

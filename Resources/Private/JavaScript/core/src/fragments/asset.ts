@@ -1,9 +1,10 @@
 import { gql } from '@apollo/client';
 
+import { TAG_FRAGMENT } from '@media-ui/feature-asset-tags/src/fragments/tag';
+
 import { ASSET_SOURCE_FRAGMENT } from './assetSource';
 import { IPTC_PROPERTY_FRAGMENT } from './iptcProperty';
 import { FILE_FRAGMENT } from './file';
-import { TAG_FRAGMENT } from './tag';
 
 // TODO: Somehow extend `isInClipboard` from clipboard feature package
 

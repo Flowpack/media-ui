@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 
 import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, useNotify, useMediaUi } from '@media-ui/core/src';
 import { Asset } from '@media-ui/core/src/interfaces';
-import { useAssetCollectionsQuery, useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
+import { useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
+import { useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 
 import { IconLabel } from '../../Presentation';
 

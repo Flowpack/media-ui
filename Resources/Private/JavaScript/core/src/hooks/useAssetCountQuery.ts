@@ -1,9 +1,10 @@
 import { useQuery } from '@apollo/client';
 import { useRecoilValue } from 'recoil';
 
+import { useSelectedTag } from '@media-ui/feature-asset-tags';
+import { useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
+
 import { ASSET_COUNT } from '../queries';
-import useSelectedTag from './useSelectedTag';
-import useSelectedAssetCollection from './useSelectedAssetCollection';
 import { searchTermState } from '../state';
 
 interface AssetCountQueryResult {

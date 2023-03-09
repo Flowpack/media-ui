@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
-import useSelectedAssetCollection from './useSelectedAssetCollection';
-import useSelectedTag from './useSelectedTag';
-import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
+import { Tag, useSelectedTag } from '@media-ui/feature-asset-tags';
+import { AssetCollection, useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
+
+import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
+import { Asset, AssetSource } from '../interfaces';
 import {
     searchTermState,
     selectedMediaTypeState,
@@ -14,7 +16,6 @@ import {
     selectedSortOrderState,
 } from '../state';
 import { ASSETS } from '../queries';
-import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
 
 interface AssetsQueryResult {
     assets: Asset[];

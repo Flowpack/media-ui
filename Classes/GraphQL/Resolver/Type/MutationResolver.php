@@ -17,6 +17,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  */
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
@@ -609,9 +610,15 @@ class MutationResolver implements ResolverInterface
     {
         [
             'title' => $title,
-        ] = $variables;
+            'parent' => $parent,
+        ] = $variables + ['parent' => null];
 
         $newAssetCollection = new AssetCollection($title);
+        if ($parent) {
+            $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent);
+            /** @var HierarchicalAssetCollectionInterface $newAssetCollection */
+            $newAssetCollection->setParent($parentCollection);
+        }
 
         // FIXME: Multiple asset collections with the same title can exist, but do we want that?
 
@@ -656,8 +663,9 @@ class MutationResolver implements ResolverInterface
         [
             'id' => $id,
             'title' => $title,
-            'tagIds' => $tagIds
-        ] = $variables + ['title' => null, 'tagIds' => null];
+            'tagIds' => $tagIds,
+            'parent' => $parent,
+        ] = $variables + ['title' => null, 'tagIds' => null, 'parent' => null];
 
         /** @var AssetCollection $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
@@ -667,7 +675,14 @@ class MutationResolver implements ResolverInterface
         }
 
         if ($title !== null) {
+            // FIXME: Also disallow empty titles
             $assetCollection->setTitle($title);
+        }
+
+        if ($parent) {
+            $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent);
+            /** @var HierarchicalAssetCollectionInterface $assetCollection */
+            $assetCollection->setParent($parentCollection);
         }
 
         if ($tagIds !== null) {

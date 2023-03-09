@@ -30,3 +30,7 @@ type PaginationConfig = {
     assetsPerPage: number;
     maximumLinks: number;
 };
+
+interface GraphQlEntity {
+    __typename: string;
+};

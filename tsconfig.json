@@ -13,6 +13,7 @@
       "@media-ui/feature-asset-usage/src/*": ["./Resources/Private/JavaScript/asset-usage/src/*"],
       "@media-ui/feature-asset-variants/src/*": ["./Resources/Private/JavaScript/asset-variants/src/*"],
       "@media-ui/feature-concurrent-editing/src/*": ["./Resources/Private/JavaScript/concurrent-editing/src/*"],
+      "@media-ui/feature-folders/src/*": ["./Resources/Private/JavaScript/folders/src/*"],
     },
     "plugins": [
       {
@@ -24,7 +25,10 @@
     "./Resources/Private/JavaScript/**/*",
     "node_modules/@media-ui/feature-asset-usage/src/**/*",
     "node_modules/@media-ui/feature-asset-variants/src/**/*",
-    "node_modules/@media-ui/feature-concurrent-editing/src/**/*"
+    "node_modules/@media-ui/feature-asset-collections/src/**/*",
+    "node_modules/@media-ui/feature-asset-tags/src/**/*",
+    "node_modules/@media-ui/feature-concurrent-editing/src/**/*",
+    "node_modules/@media-ui/feature-folders/src/**/*"
   ],
   "exclude": [
     "node_modules",
