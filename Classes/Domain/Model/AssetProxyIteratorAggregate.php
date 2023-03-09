@@ -23,9 +23,5 @@ interface AssetProxyIteratorAggregate extends \Countable, \IteratorAggregate
 {
     public function setOffset(int $offset): void;
 
-    /**
-     * @param null|integer $limit
-     * @return void
-     */
-    public function setLimit($limit): void;
+    public function setLimit(?int $limit): void;
 }

@@ -15,10 +15,12 @@ namespace Flowpack\Media\Ui\Infrastructure\Neos\Media;
  */
 
 use Flowpack\Media\Ui\Domain\Model\AssetProxyIteratorAggregate;
+use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 
 /**
+ * @Flow\Proxy(false)
  * @internal
  */
 final class AssetProxyQueryIterator implements AssetProxyIteratorAggregate
@@ -50,11 +52,7 @@ final class AssetProxyQueryIterator implements AssetProxyIteratorAggregate
         $this->assetProxyQuery->setOffset($offset);
     }
 
-    /**
-     * @param null|integer $limit
-     * @return void
-     */
-    public function setLimit($limit): void
+    public function setLimit(?int $limit): void
     {
         // Unfortunately, AssetProxyQueryInterface::setLimit does not accept
         // `null` as a value, so we must filter it first.
@@ -62,7 +60,7 @@ final class AssetProxyQueryIterator implements AssetProxyIteratorAggregate
         // TODO: This check can be removed, once the following issue has been solved:
         // https://github.com/neos/neos-development-collection/issues/3962
         if ($limit === null) {
-            throw new \Exception(
+            throw new \RuntimeException(
                 'Not supported: AssetProxyQueryInterface::setLimit does not accept `null`.',
                 1669221347
             );

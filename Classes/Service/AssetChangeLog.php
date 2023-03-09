@@ -45,11 +45,7 @@ final class AssetChangeLog
      * Stores the asset id and the current timestamp in the cache.
      * The hash for the last change is also updated.
      *
-     * @param string $assetId
-     * @param \DateTimeInterface $lastModified
-     * @param string $type
-     * @throws CacheException
-     * @throws InvalidDataException
+     * @throws CacheException|InvalidDataException
      */
     public function add(string $assetId, \DateTimeInterface $lastModified, string $type): void
     {
@@ -57,11 +53,11 @@ final class AssetChangeLog
             'assetId' => $assetId,
             'lastModified' => $lastModified->format(DATE_W3C),
             'type' => $type,
-        ]), ['changedAssets'], $this->cacheLifetime);
+        ], JSON_THROW_ON_ERROR), ['changedAssets'], $this->cacheLifetime);
     }
 
     /**
-     * @return array<array> the assetId and timestamp for each change
+     * @return array[] the assetId and timestamp for each change
      */
     public function getChanges(): array
     {
