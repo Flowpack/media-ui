@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
+import { selectorFamily, useRecoilValue } from 'recoil';
 
 import { Icon } from '@neos-project/react-ui-components';
 
@@ -97,13 +97,20 @@ interface ListViewItemProps {
     onSelect: (assetIdentity: AssetIdentity, openPreview: boolean) => void;
 }
 
+const listViewItemSelectionState = selectorFamily<boolean, string>({
+    key: 'ListViewItemSelection',
+    get:
+        (assetId) =>
+        ({ get }) => {
+            return get(selectedAssetIdState)?.assetId === assetId;
+        },
+});
+
 const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: ListViewItemProps) => {
     const classes = useStyles();
     const { dummyImage, isAssetSelectable } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
-    const selectedAssetId = useRecoilValue(selectedAssetIdState);
-    const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
-
+    const isSelected = useRecoilValue(listViewItemSelectionState(assetIdentity.assetId));
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
     const onSelectItem = useCallback(() => onSelect(assetIdentity, isSelected), [onSelect, assetIdentity, isSelected]);
 
