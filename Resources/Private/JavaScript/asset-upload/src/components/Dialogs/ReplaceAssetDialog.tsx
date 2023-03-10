@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
@@ -12,6 +13,7 @@ import PreviewSection from '../PreviewSection';
 import { useUploadDialogState } from '../../hooks';
 import useReplaceAsset, { AssetReplacementOptions } from '../../hooks/useReplaceAsset';
 import { UploadedFile } from '../../interfaces';
+import { featureFlagsState } from '@media-ui/core/src/state';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     uploadArea: {
@@ -37,9 +39,9 @@ const ReplaceAssetDialog: React.FC = () => {
     const { replaceAsset, uploadState, loading } = useReplaceAsset();
     const {
         refetchAssets,
-        featureFlags,
         approvalAttainmentStrategy: { obtainApprovalToReplaceAsset },
     } = useMediaUi();
+    const featureFlags = useRecoilValue(featureFlagsState);
     const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
     const [replacementOptions, setReplacementOptions] = React.useState<AssetReplacementOptions>({
         keepOriginalFilename: false,

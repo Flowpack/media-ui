@@ -1,4 +1,5 @@
 export { default as currentPageState } from './currentPageState';
+export { default as featureFlagsState } from './featureFlagsState';
 export { default as initialLoadCompleteState } from './initialLoadComplete';
 export { default as loadingState } from './loadingState';
 export { default as searchTermState } from './searchTermState';
