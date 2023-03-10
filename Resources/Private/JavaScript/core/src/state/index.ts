@@ -8,3 +8,4 @@ export { default as selectedAssetIdState } from './selectedAssetIdState';
 export { default as selectedInspectorViewState } from './selectedInspectorViewState';
 export { default as selectedMediaTypeState } from './selectedMediaTypeState';
 export { default as selectedSortOrderState } from './selectedSortOrderState';
+export { selectedAssetCollectionAndTagState } from './selectedAssetCollectionAndTagState';

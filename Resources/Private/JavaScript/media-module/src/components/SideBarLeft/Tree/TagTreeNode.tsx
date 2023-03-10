@@ -1,9 +1,10 @@
 import * as React from 'react';
+import { useSetRecoilState } from 'recoil';
 
 import { Tree } from '@neos-project/react-ui-components';
 
 import dndTypes from '@media-ui/core/src/constants/dndTypes';
-import { useSelectTag } from '@media-ui/core/src/hooks';
+import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 
 import TreeNodeProps from './TreeNodeProps';
 
@@ -22,7 +23,7 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
     label,
     level,
 }: TagTreeNodeProps) => {
-    const selectTag = useSelectTag();
+    const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
 
     return (
         <Tree.Node>
@@ -37,7 +38,7 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
                 icon="tag"
                 nodeDndType={dndTypes.TAG}
                 level={level}
-                onClick={() => selectTag(tagId, assetCollectionId)}
+                onClick={() => selectAssetCollectionAndTag({ tagId, assetCollectionId })}
                 hasChildren={false}
             />
         </Tree.Node>
