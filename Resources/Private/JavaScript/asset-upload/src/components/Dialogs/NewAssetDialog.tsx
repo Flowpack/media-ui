@@ -3,13 +3,14 @@ import { useCallback } from 'react';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme, useIntl, useNotify } from '@media-ui/core/src';
 import { Dialog } from '@media-ui/core/src/components';
 
 import UploadSection from '../UploadSection';
 import PreviewSection from '../PreviewSection';
 import { useUploadDialogState, useUploadFiles } from '../../hooks';
 import { FilesUploadState, UploadedFile } from '../../interfaces';
+import { useAssetsQuery } from '@media-ui/core/src/hooks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     uploadArea: {
@@ -22,7 +23,7 @@ const NewAssetDialog: React.FC = () => {
     const Notify = useNotify();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
     const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
-    const { refetchAssets } = useMediaUi();
+    const { refetch } = useAssetsQuery();
     const uploadPossible = !loading && dialogState.files.selected.length > 0;
 
     const classes = useStyles();
@@ -59,13 +60,13 @@ const NewAssetDialog: React.FC = () => {
 
                 // Refresh list of files if any file was uploaded
                 if (uploadFiles.some((result) => result.success)) {
-                    void refetchAssets();
+                    void refetch();
                 }
             })
             .catch((error) => {
                 Notify.error(translate('fileUpload.error', 'Upload failed'), error);
             });
-    }, [uploadFiles, dialogState.files.selected, setFiles, Notify, translate, refetchAssets]);
+    }, [uploadFiles, dialogState.files.selected, setFiles, Notify, translate, refetch]);
 
     const handleSetFiles = useCallback(
         (files: UploadedFile[]) => {

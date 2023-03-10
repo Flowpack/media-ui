@@ -129,7 +129,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: Thumbn
     const { dummyImage, isAssetSelectable } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
     const isSelected = useRecoilValue(thumbnailSelectionState(assetIdentity.assetId));
-    const canBeSelected = true;//useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
+    const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
 
     return (
         <figure className={[classes.thumbnail, !canBeSelected && classes.disabled].join(' ')} title={asset?.label}>

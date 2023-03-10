@@ -1,3 +1,4 @@
+export { availableAssetsState, availableAssetIdentitiesState } from './availableAssetsState';
 export { default as currentPageState } from './currentPageState';
 export { default as featureFlagsState } from './featureFlagsState';
 export { default as initialLoadCompleteState } from './initialLoadComplete';

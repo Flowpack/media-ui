@@ -1,11 +1,10 @@
-import * as React from 'react';
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
-import { useSelectedAsset } from '@media-ui/core/src/hooks';
+import { useAssetsQuery, useSelectedAsset } from '@media-ui/core/src/hooks';
 import { Dialog } from '@media-ui/core/src/components';
 
 import UploadSection from '../UploadSection';
@@ -37,8 +36,8 @@ const ReplaceAssetDialog: React.FC = () => {
     const Notify = useNotify();
     const selectedAsset = useSelectedAsset();
     const { replaceAsset, uploadState, loading } = useReplaceAsset();
+    const { refetch } = useAssetsQuery();
     const {
-        refetchAssets,
         approvalAttainmentStrategy: { obtainApprovalToReplaceAsset },
     } = useMediaUi();
     const featureFlags = useRecoilValue(featureFlagsState);
@@ -72,7 +71,7 @@ const ReplaceAssetDialog: React.FC = () => {
 
                 Notify.ok(translate('uploadDialog.replacementFinished', 'Replacement finished'));
                 closeDialog();
-                void refetchAssets();
+                void refetch();
             } catch (error) {
                 Notify.error(translate('assetReplacement.error', 'Replacement failed'), error);
             }
@@ -83,7 +82,7 @@ const ReplaceAssetDialog: React.FC = () => {
         translate,
         dialogState,
         replacementOptions,
-        refetchAssets,
+        refetch,
         selectedAsset,
         closeDialog,
         obtainApprovalToReplaceAsset,

@@ -1,6 +1,5 @@
-import * as React from 'react';
-import { useCallback, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useCallback, useMemo } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { Icon } from '@neos-project/react-ui-components';
 
@@ -102,7 +101,7 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: 
     const classes = useStyles();
     const { dummyImage, isAssetSelectable } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
-    const [selectedAssetId] = useRecoilState(selectedAssetIdState);
+    const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
 
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);

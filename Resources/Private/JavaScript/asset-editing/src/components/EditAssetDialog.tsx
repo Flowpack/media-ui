@@ -5,7 +5,7 @@ import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
 import { Dialog } from '@media-ui/core/src/components';
-import { useSelectedAsset } from '@media-ui/core/src/hooks';
+import { useAssetsQuery, useSelectedAsset } from '@media-ui/core/src/hooks';
 
 import editAssetDialogState from '../state/editAssetDialogState';
 import useEditAsset, { AssetEditOptions } from '../hooks/useEditAsset';
@@ -35,9 +35,9 @@ const EditAssetDialog: React.FC = () => {
     const [dialogVisible, setDialogVisible] = useRecoilState(editAssetDialogState);
     const { editAsset, loading } = useEditAsset();
     const {
-        refetchAssets,
         approvalAttainmentStrategy: { obtainApprovalToEditAsset },
     } = useMediaUi();
+    const { refetch } = useAssetsQuery();
     const inputRef = useRef<HTMLInputElement>(null);
     const selectedAsset = useSelectedAsset();
     const [editOptions, setEditOptions] = React.useState<AssetEditOptions>({
@@ -59,7 +59,7 @@ const EditAssetDialog: React.FC = () => {
 
                 Notify.ok(translate('EditAssetDialog.updateFinished', 'Update finished'));
                 closeDialog();
-                void refetchAssets();
+                void refetch();
             } catch (error) {
                 Notify.error(translate('EditAssetDialog.updateError', 'Update failed'), error);
             }
@@ -69,7 +69,7 @@ const EditAssetDialog: React.FC = () => {
         Notify,
         translate,
         editOptions,
-        refetchAssets,
+        refetch,
         selectedAsset,
         closeDialog,
         obtainApprovalToEditAsset,

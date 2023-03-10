@@ -1,13 +1,14 @@
-import * as React from 'react';
+import React, { useMemo } from 'react';
 import Lightbox from 'react-image-lightbox';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+
 import 'react-image-lightbox/style.css';
 
 import { createUseMediaUiStyles, useMediaUi, useMediaUiTheme } from '@media-ui/core/src';
+import { availableAssetsState } from '@media-ui/core/src/state';
+import { useAssetQuery } from '@media-ui/core/src/hooks';
 
 import selectedAssetForPreviewState from '../state/selectedAssetForPreviewState';
-import { useAssetQuery } from '@media-ui/core/src/hooks';
-import { useMemo } from 'react';
 
 const useStyles = createUseMediaUiStyles({
     lightbox: {
@@ -40,7 +41,8 @@ const useLightBoxContainer = (defaultContainer: null | Element = null) => {
 export default function AssetPreview() {
     const classes = useStyles();
     const theme = useMediaUiTheme();
-    const { containerRef, isInNodeCreationDialog, assets } = useMediaUi();
+    const { containerRef, isInNodeCreationDialog } = useMediaUi();
+    const assets = useRecoilValue(availableAssetsState);
     const [selectedAssetForPreview, setSelectedAssetForPreview] = useRecoilState(selectedAssetForPreviewState);
     const { asset } = useAssetQuery(selectedAssetForPreview);
     const lightBoxContainer = useLightBoxContainer(isInNodeCreationDialog ? null : containerRef.current);

@@ -4,7 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
+import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
 import { clipboardVisibleState, useClipboard } from '@media-ui/feature-clipboard/src';
 import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage/src';
 
@@ -12,6 +12,7 @@ import { useViewModeSelection, VIEW_MODES } from '../../hooks';
 import { ListView, ThumbnailView } from './index';
 import LoadingLabel from '../LoadingLabel';
 import { MainViewState, mainViewState } from '../../state';
+import { availableAssetIdentitiesState } from '@media-ui/core/src/state';
 
 const useStyles = createUseMediaUiStyles({
     emptyStateWrapper: {
@@ -25,21 +26,13 @@ const useStyles = createUseMediaUiStyles({
 const Main: React.FC = () => {
     const classes = useStyles();
     const [viewModeSelection] = useViewModeSelection();
-    const { assets } = useMediaUi();
     const { assets: unusedAssets } = useUnusedAssetsQuery();
     const { clipboard } = useClipboard();
     const mainView = useRecoilValue(mainViewState);
     const setClipboardVisible = useSetRecoilState(clipboardVisibleState);
     const { translate } = useIntl();
-    const [assetIdentities, setAssetIdentities] = useState([]);
-
-    const queriedAssets = useMemo(() => {
-        return assets
-            .filter((asset) => asset?.id)
-            .map(({ id, assetSource }) => {
-                return { assetId: id, assetSourceId: assetSource.id };
-            });
-    }, [assets]);
+    const availableAssetIdentities = useRecoilValue(availableAssetIdentitiesState);
+    const [visibleAssetIdentities, setVisibleAssetIdentities] = useState(availableAssetIdentities);
 
     const queriedUnusedAssets = useMemo(() => {
         return unusedAssets
@@ -51,19 +44,19 @@ const Main: React.FC = () => {
 
     useEffect(() => {
         if (mainView === MainViewState.CLIPBOARD) {
-            setAssetIdentities(Object.values(clipboard));
+            setVisibleAssetIdentities(Object.values(clipboard));
         } else if (mainView === MainViewState.UNUSED_ASSETS) {
-            setAssetIdentities(queriedUnusedAssets);
+            setVisibleAssetIdentities(queriedUnusedAssets);
         } else {
-            setAssetIdentities(queriedAssets);
+            setVisibleAssetIdentities(availableAssetIdentities);
         }
-    }, [mainView, queriedAssets, queriedUnusedAssets, clipboard, setAssetIdentities]);
+    }, [mainView, availableAssetIdentities, queriedUnusedAssets, clipboard]);
 
-    return assetIdentities.length > 0 ? (
+    return visibleAssetIdentities.length > 0 ? (
         viewModeSelection === VIEW_MODES.List ? (
-            <ListView assetIdentities={assetIdentities} />
+            <ListView assetIdentities={visibleAssetIdentities} />
         ) : (
-            <ThumbnailView assetIdentities={assetIdentities} />
+            <ThumbnailView assetIdentities={visibleAssetIdentities} />
         )
     ) : (
         <div className={classes.emptyStateWrapper}>

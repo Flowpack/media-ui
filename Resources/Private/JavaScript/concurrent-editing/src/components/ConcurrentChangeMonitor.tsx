@@ -1,8 +1,6 @@
-import * as React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-import { useMediaUi } from '@media-ui/core/src';
-import { useAssetQuery } from '@media-ui/core/src/hooks';
+import { useAssetQuery, useAssetsQuery } from '@media-ui/core/src/hooks';
 import { NEOS_ASSET_SOURCE } from '@media-ui/core/src/constants/neos';
 import { assetCreatedEvent, assetRemovedEvent, assetUpdatedEvent } from '@media-ui/core/src/events';
 
@@ -14,7 +12,7 @@ import useChangedAssetsQuery, { AssetChangeType } from '../hooks/useChangedAsset
 const ConcurrentChangeMonitor: React.FC = () => {
     const changedAssets = useChangedAssetsQuery();
     const { refetch: refetchAsset } = useAssetQuery();
-    const { refetchAssets } = useMediaUi();
+    const { refetch: refetchAssets } = useAssetsQuery();
 
     useEffect(() => {
         changedAssets?.forEach((change) => {

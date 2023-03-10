@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
@@ -14,6 +14,8 @@ import {
     currentPageState,
     initialLoadCompleteState,
     selectedSortOrderState,
+    featureFlagsState,
+    availableAssetsState,
 } from '../state';
 import { ASSETS } from '../queries';
 
@@ -36,8 +38,10 @@ interface AssetsQueryVariables {
     sortDirection: SORT_DIRECTION;
 }
 
-const useAssetsQuery = (paginationConfig: PaginationConfig) => {
-    const { assetsPerPage } = paginationConfig;
+const useAssetsQuery = () => {
+    const {
+        pagination: { assetsPerPage },
+    } = useRecoilValue(featureFlagsState);
     const searchTerm = useRecoilValue(searchTermState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
@@ -46,7 +50,7 @@ const useAssetsQuery = (paginationConfig: PaginationConfig) => {
     const currentPage = useRecoilValue(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
     const setInitialLoadComplete = useSetRecoilState(initialLoadCompleteState);
-    const [assets, setAssets] = useState<Asset[]>([]);
+    const [assets, setAssets] = useRecoilState(availableAssetsState);
 
     const offset = (currentPage - 1) * assetsPerPage;
 
