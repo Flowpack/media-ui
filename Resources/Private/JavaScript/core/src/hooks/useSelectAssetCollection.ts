@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { selector, useSetRecoilState } from 'recoil';
 
 import { clipboardVisibleState } from '@media-ui/feature-clipboard';
 import { selectedTagIdState } from '@media-ui/feature-asset-tags';
@@ -7,33 +7,30 @@ import { AssetCollection, selectedAssetCollectionIdState } from '@media-ui/featu
 
 import { selectedInspectorViewState, selectedAssetIdState, currentPageState } from '../state';
 
+// This is a proxy for setting the selected asset collection id, which also executes side effects to update other state
+// By setting the other state in a selector, we can ensure that the state is updated all at once
+const selectedAssetCollectionIdProxySelector = selector<null | string>({
+    key: 'SelectedAssetCollectionIdProxySelector',
+    get: ({ get }) => get(selectedAssetCollectionIdState),
+    set: ({ set }, assetCollectionId: string) => {
+        set(selectedInspectorViewState, 'assetCollection');
+        set(selectedTagIdState, null);
+        set(selectedAssetIdState, null);
+        set(currentPageState, 1);
+        set(selectedAssetCollectionIdState, assetCollectionId);
+        set(clipboardVisibleState, false);
+    },
+});
+
 // TODO: Move this hook into the asset collections package when the side effects can be triggered indirectly
 const useSelectAssetCollection = () => {
-    const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
-    const setSelectedTagId = useSetRecoilState(selectedTagIdState);
-    const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
-    const setSelectedInspectorView = useSetRecoilState(selectedInspectorViewState);
-    const setCurrentPage = useSetRecoilState(currentPageState);
-    const setClipboardVisibleState = useSetRecoilState(clipboardVisibleState);
+    const setSelectedAssetCollectionIdWithSideEffects = useSetRecoilState(selectedAssetCollectionIdProxySelector);
 
     return useCallback(
-        (assetCollection: AssetCollection | null) => {
-            // FIXME: Run all setters in a single transaction when useRecoilTransaction is available in the next recoil release
-            setSelectedInspectorView('assetCollection');
-            setSelectedTagId(null);
-            setSelectedAssetId(null);
-            setCurrentPage(1);
-            setSelectedAssetCollectionId(assetCollection?.id);
-            setClipboardVisibleState(false);
+        (assetCollection: AssetCollection) => {
+            setSelectedAssetCollectionIdWithSideEffects(assetCollection?.id);
         },
-        [
-            setSelectedInspectorView,
-            setSelectedTagId,
-            setSelectedAssetId,
-            setCurrentPage,
-            setSelectedAssetCollectionId,
-            setClipboardVisibleState,
-        ]
+        [setSelectedAssetCollectionIdWithSideEffects]
     );
 };
 export default useSelectAssetCollection;
