@@ -73,6 +73,6 @@ const AssetSourceList: React.FC = () => {
             ))}
         </nav>
     );
-}
+};
 
 export default React.memo(AssetSourceList);

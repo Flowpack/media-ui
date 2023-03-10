@@ -1,5 +1,3 @@
-import GraphQlEntity from '@media-ui/core/src/interfaces/GraphQLEntity';
-
 type AssetVariantType = 'AssetVariant';
 type CropInformationType = 'CropInformation';
 

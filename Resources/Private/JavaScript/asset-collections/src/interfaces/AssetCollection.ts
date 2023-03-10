@@ -1,5 +1,4 @@
-import GraphQlEntity from './GraphQLEntity';
-import Tag from './Tag';
+import { Tag } from '@media-ui/feature-asset-tags';
 
 type AssetCollectionType = 'AssetCollection';
 

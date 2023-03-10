@@ -1,5 +1,3 @@
-import { GraphQlEntity } from '@media-ui/core/src/interfaces';
-
 export enum UsageDetailsMetadataType {
     TEXT = 'TEXT',
     DATE = 'DATE',

@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/client';
 import { useRecoilValue } from 'recoil';
 
-import { selectedAssetCollectionIdState, selectedTagIdState } from '@media-ui/core/src/state';
+import { selectedTagIdState } from '@media-ui/feature-asset-tags';
+import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 
 import { UPLOAD_FILES } from '../mutations';
 import { FileUploadResult } from '../interfaces';

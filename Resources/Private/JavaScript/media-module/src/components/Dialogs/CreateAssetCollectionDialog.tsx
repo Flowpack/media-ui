@@ -38,7 +38,7 @@ const CreateAssetCollectionDialog = () => {
                     error.message
                 );
             });
-    }, [Notify, setDialogState, createAssetCollection, dialogState, translate]);
+    }, [setDialogState, createAssetCollection, dialogState.title, selectedAssetCollection.id, Notify, translate]);
     const setTitle = useCallback((title) => setDialogState((state) => ({ ...state, title })), [setDialogState]);
 
     return (

@@ -33,4 +33,4 @@ type PaginationConfig = {
 
 interface GraphQlEntity {
     __typename: string;
-};
+}
