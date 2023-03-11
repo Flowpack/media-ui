@@ -20,6 +20,16 @@ use Neos\Media\Domain\Model\AssetCollection;
 interface HierarchicalAssetCollectionInterface
 {
     /**
+     * @return string
+     */
+    public function getTitle();
+
+    /**
+     * @return Collection
+     */
+    public function getTags();
+
+    /**
      * @return AssetCollection|null
      */
     public function getParent();

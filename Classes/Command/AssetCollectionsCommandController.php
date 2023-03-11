@@ -42,7 +42,7 @@ class AssetCollectionsCommandController extends CommandController
 
     public function hierarchyCommand(): void
     {
-        $rows = array_map(function (AssetCollection $assetCollection) {
+        $rows = array_map(function (HierarchicalAssetCollectionInterface $assetCollection) {
             return [
                 $this->persistenceManager->getIdentifierByObject($assetCollection),
                 $assetCollection->getTitle(),
