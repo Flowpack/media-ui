@@ -41,10 +41,10 @@
     --theme-colors-ErrorHover: var(--colors-ErrorHover, #ff6a3c);
     --theme-colors-UncheckedCheckboxTick: var(--colors-UncheckedCheckboxTick, var(--textSubtle));
 
-    --theme-spacing-GoldenUnit: var(--spacing-Half, 40px);
-    --theme-spacing-Full: var(--spacing-Half, 16px);
+    --theme-spacing-GoldenUnit: var(--spacing-GoldenUnit, 40px);
+    --theme-spacing-Full: var(--spacing-Full, 16px);
     --theme-spacing-Half: var(--spacing-Half, 8px);
-    --theme-spacing-Quarter: var(--spacing-Half, 4px);
+    --theme-spacing-Quarter: var(--spacing-Quarter, 4px);
 
     --theme-unit: var(--unit, 40px);
     --theme-defaultMargin: var(--defaultMargin, 16px);
