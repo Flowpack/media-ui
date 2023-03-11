@@ -65,8 +65,6 @@ const tags = range(10).map((index) => ({
     __typename: 'Tag',
     id: `index ${index + 1}`,
     label: `Example tag ${index + 1}`,
-    parent: null,
-    children: [],
 }));
 
 const assetCollections = range(3).map((index) => ({
@@ -74,6 +72,22 @@ const assetCollections = range(3).map((index) => ({
     id: `someId_${index}`,
     title: `Example collection ${index + 1}`,
     tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
+    children:
+        index === 0
+            ? [
+                  {
+                      id: `someId_1`,
+                      title: `Example collection 2`,
+                  },
+              ]
+            : [],
+    parent:
+        index == 1
+            ? {
+                  id: `someId_0`,
+                  title: `Example collection 1`,
+              }
+            : null,
 }));
 
 const getUsageDetailsForAsset = (assetId: string) => {
