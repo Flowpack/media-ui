@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
@@ -10,7 +9,8 @@ import { useDeleteAsset } from '@media-ui/core/src/hooks';
 import useClipboard from '../hooks/useClipboard';
 import clipboardVisibleState from '../state/clipboardVisibleState';
 
-import * as styles from './ClipboardActions.module.css';
+// FIXME: Reading the class name from the CSS module only works in the media-module package right now for some reason, probably a Parcel v1 bug
+import './ClipboardActions.module.css';
 
 const ClipboardActions: React.FC = () => {
     const { translate } = useIntl();
@@ -42,7 +42,7 @@ const ClipboardActions: React.FC = () => {
     if (!clipboardVisible) return null;
 
     return (
-        <div className={styles.clipboardActions}>
+        <div className="clipboardActions">
             <IconButton
                 title={translate('clipboard.deleteAsset', 'Delete all assets in clipboard')}
                 icon="trash"

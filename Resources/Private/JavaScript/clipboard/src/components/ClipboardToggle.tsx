@@ -12,7 +12,8 @@ import ClipboardItem from './ClipboardItem';
 import useClipboard from '../hooks/useClipboard';
 import clipboardVisibleState from '../state/clipboardVisibleState';
 
-import * as styles from './ClipboardToggle.module.css';
+// FIXME: Reading the class name from the CSS module only works in the media-module package right now for some reason, probably a Parcel v1 bug
+import './ClipboardToggle.module.css';
 
 const ClipboardToggle: React.FC = () => {
     const { translate } = useIntl();
@@ -27,7 +28,7 @@ const ClipboardToggle: React.FC = () => {
     if (!initialLoadComplete) return null;
 
     return (
-        <div className={styles.clipboardToggle}>
+        <div className="clipboardToggle">
             <Button
                 disabled={size === 0}
                 size="regular"

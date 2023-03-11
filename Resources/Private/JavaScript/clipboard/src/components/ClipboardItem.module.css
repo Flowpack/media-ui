@@ -1,4 +1,6 @@
 .clipboardItem {
+    background: none;
+    border: none;
     cursor: pointer;
     min-width: var(--theme-spacing-GoldenUnit);
     width: var(--theme-spacing-GoldenUnit);

@@ -5,7 +5,8 @@ import { useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery, useSelectAsset } from '@media-ui/core/src/hooks';
 
-import * as styles from './ClipboardItem.module.css';
+// FIXME: Reading the class name from the CSS module only works in the media-module package right now for some reason, probably a Parcel v1 bug
+import './ClipboardItem.module.css';
 
 interface ClipboardItemProps {
     assetIdentity: AssetIdentity;
@@ -27,14 +28,14 @@ const ClipboardItem: React.FC<ClipboardItemProps> = ({ assetIdentity }: Clipboar
     }, [assetIdentity, selectAsset, Notify, translate]);
 
     return (
-        <span onClick={onClick} className={styles.clipboardItem} title={asset?.isInClipboard + ''}>
+        <button type="button" onClick={onClick} className="clipboardItem" title={asset?.label}>
             <img
                 src={asset?.thumbnailUrl || dummyImage}
                 alt={asset?.label || assetIdentity.assetId}
                 width={40}
                 height={36}
             />
-        </span>
+        </button>
     );
 };
 
