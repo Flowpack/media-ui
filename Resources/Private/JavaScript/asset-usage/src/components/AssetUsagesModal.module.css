@@ -1,0 +1,41 @@
+.assetUsage {
+    padding: var(--theme-spacing-Full);
+    line-height: 1em;
+}
+
+.assetUsage section + section {
+    margin-top: var(--theme-spacing-Full);
+}
+
+.usageTable {
+    width: 100%;
+}
+
+.usageTable th {
+    font-weight: bold;
+    text-align: left;
+}
+
+.usageTable td,
+.usageTable th {
+    padding: var(--theme-spacing-Quarter);
+}
+
+.usageTable td:first-child,
+.usageTable th:first-child {
+    padding-left: 0;
+}
+
+.usageTable td:last-child,
+.usageTable th:last-child {
+    padding-right: 0;
+}
+
+.neos .usageTable a {
+    color: var(--theme-colors-PrimaryBlue);
+}
+
+.neos .usageTable a:hover {
+    color: var(--theme-colors-PrimaryBlue);
+    text-decoration: underline;
+}

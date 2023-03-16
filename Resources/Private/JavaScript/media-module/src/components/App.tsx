@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import { useRecoilValue } from 'recoil';
-import classNames from 'classnames';
+import cx from 'classnames';
 
 import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { useSelectAsset, useSelectAssetSource } from '@media-ui/core/src/hooks';
@@ -20,11 +20,11 @@ import { BottomBar } from './BottomBar';
 import { TopBar } from './TopBar';
 import { Main } from './Main';
 import ErrorBoundary from './ErrorBoundary';
-import { createAssetCollectionDialogState, createTagDialogState } from '../state';
-import { CreateTagDialog, CreateAssetCollectionDialog } from './Dialogs';
 import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
 
 import styles from './App.module.css';
+import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
+import { CreateAssetCollectionDialog, createAssetCollectionDialogState } from '@media-ui/feature-asset-collections';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode, isInNodeCreationDialog }) => ({
@@ -121,7 +121,7 @@ const App = () => {
     }, [searchTerm]);
 
     return (
-        <div className={classNames(classes.container, styles.mediaModuleApp)} ref={containerRef}>
+        <div className={cx(classes.container, styles.mediaModuleApp)} ref={containerRef}>
             <LoadingIndicator />
 
             <div className={classes.gridLeft}>

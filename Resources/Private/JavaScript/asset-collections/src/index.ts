@@ -5,6 +5,9 @@ export { default as useDeleteAssetCollection } from './hooks/useDeleteAssetColle
 export { default as useUpdateAssetCollection } from './hooks/useUpdateAssetCollection';
 export { default as useCreateAssetCollection } from './hooks/useCreateAssetCollection';
 
+export { default as AssetCollectionTree } from './components/AssetCollectionTree';
+export { default as CreateAssetCollectionDialog } from './components/CreateAssetCollectionDialog';
+
 export { default as AssetCollection } from './interfaces/AssetCollection';
 export { default as DeleteAssetCollectionResult } from './interfaces/DeleteAssetCollectionResult';
 
@@ -18,3 +21,4 @@ export { default as deleteAssetCollection } from './mutations/deleteAssetCollect
 export { default as updateAssetCollection } from './mutations/updateAssetCollection';
 
 export { default as selectedAssetCollectionIdState } from './state/selectedAssetCollectionIdState';
+export { default as createAssetCollectionDialogState } from './state/createAssetCollectionDialogState';

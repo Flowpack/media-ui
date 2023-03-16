@@ -1,23 +1,18 @@
-import * as React from 'react';
+import React, { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { Button, TextInput, Label } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core/src';
 import { Dialog } from '@media-ui/core/src/components';
-import { useCreateAssetCollection, useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
 
-import { useCallback } from 'react';
-import { createAssetCollectionDialogState } from '../../state';
+import useCreateAssetCollection from '../hooks/useCreateAssetCollection';
+import useSelectedAssetCollection from '../hooks/useSelectedAssetCollection';
+import createAssetCollectionDialogState from '../state/createAssetCollectionDialogState';
 
-const useStyles = createUseMediaUiStyles(() => ({
-    formBody: {
-        padding: 16,
-    },
-}));
+import './CreateAssetCollectionDialog.module.css';
 
 const CreateAssetCollectionDialog = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
     const [dialogState, setDialogState] = useRecoilState(createAssetCollectionDialogState);
@@ -63,7 +58,7 @@ const CreateAssetCollectionDialog = () => {
                 </Button>,
             ]}
         >
-            <div className={classes.formBody}>
+            <div className="formBody">
                 <Label>{translate('general.title', 'Title')}</Label>
                 <TextInput
                     setFocus

@@ -1,8 +1,9 @@
-import * as React from 'react';
+import React from 'react';
+
+import { Column } from '@media-ui/core/src/components';
 
 import { AssetInspector, AssetCollectionInspector, IptcMetadataInspector, TagInspector } from './Inspector';
 import CurrentSelection from './CurrentSelection';
-import { Column } from '../Presentation';
 
 const SideBarRight = () => {
     // TODO: Read from component store

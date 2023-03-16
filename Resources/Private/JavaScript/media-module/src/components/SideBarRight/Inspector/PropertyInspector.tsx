@@ -5,12 +5,12 @@ import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-compo
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core/src';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
+import { IconLabel } from '@media-ui/core/src/components';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
-import { IconLabel } from '../../Presentation';
 import Tasks from './Tasks';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({

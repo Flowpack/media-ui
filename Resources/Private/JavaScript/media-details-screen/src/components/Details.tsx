@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useRecoilValue } from 'recoil';
 import cx from 'classnames';
 
@@ -14,8 +14,8 @@ import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
 
 import LoadingIndicator from '@media-ui/media-module/src/components/LoadingIndicator';
 import ErrorBoundary from '@media-ui/media-module/src/components/ErrorBoundary';
-import { createAssetCollectionDialogState, createTagDialogState } from '@media-ui/media-module/src/state';
-import { CreateTagDialog, CreateAssetCollectionDialog } from '@media-ui/media-module/src/components/Dialogs';
+import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
+import { CreateAssetCollectionDialog, createAssetCollectionDialogState } from '@media-ui/feature-asset-collections';
 import { AssetInspector } from '@media-ui/media-module/src/components/SideBarRight/Inspector';
 import Preview from './Preview';
 

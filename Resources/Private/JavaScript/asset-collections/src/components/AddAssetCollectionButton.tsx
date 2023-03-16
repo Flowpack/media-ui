@@ -1,23 +1,15 @@
-import * as React from 'react';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { Button, Icon } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core/src';
 
-import { createAssetCollectionDialogState } from '../../../state';
+import createAssetCollectionDialogState from '../state/createAssetCollectionDialogState';
 
-const useStyles = createUseMediaUiStyles({
-    plusIcon: {
-        top: '15px !important',
-        left: '13px !important',
-        width: '9px !important',
-    },
-});
+import './AddAssetCollectionButton.module.css';
 
 const AddAssetCollectionButton: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const setCreateAssetCollectionDialogState = useSetRecoilState(createAssetCollectionDialogState);
 
@@ -35,7 +27,7 @@ const AddAssetCollectionButton: React.FC = () => {
         >
             <span className="fa-layers fa-fw">
                 <Icon icon="folder" />
-                <Icon icon="plus" color="primaryBlue" className={classes.plusIcon} />
+                <Icon icon="plus" color="primaryBlue" className="plusIcon" />
             </span>
         </Button>
     );

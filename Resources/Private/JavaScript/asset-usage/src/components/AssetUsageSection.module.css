@@ -1,0 +1,54 @@
+.usageSection h2 {
+    font-size: var(--theme-fontSize-base);
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+.usageTable {
+    width: 100%;
+    margin-top: var(--theme-spacing-Full);
+    line-height: 1.5;
+}
+
+.usageTable th {
+    font-weight: bold;
+    text-align: left;
+}
+
+.usageTable td,
+.usageTable th {
+    padding: var(--theme-spacing-Quarter);
+}
+
+.usageTable td:first-child,
+.usageTable th:first-child {
+    padding-left: 0;
+}
+
+.usageTable td:last-child,
+.usageTable th:last-child {
+    padding-right: 0;
+}
+
+/* This is for specificity; otherwise `.neos.neos-module a` would override this link style in the backend module */
+.usageTable.usageTable a {
+    color: var(--theme-colors-PrimaryBlue);
+}
+
+.usageTable.usageTable a:hover {
+    color: var(--theme-colors-PrimaryBlueHover);
+    text-decoration: underline;
+}
+
+.usageTable li {
+    list-style-type: disc;
+}
+
+.usageTable li ul {
+    padding-left: 1rem;
+}
+
+.usageTable li ul li {
+    display: list-item;
+}

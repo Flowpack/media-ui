@@ -2138,6 +2138,8 @@ __metadata:
 "@media-ui/feature-asset-tags@workspace:*, @media-ui/feature-asset-tags@workspace:Resources/Private/JavaScript/asset-tags":
   version: 0.0.0-use.local
   resolution: "@media-ui/feature-asset-tags@workspace:Resources/Private/JavaScript/asset-tags"
+  dependencies:
+    "@media-ui/feature-asset-collections": "workspace:*"
   languageName: unknown
   linkType: soft
 

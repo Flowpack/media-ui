@@ -4,20 +4,12 @@ import { useSetRecoilState } from 'recoil';
 
 import { Button, Icon } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core/src';
+import { createTagDialogState } from '@media-ui/feature-asset-tags';
 
-import { createTagDialogState } from '../../../state';
-
-const useStyles = createUseMediaUiStyles({
-    plusIcon: {
-        top: '13px !important',
-        left: '11px !important',
-        width: '9px !important',
-    },
-});
+import './AddTagButton.module.css';
 
 const AddTagButton: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const setCreateTagDialogState = useSetRecoilState(createTagDialogState);
 
@@ -35,7 +27,7 @@ const AddTagButton: React.FC = () => {
         >
             <span className="fa-layers fa-fw">
                 <Icon icon="tag" />
-                <Icon icon="plus" color="primaryBlue" className={classes.plusIcon} />
+                <Icon icon="plus" color="primaryBlue" className="plusIcon" />
             </span>
         </Button>
     );

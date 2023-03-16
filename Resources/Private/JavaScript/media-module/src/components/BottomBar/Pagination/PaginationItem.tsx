@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import cx from 'classnames';
 
 import { IconButton, Button } from '@neos-project/react-ui-components';
 
@@ -36,7 +37,7 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
 }: PaginationItemProps) => {
     const classes = useStyles();
     return (
-        <li className={[classes.item, selected ? classes.selected : ''].join(' ')}>
+        <li className={cx(classes.item, selected && classes.selected)}>
             {icon ? (
                 <IconButton
                     icon={icon}

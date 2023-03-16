@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Headline } from '@neos-project/react-ui-components';
 
 import { useIntl, useMediaUi } from '@media-ui/core/src';
-import { IconLabel } from '../../Presentation';
+import { IconLabel } from '@media-ui/core/src/components';
 import { AssetUsagesToggleButton } from '@media-ui/feature-asset-usage/src/index';
 import { SimilarAssetsToggleButton } from '@media-ui/feature-similar-assets';
 import { AssetReplacementButton } from '@media-ui/feature-asset-upload/src/components';

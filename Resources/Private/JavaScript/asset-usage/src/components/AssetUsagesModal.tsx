@@ -4,48 +4,16 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Dialog } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
+import { useIntl } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 
 import assetUsageDetailsModalState from '../state/assetUsageDetailsModalState';
 import useAssetUsagesQuery from '../hooks/useAssetUsages';
 import AssetUsageSection from './AssetUsageSection';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    assetUsage: {
-        padding: theme.spacing.full,
-        lineHeight: '1em',
-        '& section + section': {
-            marginTop: theme.spacing.full,
-        },
-    },
-    usageTable: {
-        width: '100%',
-        '& th': {
-            fontWeight: 'bold',
-            textAlign: 'left',
-        },
-        '& td, & th': {
-            padding: theme.spacing.quarter,
-            '&:first-child': {
-                paddingLeft: 0,
-            },
-            '&:last-child': {
-                paddingRight: 0,
-            },
-        },
-        '.neos & a': {
-            color: theme.colors.primary,
-            '&:hover': {
-                color: theme.colors.primary,
-                textDecoration: 'underline',
-            },
-        },
-    },
-}));
+import './AssetUsagesModal.module.css';
 
 const AssetUsagesModal: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const [isOpen, setIsOpen] = useRecoilState(assetUsageDetailsModalState);
     const asset = useSelectedAsset();
@@ -67,7 +35,7 @@ const AssetUsagesModal: React.FC = () => {
                 </Button>,
             ]}
         >
-            <div className={classes.assetUsage}>
+            <div className="assetUsage">
                 {assetUsageDetails?.length > 0 ? (
                     assetUsageDetails.map((usageDetailsGroup, index) => (
                         <AssetUsageSection key={index} usageDetailsGroup={usageDetailsGroup} />

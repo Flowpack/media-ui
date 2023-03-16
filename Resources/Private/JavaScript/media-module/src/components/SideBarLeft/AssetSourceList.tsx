@@ -5,9 +5,8 @@ import { Headline } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
 import { useAssetSourcesQuery, useSelectAssetSource } from '@media-ui/core/src/hooks';
+import { IconLabel } from '@media-ui/core/src/components';
 import { clipboardVisibleState } from '@media-ui/feature-clipboard/src';
-
-import { IconLabel } from '../Presentation';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     assetSourceList: {

@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { selectorFamily, useRecoilValue } from 'recoil';
+import cx from 'classnames';
 
 import { Icon } from '@neos-project/react-ui-components';
 
@@ -8,9 +8,9 @@ import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@medi
 import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
+import { AssetLabel } from '@media-ui/core/src/components';
 
 import { AssetActions } from './index';
-import { AssetLabel } from '../Presentation';
 import MissingAssetActions from './MissingAssetActions';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -132,12 +132,12 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: Thumbn
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
 
     return (
-        <figure className={[classes.thumbnail, !canBeSelected && classes.disabled].join(' ')} title={asset?.label}>
+        <figure className={cx(classes.thumbnail, !canBeSelected && classes.disabled)} title={asset?.label}>
             {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
             <picture onClick={() => onSelect(assetIdentity, isSelected)} className={classes.picture}>
                 <img src={loading || !asset ? dummyImage : asset.thumbnailUrl} alt={asset?.label} />
             </picture>
-            <figcaption className={[classes.caption, isSelected ? classes.selected : ''].join(' ')}>
+            <figcaption className={cx(classes.caption, isSelected && classes.selected)}>
                 {asset && (
                     <>
                         {canBeSelected && asset.file ? (

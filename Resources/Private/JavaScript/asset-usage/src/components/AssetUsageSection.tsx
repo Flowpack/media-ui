@@ -1,56 +1,10 @@
 import * as React from 'react';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core/src';
 
 import { UsageDetailsGroup } from '../interfaces/UsageDetails';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    usageSection: {
-        '& h2': {
-            fontSize: theme.fontSize.base,
-            fontWeight: 'bold',
-            margin: 0,
-            padding: 0,
-        },
-    },
-    usageTable: {
-        width: '100%',
-        marginTop: theme.spacing.full,
-        lineHeight: 1.5,
-        '& th': {
-            fontWeight: 'bold',
-            textAlign: 'left',
-        },
-        '& td, & th': {
-            padding: theme.spacing.quarter,
-            verticalAlign: 'baseline',
-            '&:first-child': {
-                paddingLeft: 0,
-            },
-            '&:last-child': {
-                paddingRight: 0,
-            },
-        },
-        // `&&` is for specificity, otherwise `.neos.neos-module a` would override
-        // this link style in the backend module
-        '&& a': {
-            color: theme.colors.primary,
-            '&:hover': {
-                color: theme.colors.primary,
-                textDecoration: 'underline',
-            },
-        },
-        '& li': {
-            listStyleType: 'disc',
-            '& ul': {
-                paddingLeft: '1rem',
-                '& li': {
-                    display: 'list-item',
-                },
-            },
-        },
-    },
-}));
+import './AssetUsageSection.module.css';
 
 interface AssetUsageSectionProps {
     usageDetailsGroup: UsageDetailsGroup;
@@ -80,17 +34,16 @@ function renderObject(data: Record<string, any>) {
 }
 
 const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup }: AssetUsageSectionProps) => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const { label, usages, metadataSchema } = usageDetailsGroup;
 
     return (
-        <section className={classes.usageSection}>
+        <section className="usageSection">
             <h2>
                 {label} ({usages.length})
             </h2>
             {usages.length > 0 && (
-                <table className={classes.usageTable}>
+                <table className="usageTable">
                     <thead>
                         <tr>
                             <th>{translate('assetUsage.header.label', 'Label')}</th>

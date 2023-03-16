@@ -1,0 +1,8 @@
+.column {
+    display: grid;
+    grid-auto-rows: minmax(min-content, max-content);
+    grid-gap: var(--theme-spacing-Full);
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+}

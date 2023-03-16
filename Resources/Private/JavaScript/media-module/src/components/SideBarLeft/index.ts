@@ -1,6 +1,3 @@
-import AssetSourceList from './AssetSourceList';
-import AssetSourceDescription from './AssetSourceDescription';
-import SideBarLeft from './SideBarLeft';
-import { AssetCollectionTree } from './Tree';
-
-export { AssetSourceList, AssetSourceDescription, SideBarLeft, AssetCollectionTree };
+export { default as AssetSourceList } from './AssetSourceList';
+export { default as AssetSourceDescription } from './AssetSourceDescription';
+export { default as SideBarLeft } from './SideBarLeft';

@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from 'react';
+import cx from 'classnames';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
 import { Asset } from '@media-ui/core/src/interfaces';
@@ -81,7 +82,7 @@ const Preview: React.FC<PreviewProps> = ({ asset, loading, buildLinkToMediaUi }:
 
     return (
         <figure
-            className={[classes.preview, loading && classes.loading].filter(Boolean).join(' ')}
+            className={cx(classes.preview, loading && classes.loading)}
             title={asset?.label}
         >
             {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}

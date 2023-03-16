@@ -3,9 +3,8 @@ import * as React from 'react';
 import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { IconLabel } from '@media-ui/core/src/components';
 import { Tag } from '@media-ui/feature-asset-tags';
-
-import { IconLabel } from '../../Presentation';
 
 const useStyles = createUseMediaUiStyles({
     tagSelectBox: {},

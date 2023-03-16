@@ -3,11 +3,14 @@ import { useSetRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { useDeleteTag, useSelectedTag } from '@media-ui/feature-asset-tags';
-import { useDeleteAssetCollection, useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
 import { useIntl, useNotify } from '@media-ui/core';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
+import { useDeleteTag, useSelectedTag } from '@media-ui/feature-asset-tags';
 
+import useDeleteAssetCollection from '../hooks/useDeleteAssetCollection';
+import useSelectedAssetCollection from '../hooks/useSelectedAssetCollection';
+
+// TODO: Try to get rid of the hooks which access the tag and assetcollection and only work with the recoil id states
 const DeleteButton: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
@@ -17,6 +20,7 @@ const DeleteButton: React.FC = () => {
     const { deleteAssetCollection } = useDeleteAssetCollection();
     const setSelectedAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
 
+    // TODO: Turn this into a hook to prevent re-renders and cleanup the code
     const onClickDelete = useCallback(() => {
         if (selectedTag) {
             // TODO: Use custom modal

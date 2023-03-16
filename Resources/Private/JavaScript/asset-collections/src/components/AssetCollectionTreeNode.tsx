@@ -5,9 +5,10 @@ import { Tree } from '@neos-project/react-ui-components';
 
 import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
+import { localStorageEffect } from '@media-ui/media-module/src/core/PersistentStateManager';
 import { selectedAssetCollectionIdState, useAssetCollectionQuery } from '@media-ui/feature-asset-collections';
 
-import TreeNodeProps from './TreeNodeProps';
+import TreeNodeProps from '../interfaces/TreeNodeProps';
 import TagTreeNode from './TagTreeNode';
 
 export interface AssetCollectionTreeNodeProps extends TreeNodeProps {
@@ -15,10 +16,10 @@ export interface AssetCollectionTreeNodeProps extends TreeNodeProps {
     children?: React.ReactElement[];
 }
 
-// TODO: Persist the tree state into local storage
 const assetCollectionTreeState = atom<Record<string, boolean>>({
     key: 'AssetCollectionTreeState',
     default: {},
+    effects: [localStorageEffect('AssetCollectionTreeState')],
 });
 
 const assetCollectionTreeCollapsedState = selectorFamily<

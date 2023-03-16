@@ -52,8 +52,13 @@
     --theme-tightMargin: var(--tightMargin, 4px);
     --theme-wideMargin: var(--wideMargin, 32px);
 
+    --theme-fontSize-base: 14px;
+    --theme-fontSize-small: 12px;
+
     /**
      * Media module specific media variables
      */
     --theme-colors-border: var(--theme-colors-ContrastDark);
+    --theme-colors-alternatingBackground: var(--theme-colors-ContrastDark);
+    --theme-colors-inactive: var(--theme-colors-ContrastBright);
 }

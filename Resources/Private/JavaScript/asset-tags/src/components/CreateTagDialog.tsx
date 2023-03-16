@@ -4,21 +4,16 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Label, TextInput } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core/src';
 import { useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
 import { useCreateTag } from '@media-ui/feature-asset-tags';
 import { Dialog } from '@media-ui/core/src/components';
 
-import { createTagDialogState } from '../../state';
+import createTagDialogState from '../state/createTagDialogState';
 
-const useStyles = createUseMediaUiStyles(() => ({
-    formBody: {
-        padding: 16,
-    },
-}));
+import './CreateTagDialog.module.css';
 
 const CreateTagDialog: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
     const selectedAssetCollection = useSelectedAssetCollection();
@@ -59,7 +54,7 @@ const CreateTagDialog: React.FC = () => {
                 </Button>,
             ]}
         >
-            <div className={classes.formBody}>
+            <div className="formBody">
                 <Label>{translate('general.label', 'Label')}</Label>
                 <TextInput
                     setFocus

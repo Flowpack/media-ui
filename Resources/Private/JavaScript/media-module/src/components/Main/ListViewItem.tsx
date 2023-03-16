@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { selectorFamily, useRecoilValue } from 'recoil';
+import cx from 'classnames';
 
 import { Icon } from '@neos-project/react-ui-components';
 
@@ -8,9 +9,9 @@ import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 import { humanFileSize } from '@media-ui/core/src/helper';
+import { AssetLabel } from '@media-ui/core/src/components';
 
 import { AssetActions } from './index';
-import { AssetLabel } from '../Presentation';
 import MissingAssetActions from './MissingAssetActions';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
@@ -115,7 +116,7 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: 
     const onSelectItem = useCallback(() => onSelect(assetIdentity, isSelected), [onSelect, assetIdentity, isSelected]);
 
     return (
-        <tr className={[classes.listViewItem, isSelected ? classes.selected : ''].join(' ')}>
+        <tr className={cx(classes.listViewItem, isSelected && classes.selected)}>
             <td className={classes.previewColumn} onClick={onSelectItem}>
                 <picture>
                     {canBeSelected ? (

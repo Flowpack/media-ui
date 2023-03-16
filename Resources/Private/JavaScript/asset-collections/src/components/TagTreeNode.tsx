@@ -8,7 +8,7 @@ import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 import { selectedTagIdState } from '@media-ui/feature-asset-tags';
 
-import TreeNodeProps from './TreeNodeProps';
+import TreeNodeProps from '../interfaces/TreeNodeProps';
 
 export interface TagTreeNodeProps extends TreeNodeProps {
     tagId: string;

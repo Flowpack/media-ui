@@ -1,4 +1,5 @@
 import * as React from 'react';
+import cx from 'classnames';
 
 import { Icon } from '@neos-project/react-ui-components';
 
@@ -105,7 +106,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file, loading = false, fileSt
 
     // TODO: Output helpful localised messages for results 'EXISTS', 'ADDED', 'ERROR'
     return (
-        <div className={[classes.thumb, stateClassName].join(' ')} title={file.name}>
+        <div className={cx(classes.thumb, stateClassName)} title={file.name}>
             <div className={classes.thumbInner}>
                 <img src={file.preview} alt={file.name} className={classes.img} />
                 {loading && <Icon icon="spinner" spin={true} />}
