@@ -112,4 +112,24 @@ class HierarchicalAssetCollectionAspect
         $assetCollection = $joinPoint->getProxy();
         return ObjectAccess::getProperty($assetCollection, 'children', true) ?? new ArrayCollection();
     }
+
+    /**
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->getTitle())")
+     */
+    public function getTitle(JoinPointInterface $joinPoint): string
+    {
+        /** @var AssetCollection $assetCollection */
+        $assetCollection = $joinPoint->getProxy();
+        return $assetCollection->getTitle();
+    }
+
+    /**
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->getTags())")
+     */
+    public function getTags(JoinPointInterface $joinPoint): Collection
+    {
+        /** @var AssetCollection $assetCollection */
+        $assetCollection = $joinPoint->getProxy();
+        return $assetCollection->getTags();
+    }
 }
