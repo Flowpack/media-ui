@@ -17,7 +17,7 @@ export const selectedAssetCollectionAndTagState = selector<{ tagId: string | nul
         assetCollectionId: get(selectedAssetCollectionIdState),
     }),
     set: ({ set }, props: { tagId: string | null; assetCollectionId: string | null }) => {
-        set(selectedInspectorViewState, 'tag');
+        set(selectedInspectorViewState, props.tagId ? 'tag' : 'assetCollection');
         set(selectedTagIdState, props.tagId);
         set(selectedAssetIdState, null);
         set(currentPageState, 1);
