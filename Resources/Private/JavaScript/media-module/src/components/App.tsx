@@ -2,16 +2,19 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 import cx from 'classnames';
 
-import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core';
 import { useSelectAsset, useSelectAssetSource } from '@media-ui/core/src/hooks';
 import { searchTermState } from '@media-ui/core/src/state';
-import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
-import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
-import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing/src';
-import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets/src';
+import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
+import { ClipboardWatcher } from '@media-ui/feature-clipboard';
+import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
+import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets';
 import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/state';
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
 import { AssetPreview } from '@media-ui/feature-asset-preview/src';
+import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
+import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
+import { CreateAssetCollectionDialog, createAssetCollectionDialogState } from '@media-ui/feature-asset-collections';
 
 import { SideBarLeft } from './SideBarLeft';
 import { SideBarRight } from './SideBarRight';
@@ -20,11 +23,9 @@ import { BottomBar } from './BottomBar';
 import { TopBar } from './TopBar';
 import { Main } from './Main';
 import ErrorBoundary from './ErrorBoundary';
-import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
 
 import styles from './App.module.css';
-import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
-import { CreateAssetCollectionDialog, createAssetCollectionDialogState } from '@media-ui/feature-asset-collections';
+import '@media-ui/core/src/Theme.module.css';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode, isInNodeCreationDialog }) => ({
@@ -121,7 +122,7 @@ const App = () => {
     }, [searchTerm]);
 
     return (
-        <div className={cx(classes.container, styles.mediaModuleApp)} ref={containerRef}>
+        <div className={cx(classes.container, styles.mediaModuleApp, 'mediaModuleTheme')} ref={containerRef}>
             <LoadingIndicator />
 
             <div className={classes.gridLeft}>

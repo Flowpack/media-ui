@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import { Dialog as NeosUiDialog } from '@neos-project/react-ui-components';
 
@@ -16,5 +16,5 @@ export const Dialog: React.FC<any> = (props) => {
         }
     }, [dialogRef]);
 
-    return <NeosUiDialog {...props} ref={dialogRef} />;
+    return <NeosUiDialog {...props} ref={dialogRef} className="mediaModuleTheme" />;
 };
