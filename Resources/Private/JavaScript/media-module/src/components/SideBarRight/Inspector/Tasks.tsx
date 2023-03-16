@@ -10,7 +10,7 @@ import { AssetReplacementButton } from '@media-ui/feature-asset-upload/src/compo
 import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 
-import * as styles from './Tasks.module.css';
+import styles from './Tasks.module.css';
 
 const Tasks: React.FC = () => {
     const { translate } = useIntl();

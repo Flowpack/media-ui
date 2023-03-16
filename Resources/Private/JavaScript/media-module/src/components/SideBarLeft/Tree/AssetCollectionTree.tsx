@@ -13,7 +13,7 @@ import AddAssetCollectionButton from './AddAssetCollectionButton';
 import AddTagButton from './AddTagButton';
 import DeleteButton from './DeleteButton';
 
-import * as styles from './AssetCollectionTree.module.css';
+import styles from './AssetCollectionTree.module.css';
 
 const AssetCollectionTree = () => {
     const { translate } = useIntl();

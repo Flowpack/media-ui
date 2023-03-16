@@ -24,7 +24,7 @@ import { createAssetCollectionDialogState, createTagDialogState } from '../state
 import { CreateTagDialog, CreateAssetCollectionDialog } from './Dialogs';
 import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
 
-import * as styles from './App.module.css';
+import styles from './App.module.css';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode, isInNodeCreationDialog }) => ({
