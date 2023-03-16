@@ -21,4 +21,4 @@ export { default as deleteAssetCollection } from './mutations/deleteAssetCollect
 export { default as updateAssetCollection } from './mutations/updateAssetCollection';
 
 export { default as selectedAssetCollectionIdState } from './state/selectedAssetCollectionIdState';
-export { default as createAssetCollectionDialogState } from './state/createAssetCollectionDialogState';
+export { default as createAssetCollectionDialogState } from './state/createAssetCollectionDialogVisibleState';

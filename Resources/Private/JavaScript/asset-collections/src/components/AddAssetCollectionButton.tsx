@@ -5,13 +5,13 @@ import { Button, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core/src';
 
-import createAssetCollectionDialogState from '../state/createAssetCollectionDialogState';
+import createAssetCollectionDialogVisibleState from '../state/createAssetCollectionDialogVisibleState';
 
 import './AddAssetCollectionButton.module.css';
 
 const AddAssetCollectionButton: React.FC = () => {
     const { translate } = useIntl();
-    const setCreateAssetCollectionDialogState = useSetRecoilState(createAssetCollectionDialogState);
+    const setCreateAssetCollectionDialogState = useSetRecoilState(createAssetCollectionDialogVisibleState);
 
     const onClickCreate = useCallback(() => {
         setCreateAssetCollectionDialogState({ title: '', visible: true });
