@@ -16,15 +16,14 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     },
 }));
 
-const Actions = ({
-    hasUnpublishedChanges,
-    handleApply,
-    handleDiscard,
-}: {
+interface ActionProps {
     hasUnpublishedChanges: boolean;
     handleApply: () => void;
     handleDiscard: () => void;
-}) => {
+    inputValid: boolean;
+}
+
+const Actions: React.FC<ActionProps> = ({ hasUnpublishedChanges, handleApply, handleDiscard, inputValid }) => {
     const classes = useStyles();
     const { translate } = useIntl();
     return (
@@ -39,7 +38,7 @@ const Actions = ({
                 {translate('inspector.actions.discard', 'Discard')}
             </Button>
             <Button
-                disabled={!hasUnpublishedChanges}
+                disabled={!hasUnpublishedChanges || !inputValid}
                 size="regular"
                 style="success"
                 hoverStyle="success"

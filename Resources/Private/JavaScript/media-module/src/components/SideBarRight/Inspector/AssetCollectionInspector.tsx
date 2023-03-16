@@ -19,11 +19,15 @@ const AssetCollectionInspector = () => {
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();
     const { translate } = useIntl();
-    const [title, setTitle] = useState<string>(null);
+    const [title, setTitle] = useState<string>('');
 
     const { updateAssetCollection } = useUpdateAssetCollection();
 
     const hasUnpublishedChanges = selectedAssetCollection && title !== selectedAssetCollection.title;
+
+    const handleChange = useCallback((value: string) => {
+        setTitle(value.trim());
+    }, []);
 
     const handleDiscard = useCallback(() => {
         if (selectedAssetCollection) {
@@ -61,13 +65,14 @@ const AssetCollectionInspector = () => {
     return (
         <InspectorContainer>
             <Property label={translate('inspector.title', 'Title')}>
-                <TextInput type="text" value={title || ''} onChange={setTitle} onEnterKey={handleApply} />
+                <TextInput type="text" value={title} onChange={handleChange} onEnterKey={handleApply} />
             </Property>
 
             <Actions
                 handleApply={handleApply}
                 handleDiscard={handleDiscard}
                 hasUnpublishedChanges={hasUnpublishedChanges}
+                inputValid={!!title}
             />
 
             <TagSelectBoxAssetCollection />
