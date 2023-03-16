@@ -1,0 +1,38 @@
+.currentSelection {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    overflow: hidden;
+}
+
+.headline {
+    user-select: none;
+    flex: 1 1 100%;
+    font-weight: bold;
+    line-height: var(--theme-spacing-GoldenUnit);
+}
+
+.label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.label svg {
+    margin-right: var(--theme-spacing-Half);
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.breadcrumb > * {
+    background-color: var(--theme-colors-alternatingBackground);
+    padding: 3px 5px;
+    overflow: hidden;
+    display: block;
+    text-overflow-ellipsis: ellipsis;
+    flex: 0 0 auto;
+}
