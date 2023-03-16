@@ -113,6 +113,7 @@ export function MediaUiProvider({
         [Notify, translate, deleteAsset, approvalAttainmentStrategy]
     );
 
+    // TODO: This can properly be optimised by turning it into a recoil readonly selector family
     const isAssetSelectable = useCallback(
         (asset: Asset) => {
             if (constraints.mediaTypes?.length > 0) {
