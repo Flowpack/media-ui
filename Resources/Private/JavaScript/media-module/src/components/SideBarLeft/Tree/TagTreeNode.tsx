@@ -1,29 +1,34 @@
 import * as React from 'react';
-import { useSetRecoilState } from 'recoil';
+import { selectorFamily, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Tree } from '@neos-project/react-ui-components';
 
 import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
+import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
+import { selectedTagIdState } from '@media-ui/feature-asset-tags';
 
 import TreeNodeProps from './TreeNodeProps';
 
 export interface TagTreeNodeProps extends TreeNodeProps {
     tagId: string;
     label: string;
-    isFocused: boolean;
     assetCollectionId?: string;
     level: number;
 }
 
-const TagTreeNode: React.FC<TagTreeNodeProps> = ({
-    tagId,
-    isFocused,
-    assetCollectionId,
-    label,
-    level,
-}: TagTreeNodeProps) => {
+// This state selector provides the focused state for each individual asset collection
+const tagFocusedState = selectorFamily<boolean, { assetCollectionId: string; tagId: string }>({
+    key: 'TagFocusedState',
+    get:
+        ({ assetCollectionId, tagId }) =>
+        ({ get }) =>
+            get(selectedAssetCollectionIdState) === assetCollectionId && get(selectedTagIdState) === tagId,
+});
+
+const TagTreeNode: React.FC<TagTreeNodeProps> = ({ tagId, assetCollectionId, label, level }: TagTreeNodeProps) => {
     const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
+    const isFocused = useRecoilValue(tagFocusedState({ assetCollectionId, tagId }));
 
     return (
         <Tree.Node>
