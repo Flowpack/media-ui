@@ -48,10 +48,9 @@ const AssetCollectionTree = () => {
                     title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
                     level={1}
                     assetCollectionId={null}
-                    collapsedByDefault={true}
                 >
                     {tags?.map((tag) => (
-                        <TagTreeNode key={tag.id} tagId={tag.id} label={tag.label} assetCollectionId={null} level={1} />
+                        <TagTreeNode key={tag.id} tagId={tag.id} label={tag.label} assetCollectionId={null} level={2} />
                     ))}
                 </AssetCollectionTreeNode>
                 {assetCollectionsWithoutParent.map((assetCollection, index) => (

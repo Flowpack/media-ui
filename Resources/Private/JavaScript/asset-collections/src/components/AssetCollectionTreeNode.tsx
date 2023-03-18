@@ -16,25 +16,32 @@ export interface AssetCollectionTreeNodeProps extends TreeNodeProps {
     children?: React.ReactElement[];
 }
 
-const assetCollectionTreeState = atom<Record<string, boolean>>({
+const assetCollectionTreeCollapsedState = atom<Record<string, boolean>>({
     key: 'AssetCollectionTreeState',
     default: {},
     effects: [localStorageEffect('AssetCollectionTreeState')],
 });
 
-const assetCollectionTreeCollapsedState = selectorFamily<
-    boolean,
-    { assetCollectionId: string; collapsedByDefault?: boolean }
->({
-    key: 'AssetCollectionTreeCollapsedState',
+const assetCollectionTreeCollapsedProxyState = selectorFamily<boolean, string>({
+    key: 'AssetCollectionTreeCollapsedProxyState',
     get:
-        ({ assetCollectionId, collapsedByDefault = true }) =>
+        (assetCollectionId) =>
         ({ get }) =>
-            get(assetCollectionTreeState)[assetCollectionId] ?? collapsedByDefault,
+            get(assetCollectionTreeCollapsedState)[assetCollectionId] ?? true,
     set:
-        ({ assetCollectionId }) =>
+        (assetCollectionId) =>
         ({ set }, newValue: boolean) =>
-            set(assetCollectionTreeState, (prevState) => ({ ...prevState, [assetCollectionId]: newValue })),
+            set(assetCollectionTreeCollapsedState, (prevState) => {
+                const newState = {
+                    ...prevState,
+                    [assetCollectionId]: newValue,
+                };
+                // TODO: Filter true value as we don't need to store them
+                if (newState[assetCollectionId] === true) {
+                    delete newState[assetCollectionId];
+                }
+                return newState;
+            }),
 });
 
 // This state selector provides the focused state for each individual asset collection
@@ -51,16 +58,10 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     label = 'n/a',
     title = 'n/a',
     level,
-    collapsedByDefault = true,
     children = null,
 }: AssetCollectionTreeNodeProps) => {
     const { assetCollection } = useAssetCollectionQuery(assetCollectionId);
-    const [collapsed, setCollapsed] = useRecoilState(
-        assetCollectionTreeCollapsedState({
-            assetCollectionId,
-            collapsedByDefault,
-        })
-    );
+    const [collapsed, setCollapsed] = useRecoilState(assetCollectionTreeCollapsedProxyState(assetCollectionId));
     const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
     const isFocused = useRecoilValue(assetCollectionFocusedState(assetCollectionId));
     // const isActive = isFocused; // TODO: Implement active state when a child collection is focused
