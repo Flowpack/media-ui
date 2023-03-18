@@ -1,12 +1,14 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
 
-import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
+import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, useNotify, useMediaUi } from '@media-ui/core/src';
 import { Asset } from '@media-ui/core/src/interfaces';
 import { useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
+import { featureFlagsState } from '@media-ui/core/src/state';
 
 const useStyles = createUseMediaUiStyles({
     collectionSelectBox: {},
@@ -27,9 +29,15 @@ const CollectionSelectBox = () => {
     const { assetCollections } = useAssetCollectionsQuery();
     const { setAssetCollections, loading } = useSetAssetCollections();
     const selectedAsset = useSelectedAsset();
+    const { limitToSingleAssetCollectionPerAsset } = useRecoilValue(featureFlagsState);
 
-    const assetCollectionsWithLabel = useMemo(
-        () => assetCollections.map(({ title, ...rest }) => ({ label: title, ...rest })),
+    // TODO: Add secondary and tertiary labels to the selectbox options
+    const selectBoxOptions = useMemo(
+        () =>
+            assetCollections.map(({ title, ...rest }) => ({
+                label: title,
+                ...rest,
+            })),
         [assetCollections]
     );
 
@@ -40,7 +48,14 @@ const CollectionSelectBox = () => {
     );
 
     const handleChange = useCallback(
-        async (newAssetCollectionIds) => {
+        async (newAssetCollectionIds: string[] | string | null) => {
+            // Handle both input from the single selectbox and multiselectbox
+            if (newAssetCollectionIds === null) {
+                newAssetCollectionIds = [];
+            } else if (typeof newAssetCollectionIds === 'string') {
+                newAssetCollectionIds = [newAssetCollectionIds];
+            }
+
             if (!collectionsMatchAsset(newAssetCollectionIds, selectedAsset)) {
                 const asset = selectedAsset;
                 const newAssetCollections = assetCollections.filter((c) => newAssetCollectionIds.includes(c.id));
@@ -91,22 +106,35 @@ const CollectionSelectBox = () => {
 
     if (!selectedAsset) return null;
 
+    // TODO: Show breadcrumb to each collection to make it obvious what will be selected via the multiline preview element
     return (
         <div className={classes.collectionSelectBox}>
             <Headline type="h2">
                 <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Collections')} />
             </Headline>
-            <MultiSelectBox
-                className={classes.collectionSelection}
-                disabled={loading || selectedAsset.assetSource.readOnly}
-                placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                values={selectedAssetCollectionIds}
-                optionValueField="id"
-                options={assetCollectionsWithLabel}
-                searchOptions={assetCollectionsWithLabel}
-                noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
-                onValuesChange={handleChange}
-            />
+            {limitToSingleAssetCollectionPerAsset ? (
+                <SelectBox
+                    className={classes.collectionSelection}
+                    disabled={loading || selectedAsset.assetSource.readOnly}
+                    placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
+                    value={selectedAssetCollectionIds[0] ?? null}
+                    optionValueField="id"
+                    options={selectBoxOptions}
+                    noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
+                    onValueChange={handleChange}
+                />
+            ) : (
+                <MultiSelectBox
+                    className={classes.collectionSelection}
+                    disabled={loading || selectedAsset.assetSource.readOnly}
+                    placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
+                    values={selectedAssetCollectionIds}
+                    optionValueField="id"
+                    options={selectBoxOptions}
+                    noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
+                    onValuesChange={handleChange}
+                />
+            )}
         </div>
     );
 };
