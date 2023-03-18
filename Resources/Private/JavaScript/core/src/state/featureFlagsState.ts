@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+
 import { FeatureFlags } from '../interfaces';
 
 const featureFlagsState = atom<FeatureFlags>({
@@ -17,6 +18,7 @@ const featureFlagsState = atom<FeatureFlags>({
         propertyEditor: {
             collapsed: false,
         },
+        limitToSingleAssetCollectionPerAsset: true,
     },
 });
 

@@ -1,12 +1,13 @@
 export default interface FeatureFlags {
-    queryAssetUsage: boolean;
-    pollForChanges: boolean;
-    useNewMediaSelection: boolean;
-    showSimilarAssets: boolean;
-    showVariantsEditor: boolean;
     createAssetRedirectsOption: boolean;
+    limitToSingleAssetCollectionPerAsset: boolean;
     pagination: PaginationConfig;
+    pollForChanges: boolean;
     propertyEditor: {
         collapsed: boolean;
     };
+    queryAssetUsage: boolean;
+    showSimilarAssets: boolean;
+    showVariantsEditor: boolean;
+    useNewMediaSelection: boolean;
 }

@@ -1,11 +1,13 @@
-import * as React from 'react';
+import React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { Tabs } from '@neos-project/react-ui-components';
-import { createUseMediaUiStyles, useMediaUi } from '@media-ui/core/src';
+
+import { createUseMediaUiStyles } from '@media-ui/core/src';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
-import { selectedInspectorViewState } from '@media-ui/core/src/state';
+import { featureFlagsState, selectedInspectorViewState } from '@media-ui/core/src/state';
 import VariantsInspector from '@media-ui/feature-asset-variants/src/components/VariantsInspector';
+
 import PropertyInspector from './PropertyInspector';
 
 const useStyles = createUseMediaUiStyles({
@@ -17,12 +19,12 @@ const useStyles = createUseMediaUiStyles({
 const AssetInspector = () => {
     const classes = useStyles();
     const selectedAsset = useSelectedAsset();
-    const { featureFlags } = useMediaUi();
+    const { showVariantsEditor } = useRecoilValue(featureFlagsState);
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
 
     if (!selectedAsset || selectedInspectorView !== 'asset') return null;
 
-    return featureFlags.showVariantsEditor ? (
+    return showVariantsEditor ? (
         <Tabs theme={{ tabs__content: classes.tabContent }}>
             <Tabs.Panel icon="info-circle" key="editor" id="editor">
                 <PropertyInspector />

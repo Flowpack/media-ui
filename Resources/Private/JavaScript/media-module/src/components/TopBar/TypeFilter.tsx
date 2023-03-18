@@ -1,11 +1,10 @@
-import * as React from 'react';
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { SelectBox } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
-import { currentPageState, selectedMediaTypeState } from '@media-ui/core/src/state';
+import { currentPageState, featureFlagsState, selectedMediaTypeState } from '@media-ui/core/src/state';
 import { showUnusedAssetsState } from '@media-ui/feature-asset-usage/src';
 import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
 
@@ -35,7 +34,8 @@ interface MediaTypeOptions {
 
 const TypeFilter: React.FC = () => {
     const classes = useStyles();
-    const { featureFlags, assetType } = useMediaUi();
+    const { assetType } = useMediaUi();
+    const featureFlags = useRecoilValue(featureFlagsState);
     const [mediaTypeFilter, setMediaTypeFilter] = useRecoilState(selectedMediaTypeState);
     const [showUnusedAssets, setShowUnusedAssets] = useRecoilState(showUnusedAssetsState);
     const setCurrentPage = useSetRecoilState(currentPageState);

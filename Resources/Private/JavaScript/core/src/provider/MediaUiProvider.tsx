@@ -40,7 +40,6 @@ interface MediaUiProviderValues {
     selectionMode: boolean;
     isInNodeCreationDialog: boolean;
     isInMediaDetailsScreen: boolean;
-    featureFlags: FeatureFlags;
     constraints: SelectionConstraints;
     assetType: AssetMediaType;
     isAssetSelectable: (asset: Asset) => boolean;
@@ -188,7 +187,6 @@ export function MediaUiProvider({
                 selectionMode,
                 isInNodeCreationDialog,
                 isInMediaDetailsScreen,
-                featureFlags,
                 constraints,
                 assetType,
                 isAssetSelectable,

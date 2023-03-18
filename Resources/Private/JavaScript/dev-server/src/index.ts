@@ -28,6 +28,7 @@ setTimeout(() => {
             showSimilarAssets: true,
             showAssetUsage: true,
             showVariantsEditor: true,
+            limitToSingleAssetCollectionPerAsset: true,
         } as FeatureFlags)
     );
     app.setAttribute('data-dummy-image', '/dummy-image.svg');

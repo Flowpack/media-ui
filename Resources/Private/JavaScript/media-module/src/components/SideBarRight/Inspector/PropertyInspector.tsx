@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core/src';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
+import { featureFlagsState } from '@media-ui/core/src/state';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import Property from './Property';
@@ -46,9 +47,9 @@ const PropertyInspector = () => {
     const Notify = useNotify();
     const { translate } = useIntl();
     const {
-        featureFlags,
         approvalAttainmentStrategy: { obtainApprovalToUpdateAsset },
     } = useMediaUi();
+    const featureFlags = useRecoilValue(featureFlagsState);
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
     const [copyrightNotice, setCopyrightNotice] = useState<string>(null);

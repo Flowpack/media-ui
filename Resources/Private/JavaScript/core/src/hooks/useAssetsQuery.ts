@@ -2,20 +2,20 @@ import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
-import { Tag, useSelectedTag } from '@media-ui/feature-asset-tags';
-import { AssetCollection, useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
+import { selectedTagIdState, Tag } from '@media-ui/feature-asset-tags';
+import { AssetCollection, selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 
 import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
 import { Asset, AssetSource } from '../interfaces';
 import {
+    availableAssetsState,
+    currentPageState,
+    featureFlagsState,
+    initialLoadCompleteState,
+    loadingState,
     searchTermState,
     selectedMediaTypeState,
-    loadingState,
-    currentPageState,
-    initialLoadCompleteState,
     selectedSortOrderState,
-    featureFlagsState,
-    availableAssetsState,
 } from '../state';
 import { ASSETS } from '../queries';
 
@@ -43,8 +43,8 @@ const useAssetsQuery = () => {
         pagination: { assetsPerPage },
     } = useRecoilValue(featureFlagsState);
     const searchTerm = useRecoilValue(searchTermState);
-    const selectedAssetCollection = useSelectedAssetCollection();
-    const selectedTag = useSelectedTag();
+    const selectedAssetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
+    const selectedTagId = useRecoilValue(selectedTagIdState);
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
     const sortOrderState = useRecoilValue(selectedSortOrderState);
     const currentPage = useRecoilValue(currentPageState);
@@ -58,9 +58,9 @@ const useAssetsQuery = () => {
         notifyOnNetworkStatusChange: false,
         variables: {
             searchTerm: searchTerm.toString(),
-            assetCollectionId: selectedAssetCollection?.id,
+            assetCollectionId: selectedAssetCollectionId,
             mediaType: mediaTypeFilter,
-            tagId: selectedTag?.id,
+            tagId: selectedTagId,
             limit: assetsPerPage,
             offset,
             sortBy: sortOrderState.sortBy,
@@ -73,9 +73,9 @@ const useAssetsQuery = () => {
             query({
                 variables: {
                     searchTerm: searchTerm.toString(),
-                    assetCollectionId: selectedAssetCollection?.id,
+                    assetCollectionId: selectedAssetCollectionId,
                     mediaType: mediaTypeFilter,
-                    tagId: selectedTag?.id,
+                    tagId: selectedTagId,
                     limit: assetsPerPage,
                     offset,
                     sortBy: sortOrderState.sortBy,
@@ -97,9 +97,9 @@ const useAssetsQuery = () => {
         loading,
         offset,
         searchTerm,
-        selectedAssetCollection?.title,
+        selectedAssetCollectionId,
         mediaTypeFilter,
-        selectedTag?.id,
+        selectedTagId,
         sortOrderState,
     ]);
 

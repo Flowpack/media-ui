@@ -55,7 +55,7 @@ const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
     const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
-    const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
+    const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const selectAsset = useSelectAsset();

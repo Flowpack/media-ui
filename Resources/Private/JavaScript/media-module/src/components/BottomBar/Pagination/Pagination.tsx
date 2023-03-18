@@ -1,9 +1,8 @@
-import * as React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { useIntl, createUseMediaUiStyles, useMediaUi } from '@media-ui/core/src';
-import { currentPageState } from '@media-ui/core/src/state';
+import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { currentPageState, featureFlagsState } from '@media-ui/core/src/state';
 
 import PaginationItem from './PaginationItem';
 import { MainViewState, mainViewState } from '../../../state';
@@ -30,10 +29,8 @@ const Pagination: React.FC = () => {
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const assetCount = useAssetCount();
     const {
-        featureFlags: {
-            pagination: { assetsPerPage, maximumLinks },
-        },
-    } = useMediaUi();
+        pagination: { assetsPerPage, maximumLinks },
+    } = useRecoilValue(featureFlagsState);
     const { translate } = useIntl();
     const mainView = useRecoilValue(mainViewState);
 

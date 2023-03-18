@@ -3,14 +3,24 @@ Neos:
     Ui:
       frontendConfiguration:
         Flowpack.Media.Ui:
-          useNewMediaSelection: true
-          queryAssetUsage: false
-          pollForChanges: true
-          showSimilarAssets: false
-          showVariantsEditor: false
+          # Allow the user to let the system create redirects when assets are replaced or renamed
           createAssetRedirectsOption: true
+          # Only allow a single asset collection selection per asset to treat collection like folders
+          limitToSingleAssetCollectionPerAsset: true
+          # Set the number of assets and links to be displayed per page
           pagination:
             assetsPerPage: 20
             maximumLinks: 5
+          # Background polling for changes by other users
+          pollForChanges: true
+          # Settings for the property editor
           propertyEditor:
             collapsed: false
+          # Query the usage of each asset when loading them, note: this requires a more performant implementation of the asset usage than the Neos default provides
+          queryAssetUsage: false
+          # Show similar assets, note: this requires an additional package to be installed
+          showSimilarAssets: false
+          # Show variants and the editor to modify them
+          showVariantsEditor: false
+          # Use the new media selection UI in the content module
+          useNewMediaSelection: true
