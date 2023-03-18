@@ -81,10 +81,7 @@ const Preview: React.FC<PreviewProps> = ({ asset, loading, buildLinkToMediaUi }:
     const { dummyImage } = useMediaUi();
 
     return (
-        <figure
-            className={cx(classes.preview, loading && classes.loading)}
-            title={asset?.label}
-        >
+        <figure className={cx(classes.preview, loading && classes.loading)} title={asset?.label}>
             {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
             <picture className={classes.picture}>
                 <img src={loading || !asset ? dummyImage : asset.previewUrl} alt={asset?.label} />

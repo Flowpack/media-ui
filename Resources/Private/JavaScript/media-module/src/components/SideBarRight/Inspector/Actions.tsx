@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Button } from '@neos-project/react-ui-components';
 
@@ -20,10 +20,10 @@ interface ActionProps {
     hasUnpublishedChanges: boolean;
     handleApply: () => void;
     handleDiscard: () => void;
-    inputValid: boolean;
+    inputValid?: boolean;
 }
 
-const Actions: React.FC<ActionProps> = ({ hasUnpublishedChanges, handleApply, handleDiscard, inputValid }) => {
+const Actions: React.FC<ActionProps> = ({ hasUnpublishedChanges, handleApply, handleDiscard, inputValid = true }) => {
     const classes = useStyles();
     const { translate } = useIntl();
     return (

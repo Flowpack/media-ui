@@ -156,6 +156,7 @@ const PropertyInspector = () => {
                             handleApply={handleApply}
                             handleDiscard={handleDiscard}
                             hasUnpublishedChanges={hasUnpublishedChanges}
+                            inputValid={!!label}
                         />
                     )}
                 </ToggablePanel.Contents>
