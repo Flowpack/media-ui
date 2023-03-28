@@ -5,7 +5,7 @@ import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
 import { currentPageState, featureFlagsState } from '@media-ui/core/src/state';
 
 import PaginationItem from './PaginationItem';
-import { MainViewState, mainViewState } from '../../../state';
+import { MainViewMode, mainViewState } from '../../../state';
 import { useAssetCount } from '../../../hooks';
 
 const useStyles = createUseMediaUiStyles({
@@ -34,7 +34,7 @@ const Pagination: React.FC = () => {
     const { translate } = useIntl();
     const mainView = useRecoilValue(mainViewState);
 
-    const disabled = ![MainViewState.DEFAULT, MainViewState.UNUSED_ASSETS].includes(mainView);
+    const disabled = ![MainViewMode.DEFAULT, MainViewMode.UNUSED_ASSETS].includes(mainView);
     const numberOfPages = Math.ceil(assetCount / assetsPerPage);
     const [displayRange, setDisplayRange] = useState({
         start: 0,

@@ -8,7 +8,7 @@ import { currentPageState, featureFlagsState, selectedMediaTypeState } from '@me
 import { showUnusedAssetsState } from '@media-ui/feature-asset-usage/src';
 import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
 
-import { MainViewState, mainViewState } from '../../state';
+import { MainViewMode, mainViewState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
     typeFilter: {
@@ -96,7 +96,7 @@ const TypeFilter: React.FC = () => {
         return options;
     }, [translate, featureFlags, assetType]);
 
-    if (![MainViewState.DEFAULT, MainViewState.UNUSED_ASSETS].includes(mainView)) return null;
+    if (![MainViewMode.DEFAULT, MainViewMode.UNUSED_ASSETS].includes(mainView)) return null;
 
     return (
         <div className={classes.typeFilter}>

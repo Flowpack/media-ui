@@ -8,7 +8,7 @@ import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
 import { currentPageState, searchTermState } from '@media-ui/core/src/state';
 import { SearchTerm } from '@media-ui/core/src/domain/SearchTerm';
 
-import { MainViewState, mainViewState } from '../../state';
+import { MainViewMode, mainViewState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
     searchBox: {
@@ -37,7 +37,7 @@ const SearchBox: React.FC = () => {
         setCurrentPage(1);
     }, [searchValue, setCurrentPage, setSearchTerm]);
 
-    if (mainView !== MainViewState.DEFAULT) return null;
+    if (mainView !== MainViewMode.DEFAULT) return null;
 
     return (
         <div className={classes.searchBox}>

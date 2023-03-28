@@ -1,1 +1,1 @@
-export { mainViewState, MainViewState } from './mainViewState';
+export { mainViewState, MainViewMode } from './mainViewState';

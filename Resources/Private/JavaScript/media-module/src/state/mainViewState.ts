@@ -1,24 +1,24 @@
 import { selector } from 'recoil';
 
-import { clipboardVisibleState } from '@media-ui/feature-clipboard/src';
-import { showUnusedAssetsState } from '@media-ui/feature-asset-usage/src';
+import { clipboardVisibleState } from '@media-ui/feature-clipboard';
+import { showUnusedAssetsState } from '@media-ui/feature-asset-usage';
 
-enum MainViewState {
+enum MainViewMode {
     DEFAULT,
     CLIPBOARD,
     UNUSED_ASSETS,
 }
 
-const mainViewState = selector<MainViewState>({
+const mainViewState = selector<MainViewMode>({
     key: 'mainViewState',
     get: ({ get }) => {
         const clipboardVisible = get(clipboardVisibleState);
         const showUnusedAssets = get(showUnusedAssetsState);
 
-        if (clipboardVisible) return MainViewState.CLIPBOARD;
-        if (showUnusedAssets) return MainViewState.UNUSED_ASSETS;
-        return MainViewState.DEFAULT;
+        if (clipboardVisible) return MainViewMode.CLIPBOARD;
+        if (showUnusedAssets) return MainViewMode.UNUSED_ASSETS;
+        return MainViewMode.DEFAULT;
     },
 });
 
-export { mainViewState, MainViewState };
+export { mainViewState, MainViewMode };

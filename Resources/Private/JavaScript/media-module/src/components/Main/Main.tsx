@@ -11,7 +11,7 @@ import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage/src';
 import { useViewModeSelection, VIEW_MODES } from '../../hooks';
 import { ListView, ThumbnailView } from './index';
 import LoadingLabel from '../LoadingLabel';
-import { MainViewState, mainViewState } from '../../state';
+import { MainViewMode, mainViewState } from '../../state';
 import { availableAssetIdentitiesState } from '@media-ui/core/src/state';
 
 const useStyles = createUseMediaUiStyles({
@@ -43,9 +43,9 @@ const Main: React.FC = () => {
     }, [unusedAssets]);
 
     useEffect(() => {
-        if (mainView === MainViewState.CLIPBOARD) {
+        if (mainView === MainViewMode.CLIPBOARD) {
             setVisibleAssetIdentities(Object.values(clipboard));
-        } else if (mainView === MainViewState.UNUSED_ASSETS) {
+        } else if (mainView === MainViewMode.UNUSED_ASSETS) {
             setVisibleAssetIdentities(queriedUnusedAssets);
         } else {
             setVisibleAssetIdentities(availableAssetIdentities);
@@ -60,7 +60,7 @@ const Main: React.FC = () => {
         )
     ) : (
         <div className={classes.emptyStateWrapper}>
-            {mainView === MainViewState.CLIPBOARD ? (
+            {mainView === MainViewMode.CLIPBOARD ? (
                 <Button size="regular" style="brand" hoverStyle="brand" onClick={() => setClipboardVisible(false)}>
                     {translate('clipboard.close', 'Close clipboard')}
                 </Button>
