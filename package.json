@@ -52,7 +52,10 @@
   },
   "packageManager": "yarn@3.4.1",
   "browserslist": [
-    "defaults and > 1%"
+    "> 0.5%",
+    "last 2 versions",
+    "not dead",
+    "supports async-functions"
   ],
   "prettier": {
     "printWidth": 120,

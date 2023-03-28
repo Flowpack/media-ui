@@ -16,6 +16,9 @@
     "recoil": "^0.7.7"
   },
   "browserslist": [
-    "defaults and > 1% and not ie <= 11"
+    "> 0.5%",
+    "last 2 versions",
+    "not dead",
+    "supports async-functions"
   ]
 }
