@@ -20,6 +20,8 @@ import * as Events from './events';
 import * as Components from './components';
 import * as Helper from './helper';
 
+export { typeDefs } from './typeDefs';
+
 export {
     Components,
     Events,

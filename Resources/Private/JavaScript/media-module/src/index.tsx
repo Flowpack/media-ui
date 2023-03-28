@@ -19,9 +19,9 @@ import {
 import { FeatureFlags } from '@media-ui/core/src/interfaces';
 
 // GraphQL type definitions
-import TYPE_DEFS_CORE from '@media-ui/core/schema.graphql';
-import TYPE_DEFS_CLIPBOARD from '@media-ui/feature-clipboard/schema.graphql';
-import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql';
+import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import { typeDefs as TYPE_DEFS_CLIPBOARD } from '@media-ui/feature-clipboard';
+import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
 // GraphQL local resolvers
 import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';

@@ -7,6 +7,8 @@ import ClipboardActions from './components/ClipboardActions';
 import ClipboardWatcher from './components/ClipboardWatcher';
 import buildResolvers from './resolvers/mutation';
 
+export { typeDefs } from './typeDefs';
+
 export {
     TOGGLE_CLIPBOARD_STATE,
     CLIPBOARD,

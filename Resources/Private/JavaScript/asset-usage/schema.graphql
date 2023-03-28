@@ -1,7 +1,0 @@
-extend type Query {
-    includeUsage: Boolean!
-}
-
-extend type Mutation {
-    includeUsage: Boolean!
-}

@@ -16,6 +16,8 @@ import useAssetUsagesQuery from './hooks/useAssetUsages';
 import useUnusedAssetsQuery from './hooks/useUnusedAssetsQuery';
 import useUnusedAssetCountQuery from './queries/useUnusedAssetCountQuery';
 
+export { typeDefs } from './typeDefs';
+
 export {
     ASSET_USAGE_DETAILS,
     AssetUsagesModal,
