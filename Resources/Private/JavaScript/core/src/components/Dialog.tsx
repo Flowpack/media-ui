@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 
 import { Dialog as NeosUiDialog } from '@neos-project/react-ui-components';
 
+import globalClasses from '../Theme.module.css'
+
 //
 // @TODO: Remove this once https://github.com/neos/neos-ui/issues/2925 is solved.
 //
@@ -16,5 +18,5 @@ export const Dialog: React.FC<any> = (props) => {
         }
     }, [dialogRef]);
 
-    return <NeosUiDialog {...props} ref={dialogRef} className="mediaModuleTheme" />;
+    return <NeosUiDialog {...props} ref={dialogRef} className={globalClasses.mediaModuleTheme} />;
 };

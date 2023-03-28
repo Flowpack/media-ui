@@ -4,7 +4,7 @@ import { useIntl } from '@media-ui/core/src';
 
 import { UsageDetailsGroup } from '../interfaces/UsageDetails';
 
-import './AssetUsageSection.module.css';
+import classes from './AssetUsageSection.module.css';
 
 interface AssetUsageSectionProps {
     usageDetailsGroup: UsageDetailsGroup;
@@ -38,12 +38,12 @@ const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup
     const { label, usages, metadataSchema } = usageDetailsGroup;
 
     return (
-        <section className="usageSection">
+        <section className={classes.usageSection}>
             <h2>
                 {label} ({usages.length})
             </h2>
             {usages.length > 0 && (
-                <table className="usageTable">
+                <table className={classes.usageTable}>
                     <thead>
                         <tr>
                             <th>{translate('assetUsage.header.label', 'Label')}</th>

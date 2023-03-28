@@ -2,14 +2,14 @@ import React from 'react';
 
 import PropertyListItem from './PropertyListItem';
 
-import './PropertyList.module.css';
+import classes from './PropertyList.module.css';
 
 interface PropertyListProps {
     children: React.ReactElement<typeof PropertyListItem>[];
 }
 
 const PropertyList: React.FC<PropertyListProps> = ({ children }: PropertyListProps) => {
-    return <dl className="propertyList">{children}</dl>;
+    return <dl className={classes.propertyList}>{children}</dl>;
 };
 
 export default React.memo(PropertyList);

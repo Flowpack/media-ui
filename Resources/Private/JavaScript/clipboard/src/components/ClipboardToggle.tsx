@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
@@ -12,8 +11,7 @@ import ClipboardItem from './ClipboardItem';
 import useClipboard from '../hooks/useClipboard';
 import clipboardVisibleState from '../state/clipboardVisibleState';
 
-// FIXME: Reading the class name from the CSS module only works in the media-module package right now for some reason, probably a Parcel v1 bug
-import './ClipboardToggle.module.css';
+import classes from './ClipboardToggle.module.css';
 
 const ClipboardToggle: React.FC = () => {
     const { translate } = useIntl();
@@ -28,7 +26,7 @@ const ClipboardToggle: React.FC = () => {
     if (!initialLoadComplete) return null;
 
     return (
-        <div className="clipboardToggle">
+        <div className={classes.clipboardToggle}>
             <Button
                 disabled={size === 0}
                 size="regular"

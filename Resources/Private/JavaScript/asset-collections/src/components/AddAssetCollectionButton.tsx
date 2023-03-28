@@ -7,7 +7,7 @@ import { useIntl } from '@media-ui/core/src';
 
 import createAssetCollectionDialogVisibleState from '../state/createAssetCollectionDialogVisibleState';
 
-import './AddAssetCollectionButton.module.css';
+import classes from './AddAssetCollectionButton.module.css';
 
 const AddAssetCollectionButton: React.FC = () => {
     const { translate } = useIntl();
@@ -23,7 +23,7 @@ const AddAssetCollectionButton: React.FC = () => {
         >
             <span className="fa-layers fa-fw">
                 <Icon icon="folder" />
-                <Icon icon="plus" color="primaryBlue" className="plusIcon" />
+                <Icon icon="plus" color="primaryBlue" className={classes.plusIcon} />
             </span>
         </Button>
     );

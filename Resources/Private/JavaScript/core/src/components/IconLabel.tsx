@@ -11,7 +11,7 @@ interface IconLabelProps {
     children?: React.ReactElement;
 }
 
-import './IconLabel.module.css';
+import classes from './IconLabel.module.css';
 
 const IconLabel: React.FC<IconLabelProps> = ({
     icon = 'question',
@@ -21,11 +21,11 @@ const IconLabel: React.FC<IconLabelProps> = ({
     children = null,
 }: IconLabelProps) => {
     return (
-        <span className={cx('wrapper', className)}>
-            <span className="iconWrap">
-                {iconUri ? <img src={iconUri} alt={label} className="imgIcon" /> : <Icon icon={icon} />}
+        <span className={cx(classes.wrapper, className)}>
+            <span className={classes.iconWrap}>
+                {iconUri ? <img src={iconUri} alt={label} className={classes.imgIcon} /> : <Icon icon={icon} />}
             </span>
-            <span className="label">{children || label || ''}</span>
+            <span className={classes.label}>{children || label || ''}</span>
         </span>
     );
 };

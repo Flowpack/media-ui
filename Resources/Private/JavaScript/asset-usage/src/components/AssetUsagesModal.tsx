@@ -11,7 +11,7 @@ import assetUsageDetailsModalState from '../state/assetUsageDetailsModalState';
 import useAssetUsagesQuery from '../hooks/useAssetUsages';
 import AssetUsageSection from './AssetUsageSection';
 
-import './AssetUsagesModal.module.css';
+import classes from './AssetUsagesModal.module.css';
 
 const AssetUsagesModal: React.FC = () => {
     const { translate } = useIntl();
@@ -35,7 +35,7 @@ const AssetUsagesModal: React.FC = () => {
                 </Button>,
             ]}
         >
-            <div className="assetUsage">
+            <div className={classes.assetUsage}>
                 {assetUsageDetails?.length > 0 ? (
                     assetUsageDetails.map((usageDetailsGroup, index) => (
                         <AssetUsageSection key={index} usageDetailsGroup={usageDetailsGroup} />

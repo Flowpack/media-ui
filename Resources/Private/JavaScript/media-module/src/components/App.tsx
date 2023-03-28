@@ -25,7 +25,7 @@ import { Main } from './Main';
 import ErrorBoundary from './ErrorBoundary';
 
 import styles from './App.module.css';
-import '@media-ui/core/src/Theme.module.css';
+import globalClasses from '@media-ui/core/src/Theme.module.css';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     container: ({ selectionMode, isInNodeCreationDialog }) => ({
@@ -122,7 +122,10 @@ const App = () => {
     }, [searchTerm]);
 
     return (
-        <div className={cx(classes.container, styles.mediaModuleApp, 'mediaModuleTheme')} ref={containerRef}>
+        <div
+            className={cx(classes.container, styles.mediaModuleApp, globalClasses.mediaModuleTheme)}
+            ref={containerRef}
+        >
             <LoadingIndicator />
 
             <div className={classes.gridLeft}>

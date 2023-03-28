@@ -4,10 +4,10 @@ interface AssetLabelProps {
     label: string;
 }
 
-import './AssetLabel.module.css';
+import classes from './AssetLabel.module.css';
 
 const AssetLabel: React.FC<AssetLabelProps> = ({ label }: AssetLabelProps) => {
-    return <span className="assetLabel">{label}</span>;
+    return <span className={classes.assetLabel}>{label}</span>;
 };
 
 export default React.memo(AssetLabel);

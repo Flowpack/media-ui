@@ -15,7 +15,7 @@ import TagTreeNode from './TagTreeNode';
 import DeleteButton from './DeleteButton';
 import AddTagButton from './AddTagButton';
 
-import './AssetCollectionTree.module.css';
+import classes from './AssetCollectionTree.module.css';
 
 const AssetCollectionTree = () => {
     const { translate } = useIntl();
@@ -30,18 +30,18 @@ const AssetCollectionTree = () => {
     if (!selectedAssetSource?.supportsCollections) return null;
 
     return (
-        <nav className="assetCollectionTree">
-            <Headline type="h2" className="headline">
+        <nav className={classes.assetCollectionTree}>
+            <Headline type="h2" className={classes.headline}>
                 <IconLabel icon="folder" label={translate('assetCollectionList.header', 'Collections')} />
             </Headline>
 
-            <div className="toolbar">
+            <div className={classes.toolbar}>
                 <AddAssetCollectionButton />
                 <AddTagButton />
                 <DeleteButton />
             </div>
 
-            <Tree className="tree">
+            <Tree className={classes.tree}>
                 {/* TODO: Use a custom icon component for the virtual collection that contains all assets and tags to distinguish it from other collections */}
                 <AssetCollectionTreeNode
                     label={translate('assetCollectionList.showAll', 'All')}

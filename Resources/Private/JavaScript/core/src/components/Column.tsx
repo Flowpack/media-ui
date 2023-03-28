@@ -4,8 +4,8 @@ interface ColumnProps {
     children: React.ReactElement | React.ReactElement[];
 }
 
-import './Column.module.css';
+import classes from './Column.module.css';
 
 export default function Column({ children }: ColumnProps) {
-    return <div className="column">{children}</div>;
+    return <div className={classes.column}>{children}</div>;
 }

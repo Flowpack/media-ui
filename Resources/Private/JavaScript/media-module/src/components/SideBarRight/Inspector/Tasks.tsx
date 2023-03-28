@@ -12,7 +12,7 @@ import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { featureFlagsState } from '@media-ui/core/src/state';
 
-import styles from './Tasks.module.css';
+import classes from './Tasks.module.css';
 
 const Tasks: React.FC = () => {
     const { translate } = useIntl();
@@ -21,7 +21,7 @@ const Tasks: React.FC = () => {
     const { showSimilarAssets } = useRecoilValue(featureFlagsState);
 
     return (
-        <div className={styles.tasks}>
+        <div className={classes.tasks}>
             <Headline type="h2">
                 <IconLabel icon="tasks" label={translate('inspector.actions', 'Tasks')} />
             </Headline>

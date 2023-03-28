@@ -10,7 +10,7 @@ import useCreateAssetCollection from '../hooks/useCreateAssetCollection';
 import useSelectedAssetCollection from '../hooks/useSelectedAssetCollection';
 import createAssetCollectionDialogVisibleState from '../state/createAssetCollectionDialogVisibleState';
 
-import './CreateAssetCollectionDialog.module.css';
+import classes from './CreateAssetCollectionDialog.module.css';
 
 const CreateAssetCollectionDialog = () => {
     const { translate } = useIntl();
@@ -55,7 +55,7 @@ const CreateAssetCollectionDialog = () => {
                 </Button>,
             ]}
         >
-            <div className="formBody">
+            <div className={classes.formBody}>
                 <Label>{translate('general.title', 'Title')}</Label>
                 <TextInput setFocus type="text" onChange={handleChange} onEnterKey={title ? handleCreate : null} />
             </div>

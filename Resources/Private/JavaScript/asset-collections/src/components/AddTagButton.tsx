@@ -7,7 +7,7 @@ import { Button, Icon } from '@neos-project/react-ui-components';
 import { useIntl } from '@media-ui/core/src';
 import { createTagDialogState } from '@media-ui/feature-asset-tags';
 
-import './AddTagButton.module.css';
+import classes from './AddTagButton.module.css';
 
 const AddTagButton: React.FC = () => {
     const { translate } = useIntl();
@@ -27,7 +27,7 @@ const AddTagButton: React.FC = () => {
         >
             <span className="fa-layers fa-fw">
                 <Icon icon="tag" />
-                <Icon icon="plus" color="primaryBlue" className="plusIcon" />
+                <Icon icon="plus" color="primaryBlue" className={classes.plusIcon} />
             </span>
         </Button>
     );

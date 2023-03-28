@@ -11,7 +11,7 @@ import { Dialog } from '@media-ui/core/src/components';
 
 import createTagDialogState from '../state/createTagDialogState';
 
-import './CreateTagDialog.module.css';
+import classes from './CreateTagDialog.module.css';
 
 const CreateTagDialog: React.FC = () => {
     const { translate } = useIntl();
@@ -54,7 +54,7 @@ const CreateTagDialog: React.FC = () => {
                 </Button>,
             ]}
         >
-            <div className="formBody">
+            <div className={classes.formBody}>
                 <Label>{translate('general.label', 'Label')}</Label>
                 <TextInput
                     setFocus

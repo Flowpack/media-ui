@@ -9,8 +9,7 @@ import { useDeleteAsset } from '@media-ui/core/src/hooks';
 import useClipboard from '../hooks/useClipboard';
 import clipboardVisibleState from '../state/clipboardVisibleState';
 
-// FIXME: Reading the class name from the CSS module only works in the media-module package right now for some reason, probably a Parcel v1 bug
-import './ClipboardActions.module.css';
+import classes from './ClipboardActions.module.css';
 
 const ClipboardActions: React.FC = () => {
     const { translate } = useIntl();
@@ -42,7 +41,7 @@ const ClipboardActions: React.FC = () => {
     if (!clipboardVisible) return null;
 
     return (
-        <div className="clipboardActions">
+        <div className={classes.clipboardActions}>
             <IconButton
                 title={translate('clipboard.deleteAsset', 'Delete all assets in clipboard')}
                 icon="trash"
