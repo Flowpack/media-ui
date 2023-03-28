@@ -42,16 +42,12 @@ final class AssetProxyQueryIterator implements AssetProxyIteratorAggregate
 
     public function setOffset(int $offset): void
     {
-        try {
-            // TODO: Check if it's an issue to execute the query a second time just to get the correct number of results?
-            $offset = $offset < $this->assetProxyQuery->execute()->count() ? $offset : 0;
-        } catch (\Exception $e) {
-            // TODO: Handle that not every asset source implements the count method => Introduce countable interface?
-        }
-
-        $this->assetProxyQuery->setOffset($offset);
+        $this->assetProxyQuery->setOffset(min($offset, $this->count()));
     }
 
+    /**
+     * @throws \RuntimeException
+     */
     public function setLimit(?int $limit): void
     {
         // Unfortunately, AssetProxyQueryInterface::setLimit does not accept
@@ -71,12 +67,7 @@ final class AssetProxyQueryIterator implements AssetProxyIteratorAggregate
 
     public function count(): int
     {
-        try {
-            return $this->assetProxyQuery->execute()->count();
-        } catch (\Exception $e) {
-            // TODO: Handle that not every asset source implements the count method => Introduce countable interface?
-            return 0;
-        }
+        return $this->assetProxyQuery->count();
     }
 
     /**
