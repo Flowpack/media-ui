@@ -12,6 +12,7 @@ node_modules
 Packages
 vendor
 composer.lock
+/.parcel-cache
 
 #
 # Compiled assets.

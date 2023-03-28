@@ -9,7 +9,7 @@ Neos:
             description: 'Flowpack.Media.Ui:Main:module.description'
             icon: 'fas fa-image'
             privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
-            mainStylesheet: 'Minimal'
+            mainStylesheet: 'Lite'
             position: 'before media'
             additionalResources:
               javaScripts:
