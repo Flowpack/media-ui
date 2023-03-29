@@ -1,18 +1,16 @@
-import * as React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
+import { availableAssetIdentitiesState } from '@media-ui/core/src/state';
 import { clipboardVisibleState, useClipboard } from '@media-ui/feature-clipboard/src';
 import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage/src';
 
-import { useViewModeSelection, VIEW_MODES } from '../../hooks';
 import { ListView, ThumbnailView } from './index';
 import LoadingLabel from '../LoadingLabel';
-import { MainViewMode, mainViewState } from '../../state';
-import { availableAssetIdentitiesState } from '@media-ui/core/src/state';
+import { MainViewMode, mainViewState, VIEW_MODES, viewModeState } from '../../state';
 
 const useStyles = createUseMediaUiStyles({
     emptyStateWrapper: {
@@ -25,7 +23,7 @@ const useStyles = createUseMediaUiStyles({
 
 const Main: React.FC = () => {
     const classes = useStyles();
-    const [viewModeSelection] = useViewModeSelection();
+    const viewModeSelection = useRecoilValue(viewModeState);
     const { assets: unusedAssets } = useUnusedAssetsQuery();
     const { clipboard } = useClipboard();
     const mainView = useRecoilValue(mainViewState);

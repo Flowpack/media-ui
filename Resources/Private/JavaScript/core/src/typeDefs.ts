@@ -5,16 +5,9 @@ export const typeDefs = gql`
     directive @client(always: Boolean!) on FIELD
     directive @export(as: String!) on FIELD
 
+    # TODO: Can this type be removed or moved to the root schema?
     type AssetIdentity {
         id: AssetId!
         assetSourceId: AssetSourceId!
-    }
-
-    extend type Query {
-        viewModeSelection: String
-    }
-
-    extend type Mutation {
-        setViewModeSelection(viewModeSelection: String): String
     }
 `;

@@ -3,27 +3,14 @@ import { NormalizedCacheObject } from '@apollo/client/cache';
 
 import { CLIPBOARD, ClipboardItems } from '@media-ui/feature-clipboard/src';
 
-import { VIEW_MODES } from '../hooks';
-import { VIEW_MODE_SELECTION } from '../queries';
-
 const STORAGE_PREFIX = 'flowpack.mediaui';
 
 // TODO: Replace all of this with the recoil storage effect
 interface PersistentState {
-    viewModeSelection?: string;
     clipboard?: ClipboardItems;
 }
 
-function writeToCache(
-    cache: ApolloCache<NormalizedCacheObject>,
-    { viewModeSelection = undefined, clipboard = undefined }: PersistentState
-) {
-    if (viewModeSelection !== undefined) {
-        cache.writeQuery({
-            query: VIEW_MODE_SELECTION,
-            data: { viewModeSelection },
-        });
-    }
+function writeToCache(cache: ApolloCache<NormalizedCacheObject>, { clipboard = undefined }: PersistentState) {
     if (clipboard !== undefined) {
         cache.writeQuery({
             query: CLIPBOARD,
@@ -42,17 +29,9 @@ export function getItem<T>(key): T {
 }
 
 export function restoreLocalState(cache: ApolloCache<NormalizedCacheObject>) {
-    const viewModeSelection = getItem<string>('viewModeSelection') || VIEW_MODES.Thumbnails;
     const clipboard = getItem<ClipboardItems>('clipboard') || {};
 
-    writeToCache(cache, { viewModeSelection, clipboard });
-}
-
-export function resetLocalState(cache: ApolloCache<NormalizedCacheObject>) {
-    writeToCache(cache, {
-        viewModeSelection: VIEW_MODES.Thumbnails,
-        clipboard: {},
-    });
+    writeToCache(cache, { clipboard });
 }
 
 export function updateLocalState(data: PersistentState, cache: ApolloCache<NormalizedCacheObject>) {
