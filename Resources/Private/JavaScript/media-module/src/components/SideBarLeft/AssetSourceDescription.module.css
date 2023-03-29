@@ -1,0 +1,14 @@
+.assetSourceDescription {
+    border: 1px solid var(--theme-colors-border);
+}
+
+.assetSourceDescription .ReactCollapse--collapse {
+    transition: height var(--theme-transition-slow);
+}
+
+.panelHeader button {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

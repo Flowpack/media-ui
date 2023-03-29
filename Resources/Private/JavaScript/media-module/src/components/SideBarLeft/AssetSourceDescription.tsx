@@ -1,30 +1,14 @@
-import * as React from 'react';
+import React from 'react';
 
 import { ToggablePanel } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core/src';
 import { useSelectAssetSource } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    assetSourceDescription: {
-        border: `1px solid ${theme.colors.border}`,
-        '& .ReactCollapse--collapse': {
-            transition: `height ${theme.transition.slow}`,
-        },
-    },
-    panelHeader: {
-        '& button': {
-            position: 'absolute',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-    },
-}));
+import classes from './AssetSourceDescription.module.css';
 
 export default function AssetSourceDescription() {
-    const classes = useStyles();
     const { translate } = useIntl();
     const [selectedAssetSource] = useSelectAssetSource();
 
