@@ -65,7 +65,8 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
         lineHeight: theme.spacing.goldenUnit,
         userSelect: 'text',
         '& > *': {
-            width: '100%',
+            width: `calc(100% - 2 * ${theme.spacing.half})`,
+            padding: `0 ${theme.spacing.half}`,
         },
     },
     lastModifiedColumn: {
