@@ -1,22 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 
-import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core/src';
 
 import { useAssetCount } from '../../../hooks';
 
-const useStyles = createUseMediaUiStyles({
-    assetCount: {
-        height: '100%',
-        alignSelf: 'flex-start',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        userSelect: 'none',
-    },
-});
+import classes from './AssetCount.module.css';
 
 const AssetCount: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const assetCount = useAssetCount();
 
