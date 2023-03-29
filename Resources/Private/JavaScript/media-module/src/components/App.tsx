@@ -77,6 +77,7 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 
             '& ::-webkit-scrollbar': {
                 width: theme.size.scrollbarSize,
+                height: theme.size.scrollbarSize,
             },
             '& ::-webkit-scrollbar-track': {
                 background: theme.colors.scrollbarBackground,

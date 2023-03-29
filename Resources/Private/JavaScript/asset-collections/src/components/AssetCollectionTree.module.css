@@ -9,4 +9,6 @@
 }
 .tree {
     border-top: 1px solid var(--theme-colors-border);
+    overflow: auto;
 }
+
