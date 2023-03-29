@@ -55,10 +55,18 @@
     --theme-fontSize-base: 14px;
     --theme-fontSize-small: 12px;
 
+    --theme-transition-fast: 0.1s;
+    --theme-transition-default: 0.25s;
+    --theme-transition-slow: 0.5s;
+
     /**
      * Media module specific media variables
      */
     --theme-colors-border: var(--theme-colors-ContrastDark);
     --theme-colors-alternatingBackground: var(--theme-colors-ContrastDark);
     --theme-colors-inactive: var(--theme-colors-ContrastBright);
+
+    --theme-zIndex-pagination: 10022;
+    --theme-zIndex-lightbox: 10023;
+    --theme-zIndex-loadingIndicator: 10024;
 }

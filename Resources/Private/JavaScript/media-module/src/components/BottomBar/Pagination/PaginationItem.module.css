@@ -1,0 +1,10 @@
+
+.item {
+    user-select: none;
+}
+
+.item button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

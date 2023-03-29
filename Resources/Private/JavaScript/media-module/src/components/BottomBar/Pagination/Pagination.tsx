@@ -1,31 +1,17 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core/src';
 import { currentPageState, featureFlagsState } from '@media-ui/core/src/state';
 
 import PaginationItem from './PaginationItem';
 import { MainViewMode, mainViewState } from '../../../state';
 import { useAssetCount } from '../../../hooks';
 
-const useStyles = createUseMediaUiStyles({
-    pagination: {
-        justifySelf: 'center',
-    },
-    list: {
-        display: 'flex',
-        justifySelf: 'center',
-        listStyleType: 'none',
-        textAlign: 'center',
-        padding: 0,
-    },
-    ellipsis: {
-        lineHeight: '2.4rem',
-    },
-});
+import classes from './Pagination.module.css';
+import cx from 'classnames';
 
 const Pagination: React.FC = () => {
-    const classes = useStyles();
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const assetCount = useAssetCount();
     const {
@@ -80,7 +66,7 @@ const Pagination: React.FC = () => {
     return (
         <nav className={classes.pagination}>
             {numberOfPages > 0 && (
-                <ol className={classes.list}>
+                <ol className={cx(classes.list, disabled && classes.disabled)}>
                     <PaginationItem
                         icon="angle-left"
                         title={translate('pagination.previousPageTitle', `Go to previous page`)}
