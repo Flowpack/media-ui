@@ -4,19 +4,13 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import 'react-image-lightbox/style.css';
 
-import { createUseMediaUiStyles, useMediaUi, useMediaUiTheme } from '@media-ui/core/src';
+import { useMediaUi } from '@media-ui/core/src';
 import { availableAssetsState } from '@media-ui/core/src/state';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 
 import selectedAssetForPreviewState from '../state/selectedAssetForPreviewState';
 
-const useStyles = createUseMediaUiStyles({
-    lightbox: {
-        '& .ril__image': {
-            maxWidth: '100%',
-        },
-    },
-});
+import classes from './AssetPreview.module.css';
 
 const useLightBoxContainer = (defaultContainer: null | Element = null) => {
     const lightBoxContainerRef = React.useRef<null | Element>(defaultContainer);
@@ -39,8 +33,6 @@ const useLightBoxContainer = (defaultContainer: null | Element = null) => {
 };
 
 export default function AssetPreview() {
-    const classes = useStyles();
-    const theme = useMediaUiTheme();
     const { containerRef, isInNodeCreationDialog } = useMediaUi();
     const assets = useRecoilValue(availableAssetsState);
     const [selectedAssetForPreview, setSelectedAssetForPreview] = useRecoilState(selectedAssetForPreviewState);
@@ -62,7 +54,7 @@ export default function AssetPreview() {
 
     return (
         <Lightbox
-            reactModalStyle={{ overlay: { zIndex: theme.lightboxZIndex } }}
+            reactModalStyle={{ overlay: { zIndex: 'var(--theme-zIndex-lightbox)' } }}
             reactModalProps={{ parentSelector: () => lightBoxContainer.current }}
             wrapperClassName={classes.lightbox}
             mainSrc={asset.previewUrl}

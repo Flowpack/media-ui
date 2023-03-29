@@ -12,7 +12,6 @@ import {
     useIntl,
     useInteraction,
     useMediaUi,
-    useMediaUiTheme,
     useNotify,
 } from './provider';
 
@@ -39,6 +38,5 @@ export {
     useIntl,
     useInteraction,
     useMediaUi,
-    useMediaUiTheme,
     useNotify,
 };

@@ -1,7 +1,7 @@
 import { NotifyProvider, useNotify, Notify } from './Notify';
 import { MediaUiProvider, useMediaUi } from './MediaUiProvider';
 import { IntlProvider, useIntl, I18nRegistry } from './Intl';
-import { MediaUiThemeProvider, useMediaUiTheme, MediaUiTheme, createUseMediaUiStyles } from './MediaUiTheme';
+import { MediaUiThemeProvider, MediaUiTheme, createUseMediaUiStyles } from './MediaUiTheme';
 import { Interaction, InteractionProvider, InteractionDialogRenderer, useInteraction } from './Interaction';
 
 export {
@@ -19,6 +19,5 @@ export {
     useIntl,
     useInteraction,
     useMediaUi,
-    useMediaUiTheme,
     useNotify,
 };

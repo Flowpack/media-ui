@@ -7,7 +7,7 @@ import { config } from '@neos-project/build-essentials/src/styles/styleConstants
 
 const ThemeContext = React.createContext({} as MediaUiTheme);
 const theming = createTheming(ThemeContext);
-const { ThemeProvider, useTheme } = theming;
+const { ThemeProvider } = theming;
 
 jss.use(jssPluginCache());
 
@@ -94,8 +94,6 @@ const mediaUiTheme: MediaUiTheme = {
     paginationZIndex: 10022,
     lightboxZIndex: 10023,
 };
-
-export const useMediaUiTheme = useTheme;
 
 export const createUseMediaUiStyles = (styles) =>
     createUseStyles<string, Record<string, any>, MediaUiTheme>(styles, { theming });
