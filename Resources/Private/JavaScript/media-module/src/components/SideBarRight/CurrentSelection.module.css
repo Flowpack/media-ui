@@ -13,9 +13,6 @@
 }
 
 .label {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 
 .label svg {
@@ -25,14 +22,20 @@
 .breadcrumb {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.3rem;
+    gap: var(--theme-spacing-Quarter);
+    padding: var(--theme-spacing-Quarter);
 }
 
-.breadcrumb > * {
+.breadcrumb button {
     background-color: var(--theme-colors-alternatingBackground);
-    padding: 3px 5px;
+    color: var(--theme-colors-ContrastBrightest);
     overflow: hidden;
     display: block;
     text-overflow-ellipsis: ellipsis;
     flex: 0 0 auto;
+    border: none;
+}
+
+.breadcrumb button:hover { 
+    background-color: var(--theme-colors-PrimaryBlue);
 }

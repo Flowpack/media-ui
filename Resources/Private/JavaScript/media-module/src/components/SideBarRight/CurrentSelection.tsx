@@ -1,12 +1,16 @@
-import * as React from 'react';
-import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
+import React, { useMemo } from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { Headline, Icon } from '@neos-project/react-ui-components';
+import { Headline } from '@neos-project/react-ui-components';
 
-import { useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
-import { useAssetCollectionsQuery, useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
+import { IconLabel } from '@media-ui/core/src/components';
+import {
+    selectedAssetCollectionIdState,
+    useAssetCollectionsQuery,
+    useSelectedAssetCollection,
+} from '@media-ui/feature-asset-collections';
 import { useSelectedTag } from '@media-ui/feature-asset-tags';
 
 import classes from './CurrentSelection.module.css';
@@ -14,6 +18,7 @@ import classes from './CurrentSelection.module.css';
 const CurrentSelection = () => {
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
+    const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const { translate } = useIntl();
     const { assetCollections } = useAssetCollectionsQuery();
@@ -21,7 +26,7 @@ const CurrentSelection = () => {
     const selection = useMemo(() => {
         let icon = 'question';
         let label: string = null;
-        const path: string[] = [];
+        const path: { title: string; id: string }[] = [];
 
         if (selectedInspectorView !== 'asset') {
             if (selectedAssetCollection) {
@@ -31,7 +36,7 @@ const CurrentSelection = () => {
                     parentCollection = parentCollection.parent
                         ? assetCollections.find(({ id }) => id === parentCollection.parent.id)
                         : null;
-                    if (parentCollection) path.push(parentCollection.title);
+                    if (parentCollection) path.push({ title: parentCollection.title, id: parentCollection.id });
                 }
             }
 
@@ -45,7 +50,7 @@ const CurrentSelection = () => {
         }
 
         return { icon, label, path: path.reverse() };
-    }, [selectedTag, selectedAssetCollection, selectedInspectorView]);
+    }, [selectedTag, selectedAssetCollection, selectedInspectorView, assetCollections]);
 
     if (!selection.label || selectedInspectorView === 'asset') return null;
 
@@ -56,18 +61,19 @@ const CurrentSelection = () => {
                     ? translate('currentSelection.assetCollection.headline', 'Selected collection')
                     : translate('currentSelection.tag.headline', 'Selected tag')}
             </Headline>
-            <span className={classes.label} title={selection.label}>
-                <Icon icon={selection.icon} />
-                {selection.label}
-                <br />
-            </span>
+            <IconLabel icon={selection.icon} className={classes.label} label={selection.label} />
 
             <Headline type="h3" className={classes.headline}>
                 {translate('currentSelection.path.headline', 'Path')}
             </Headline>
             <div className={classes.breadcrumb}>
-                {selection.path.map((piece) => (
-                    <span key={piece}>{piece}</span>
+                <button type="button" onClick={() => setSelectedAssetCollectionId(null)}>
+                    /
+                </button>
+                {selection.path.map(({ id, title }) => (
+                    <button key={id} type="button" onClick={() => setSelectedAssetCollectionId(id)}>
+                        {title}
+                    </button>
                 ))}
             </div>
         </div>
