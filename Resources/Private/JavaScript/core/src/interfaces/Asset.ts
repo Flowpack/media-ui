@@ -1,7 +1,7 @@
 import { AssetCollection } from '@media-ui/feature-asset-collections';
 import { Tag } from '@media-ui/feature-asset-tags';
+import { AssetSource } from '@media-ui/feature-asset-sources';
 
-import AssetSource from './AssetSource';
 import IptcProperty from './IptcProperty';
 import AssetFile from './AssetFile';
 

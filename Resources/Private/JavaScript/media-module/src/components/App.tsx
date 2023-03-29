@@ -1,9 +1,9 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import cx from 'classnames';
 
 import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core';
-import { useSelectAsset, useSelectAssetSource } from '@media-ui/core/src/hooks';
+import { useSelectAsset } from '@media-ui/core/src/hooks';
 import { searchTermState } from '@media-ui/core/src/state';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard';
@@ -15,8 +15,9 @@ import { AssetPreview } from '@media-ui/feature-asset-preview/src';
 import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
 import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
 import { CreateAssetCollectionDialog, createAssetCollectionDialogState } from '@media-ui/feature-asset-collections';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
-import { SideBarLeft } from './SideBarLeft';
+import SideBarLeft from './SideBarLeft/SideBarLeft';
 import { SideBarRight } from './SideBarRight';
 import LoadingIndicator from './LoadingIndicator';
 import { BottomBar } from './BottomBar';
@@ -109,9 +110,10 @@ const App = () => {
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const searchTerm = useRecoilValue(searchTermState);
     const selectAsset = useSelectAsset();
-    const [, selectAssetSource] = useSelectAssetSource();
-    const classes = useStyles({ selectionMode, isInNodeCreationDialog });
+    const selectAssetSource = useSetRecoilState(selectedAssetSourceState);
+    const jssClasses = useStyles({ selectionMode, isInNodeCreationDialog });
 
+    // TODO: Implement asset source selection via recoil an atom effect in `searchTermState` to avoid this dangerous effect
     React.useEffect(() => {
         const assetId = searchTerm.getAssetIdentifierIfPresent();
         if (assetId) {
@@ -124,22 +126,22 @@ const App = () => {
 
     return (
         <div
-            className={cx(classes.container, styles.mediaModuleApp, globalClasses.mediaModuleTheme)}
+            className={cx(jssClasses.container, styles.mediaModuleApp, globalClasses.mediaModuleTheme)}
             ref={containerRef}
         >
             <LoadingIndicator />
 
-            <div className={classes.gridLeft}>
+            <div className={jssClasses.gridLeft}>
                 <ErrorBoundary>
                     <SideBarLeft />
                 </ErrorBoundary>
             </div>
 
-            <div className={classes.gridTop}>
+            <div className={jssClasses.gridTop}>
                 <TopBar />
             </div>
 
-            <div className={classes.gridMain}>
+            <div className={jssClasses.gridMain}>
                 <ErrorBoundary>
                     <Main />
                 </ErrorBoundary>
@@ -148,7 +150,7 @@ const App = () => {
             <BottomBar />
 
             {!selectionMode && (
-                <div className={classes.gridRight}>
+                <div className={jssClasses.gridRight}>
                     <ErrorBoundary>
                         <SideBarRight />
                     </ErrorBoundary>

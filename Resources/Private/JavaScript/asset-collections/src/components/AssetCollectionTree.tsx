@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { Headline, Tree } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core/src';
-import { useSelectAssetSource } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
+import { useSelectedAssetSource } from '@media-ui/feature-asset-sources';
 
 import AssetCollectionTreeNode from './AssetCollectionTreeNode';
 import AddAssetCollectionButton from './AddAssetCollectionButton';
@@ -20,7 +19,7 @@ import classes from './AssetCollectionTree.module.css';
 const AssetCollectionTree = () => {
     const { translate } = useIntl();
     const { assetCollections } = useAssetCollectionsQuery();
-    const [selectedAssetSource] = useSelectAssetSource();
+    const selectedAssetSource = useSelectedAssetSource();
     const { tags } = useTagsQuery();
 
     const assetCollectionsWithoutParent = useMemo(() => {

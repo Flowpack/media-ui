@@ -15,7 +15,6 @@ const ASSETS = gql`
         $sortDirection: SortDirection
         $includeUsage: Boolean = false
     ) {
-        selectedAssetSourceId @client(always: true) @export(as: "assetSourceId")
         includeUsage @client(always: true) @export(as: "includeUsage")
         assets(
             searchTerm: $searchTerm

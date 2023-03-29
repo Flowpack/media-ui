@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 
 import { useAssetQuery, useAssetsQuery } from '@media-ui/core/src/hooks';
-import { NEOS_ASSET_SOURCE } from '@media-ui/core/src/constants/neos';
 import { assetCreatedEvent, assetRemovedEvent, assetUpdatedEvent } from '@media-ui/core/src/events';
+import { NEOS_ASSET_SOURCE } from '@media-ui/feature-asset-sources';
 
 import useChangedAssetsQuery, { AssetChangeType } from '../hooks/useChangedAssetsQuery';
 

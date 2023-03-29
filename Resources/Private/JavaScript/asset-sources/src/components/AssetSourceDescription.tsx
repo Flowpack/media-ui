@@ -3,14 +3,14 @@ import React from 'react';
 import { ToggablePanel } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core/src';
-import { useSelectAssetSource } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
+import { useSelectedAssetSource } from '../hooks/useSelectedAssetSource';
 
 import classes from './AssetSourceDescription.module.css';
 
-export default function AssetSourceDescription() {
+const AssetSourceDescription: React.FC = () => {
     const { translate } = useIntl();
-    const [selectedAssetSource] = useSelectAssetSource();
+    const selectedAssetSource = useSelectedAssetSource();
 
     if (!selectedAssetSource?.description) return null;
 
@@ -27,4 +27,6 @@ export default function AssetSourceDescription() {
             </ToggablePanel.Contents>
         </ToggablePanel>
     );
-}
+};
+
+export default React.memo(AssetSourceDescription);

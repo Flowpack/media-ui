@@ -3,7 +3,7 @@ import { atom } from 'recoil';
 import { FeatureFlags } from '../interfaces';
 
 const featureFlagsState = atom<FeatureFlags>({
-    key: 'featureFlagsState',
+    key: 'FeatureFlagsState',
     default: {
         useNewMediaSelection: true,
         queryAssetUsage: false,

@@ -103,7 +103,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
             const cache = CacheFactory.createCache(this.props.frontendConfiguration as FeatureFlags);
-            PersistentStateManager.restoreLocalState(cache, this.props.constraints);
+            PersistentStateManager.restoreLocalState(cache);
 
             apolloClient = new ApolloClient({
                 cache,

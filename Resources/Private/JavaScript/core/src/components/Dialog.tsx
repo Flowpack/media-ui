@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { Dialog as NeosUiDialog } from '@neos-project/react-ui-components';
 
-import globalClasses from '../Theme.module.css'
+import globalClasses from '../Theme.module.css';
 
 //
 // @TODO: Remove this once https://github.com/neos/neos-ui/issues/2925 is solved.

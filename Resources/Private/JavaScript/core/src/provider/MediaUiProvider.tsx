@@ -9,7 +9,7 @@ import { useDeleteAsset, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
 import { useIntl } from './Intl';
 import { useInteraction } from './Interaction';
-import { featureFlagsState, selectedMediaTypeState } from '../state';
+import { constraintsState, featureFlagsState, selectedMediaTypeState } from '../state';
 import { AssetMediaType } from '../state/selectedMediaTypeState';
 import { ASSET_FRAGMENT } from '../fragments/asset';
 import {
@@ -40,7 +40,6 @@ interface MediaUiProviderValues {
     selectionMode: boolean;
     isInNodeCreationDialog: boolean;
     isInMediaDetailsScreen: boolean;
-    constraints: SelectionConstraints;
     assetType: AssetMediaType;
     isAssetSelectable: (asset: Asset) => boolean;
     approvalAttainmentStrategy: ApprovalAttainmentStrategy;
@@ -68,6 +67,7 @@ export function MediaUiProvider({
     const client = useApolloClient();
     const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
+    const setConstraints = useSetRecoilState(constraintsState);
     const setSelectedMediaType = useSetRecoilState(selectedMediaTypeState);
     const setFeatureFlags = useSetRecoilState(featureFlagsState);
     const approvalAttainmentStrategy = useMemo(
@@ -81,6 +81,7 @@ export function MediaUiProvider({
 
     // Set initial media type state
     useEffect(() => {
+        setConstraints(constraints);
         setFeatureFlags(featureFlags);
         setSelectedMediaType(assetType);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -187,7 +188,6 @@ export function MediaUiProvider({
                 selectionMode,
                 isInNodeCreationDialog,
                 isInMediaDetailsScreen,
-                constraints,
                 assetType,
                 isAssetSelectable,
                 approvalAttainmentStrategy,

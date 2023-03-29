@@ -11,12 +11,10 @@ export const typeDefs = gql`
     }
 
     extend type Query {
-        selectedAssetSourceId: String
         viewModeSelection: String
     }
 
     extend type Mutation {
-        setSelectedAssetSourceId(selectedAssetSourceId: String): String
         setViewModeSelection(viewModeSelection: String): String
     }
 `;

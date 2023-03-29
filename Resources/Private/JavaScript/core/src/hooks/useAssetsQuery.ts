@@ -4,9 +4,10 @@ import { useLazyQuery } from '@apollo/client';
 
 import { selectedTagIdState, Tag } from '@media-ui/feature-asset-tags';
 import { AssetCollection, selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
+import { AssetSource, selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
-import { Asset, AssetSource } from '../interfaces';
+import { Asset } from '../interfaces';
 import {
     availableAssetsState,
     currentPageState,
@@ -29,6 +30,7 @@ interface AssetsQueryResult {
 
 interface AssetsQueryVariables {
     searchTerm: string;
+    assetSourceId: string;
     assetCollectionId: string;
     mediaType: string;
     tagId: string;
@@ -43,9 +45,10 @@ const useAssetsQuery = () => {
         pagination: { assetsPerPage },
     } = useRecoilValue(featureFlagsState);
     const searchTerm = useRecoilValue(searchTermState);
-    const selectedAssetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
+    const assetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceState);
     const selectedTagId = useRecoilValue(selectedTagIdState);
-    const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
+    const mediaType = useRecoilValue(selectedMediaTypeState);
     const sortOrderState = useRecoilValue(selectedSortOrderState);
     const currentPage = useRecoilValue(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
@@ -58,8 +61,9 @@ const useAssetsQuery = () => {
         notifyOnNetworkStatusChange: false,
         variables: {
             searchTerm: searchTerm.toString(),
-            assetCollectionId: selectedAssetCollectionId,
-            mediaType: mediaTypeFilter,
+            assetSourceId,
+            assetCollectionId,
+            mediaType,
             tagId: selectedTagId,
             limit: assetsPerPage,
             offset,
@@ -73,8 +77,9 @@ const useAssetsQuery = () => {
             query({
                 variables: {
                     searchTerm: searchTerm.toString(),
-                    assetCollectionId: selectedAssetCollectionId,
-                    mediaType: mediaTypeFilter,
+                    assetSourceId,
+                    assetCollectionId,
+                    mediaType,
                     tagId: selectedTagId,
                     limit: assetsPerPage,
                     offset,
@@ -84,10 +89,11 @@ const useAssetsQuery = () => {
             });
             setIsLoading(true);
         } else if (data && !loading && isLoading) {
+            // TODO: Use recoil transaction to handle all updates when available with the next release
             setIsLoading(false);
             setInitialLoadComplete(true);
             setAssets(data.assets);
-            // TODO: Update currentPage if asset count changes and current page exceeds limit
+            // TODO: Update currentPage if asset count changes and current page exceeds limit, maybe as atom effect?
         }
         // Don't include `isLoading` to prevent constant reloads
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,8 +103,9 @@ const useAssetsQuery = () => {
         loading,
         offset,
         searchTerm,
-        selectedAssetCollectionId,
-        mediaTypeFilter,
+        assetSourceId,
+        assetCollectionId,
+        mediaType,
         selectedTagId,
         sortOrderState,
     ]);

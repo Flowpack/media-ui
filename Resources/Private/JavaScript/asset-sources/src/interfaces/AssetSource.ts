@@ -1,6 +1,6 @@
 type AssetSourceType = 'AssetSource';
 
-export default interface AssetSource extends GraphQlEntity {
+export interface AssetSource extends GraphQlEntity {
     __typename: AssetSourceType;
     readonly id: string;
     readonly label: string;

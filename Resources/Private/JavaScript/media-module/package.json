@@ -26,6 +26,7 @@
     "@media-ui/feature-asset-collections": "workspace:*",
     "@media-ui/feature-asset-editing": "workspace:*",
     "@media-ui/feature-asset-preview": "workspace:*",
+    "@media-ui/feature-asset-sources": "workspace:*",
     "@media-ui/feature-asset-tags": "workspace:*",
     "@media-ui/feature-asset-upload": "workspace:*",
     "@media-ui/feature-asset-usage": "workspace:*",

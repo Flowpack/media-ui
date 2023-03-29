@@ -1987,6 +1987,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@media-ui/feature-asset-sources@workspace:*, @media-ui/feature-asset-sources@workspace:Resources/Private/JavaScript/asset-sources":
+  version: 0.0.0-use.local
+  resolution: "@media-ui/feature-asset-sources@workspace:Resources/Private/JavaScript/asset-sources"
+  languageName: unknown
+  linkType: soft
+
 "@media-ui/feature-asset-tags@workspace:*, @media-ui/feature-asset-tags@workspace:Resources/Private/JavaScript/asset-tags":
   version: 0.0.0-use.local
   resolution: "@media-ui/feature-asset-tags@workspace:Resources/Private/JavaScript/asset-tags"
@@ -2074,6 +2080,7 @@ __metadata:
     "@media-ui/feature-asset-collections": "workspace:*"
     "@media-ui/feature-asset-editing": "workspace:*"
     "@media-ui/feature-asset-preview": "workspace:*"
+    "@media-ui/feature-asset-sources": "workspace:*"
     "@media-ui/feature-asset-tags": "workspace:*"
     "@media-ui/feature-asset-upload": "workspace:*"
     "@media-ui/feature-asset-usage": "workspace:*"
@@ -2903,17 +2910,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@parcel/transformer-graphql@npm:2.8.3":
-  version: 2.8.3
-  resolution: "@parcel/transformer-graphql@npm:2.8.3"
-  dependencies:
-    "@parcel/plugin": 2.8.3
-    graphql: ^15.0.0
-    graphql-import-macro: ^1.0.0
-  checksum: 98ad68a8b0778ef36741e944ad3418f06d0c8f95414a5bad34c9519776e8157c3c2fa44ba4f4133ae1819dec8637276e8c21c95a04d42a60f2ef7c2abe566461
-  languageName: node
-  linkType: hard
-
 "@parcel/transformer-html@npm:2.8.3":
   version: 2.8.3
   resolution: "@parcel/transformer-html@npm:2.8.3"
@@ -2942,15 +2938,6 @@ __metadata:
   peerDependencies:
     "@parcel/core": ^2.8.3
   checksum: f4b3464828e1b3d44e7da5c7a71272f5f53f830d9bb371e8dd8b2f32040f4426f3efeae12949947e34b39f7755a253f0b48c6eeec6d86ad43baf0b30717f1f47
-  languageName: node
-  linkType: hard
-
-"@parcel/transformer-inline-string@npm:2.8.3":
-  version: 2.8.3
-  resolution: "@parcel/transformer-inline-string@npm:2.8.3"
-  dependencies:
-    "@parcel/plugin": 2.8.3
-  checksum: 23fa279e1fb0acb0439bfa03d908362796f2c81e911c52f38b8818f4240f4c35b4c236e4e46550def9140c4269456bba104f63ed8f1b713d08ef0276f2758e6b
   languageName: node
   linkType: hard
 
@@ -9884,15 +9871,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-import-macro@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "graphql-import-macro@npm:1.0.0"
-  dependencies:
-    graphql: ^15.0.0
-  checksum: 5b50b5425480e2749f489ab7ba73d7b2c8738a3eb570cf5343080cfcbe8539abcaee392aa66869b7cb33a5127d0c0aa754be445dff7c91f64d883d5a4de21444
-  languageName: node
-  linkType: hard
-
 "graphql-import@npm:^0.4.0":
   version: 0.4.5
   resolution: "graphql-import@npm:0.4.5"
@@ -9968,17 +9946,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^15.0.0, graphql@npm:^15.5.0":
-  version: 15.8.0
-  resolution: "graphql@npm:15.8.0"
-  checksum: 423325271db8858428641b9aca01699283d1fe5b40ef6d4ac622569ecca927019fce8196208b91dd1d8eb8114f00263fe661d241d0eb40c10e5bfd650f86ec5e
-  languageName: node
-  linkType: hard
-
 "graphql@npm:^15.3.0":
   version: 15.5.0
   resolution: "graphql@npm:15.5.0"
   checksum: 58a69f7274ae94c690bfa2517f96bbaf1327e1ca1fc46606e772ba2f7ca517adeb375346301373351e693022f448b7866163034209623d7c5315819ef8c5e7c0
+  languageName: node
+  linkType: hard
+
+"graphql@npm:^15.5.0":
+  version: 15.8.0
+  resolution: "graphql@npm:15.8.0"
+  checksum: 423325271db8858428641b9aca01699283d1fe5b40ef6d4ac622569ecca927019fce8196208b91dd1d8eb8114f00263fe661d241d0eb40c10e5bfd650f86ec5e
   languageName: node
   linkType: hard
 
@@ -13571,8 +13549,6 @@ __metadata:
     "@media-ui/dev-server": "workspace:*"
     "@media-ui/media-module": "workspace:*"
     "@media-ui/neos-ui-plugin": "workspace:*"
-    "@parcel/transformer-graphql": 2.8.3
-    "@parcel/transformer-inline-string": 2.8.3
     "@types/chai": ^4.3.4
     "@typescript-eslint/eslint-plugin": ^5.54.1
     "@typescript-eslint/parser": ^5.54.1
@@ -13587,7 +13563,6 @@ __metadata:
     mocha: ^10.2.0
     node-gyp: ^9.3.1
     patch-package: ^6.5.1
-    path-browserify: ^1.0.0
     prettier: ^2.8.4
     testcafe: ^2.4.0
     testcafe-react-selectors: ^5.0.2
@@ -14635,13 +14610,6 @@ __metadata:
   version: 0.0.1
   resolution: "path-browserify@npm:0.0.1"
   checksum: ae8dcd45d0d3cfbaf595af4f206bf3ed82d77f72b4877ae7e77328079e1468c84f9386754bb417d994d5a19bf47882fd253565c18441cd5c5c90ae5187599e35
-  languageName: node
-  linkType: hard
-
-"path-browserify@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "path-browserify@npm:1.0.1"
-  checksum: c6d7fa376423fe35b95b2d67990060c3ee304fc815ff0a2dc1c6c3cfaff2bd0d572ee67e18f19d0ea3bbe32e8add2a05021132ac40509416459fffee35200699
   languageName: node
   linkType: hard
 

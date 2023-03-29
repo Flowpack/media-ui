@@ -1,7 +1,6 @@
 export { default as Asset } from './Asset';
 export { default as AssetFile } from './AssetFile';
 export { default as AssetIdentity } from './AssetIdentity';
-export { default as AssetSource } from './AssetSource';
 export { default as FeatureFlags } from './FeatureFlags';
 export { default as Image } from './Image';
 export { default as IptcProperty } from './IptcProperty';

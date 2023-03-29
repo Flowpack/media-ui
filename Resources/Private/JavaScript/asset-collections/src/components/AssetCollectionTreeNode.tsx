@@ -4,8 +4,7 @@ import { atom, selectorFamily, useRecoilState, useRecoilValue, useSetRecoilState
 import { Tree } from '@neos-project/react-ui-components';
 
 import dndTypes from '@media-ui/core/src/constants/dndTypes';
-import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
-import { localStorageEffect } from '@media-ui/media-module/src/core/PersistentStateManager';
+import { selectedAssetCollectionAndTagState, localStorageEffect } from '@media-ui/core/src/state';
 import { selectedAssetCollectionIdState, useAssetCollectionQuery } from '@media-ui/feature-asset-collections';
 
 import TreeNodeProps from '../interfaces/TreeNodeProps';
