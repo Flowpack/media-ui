@@ -5,7 +5,6 @@ import cx from 'classnames';
 import { Icon } from '@neos-project/react-ui-components';
 
 import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 import { AssetLabel } from '@media-ui/core/src/components';

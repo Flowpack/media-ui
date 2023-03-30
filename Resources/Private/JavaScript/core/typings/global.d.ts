@@ -37,3 +37,8 @@ type PaginationConfig = {
 interface GraphQlEntity {
     __typename: string;
 }
+
+interface AssetIdentity {
+    assetId: string;
+    assetSourceId: string;
+}

@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 
-import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
+import { Asset } from '@media-ui/core/src/interfaces';
 
 import SIMILAR_ASSETS from '../queries/similarAssets';
 

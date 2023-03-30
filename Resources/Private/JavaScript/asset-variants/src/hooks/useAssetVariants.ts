@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client';
 
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import AssetVariant from '../interfaces/AssetVariant';
 import ASSET_VARIANTS from '../queries/assetVariants';
 

@@ -3,7 +3,6 @@ import * as React from 'react';
 import { IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core/src';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useClipboard } from '@media-ui/feature-clipboard/src';
 
 interface MissingAssetActionsProps {

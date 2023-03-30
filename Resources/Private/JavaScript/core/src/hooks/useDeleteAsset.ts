@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/client';
 import { useSetRecoilState } from 'recoil';
 
 import { DELETE_ASSET } from '../mutations';
-import { AssetIdentity } from '../interfaces';
 import { selectedAssetIdState } from '../state';
 import { ASSET } from '../queries';
 import { useEvent } from './index';

@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { useMediaUi } from '../provider';
-import { AssetIdentity } from '../interfaces';
 import { selectedAssetIdState } from '../state';
 import selectedInspectorViewState from '../state/selectedInspectorViewState';
 

@@ -4,7 +4,7 @@ import { useApolloClient, gql } from '@apollo/client';
 import { useSetRecoilState } from 'recoil';
 import { isMatch } from 'matcher';
 
-import { Asset, AssetIdentity, FeatureFlags, SelectionConstraints } from '../interfaces';
+import { Asset, FeatureFlags, SelectionConstraints } from '../interfaces';
 import { useDeleteAsset, useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
 import { useIntl } from './Intl';
