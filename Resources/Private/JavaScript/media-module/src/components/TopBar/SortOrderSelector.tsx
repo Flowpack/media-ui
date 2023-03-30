@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 
 import { SelectBox, IconButton } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core';
 
 import { selectedSortOrderState, SORT_BY, SORT_DIRECTION } from '@media-ui/core/src/state/selectedSortOrderState';
 

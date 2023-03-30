@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 import { clipboardItemState } from '@media-ui/feature-clipboard';
 
 interface MissingAssetActionsProps {

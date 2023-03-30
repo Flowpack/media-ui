@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Headline } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { IconLabel, PropertyList, PropertyListItem } from '@media-ui/core/src/components';
 

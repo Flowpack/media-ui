@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useMediaUi } from '@media-ui/core/src';
+import { useMediaUi } from '@media-ui/core';
 import { Column } from '@media-ui/core/src/components';
 import { UploadButton } from '@media-ui/feature-asset-upload/src/components';
 import { AssetCollectionTree } from '@media-ui/feature-asset-collections';

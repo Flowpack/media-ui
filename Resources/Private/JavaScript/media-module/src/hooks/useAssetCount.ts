@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { useAssetCountQuery } from '@media-ui/core/src/hooks';
-import { useUnusedAssetCountQuery } from '@media-ui/feature-asset-usage/src';
+import { useUnusedAssetCountQuery } from '@media-ui/feature-asset-usage';
 
 import { MainViewMode, mainViewState } from '../state';
 

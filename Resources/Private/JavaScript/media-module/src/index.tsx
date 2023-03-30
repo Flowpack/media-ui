@@ -15,7 +15,7 @@ import {
     MediaUiProvider,
     MediaUiThemeProvider,
     NotifyProvider,
-} from '@media-ui/core/src';
+} from '@media-ui/core';
 import { FeatureFlags } from '@media-ui/core/src/interfaces';
 
 // GraphQL type definitions

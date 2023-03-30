@@ -3,7 +3,7 @@ import cx from 'classnames';
 
 import { Icon } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
 
 import { FileUploadResult, UploadedFile } from '../interfaces';
 

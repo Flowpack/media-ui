@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
+import { createUseMediaUiStyles, useIntl } from '@media-ui/core';
 import { currentPageState, searchTermState } from '@media-ui/core/src/state';
 import { SearchTerm } from '@media-ui/core/src/domain/SearchTerm';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
 
 import { FilesUploadState, FileUploadResult } from '../interfaces';
 import FilePreview from './FilePreview';

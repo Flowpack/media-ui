@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, useNotify, useMediaUi } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, useNotify, useMediaUi } from '@media-ui/core';
 import { Asset } from '@media-ui/core/src/interfaces';
 import { useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';

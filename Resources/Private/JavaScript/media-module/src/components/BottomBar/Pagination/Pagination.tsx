@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 import { currentPageState, featureFlagsState } from '@media-ui/core/src/state';
 
 import PaginationItem from './PaginationItem';

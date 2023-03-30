@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Icon } from '@neos-project/react-ui-components';
 
-import { useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 
 import assetUsageDetailsModalState from '../state/assetUsageDetailsModalState';
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Headline, MultiSelectBox } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
 import { Tag } from '@media-ui/feature-asset-tags';
 

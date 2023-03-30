@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     inspector: {

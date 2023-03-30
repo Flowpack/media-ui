@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { useIntl, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core';
 import { Tag, useTagsQuery } from '@media-ui/feature-asset-tags';
 import {
     AssetCollection,

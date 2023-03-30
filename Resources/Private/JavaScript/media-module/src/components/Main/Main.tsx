@@ -3,10 +3,10 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
+import { createUseMediaUiStyles, useIntl } from '@media-ui/core';
 import { availableAssetIdentitiesState } from '@media-ui/core/src/state';
 import { clipboardState, clipboardVisibleState } from '@media-ui/feature-clipboard';
-import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage/src';
+import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage';
 
 import { ListView, ThumbnailView } from './index';
 import LoadingLabel from '../LoadingLabel';

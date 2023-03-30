@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
 import { useSelectAsset } from '@media-ui/core/src/hooks';
-import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview/src';
+import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview';
 
 import { Thumbnail } from './index';
 

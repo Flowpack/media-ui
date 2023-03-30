@@ -3,9 +3,9 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { SelectBox } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
+import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core';
 import { currentPageState, featureFlagsState, selectedMediaTypeState } from '@media-ui/core/src/state';
-import { showUnusedAssetsState } from '@media-ui/feature-asset-usage/src';
+import { showUnusedAssetsState } from '@media-ui/feature-asset-usage';
 import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
 
 import { MainViewMode, mainViewState } from '../../state';

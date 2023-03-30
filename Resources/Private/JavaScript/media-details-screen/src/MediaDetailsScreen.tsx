@@ -20,7 +20,7 @@ import {
     MediaUiThemeProvider,
     Notify,
     NotifyProvider,
-} from '@media-ui/core/src';
+} from '@media-ui/core';
 import { Asset, FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
 import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
 import { ApolloErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';

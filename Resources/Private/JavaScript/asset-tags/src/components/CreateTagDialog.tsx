@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Label, TextInput } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core';
 import { useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
 import { useCreateTag } from '@media-ui/feature-asset-tags';
 import { Dialog } from '@media-ui/core/src/components';

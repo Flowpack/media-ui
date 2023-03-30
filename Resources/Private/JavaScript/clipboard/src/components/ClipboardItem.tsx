@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useCallback } from 'react';
 
-import { useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useAssetQuery, useSelectAsset } from '@media-ui/core/src/hooks';
 
 import classes from './ClipboardItem.module.css';

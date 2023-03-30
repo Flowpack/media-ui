@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 import { initialLoadCompleteState } from '@media-ui/core/src/state';
 
 import ClipboardItem from './ClipboardItem';

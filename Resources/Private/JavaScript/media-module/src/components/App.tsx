@@ -11,7 +11,7 @@ import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
 import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets';
 import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/state';
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
-import { AssetPreview } from '@media-ui/feature-asset-preview/src';
+import { AssetPreview } from '@media-ui/feature-asset-preview';
 import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
 import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
 import { CreateAssetCollectionDialog, createAssetCollectionDialogState } from '@media-ui/feature-asset-collections';

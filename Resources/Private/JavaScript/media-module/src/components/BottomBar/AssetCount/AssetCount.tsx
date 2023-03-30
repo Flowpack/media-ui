@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 
 import { useAssetCount } from '../../../hooks';
 

@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { Icon } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 import { humanFileSize } from '@media-ui/core/src/helper';

@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { Headline } from '@neos-project/react-ui-components';
 
-import { useIntl, useMediaUi } from '@media-ui/core/src';
+import { useIntl, useMediaUi } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
 import { AssetUsagesToggleButton } from '@media-ui/feature-asset-usage/src/index';
 import { SimilarAssetsToggleButton } from '@media-ui/feature-similar-assets';

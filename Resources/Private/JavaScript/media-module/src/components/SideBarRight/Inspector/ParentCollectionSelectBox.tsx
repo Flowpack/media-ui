@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
 import {
     useAssetCollectionsQuery,

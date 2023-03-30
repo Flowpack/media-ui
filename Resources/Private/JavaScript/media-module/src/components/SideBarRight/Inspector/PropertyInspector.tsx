@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState } from '@media-ui/core/src/state';

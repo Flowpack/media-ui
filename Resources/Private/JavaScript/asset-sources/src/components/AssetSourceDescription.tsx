@@ -2,7 +2,7 @@ import React from 'react';
 
 import { ToggablePanel } from '@neos-project/react-ui-components';
 
-import { useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
 import { useSelectedAssetSource } from '../hooks/useSelectedAssetSource';
 

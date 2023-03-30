@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     actions: {

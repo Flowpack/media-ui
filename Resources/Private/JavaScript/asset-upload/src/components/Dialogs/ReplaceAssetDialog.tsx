@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useAssetsQuery, useSelectedAsset } from '@media-ui/core/src/hooks';
 import { Dialog } from '@media-ui/core/src/components';
 

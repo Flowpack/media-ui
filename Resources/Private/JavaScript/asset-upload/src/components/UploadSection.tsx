@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } from '@media-ui/core/src';
+import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } from '@media-ui/core';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { humanFileSize } from '@media-ui/core/src/helper';
 import { UploadedFile } from '../interfaces';

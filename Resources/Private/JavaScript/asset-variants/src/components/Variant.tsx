@@ -1,5 +1,5 @@
 import React from 'react';
-import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
 import AssetVariant from '../interfaces/AssetVariant';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

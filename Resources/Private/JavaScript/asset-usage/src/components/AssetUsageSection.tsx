@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 
 import { UsageDetailsGroup } from '../interfaces/UsageDetails';
 

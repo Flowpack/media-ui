@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { Headline, Tree } from '@neos-project/react-ui-components';
 
-import { useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
 import { useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';

@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Label, TextInput } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core';
 import { Dialog } from '@media-ui/core/src/components';
 
 import useCreateAssetCollection from '../hooks/useCreateAssetCollection';

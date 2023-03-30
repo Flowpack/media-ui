@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { Tabs } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles } from '@media-ui/core/src';
+import { createUseMediaUiStyles } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { featureFlagsState, selectedInspectorViewState } from '@media-ui/core/src/state';
 import VariantsInspector from '@media-ui/feature-asset-variants/src/components/VariantsInspector';

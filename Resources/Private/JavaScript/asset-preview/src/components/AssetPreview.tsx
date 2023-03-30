@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 
 import 'react-image-lightbox/style.css';
 
-import { useMediaUi } from '@media-ui/core/src';
+import { useMediaUi } from '@media-ui/core';
 import { availableAssetsState } from '@media-ui/core/src/state';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 

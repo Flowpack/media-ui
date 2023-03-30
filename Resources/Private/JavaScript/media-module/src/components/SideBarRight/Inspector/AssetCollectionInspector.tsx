@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
 import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/feature-asset-collections';
 

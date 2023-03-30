@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Asset } from '@media-ui/core/src/interfaces';
-import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core';
 
 const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
     similarAsset: {
