@@ -4,13 +4,9 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Headline } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
-import { selectedInspectorViewState } from '@media-ui/core/src/state';
+import { selectedAssetCollectionAndTagState, selectedInspectorViewState } from '@media-ui/core/src/state';
 import { IconLabel } from '@media-ui/core/src/components';
-import {
-    selectedAssetCollectionIdState,
-    useAssetCollectionsQuery,
-    useSelectedAssetCollection,
-} from '@media-ui/feature-asset-collections';
+import { useAssetCollectionsQuery, useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
 import { useSelectedTag } from '@media-ui/feature-asset-tags';
 
 import classes from './CurrentSelection.module.css';
@@ -18,7 +14,7 @@ import classes from './CurrentSelection.module.css';
 const CurrentSelection = () => {
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
-    const setSelectedAssetCollectionId = useSetRecoilState(selectedAssetCollectionIdState);
+    const setSelectedAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const { translate } = useIntl();
     const { assetCollections } = useAssetCollectionsQuery();
@@ -30,6 +26,10 @@ const CurrentSelection = () => {
 
         if (selectedInspectorView !== 'asset') {
             if (selectedAssetCollection) {
+                if (selectedInspectorView === 'tag') {
+                    path.push({ title: selectedAssetCollection.title, id: selectedAssetCollection.id });
+                }
+
                 // Build the absolute path from the selected collection to its root
                 let parentCollection = selectedAssetCollection;
                 while (parentCollection) {
@@ -67,11 +67,23 @@ const CurrentSelection = () => {
                 {translate('currentSelection.path.headline', 'Path')}
             </Headline>
             <div className={classes.breadcrumb}>
-                <button type="button" onClick={() => setSelectedAssetCollectionId(null)}>
+                <button
+                    type="button"
+                    onClick={() =>
+                        setSelectedAssetCollectionAndTag({
+                            assetCollectionId: null,
+                            tagId: null,
+                        })
+                    }
+                >
                     /
                 </button>
                 {selection.path.map(({ id, title }) => (
-                    <button key={id} type="button" onClick={() => setSelectedAssetCollectionId(id)}>
+                    <button
+                        key={id}
+                        type="button"
+                        onClick={() => setSelectedAssetCollectionAndTag({ assetCollectionId: id, tagId: null })}
+                    >
                         {title}
                     </button>
                 ))}
