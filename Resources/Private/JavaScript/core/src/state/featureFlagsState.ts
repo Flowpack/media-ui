@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 import { FeatureFlags } from '../interfaces';
 
-const featureFlagsState = atom<FeatureFlags>({
+export const featureFlagsState = atom<FeatureFlags>({
     key: 'FeatureFlagsState',
     default: {
         useNewMediaSelection: true,
@@ -21,5 +21,3 @@ const featureFlagsState = atom<FeatureFlags>({
         limitToSingleAssetCollectionPerAsset: true,
     },
 });
-
-export default featureFlagsState;

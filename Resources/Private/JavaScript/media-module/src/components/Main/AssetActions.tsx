@@ -1,14 +1,13 @@
-import * as React from 'react';
-import { useCallback } from 'react';
-import { useSetRecoilState } from 'recoil';
+import React, { useCallback } from 'react';
+import { useSetRecoilState, useRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { Asset } from '@media-ui/core/src/interfaces';
 import { useImportAsset } from '@media-ui/core/src/hooks';
-import { useClipboard } from '@media-ui/feature-clipboard/src';
-import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview/src';
+import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview';
+import { clipboardItemState } from '@media-ui/feature-clipboard';
 
 interface ItemActionsProps {
     asset: Asset;
@@ -20,7 +19,9 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     const { handleDeleteAsset } = useMediaUi();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { importAsset } = useImportAsset();
-    const { toggleClipboardState } = useClipboard();
+    const [isInClipboard, toggleClipboardState] = useRecoilState(
+        clipboardItemState({ assetId: asset.id, assetSourceId: asset.assetSource.id })
+    );
 
     // TODO: Optimize rendering this component when hooks change, as it takes quite a bit of time
 
@@ -79,12 +80,12 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             {asset.localId && (
                 <IconButton
                     title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}
-                    icon={asset.isInClipboard ? 'clipboard-check' : 'clipboard'}
+                    icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
                     size="regular"
                     style="transparent"
                     hoverStyle="brand"
-                    className={asset.isInClipboard ? 'button--active' : ''}
-                    onClick={() => toggleClipboardState({ assetId: asset.id, assetSourceId: asset.assetSource.id })}
+                    className={isInClipboard ? 'button--active' : ''}
+                    onClick={toggleClipboardState}
                 />
             )}
         </>

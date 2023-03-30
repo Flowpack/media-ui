@@ -1,7 +1,7 @@
 import { atom, selector } from 'recoil';
 
 import { constraintsState, currentPageState, localStorageEffect } from '@media-ui/core/src/state';
-import { clipboardVisibleState } from '@media-ui/feature-clipboard/src/index';
+import { clipboardVisibleState } from '@media-ui/feature-clipboard';
 
 export const NEOS_ASSET_SOURCE = 'neos';
 

@@ -1,20 +1,20 @@
 import React, { useCallback } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify } from '@media-ui/core/src';
 import { useDeleteAsset } from '@media-ui/core/src/hooks';
 
-import useClipboard from '../hooks/useClipboard';
-import clipboardVisibleState from '../state/clipboardVisibleState';
+import { clipboardState } from '../state/clipboardState';
+import { clipboardVisibleState } from '../state/clipboardVisibleState';
 
 import classes from './ClipboardActions.module.css';
 
 const ClipboardActions: React.FC = () => {
     const { translate } = useIntl();
     const clipboardVisible = useRecoilValue(clipboardVisibleState);
-    const { clipboard, flushClipboard } = useClipboard();
+    const [clipboard, setClipboard] = useRecoilState(clipboardState);
     const { deleteAsset } = useDeleteAsset();
     const Notify = useNotify();
 
@@ -35,8 +35,8 @@ const ClipboardActions: React.FC = () => {
 
     const onFlushClipboard = useCallback(() => {
         if (!confirm(translate('clipboard.flush.confirm', 'Remove all assets from clipboard?'))) return;
-        flushClipboard();
-    }, [flushClipboard, translate]);
+        setClipboard([]);
+    }, [setClipboard, translate]);
 
     if (!clipboardVisible) return null;
 

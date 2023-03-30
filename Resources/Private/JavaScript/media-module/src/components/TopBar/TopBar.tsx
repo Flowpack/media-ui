@@ -1,8 +1,7 @@
-import * as React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
-import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { ClipboardActions } from '@media-ui/feature-clipboard/src';
+import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core';
+import { ClipboardActions } from '@media-ui/feature-clipboard';
 
 import { SearchBox, TypeFilter, ViewModeSelector } from './index';
 import SortOrderSelector from './SortOrderSelector';

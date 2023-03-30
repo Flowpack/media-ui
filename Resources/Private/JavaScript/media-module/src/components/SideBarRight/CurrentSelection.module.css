@@ -36,6 +36,6 @@
     border: none;
 }
 
-.breadcrumb button:hover { 
+.breadcrumb button:hover {
     background-color: var(--theme-colors-PrimaryBlue);
 }

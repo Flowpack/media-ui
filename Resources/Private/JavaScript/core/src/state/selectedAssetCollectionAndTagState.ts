@@ -4,9 +4,9 @@ import { selectedTagIdState } from '@media-ui/feature-asset-tags';
 import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 import { clipboardVisibleState } from '@media-ui/feature-clipboard';
 
-import currentPageState from './currentPageState';
-import selectedInspectorViewState from './selectedInspectorViewState';
-import selectedAssetIdState from './selectedAssetIdState';
+import { currentPageState } from './currentPageState';
+import { selectedInspectorViewState } from './selectedInspectorViewState';
+import { selectedAssetIdState } from './selectedAssetIdState';
 
 // This is a proxy for setting the selected tag id, which also executes side effects to update other state
 // By setting the other state in a selector, we can ensure that the state is updated all at once

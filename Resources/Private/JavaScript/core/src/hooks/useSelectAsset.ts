@@ -2,8 +2,7 @@ import { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { useMediaUi } from '../provider';
-import { selectedAssetIdState } from '../state';
-import selectedInspectorViewState from '../state/selectedInspectorViewState';
+import { selectedAssetIdState, selectedInspectorViewState } from '../state';
 
 const useSelectAsset = () => {
     const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);

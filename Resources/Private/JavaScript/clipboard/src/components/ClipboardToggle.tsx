@@ -7,14 +7,14 @@ import { useIntl } from '@media-ui/core/src';
 import { initialLoadCompleteState } from '@media-ui/core/src/state';
 
 import ClipboardItem from './ClipboardItem';
-import useClipboard from '../hooks/useClipboard';
-import clipboardVisibleState from '../state/clipboardVisibleState';
+import { clipboardState } from '../state/clipboardState';
+import { clipboardVisibleState } from '../state/clipboardVisibleState';
 
 import classes from './ClipboardToggle.module.css';
 
 const ClipboardToggle: React.FC = () => {
     const { translate } = useIntl();
-    const { clipboard } = useClipboard();
+    const clipboard = useRecoilValue(clipboardState);
     const [clipboardVisible, setClipboardVisible] = useRecoilState(clipboardVisibleState);
     const initialLoadComplete = useRecoilValue(initialLoadCompleteState);
 

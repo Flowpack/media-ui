@@ -25,17 +25,12 @@ import {
 } from '@media-ui/core/src';
 import { FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
 import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
-import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from '@media-ui/media-module/src/core';
+import { ApolloErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
 import App from '@media-ui/media-module/src/components/App';
 
 // GraphQL type definitions
 import TYPE_DEFS_CORE from '@media-ui/core/schema.graphql';
-import TYPE_DEFS_CLIPBOARD from '@media-ui/feature-clipboard/schema.graphql';
 import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql';
-
-// GraphQL local resolvers
-import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
-import buildModuleResolver from '@media-ui/media-module/src/resolvers/mutation';
 
 let apolloClient = null;
 
@@ -103,7 +98,6 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
             const cache = CacheFactory.createCache(this.props.frontendConfiguration as FeatureFlags);
-            PersistentStateManager.restoreLocalState(cache);
 
             apolloClient = new ApolloClient({
                 cache,
@@ -114,11 +108,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                         credentials: 'same-origin',
                     }),
                 ]),
-                typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_CLIPBOARD, TYPE_DEFS_ASSET_USAGE],
-                resolvers: [
-                    buildModuleResolver(PersistentStateManager.updateLocalState),
-                    buildClipboardResolver(PersistentStateManager.updateLocalState),
-                ],
+                typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_ASSET_USAGE],
             });
         }
         return apolloClient;

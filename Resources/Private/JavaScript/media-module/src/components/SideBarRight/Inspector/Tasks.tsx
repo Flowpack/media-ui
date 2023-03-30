@@ -20,6 +20,8 @@ const Tasks: React.FC = () => {
     const { isInMediaDetailsScreen } = useMediaUi();
     const { showSimilarAssets } = useRecoilValue(featureFlagsState);
 
+    if (!selectedAsset) return null;
+
     return (
         <div className={classes.tasks}>
             <Headline type="h2">

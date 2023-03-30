@@ -1,23 +1,6 @@
-import clipboardVisibleState from './state/clipboardVisibleState';
-import { CLIPBOARD, TOGGLE_CLIPBOARD_STATE } from './queries/ClipboardQuery';
-import useClipboard, { ClipboardItems } from './hooks/useClipboard';
-import ClipboardToggle from './components/ClipboardToggle';
-import ClipboardItem from './components/ClipboardItem';
-import ClipboardActions from './components/ClipboardActions';
-import ClipboardWatcher from './components/ClipboardWatcher';
-import buildResolvers from './resolvers/mutation';
-
-export { typeDefs } from './typeDefs';
-
-export {
-    TOGGLE_CLIPBOARD_STATE,
-    CLIPBOARD,
-    ClipboardToggle,
-    ClipboardActions,
-    ClipboardItem,
-    ClipboardItems,
-    ClipboardWatcher,
-    buildResolvers,
-    clipboardVisibleState,
-    useClipboard,
-};
+export { clipboardVisibleState } from './state/clipboardVisibleState';
+export { clipboardItemState, clipboardState } from './state/clipboardState';
+export { CLIPBOARD, TOGGLE_CLIPBOARD_STATE } from './queries/ClipboardQuery';
+export { default as ClipboardToggle } from './components/ClipboardToggle';
+export { default as ClipboardActions } from './components/ClipboardActions';
+export { default as ClipboardWatcher } from './components/ClipboardWatcher';

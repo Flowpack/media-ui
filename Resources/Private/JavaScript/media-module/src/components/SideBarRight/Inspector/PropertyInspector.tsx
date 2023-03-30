@@ -106,6 +106,8 @@ const PropertyInspector = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAsset?.id]);
 
+    if (!selectedAsset) return null;
+
     return (
         <InspectorContainer>
             <ToggablePanel

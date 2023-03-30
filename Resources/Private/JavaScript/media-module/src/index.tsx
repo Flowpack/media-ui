@@ -20,15 +20,10 @@ import { FeatureFlags } from '@media-ui/core/src/interfaces';
 
 // GraphQL type definitions
 import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
-import { typeDefs as TYPE_DEFS_CLIPBOARD } from '@media-ui/feature-clipboard';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
-// GraphQL local resolvers
-import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
-import buildModuleResolver from './resolvers/mutation';
-
 // Internal dependencies
-import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from './core';
+import { ApolloErrorHandler, CacheFactory } from './core';
 import App from './components/App';
 import ErrorBoundary from './components/ErrorBoundary';
 import loadIconLibrary from './lib/FontAwesome';
@@ -55,9 +50,6 @@ window.onload = async (): Promise<void> => {
     // Cache for ApolloClient
     const cache = CacheFactory.createCache(featureFlags);
 
-    // Restore state from last visit
-    PersistentStateManager.restoreLocalState(cache);
-
     const client = new ApolloClient({
         connectToDevTools: true,
         cache,
@@ -68,11 +60,7 @@ window.onload = async (): Promise<void> => {
                 credentials: 'same-origin',
             }),
         ]),
-        typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_CLIPBOARD, TYPE_DEFS_ASSET_USAGE],
-        resolvers: [
-            buildModuleResolver(PersistentStateManager.updateLocalState),
-            buildClipboardResolver(PersistentStateManager.updateLocalState),
-        ],
+        typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_ASSET_USAGE],
     });
 
     const containerRef = createRef<HTMLDivElement>();

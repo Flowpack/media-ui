@@ -23,17 +23,14 @@ import {
 } from '@media-ui/core/src';
 import { Asset, FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
 import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
-import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from '@media-ui/media-module/src/core';
+import { ApolloErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
 import { Details } from './components';
 
 // GraphQL type definitions
-import TYPE_DEFS_CORE from '@media-ui/core/schema.graphql';
-import TYPE_DEFS_CLIPBOARD from '@media-ui/feature-clipboard/schema.graphql';
-import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql';
+import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
 // GraphQL local resolvers
-import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
-import buildModuleResolver from '@media-ui/media-module/src/resolvers/mutation';
 import { MediaDetailsScreenApprovalAttainmentStrategyFactory } from './strategy';
 
 let apolloClient = null;
@@ -77,7 +74,6 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
             const cache = CacheFactory.createCache(this.props.frontendConfiguration as FeatureFlags);
-            PersistentStateManager.restoreLocalState(cache);
 
             apolloClient = new ApolloClient({
                 cache,
@@ -88,11 +84,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                         credentials: 'same-origin',
                     }),
                 ]),
-                typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_CLIPBOARD, TYPE_DEFS_ASSET_USAGE],
-                resolvers: [
-                    buildModuleResolver(PersistentStateManager.updateLocalState),
-                    buildClipboardResolver(PersistentStateManager.updateLocalState),
-                ],
+                typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_ASSET_USAGE],
             });
         }
         return apolloClient;

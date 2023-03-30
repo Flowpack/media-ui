@@ -38,7 +38,6 @@ export const ASSET_FRAGMENT = gql`
         }
         thumbnailUrl
         previewUrl
-        isInClipboard @client
         isInUse @include(if: $includeUsage)
     }
     ${ASSET_SOURCE_FRAGMENT}

@@ -43,7 +43,7 @@ const CollectionSelectBox = () => {
 
     const [selectedAssetCollectionIds, setSelectedAssetCollectionIds] = useState<string[]>([]);
     const syncSelectedAssetCollectionIds = useCallback(
-        () => setSelectedAssetCollectionIds(selectedAsset?.collections.map(({ id }) => id)),
+        () => setSelectedAssetCollectionIds(selectedAsset?.collections.map(({ id }) => id) || []),
         [selectedAsset?.collections]
     );
 
@@ -117,7 +117,7 @@ const CollectionSelectBox = () => {
                     className={classes.collectionSelection}
                     disabled={loading || selectedAsset.assetSource.readOnly}
                     placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                    value={selectedAssetCollectionIds[0] ?? null}
+                    value={selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
                     optionValueField="id"
                     options={selectBoxOptions}
                     noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}

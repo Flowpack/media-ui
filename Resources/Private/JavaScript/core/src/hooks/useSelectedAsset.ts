@@ -1,7 +1,7 @@
 import { useRecoilValue } from 'recoil';
 
 import { Asset } from '../interfaces';
-import selectedAssetIdState from '../state/selectedAssetIdState';
+import { selectedAssetIdState } from '../state';
 import useAssetQuery from './useAssetQuery';
 
 const useSelectedAsset = (): Asset => {

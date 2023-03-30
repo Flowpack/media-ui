@@ -5,7 +5,7 @@ import { Button } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl } from '@media-ui/core/src';
 import { availableAssetIdentitiesState } from '@media-ui/core/src/state';
-import { clipboardVisibleState, useClipboard } from '@media-ui/feature-clipboard/src';
+import { clipboardState, clipboardVisibleState } from '@media-ui/feature-clipboard';
 import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage/src';
 
 import { ListView, ThumbnailView } from './index';
@@ -25,12 +25,12 @@ const Main: React.FC = () => {
     const classes = useStyles();
     const viewModeSelection = useRecoilValue(viewModeState);
     const { assets: unusedAssets } = useUnusedAssetsQuery();
-    const { clipboard } = useClipboard();
+    const clipboard = useRecoilValue(clipboardState);
     const mainView = useRecoilValue(mainViewState);
     const setClipboardVisible = useSetRecoilState(clipboardVisibleState);
     const { translate } = useIntl();
     const availableAssetIdentities = useRecoilValue(availableAssetIdentitiesState);
-    const [visibleAssetIdentities, setVisibleAssetIdentities] = useState(availableAssetIdentities);
+    const [visibleAssetIdentities, setVisibleAssetIdentities] = useState<AssetIdentity[]>(availableAssetIdentities);
 
     const queriedUnusedAssets = useMemo(() => {
         return unusedAssets
@@ -42,7 +42,7 @@ const Main: React.FC = () => {
 
     useEffect(() => {
         if (mainView === MainViewMode.CLIPBOARD) {
-            setVisibleAssetIdentities(Object.values(clipboard));
+            setVisibleAssetIdentities(clipboard);
         } else if (mainView === MainViewMode.UNUSED_ASSETS) {
             setVisibleAssetIdentities(queriedUnusedAssets);
         } else {

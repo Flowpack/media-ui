@@ -1,3 +1,0 @@
-import { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION } from './ViewModeSelectionQuery';
-
-export { SET_VIEW_MODE_SELECTION, VIEW_MODE_SELECTION };

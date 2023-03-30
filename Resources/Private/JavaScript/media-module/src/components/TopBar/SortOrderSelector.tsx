@@ -6,7 +6,7 @@ import { SelectBox, IconButton } from '@neos-project/react-ui-components';
 
 import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
 
-import selectedSortOrderState, { SORT_BY, SORT_DIRECTION } from '@media-ui/core/src/state/selectedSortOrderState';
+import { selectedSortOrderState, SORT_BY, SORT_DIRECTION } from '@media-ui/core/src/state/selectedSortOrderState';
 
 const useStyles = createUseMediaUiStyles({
     sortingState: {

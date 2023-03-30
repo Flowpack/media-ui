@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { createUseMediaUiStyles, MediaUiTheme, useIntl } from '@media-ui/core/src';
+import { createUseMediaUiStyles, MediaUiTheme, useIntl } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 
 import useAssetVariants from '../hooks/useAssetVariants';
@@ -23,8 +23,12 @@ const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
 const VariantsInspector = () => {
     const { translate } = useIntl();
     const selectedAsset = useSelectedAsset();
-    const result = useAssetVariants({ assetId: selectedAsset.id, assetSourceId: selectedAsset.assetSource.id });
+    const result = useAssetVariants(
+        selectedAsset ? { assetId: selectedAsset.id, assetSourceId: selectedAsset.assetSource.id } : null
+    );
     const classes = useStyles();
+
+    if (!selectedAsset) return null;
 
     return (
         <div className={classes.variantsContainer}>

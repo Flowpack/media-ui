@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 
-import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { ClipboardToggle } from '@media-ui/feature-clipboard/src';
+import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core';
+import { ClipboardToggle } from '@media-ui/feature-clipboard';
 
 import AssetCount from './AssetCount/AssetCount';
 import Pagination from './Pagination/Pagination';
