@@ -22,3 +22,5 @@ export { default as updateAssetCollection } from './mutations/updateAssetCollect
 
 export { default as selectedAssetCollectionIdState } from './state/selectedAssetCollectionIdState';
 export { default as createAssetCollectionDialogState } from './state/createAssetCollectionDialogVisibleState';
+export { assetCollectionFavouritesState } from './state/assetCollectionFavouritesState';
+export { assetCollectionTreeViewState } from './state/assetCollectionTreeViewState';

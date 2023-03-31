@@ -74,6 +74,7 @@
     --theme-colors-captionBackground: var(--theme-colors-ContrastNeutral);
     --theme-colors-text: var(--theme-colors-ContrastBright);
     --theme-colors-disabled: var(--theme-colors-ContrastDark);
+    --theme-colors-star: var(--theme-orange);
 
     --theme-zIndex-pagination: 10022;
     --theme-zIndex-lightbox: 10023;

@@ -1,12 +1,20 @@
 .assetCollectionTree {
     border: 1px solid var(--theme-colors-border);
 }
-.headline {
-    padding: 0 var(--theme-spacing-Full);
+
+.assetCollectionTree > * {
+    display: block;
 }
+
+.viewSelection [role="button"] > * {
+    width: auto;
+    margin-right: var(--theme-spacing-Half);
+}
+
 .toolbar {
     border-top: 1px solid var(--theme-colors-border);
 }
+
 .tree {
     border-top: 1px solid var(--theme-colors-border);
     overflow: auto;

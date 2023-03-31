@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { Headline, Tree } from '@neos-project/react-ui-components';
+import { Tree, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
-import { IconLabel } from '@media-ui/core/src/components';
-import { useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
 import { useSelectedAssetSource } from '@media-ui/feature-asset-sources';
 
@@ -13,6 +12,10 @@ import AddAssetCollectionButton from './AddAssetCollectionButton';
 import TagTreeNode from './TagTreeNode';
 import DeleteButton from './DeleteButton';
 import AddTagButton from './AddTagButton';
+import FavouriteButton from './FavouriteButton';
+import { assetCollectionTreeViewState } from '../state/assetCollectionTreeViewState';
+import { assetCollectionFavouritesState } from '../state/assetCollectionFavouritesState';
+import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';
 
 import classes from './AssetCollectionTree.module.css';
 
@@ -21,40 +24,90 @@ const AssetCollectionTree = () => {
     const { assetCollections } = useAssetCollectionsQuery();
     const selectedAssetSource = useSelectedAssetSource();
     const { tags } = useTagsQuery();
+    const [assetCollectionTreeView, setAssetCollectionTreeViewState] = useRecoilState(assetCollectionTreeViewState);
+    const favourites = useRecoilValue(assetCollectionFavouritesState);
 
     const assetCollectionsWithoutParent = useMemo(() => {
         return assetCollections.filter((assetCollection) => !assetCollection.parent);
     }, [assetCollections]);
 
+    const favouriteAssetCollections = useMemo(() => {
+        const favouriteIds = Object.keys(favourites);
+        return assetCollections.filter(({ id }) => favouriteIds.includes(id));
+    }, [assetCollections, favourites]);
+
+    const viewOptions = useMemo(
+        () => [
+            {
+                value: 'collections',
+                label: translate('assetCollectionList.viewMode.collections', 'Collections'),
+                icon: 'folder',
+            },
+            {
+                value: 'favourites',
+                label: translate('assetCollectionList.viewMode.favourites', 'Favourites'),
+                icon: 'star',
+            },
+        ],
+        [translate]
+    );
+
     if (!selectedAssetSource?.supportsCollections) return null;
 
     return (
         <nav className={classes.assetCollectionTree}>
-            <Headline type="h2" className={classes.headline}>
-                <IconLabel icon="folder" label={translate('assetCollectionList.header', 'Collections')} />
-            </Headline>
+            <SelectBox
+                className={classes.viewSelection}
+                options={viewOptions}
+                value={assetCollectionTreeView}
+                optionValueField="value"
+                onValueChange={setAssetCollectionTreeViewState}
+            />
 
             <div className={classes.toolbar}>
                 <AddAssetCollectionButton />
                 <AddTagButton />
                 <DeleteButton />
+                <FavouriteButton />
             </div>
 
             <Tree className={classes.tree}>
-                {/* TODO: Use a custom icon component for the virtual collection that contains all assets and tags to distinguish it from other collections */}
-                <AssetCollectionTreeNode
-                    label={translate('assetCollectionList.showAll', 'All')}
-                    title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
-                    level={1}
-                    assetCollectionId={null}
-                >
-                    {tags?.map((tag) => (
-                        <TagTreeNode key={tag.id} tagId={tag.id} label={tag.label} assetCollectionId={null} level={2} />
-                    ))}
-                </AssetCollectionTreeNode>
-                {assetCollectionsWithoutParent.map((assetCollection, index) => (
-                    <AssetCollectionTreeNode key={index} assetCollectionId={assetCollection.id} level={1} />
-                ))}
+                {assetCollectionTreeView === 'favourites' ? (
+                    favouriteAssetCollections.map((assetCollection) => (
+                        <AssetCollectionTreeNode
+                            key={assetCollection.id}
+                            assetCollectionId={assetCollection.id}
+                            level={1}
+                            renderChildCollections={false}
+                        />
+                    ))
+                ) : (
+                    <>
+                        <AssetCollectionTreeNode
+                            label={translate('assetCollectionList.showAll', 'All')}
+                            title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
+                            level={1}
+                            assetCollectionId={null}
+                        >
+                            {tags?.map((tag) => (
+                                <TagTreeNode
+                                    key={tag.id}
+                                    tagId={tag.id}
+                                    label={tag.label}
+                                    assetCollectionId={null}
+                                    level={2}
+                                />
+                            ))}
+                        </AssetCollectionTreeNode>
+                        {assetCollectionsWithoutParent.map((assetCollection) => (
+                            <AssetCollectionTreeNode
+                                key={assetCollection.id}
+                                assetCollectionId={assetCollection.id}
+                                level={1}
+                            />
+                        ))}
+                    </>
+                )}
             </Tree>
         </nav>
     );

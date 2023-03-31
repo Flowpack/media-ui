@@ -4,15 +4,21 @@
  */
 const STORAGE_PREFIX = 'flowpack.mediaui';
 
-// TODO: Implement some validation callback to ensure that the value read from local storage is usable
-export function localStorageEffect(key: string) {
+export function localStorageEffect<T = any>(key: string, validate?: (value: T | undefined) => T) {
     return ({ setSelf, onSet }) => {
         const fullKey = `${STORAGE_PREFIX}.${key}`;
-        const savedValue = localStorage.getItem(fullKey);
-        if (savedValue != null) {
-            setSelf(JSON.parse(savedValue));
+        const savedValueJSON = localStorage.getItem(fullKey);
+        if (savedValueJSON != null) {
+            let savedValue = JSON.parse(savedValueJSON);
+            if (validate) {
+                savedValue = validate(savedValue);
+            }
+            setSelf(savedValue);
         }
-        onSet((newValue, _, isReset) => {
+        onSet((newValue, previousValue: T | undefined, isReset) => {
+            if (!isReset && validate) {
+                newValue = validate(newValue);
+            }
             isReset ? localStorage.removeItem(fullKey) : localStorage.setItem(fullKey, JSON.stringify(newValue));
         });
     };
