@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { Icon } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core';
+import { useIntl, useMediaUi } from '@media-ui/core';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 import { AssetLabel } from '@media-ui/core/src/components';
@@ -12,101 +12,7 @@ import { AssetLabel } from '@media-ui/core/src/components';
 import { AssetActions } from './index';
 import MissingAssetActions from './MissingAssetActions';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    thumbnail: {
-        margin: '0',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-        '&:hover $caption': {
-            backgroundColor: theme.colors.primary,
-        },
-        '&:hover $toolBar': {
-            pointerEvents: 'all',
-            backgroundColor: 'rgba(0.15, 0.15, 0.15, 0.25)',
-            '& button': {
-                opacity: 1,
-                '&[disabled]': {
-                    opacity: 0.5,
-                },
-                '&.button--active': {
-                    '& svg': {
-                        color: 'white',
-                    },
-                },
-            },
-        },
-    },
-    picture: {
-        cursor: 'pointer',
-        height: '250px',
-        display: 'flex',
-        alignItems: 'center',
-        alignContent: 'center',
-        justifyContent: 'center',
-        backgroundColor: theme.colors.assetBackground,
-
-        '& img': {
-            display: 'block',
-            backgroundImage:
-                'repeating-linear-gradient(45deg, #999999 25%, transparent 25%, transparent 75%, #999999 75%, #999999), repeating-linear-gradient(45deg, #999999 25%, #e5e5f7 25%, #e5e5f7 75%, #999999 75%, #999999)',
-            backgroundPosition: '0 0, 10px 10px',
-            backgroundSize: '20px 20px',
-            maxHeight: '250px',
-            maxWidth: '100%',
-        },
-    },
-    caption: {
-        backgroundColor: theme.colors.captionBackground,
-        transition: `background-color ${theme.transition.fast}`,
-        padding: theme.spacing.half,
-        display: 'flex',
-        alignItems: 'center',
-        flex: 1,
-        '& img, & svg': {
-            width: '1.3rem',
-            height: 'auto',
-            marginRight: theme.spacing.half,
-        },
-    },
-    selected: {
-        backgroundColor: theme.colors.primary,
-    },
-    toolBar: {
-        display: 'flex',
-        position: 'absolute',
-        top: theme.spacing.quarter,
-        right: theme.spacing.quarter,
-        pointerEvents: 'none',
-        backgroundColor: 'transparent',
-        transition: 'background-color .1s ease-in',
-        '& button, & button[disabled]': {
-            transition: 'opacity .1s ease-in',
-            opacity: 0,
-            '&.button--active': {
-                opacity: 1,
-                '& svg': {
-                    color: theme.colors.primary,
-                },
-            },
-        },
-    },
-    label: {
-        position: 'absolute',
-        top: theme.spacing.quarter,
-        left: theme.spacing.quarter,
-        fontSize: theme.fontSize.small,
-        borderRadius: '3px',
-        padding: '2px 4px',
-        userSelect: 'none',
-    },
-    disabled: {
-        '& $picture': {
-            filter: 'grayscale(1)',
-            cursor: 'not-allowed',
-        },
-    },
-}));
+import classes from './Thumbnail.module.css';
 
 interface ThumbnailProps {
     assetIdentity: AssetIdentity;
@@ -123,7 +29,6 @@ const thumbnailSelectionState = selectorFamily<boolean, string>({
 });
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: ThumbnailProps) => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const { dummyImage, isAssetSelectable } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);

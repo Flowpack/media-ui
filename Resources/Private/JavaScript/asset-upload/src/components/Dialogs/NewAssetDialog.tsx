@@ -1,9 +1,8 @@
-import * as React from 'react';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useIntl, useNotify } from '@media-ui/core';
+import { useIntl, useNotify } from '@media-ui/core';
 import { Dialog } from '@media-ui/core/src/components';
 
 import UploadSection from '../UploadSection';
@@ -12,11 +11,7 @@ import { useUploadDialogState, useUploadFiles } from '../../hooks';
 import { FilesUploadState, UploadedFile } from '../../interfaces';
 import { useAssetsQuery } from '@media-ui/core/src/hooks';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    uploadArea: {
-        padding: theme.spacing.full,
-    },
-}));
+import classes from './NewAssetDialog.module.css';
 
 const NewAssetDialog: React.FC = () => {
     const { translate } = useIntl();
@@ -25,8 +20,6 @@ const NewAssetDialog: React.FC = () => {
     const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
     const { refetch } = useAssetsQuery();
     const uploadPossible = !loading && dialogState.files.selected.length > 0;
-
-    const classes = useStyles();
 
     const handleUpload = useCallback(() => {
         uploadFiles(dialogState.files.selected)

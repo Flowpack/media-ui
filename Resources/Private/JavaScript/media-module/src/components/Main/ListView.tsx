@@ -1,48 +1,21 @@
-import * as React from 'react';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
+import cx from 'classnames';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core';
+import { useIntl, useMediaUi } from '@media-ui/core';
 import { useSelectAsset } from '@media-ui/core/src/hooks';
 import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview';
 
 import { ListViewItem } from './index';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    listView: ({ isInNodeCreationDialog }) => ({
-        height: isInNodeCreationDialog ? '100%' : 'auto',
-        '& table': {
-            borderSpacing: '0 1px',
-            width: '100%',
-            '& th': {
-                textAlign: 'left',
-                lineHeight: theme.spacing.goldenUnit,
-                padding: `0 ${theme.spacing.half}`,
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                userSelect: 'none',
-                '&:first-child, &:last-child': {
-                    padding: 0,
-                },
-            },
-        },
-    }),
-    tableHeader: {
-        position: 'sticky',
-        backgroundColor: 'var(--grayDark)',
-        top: '0px',
-        zIndex: '1',
-    },
-}));
-
 interface ListViewProps {
     assetIdentities: AssetIdentity[];
 }
 
+import classes from './ListView.module.css';
+
 const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) => {
     const { isInNodeCreationDialog } = useMediaUi();
-    const classes = useStyles({ isInNodeCreationDialog });
     const { translate } = useIntl();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const selectAsset = useSelectAsset();
@@ -59,7 +32,7 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
     );
 
     return (
-        <section className={classes.listView}>
+        <section className={cx(classes.listView, isInNodeCreationDialog && classes.listViewFullHeight)}>
             <table>
                 <thead>
                     <tr>

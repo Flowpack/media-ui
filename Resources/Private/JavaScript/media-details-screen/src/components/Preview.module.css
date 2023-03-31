@@ -1,0 +1,65 @@
+.preview {
+    min-width: var(--theme-size-sidebarWidth);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.loading {
+    opacity: 0.1;
+}
+
+.loading img {
+    width: 100%;
+}
+
+.picture {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    background-color: var(--theme-colors-assetBackground);
+    aspect-ratio: 16 / 9;
+}
+
+.picture img {
+    max-width: 100%;
+    max-height: calc(100vh - 3 * var(--theme-spacing-GoldenUnit) - 2 * var(--theme-spacing-Full));
+    display: block;
+    background-image: repeating-linear-gradient(45deg, #999999 25%, transparent 25%, transparent 75%, #999999 75%, #999999), repeating-linear-gradient(45deg, #999999 25%, #e5e5f7 25%, #e5e5f7 75%, #999999 75%, #999999);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+}
+
+.toolBar {
+    display: flex;
+    position: absolute;
+    top: var(--theme-spacing-Quarter);
+    right: var(--theme-spacing-Quarter);
+    background-color: rgba(0.15, 0.15, 0.15, 0.25);
+    transition: background-color .1s ease-in;
+}
+
+.toolBar button {
+    opacity: 1;
+}
+
+.toolBar button[disabled] {
+    opacity: 0.5;
+}
+
+.toolBar button.button--active svg {
+    color: white;
+}
+
+.label {
+    position: absolute;
+    top: var(--theme-spacing-Quarter);
+    left: var(--theme-spacing-Quarter);
+    font-size: var(--theme-fontSize-small);
+    border-radius: 3px;
+    padding: 2px 4px;
+    user-select: none;
+}

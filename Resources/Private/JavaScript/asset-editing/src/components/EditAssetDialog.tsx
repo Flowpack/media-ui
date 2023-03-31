@@ -3,33 +3,16 @@ import { useRecoilState } from 'recoil';
 
 import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { Dialog } from '@media-ui/core/src/components';
 import { useAssetsQuery, useSelectedAsset } from '@media-ui/core/src/hooks';
 
 import editAssetDialogState from '../state/editAssetDialogState';
 import useEditAsset, { AssetEditOptions } from '../hooks/useEditAsset';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    editArea: {
-        padding: theme.spacing.full,
-    },
-    filenameInput: {
-        flex: '1 1 100%',
-    },
-    label: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'baseline',
-        gap: `${theme.spacing.half} 0 `,
-        '& + label': {
-            marginTop: theme.spacing.full,
-        },
-    },
-}));
+import classes from './EditAssetDialog.module.css';
 
 const EditAssetDialog: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const Notify = useNotify();
     const [dialogVisible, setDialogVisible] = useRecoilState(editAssetDialogState);

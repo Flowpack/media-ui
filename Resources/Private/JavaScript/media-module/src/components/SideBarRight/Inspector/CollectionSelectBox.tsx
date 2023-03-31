@@ -3,24 +3,18 @@ import { useRecoilValue } from 'recoil';
 
 import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, useNotify, useMediaUi } from '@media-ui/core';
+import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { Asset } from '@media-ui/core/src/interfaces';
 import { useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
-import { useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 import { featureFlagsState } from '@media-ui/core/src/state';
-
-const useStyles = createUseMediaUiStyles({
-    collectionSelectBox: {},
-    collectionSelection: {},
-});
+import { useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 
 const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
     return assetCollectionIds.join(',') === asset.collections.map((collection) => collection.id).join(',');
 };
 
 const CollectionSelectBox = () => {
-    const classes = useStyles();
     const Notify = useNotify();
     const { translate } = useIntl();
     const {
@@ -102,38 +96,45 @@ const CollectionSelectBox = () => {
         ]
     );
 
-    useEffect(() => syncSelectedAssetCollectionIds(), [syncSelectedAssetCollectionIds]);
+    useEffect(syncSelectedAssetCollectionIds, [syncSelectedAssetCollectionIds]);
 
     if (!selectedAsset) return null;
 
     // TODO: Show breadcrumb to each collection to make it obvious what will be selected via the multiline preview element
     return (
-        <div className={classes.collectionSelectBox}>
-            <Headline type="h2">
-                <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Collections')} />
-            </Headline>
+        <div className="collectionSelectBox">
             {limitToSingleAssetCollectionPerAsset ? (
-                <SelectBox
-                    className={classes.collectionSelection}
-                    disabled={loading || selectedAsset.assetSource.readOnly}
-                    placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                    value={selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
-                    optionValueField="id"
-                    options={selectBoxOptions}
-                    noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
-                    onValueChange={handleChange}
-                />
+                <>
+                    <Headline type="h2">
+                        <IconLabel icon="folder" label={translate('inspector.assetCollection', 'Collection')} />
+                    </Headline>
+                    <SelectBox
+                        className="collectionSelection"
+                        disabled={loading || selectedAsset.assetSource.readOnly}
+                        placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
+                        value={selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
+                        optionValueField="id"
+                        options={selectBoxOptions}
+                        noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
+                        onValueChange={handleChange}
+                    />
+                </>
             ) : (
-                <MultiSelectBox
-                    className={classes.collectionSelection}
-                    disabled={loading || selectedAsset.assetSource.readOnly}
-                    placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                    values={selectedAssetCollectionIds}
-                    optionValueField="id"
-                    options={selectBoxOptions}
-                    noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
-                    onValuesChange={handleChange}
-                />
+                <>
+                    <Headline type="h2">
+                        <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Collections')} />
+                    </Headline>
+                    <MultiSelectBox
+                        className="collectionSelection"
+                        disabled={loading || selectedAsset.assetSource.readOnly}
+                        placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
+                        values={selectedAssetCollectionIds}
+                        optionValueField="id"
+                        options={selectBoxOptions}
+                        noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
+                        onValuesChange={handleChange}
+                    />
+                </>
             )}
         </div>
     );

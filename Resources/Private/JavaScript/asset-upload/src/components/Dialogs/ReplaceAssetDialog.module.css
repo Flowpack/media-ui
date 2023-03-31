@@ -1,0 +1,17 @@
+.uploadArea {
+    padding: var(--theme-spacing-Full);
+}
+
+.optionSection {
+    margin-top: var(--theme-spacing-Full);
+    margin-bottom: var(--theme-spacing-Full);
+}
+
+.option {
+    margin-top: var(--theme-spacing-Half);
+    margin-bottom: var(--theme-spacing-Half);
+}
+
+.label {
+    display: flex;
+}

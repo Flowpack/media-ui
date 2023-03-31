@@ -17,7 +17,6 @@ import {
     InteractionProvider,
     IntlProvider,
     MediaUiProvider,
-    MediaUiThemeProvider,
     Notify,
     NotifyProvider,
 } from '@media-ui/core';
@@ -137,15 +136,13 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                                         }
                                         isInMediaDetailsScreen={true}
                                     >
-                                        <MediaUiThemeProvider>
-                                            <Details
-                                                buildLinkToMediaUi={buildLinkToMediaUi}
-                                                assetIdentity={{
-                                                    assetId: this.props.imageIdentity,
-                                                    assetSourceId: 'neos',
-                                                }}
-                                            />
-                                        </MediaUiThemeProvider>
+                                        <Details
+                                            buildLinkToMediaUi={buildLinkToMediaUi}
+                                            assetIdentity={{
+                                                assetId: this.props.imageIdentity,
+                                                assetSourceId: 'neos',
+                                            }}
+                                        />
                                     </MediaUiProvider>
                                 </RecoilRoot>
                             </ApolloProvider>

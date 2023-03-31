@@ -1,0 +1,13 @@
+.variantsContainer {
+    padding: var(--theme-spacing-Full) var(--theme-spacing-Half);
+}
+
+.variantsContainer h1 {
+    font-size: var(--theme-fontSize-base);
+    margin: 0;
+    padding: 0;
+}
+
+.variantItem {
+    margin-top: var(--theme-spacing-Full);
+}

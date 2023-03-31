@@ -9,13 +9,7 @@ import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
 import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
-import {
-    InteractionProvider,
-    IntlProvider,
-    MediaUiProvider,
-    MediaUiThemeProvider,
-    NotifyProvider,
-} from '@media-ui/core';
+import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
 import { FeatureFlags } from '@media-ui/core/src/interfaces';
 
 // GraphQL type definitions
@@ -86,11 +80,9 @@ window.onload = async (): Promise<void> => {
                                     containerRef={containerRef}
                                     featureFlags={featureFlags}
                                 >
-                                    <MediaUiThemeProvider>
-                                        <DndProvider backend={HTML5Backend}>
-                                            <AppWithHmr />
-                                        </DndProvider>
-                                    </MediaUiThemeProvider>
+                                    <DndProvider backend={HTML5Backend}>
+                                        <AppWithHmr />
+                                    </DndProvider>
                                 </MediaUiProvider>
                             </ErrorBoundary>
                         </RecoilRoot>

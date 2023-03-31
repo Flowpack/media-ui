@@ -3,24 +3,12 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { SelectBox } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core';
+import { useIntl, useMediaUi } from '@media-ui/core';
 import { currentPageState, featureFlagsState, selectedMediaTypeState } from '@media-ui/core/src/state';
 import { showUnusedAssetsState } from '@media-ui/feature-asset-usage';
 import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
 
 import { MainViewMode, mainViewState } from '../../state';
-
-const useStyles = createUseMediaUiStyles({
-    typeFilter: {
-        '& svg': {
-            // TODO: This is a workaround for a bug in the SelectBoxHeader which sets the svg height to 100%
-            height: '1em !important',
-        },
-    },
-    selectBox: {
-        minWidth: 'auto',
-    },
-});
 
 const UNUSED_FILTER_VALUE = 'unused';
 
@@ -32,8 +20,9 @@ interface MediaTypeOptions {
     };
 }
 
+import classes from './TypeFilter.module.css';
+
 const TypeFilter: React.FC = () => {
-    const classes = useStyles();
     const { assetType } = useMediaUi();
     const featureFlags = useRecoilValue(featureFlagsState);
     const [mediaTypeFilter, setMediaTypeFilter] = useRecoilState(selectedMediaTypeState);

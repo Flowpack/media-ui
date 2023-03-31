@@ -2,19 +2,9 @@ import React from 'react';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
+import { useIntl } from '@media-ui/core';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    actions: {
-        display: 'flex',
-        position: 'sticky',
-        backgroundColor: theme.colors.mainBackground,
-        bottom: 0,
-        '& > *': {
-            flex: 1,
-        },
-    },
-}));
+import classes from './Actions.module.css';
 
 interface ActionProps {
     hasUnpublishedChanges: boolean;
@@ -24,7 +14,6 @@ interface ActionProps {
 }
 
 const Actions: React.FC<ActionProps> = ({ hasUnpublishedChanges, handleApply, handleDiscard, inputValid = true }) => {
-    const classes = useStyles();
     const { translate } = useIntl();
     return (
         <div className={classes.actions}>

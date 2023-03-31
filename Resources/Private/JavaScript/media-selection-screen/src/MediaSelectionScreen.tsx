@@ -19,7 +19,6 @@ import {
     InteractionProvider,
     IntlProvider,
     MediaUiProvider,
-    MediaUiThemeProvider,
     Notify,
     NotifyProvider,
 } from '@media-ui/core';
@@ -160,9 +159,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                                         constraints={constraints || {}}
                                         assetType={type === 'images' ? 'image' : type}
                                     >
-                                        <MediaUiThemeProvider>
-                                            <App />
-                                        </MediaUiThemeProvider>
+                                        <App />
                                     </MediaUiProvider>
                                 </RecoilRoot>
                             </ApolloProvider>

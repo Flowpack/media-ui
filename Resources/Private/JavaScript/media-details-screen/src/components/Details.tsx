@@ -2,7 +2,7 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 import cx from 'classnames';
 
-import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core';
+import { InteractionDialogRenderer, useMediaUi } from '@media-ui/core';
 import { useSelectAsset, useAssetQuery } from '@media-ui/core/src/hooks';
 import { Asset } from '@media-ui/core/src/interfaces';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
@@ -11,40 +11,15 @@ import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
 import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets';
 import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/state';
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
-
 import LoadingIndicator from '@media-ui/media-module/src/components/LoadingIndicator';
 import ErrorBoundary from '@media-ui/media-module/src/components/ErrorBoundary';
 import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
 import { CreateAssetCollectionDialog, createAssetCollectionDialogState } from '@media-ui/feature-asset-collections';
 import { AssetInspector } from '@media-ui/media-module/src/components/SideBarRight/Inspector';
+
 import Preview from './Preview';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    container: {
-        height: `calc(100vh - 3 * ${theme.spacing.goldenUnit} + ${theme.spacing.half})`,
-        lineHeight: 1.5,
-        overflow: 'hidden',
-        paddingTop: `calc(${theme.spacing.goldenUnit} - 1rem)`, // To account for the top right button of the secondary inspector
-    },
-    main: {
-        display: 'grid',
-        gridTemplateColumns: `${theme.size.sidebarWidth} 1fr`,
-        height: '100%',
-        gridGap: theme.spacing.full,
-    },
-    inspector: {
-        height: '100%',
-        overflow: 'auto',
-    },
-    loading: {
-        '&$container': {
-            cursor: 'wait',
-        },
-        '&$main': {
-            pointerEvents: 'none',
-        },
-    },
-}));
+import classes from './Details.module.css';
 
 interface DetailsProps {
     assetIdentity: AssetIdentity;
@@ -52,7 +27,7 @@ interface DetailsProps {
 }
 
 const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
-    const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
+    const { containerRef } = useMediaUi();
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogState);
@@ -60,7 +35,6 @@ const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const selectAsset = useSelectAsset();
     const { asset, loading } = useAssetQuery(assetIdentity);
-    const classes = useStyles({ selectionMode, isInNodeCreationDialog });
 
     React.useEffect(() => {
         selectAsset(assetIdentity);

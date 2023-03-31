@@ -1,0 +1,19 @@
+.bottomBar {
+    display: grid;
+    grid-template-columns: 350px 1fr 350px;
+    gap: var(--theme-spacing-GoldenUnit);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--theme-colors-border);
+    background-color: var(--theme-colors-moduleBackground);
+    z-index: var(--theme-zIndex-pagination);
+}
+
+.bottomBar--selectionMode {
+    grid-template-columns: repeat(3, 1fr);
+    bottom: -16px;
+    left: -16px;
+    right: -16px;
+}

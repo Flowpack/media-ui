@@ -1,0 +1,11 @@
+.inspector {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+    gap: var(--theme-spacing-Full);
+}
+
+.inspector input,
+.inspector textarea {
+    width: 100%;
+}

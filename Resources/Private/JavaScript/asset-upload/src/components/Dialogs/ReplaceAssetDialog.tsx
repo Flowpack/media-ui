@@ -3,33 +3,18 @@ import { useRecoilValue } from 'recoil';
 
 import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useAssetsQuery, useSelectedAsset } from '@media-ui/core/src/hooks';
 import { Dialog } from '@media-ui/core/src/components';
+import { featureFlagsState } from '@media-ui/core/src/state';
 
 import UploadSection from '../UploadSection';
 import PreviewSection from '../PreviewSection';
 import { useUploadDialogState } from '../../hooks';
 import useReplaceAsset, { AssetReplacementOptions } from '../../hooks/useReplaceAsset';
 import { UploadedFile } from '../../interfaces';
-import { featureFlagsState } from '@media-ui/core/src/state';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    uploadArea: {
-        padding: theme.spacing.full,
-    },
-    optionSection: {
-        marginTop: theme.spacing.full,
-        marginBottom: theme.spacing.full,
-    },
-    option: {
-        marginTop: theme.spacing.half,
-        marginBottom: theme.spacing.half,
-    },
-    label: {
-        display: 'flex',
-    },
-}));
+import classes from './ReplaceAssetDialog.module.css';
 
 const ReplaceAssetDialog: React.FC = () => {
     const { translate } = useIntl();
@@ -47,7 +32,6 @@ const ReplaceAssetDialog: React.FC = () => {
         generateRedirects: false,
     });
     const uploadPossible = !loading && dialogState.files.selected.length > 0;
-    const classes = useStyles();
     const acceptedFileTypes = useMemo(() => {
         // TODO: Extract this into a helper function
         const completeMediaType = selectedAsset?.file.mediaType;

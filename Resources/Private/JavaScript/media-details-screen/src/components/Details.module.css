@@ -1,0 +1,29 @@
+.container {
+    height: calc(100vh - 3 * var(--theme-spacing-GoldenUnit) + var(--theme-spacing-Half));
+    line-height: 1.5;
+    overflow: hidden;
+    padding-top: calc(var(--theme-spacing-GoldenUnit) - 1rem); /* To account for the top right button of the secondary inspector */
+}
+
+.main {
+    display: grid;
+    grid-template-columns: var(--theme-size-sidebarWidth) 1fr;
+    height: 100%;
+    gap: var(--theme-spacing-Full);
+}
+
+.inspector {
+    height: 100%;
+    overflow: auto;
+}
+
+.loading {
+}
+
+.loading .container {
+    cursor: wait;
+}
+
+.loading .main {
+    pointer-events: none;
+}

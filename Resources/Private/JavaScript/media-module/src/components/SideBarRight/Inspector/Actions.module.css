@@ -1,0 +1,10 @@
+.actions {
+    display: flex;
+    position: sticky;
+    background-color: var(--theme-colors-mainBackground);
+    bottom: 0;
+}
+
+.actions > * {
+    flex: 1;
+}

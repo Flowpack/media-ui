@@ -1,23 +1,13 @@
-import * as React from 'react';
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { SelectBox, IconButton } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core';
+import { useIntl, useMediaUi } from '@media-ui/core';
 
 import { selectedSortOrderState, SORT_BY, SORT_DIRECTION } from '@media-ui/core/src/state/selectedSortOrderState';
 
-const useStyles = createUseMediaUiStyles({
-    sortingState: {
-        display: 'flex',
-        flex: 1,
-        minWidth: 0,
-    },
-    selectBox: {
-        minWidth: 0,
-    },
-});
+import classes from './SortOrderSelector.module.css';
 
 interface SortByOption {
     value: SORT_BY;
@@ -27,7 +17,6 @@ interface SortByOption {
 
 const SortOrderSelector: React.FC = () => {
     const { isInNodeCreationDialog, selectionMode } = useMediaUi();
-    const classes = useStyles();
     const [sortOrderState, setSortOrderState] = useRecoilState(selectedSortOrderState);
     const { translate } = useIntl();
     const hideOptionIcon = isInNodeCreationDialog || selectionMode;

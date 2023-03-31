@@ -64,9 +64,21 @@
      */
     --theme-colors-border: var(--theme-colors-ContrastDark);
     --theme-colors-alternatingBackground: var(--theme-colors-ContrastDark);
+    --theme-colors-mainBackground: var(--theme-colors-ContrastNeutral);
     --theme-colors-inactive: var(--theme-colors-ContrastBright);
+    --theme-colors-scrollbarForeground: var(--theme-colors-ContrastBright);
+    --theme-colors-scrollbarBackground: transparent;
+    --theme-colors-moduleBackground: var(--theme-colors-ContrastDarker);
+    --theme-colors-tableHeader: var(--theme-colors-ContrastDark);
+    --theme-colors-assetBackground: var(--theme-colors-ContrastDarkest);
+    --theme-colors-captionBackground: var(--theme-colors-ContrastNeutral);
+    --theme-colors-text: var(--theme-colors-ContrastBright);
+    --theme-colors-disabled: var(--theme-colors-ContrastDark);
 
     --theme-zIndex-pagination: 10022;
     --theme-zIndex-lightbox: 10023;
     --theme-zIndex-loadingIndicator: 10024;
+
+    --theme-size-sidebarWidth: 250px;
+    --theme-size-scrollbarSize: 4px;
 }

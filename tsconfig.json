@@ -1,26 +1,22 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    "esModuleInterop": true,
     "experimentalDecorators": true,
+    "jsx": "react",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "skipLibCheck": true,
     "target": "ES2019",
-    "module": "ES2020",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "jsx": "react",
     "typeRoots": ["./Resources/Private/JavaScript/core/typings"],
-    "baseUrl": "./",
     "paths": {
       "@media-ui/feature-asset-usage/src/*": ["./Resources/Private/JavaScript/asset-usage/src/*"],
       "@media-ui/feature-asset-variants/src/*": ["./Resources/Private/JavaScript/asset-variants/src/*"],
       "@media-ui/feature-concurrent-editing/src/*": ["./Resources/Private/JavaScript/concurrent-editing/src/*"],
       "@media-ui/feature-folders/src/*": ["./Resources/Private/JavaScript/folders/src/*"],
       "@media-ui/feature-clipboard/src/*": ["./Resources/Private/JavaScript/clipboard/src/*"],
-    },
-    "plugins": [
-      {
-        "name": "typescript-plugin-css-modules"
-      }
-    ]
+    }
   },
   "include": [
     "./Resources/Private/JavaScript/**/*",
@@ -29,7 +25,8 @@
     "node_modules/@media-ui/feature-asset-collections/src/**/*",
     "node_modules/@media-ui/feature-asset-tags/src/**/*",
     "node_modules/@media-ui/feature-concurrent-editing/src/**/*",
-    "node_modules/@media-ui/feature-clipboard/src/**/*"
+    "node_modules/@media-ui/feature-clipboard/src/**/*",
+    "node_modules/@media-ui/core/src/**/*"
   ],
   "exclude": [
     "node_modules",

@@ -1,0 +1,85 @@
+.listViewItem {
+    background-color: var(--theme-colors-mainBackground);
+}
+
+.listViewItem:nth-of-type(2n) {
+    background-color: var(--theme-colors-alternatingBackground);
+}
+
+.listViewItem:hover {
+    background-color: var(--theme-colors-PrimaryBlue);
+}
+
+.selected {
+    background-color: var(--theme-colors-PrimaryBlue);
+}
+
+.selected:nth-of-type(2n) {
+    background-color: var(--theme-colors-PrimaryBlue);
+}
+
+.textColumn {
+    padding: 0 var(--theme-spacing-Half);
+    white-space: nowrap;
+    user-select: none;
+    cursor: pointer;
+    width: 1px;
+}
+
+.textColumn > * {
+    vertical-align: middle;
+}
+
+.previewColumn {
+    min-width: var(--theme-spacing-GoldenUnit);
+    width: var(--theme-spacing-GoldenUnit);
+    cursor: pointer;
+}
+
+.previewColumn picture {
+    display: block;
+    width: 100%;
+    height: var(--theme-spacing-GoldenUnit);
+    text-align: center;
+}
+
+.previewColumn picture img, .previewColumn picture svg {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.labelColumn {
+    composes: textColumn;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    line-height: var(--theme-spacing-GoldenUnit);
+    user-select: text;
+}
+
+.labelColumn > * {
+    width: calc(100% - 2 * var(--theme-spacing-Half));
+    padding: 0 var(--theme-spacing-Half);
+}
+
+.lastModifiedColumn {
+    composes: textColumn;
+}
+
+.fileSizeColumn {
+    composes: textColumn;
+}
+
+.mediaTypeColumn {
+    composes: textColumn;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.actionsColumn {
+    composes: textColumn;
+    text-align: right;
+}

@@ -1,0 +1,28 @@
+.textArea {
+    /* TODO: Remove when overriding rule is removed from Minimal Module Style in Neos */
+    padding: var(--theme-spacing-Half) !important;
+}
+
+.propertyPanel {
+}
+
+.propertyPanelHeader {
+}
+
+.propertyPanelHeader h2 {
+    padding: 0;
+}
+
+.propertyPanelHeader button {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.propertyPanelContents {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: var(--theme-spacing-Full);
+}

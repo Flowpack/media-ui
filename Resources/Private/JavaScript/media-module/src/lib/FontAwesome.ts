@@ -1,5 +1,4 @@
 // We need to import Icon here, so that we can UNDO the config change to fontawesome-svg-core which happened in "Icon".
-// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
 // noinspection ES6UnusedImports
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Icon } from '@neos-project/react-ui-components';
@@ -66,7 +65,6 @@ config.replacementClass = 'svg-inline--fa';
 
 export default function loadIconLibrary() {
     library.add(
-        // @ts-ignore
         faAngleLeft,
         faAngleRight,
         faBan,

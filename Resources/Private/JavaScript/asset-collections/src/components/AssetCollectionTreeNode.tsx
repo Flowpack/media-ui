@@ -84,8 +84,14 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
                 level={level}
                 onToggle={() => setCollapsed(!collapsed)}
                 onClick={handleClick}
-                isCollapsed={assetCollection?.children.length === 0 || collapsed}
-                hasChildren={children !== null || assetCollection?.children.length > 0}
+                isCollapsed={
+                    (assetCollection?.tags.length === 0 && assetCollection?.children.length === 0) || collapsed
+                }
+                hasChildren={
+                    children !== null ||
+                    assetCollection?.tags.length > 0 ||
+                    (renderChildCollections && assetCollection?.children.length > 0)
+                }
             />
             {!collapsed && assetCollection && (
                 <>

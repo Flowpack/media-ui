@@ -1,0 +1,16 @@
+.topBar {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    margin: 0 calc(-1 * var(--theme-spacing-Half));
+    padding-right: 0;
+}
+
+.topBar--selectionMode {
+    /* Add spacing in selection mode to prevent overlap with close button of secondary inspector view */
+    padding-right: var(--theme-spacing-GoldenUnit);
+}
+
+.topBar > * {
+    margin: 0 var(--theme-spacing-Half);
+}

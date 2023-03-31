@@ -1,45 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Asset } from '@media-ui/core/src/interfaces';
-import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core';
+import { useMediaUi } from '@media-ui/core';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    similarAsset: {
-        margin: '0',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-    },
-    picture: {
-        backgroundColor: theme.colors.assetBackground,
-        '& img': {
-            display: 'block',
-            height: '250px',
-            width: '100%',
-            objectFit: 'contain',
-        },
-    },
-    caption: {
-        backgroundColor: theme.colors.captionBackground,
-        transition: `background-color ${theme.transition.fast}`,
-        padding: theme.spacing.half,
-        display: 'flex',
-        alignItems: 'center',
-        flex: 1,
-        '& img': {
-            width: '1.3rem',
-            height: 'auto',
-            marginRight: theme.spacing.half,
-        },
-    },
-}));
+import classes from './SimilarAsset.module.css';
 
 interface SimilarAssetProps {
     asset: Asset;
 }
 
 const SimilarAsset: React.FC<SimilarAssetProps> = ({ asset }: SimilarAssetProps) => {
-    const classes = useStyles();
     const { dummyImage } = useMediaUi();
 
     return (

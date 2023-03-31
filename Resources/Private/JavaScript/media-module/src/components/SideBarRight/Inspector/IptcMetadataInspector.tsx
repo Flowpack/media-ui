@@ -1,32 +1,14 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Headline } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core';
+import { useIntl } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { IconLabel, PropertyList, PropertyListItem } from '@media-ui/core/src/components';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    iptcData: {
-        '& dl': {
-            '& dt': {
-                backgroundColor: theme.colors.alternatingBackground,
-                fontWeight: 'bold',
-                color: 'white',
-                padding: '8px 8px 0',
-            },
-            '& dd': {
-                backgroundColor: theme.colors.alternatingBackground,
-                marginBottom: '1px',
-                padding: '8px',
-                color: theme.colors.inactive,
-            },
-        },
-    },
-}));
+import classes from './IptcMetadataInspector.module.css';
 
 const IptcMetadataInspector: React.FC = () => {
-    const classes = useStyles();
     const selectedAsset = useSelectedAsset();
     const { translate } = useIntl();
 

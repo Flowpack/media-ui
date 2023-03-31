@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { loadingState } from '@media-ui/core/src/state';

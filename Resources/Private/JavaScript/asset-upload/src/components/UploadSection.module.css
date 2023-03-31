@@ -1,0 +1,33 @@
+.dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--theme-spacing-GoldenUnit);
+    border-width: 2px;
+    border-radius: 2px;
+    border-color: var(--theme-colors-disabled);
+    border-style: dashed;
+    background-color: var(--theme-colors-alternatingBackground);
+    color: var(--theme-colors-text);
+    outline: none;
+    cursor: pointer;
+    user-select: none;
+    transition: border .24s ease-in-out;
+}
+
+.dropzone p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.dropzone--active {
+    border-color: var(--theme-colors-PrimaryBlue);
+}
+
+.dropzone--accept {
+    border-color: var(--theme-colors-Success);
+}
+
+.dropzone--reject {
+    border-color: var(--theme-colors-Error);
+}

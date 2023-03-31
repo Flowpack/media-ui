@@ -3,7 +3,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl } from '@media-ui/core';
+import { useIntl } from '@media-ui/core';
 import { availableAssetIdentitiesState } from '@media-ui/core/src/state';
 import { clipboardState, clipboardVisibleState } from '@media-ui/feature-clipboard';
 import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage';
@@ -12,17 +12,9 @@ import { ListView, ThumbnailView } from './index';
 import LoadingLabel from '../LoadingLabel';
 import { MainViewMode, mainViewState, VIEW_MODES, viewModeState } from '../../state';
 
-const useStyles = createUseMediaUiStyles({
-    emptyStateWrapper: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 'inherit',
-    },
-});
+import classes from './Main.module.css';
 
 const Main: React.FC = () => {
-    const classes = useStyles();
     const viewModeSelection = useRecoilValue(viewModeState);
     const { assets: unusedAssets } = useUnusedAssetsQuery();
     const clipboard = useRecoilValue(clipboardState);

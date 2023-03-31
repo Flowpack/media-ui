@@ -1,0 +1,13 @@
+.iptcData {}
+.iptcData dl dt {
+    background-color: var(--theme-colors-alternatingBackground);
+    font-weight: bold;
+    color: white;
+    padding: var(--theme-spacing-Half) var(--theme-spacing-Half) 0;
+}
+.iptcData dl dd {
+    background-color: var(--theme-colors-alternatingBackground);
+    margin-bottom: 1px;
+    padding: var(--theme-spacing-Half);
+    color: var(--theme-colors-inactive);
+}

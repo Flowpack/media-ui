@@ -1,0 +1,6 @@
+.assetUsage {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--theme-spacing-Full);
+    padding: var(--theme-spacing-Full);
+}
