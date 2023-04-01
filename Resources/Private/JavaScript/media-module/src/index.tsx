@@ -1,12 +1,10 @@
-import * as React from 'react';
-import { createRef } from 'react';
+import React, { createRef } from 'react';
 import { render } from 'react-dom';
 import Modal from 'react-modal';
 import { RecoilRoot } from 'recoil';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
-import { hot, setConfig } from 'react-hot-loader';
 import { createUploadLink } from 'apollo-upload-client';
 
 import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
@@ -23,10 +21,6 @@ import ErrorBoundary from './components/ErrorBoundary';
 import loadIconLibrary from './lib/FontAwesome';
 
 loadIconLibrary();
-
-setConfig({
-    showReactDomPatchNotification: false,
-});
 
 window.onload = async (): Promise<void> => {
     while (!window.NeosCMS?.I18n?.initialized) {
@@ -65,9 +59,6 @@ window.onload = async (): Promise<void> => {
         return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
     };
 
-    // @ts-ignore
-    const AppWithHmr = module.hot ? hot(module)(App) : App;
-
     render(
         <IntlProvider translate={translate}>
             <NotifyProvider notificationApi={Notification}>
@@ -81,7 +72,7 @@ window.onload = async (): Promise<void> => {
                                     featureFlags={featureFlags}
                                 >
                                     <DndProvider backend={HTML5Backend}>
-                                        <AppWithHmr />
+                                        <App />
                                     </DndProvider>
                                 </MediaUiProvider>
                             </ErrorBoundary>
