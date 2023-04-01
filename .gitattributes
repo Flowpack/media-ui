@@ -3,3 +3,20 @@
 *.map binary
 Plugin.js binary
 Plugin.css binary
+
+/Resources/Private/JavaScript export-ignore
+/Tests export-ignore
+/.yarn export-ignore
+/.env export-ignore
+/.github export-ignore
+/.eslintrc.js export-ignore
+/.eslintrc.js export-ignore
+/.mocharc export-ignore
+/.nvmrc export-ignore
+/.testcaferc.json export-ignore
+/.yarn.yml export-ignore
+/.apollo.config.js export-ignore
+/package.json export-ignore
+/phpstan.neon export-ignore
+/tsconfig.json export-ignore
+/yarn.lock export-ignore

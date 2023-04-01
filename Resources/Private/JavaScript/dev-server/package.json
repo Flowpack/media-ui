@@ -6,9 +6,9 @@
     "@media-ui/media-module": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^16.18.3",
+    "@types/node": "^16.18.23",
     "express": "^4.18.2",
-    "nodemon": "^2.0.21"
+    "nodemon": "^2.0.22"
   },
   "scripts": {
     "dev": "nodemon --watch '*.ts' src/server.ts"
