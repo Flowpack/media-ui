@@ -15,6 +15,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Media\Domain\Repository\AssetRepository;
 use t3n\GraphQL\ResolverInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
@@ -31,11 +32,18 @@ class AssetCollectionResolver implements ResolverInterface
     protected $persistenceManager;
 
     /**
-     * @param AssetCollection $assetCollection
-     * @return string
+     * @Flow\Inject
+     * @var AssetRepository
      */
+    protected $assetRepository;
+
     public function id(AssetCollection $assetCollection): string
     {
         return $this->persistenceManager->getIdentifierByObject($assetCollection);
+    }
+
+    public function assetCount(AssetCollection $assetCollection): int
+    {
+        return $this->assetRepository->countByAssetCollection($assetCollection);
     }
 }

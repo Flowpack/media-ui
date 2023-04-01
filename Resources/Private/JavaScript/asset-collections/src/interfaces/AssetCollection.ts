@@ -15,4 +15,5 @@ export default interface AssetCollection extends GraphQlEntity {
         readonly title: string;
     }[];
     tags?: Tag[];
+    assetCount: number;
 }

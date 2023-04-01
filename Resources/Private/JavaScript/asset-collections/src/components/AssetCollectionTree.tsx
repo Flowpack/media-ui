@@ -19,12 +19,14 @@ import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';
 
 import classes from './AssetCollectionTree.module.css';
 import { IconStack } from '@media-ui/core/src/components';
+import useAssetCountQuery from '@media-ui/core/src/hooks/useAssetCountQuery';
 
 const AssetCollectionTree = () => {
     const { translate } = useIntl();
     const { assetCollections } = useAssetCollectionsQuery();
     const selectedAssetSource = useSelectedAssetSource();
     const { tags } = useTagsQuery();
+    const { assetCount: totalAssetCount } = useAssetCountQuery(true);
     const [assetCollectionTreeView, setAssetCollectionTreeViewState] = useRecoilState(assetCollectionTreeViewState);
     const favourites = useRecoilValue(assetCollectionFavouritesState);
 
@@ -85,7 +87,7 @@ const AssetCollectionTree = () => {
                 ) : (
                     <>
                         <AssetCollectionTreeNode
-                            label={translate('assetCollectionList.showAll', 'All')}
+                            label={translate('assetCollectionList.showAll', 'All') + ` (${totalAssetCount})`}
                             title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
                             level={1}
                             assetCollectionId={null}

@@ -271,6 +271,7 @@ type AssetCollection {
     parent: AssetCollection
     children: [AssetCollection!]!
     tags: [Tag!]!
+    assetCount: Int!
 }
 
 """

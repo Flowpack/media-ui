@@ -1,12 +1,10 @@
 import { useQuery } from '@apollo/client';
 import { useRecoilValue } from 'recoil';
 
-import { useSelectedTag } from '@media-ui/feature-asset-tags';
-import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import { ASSET_COUNT } from '../queries';
-import { searchTermState } from '../state';
+import { searchTermState, selectedAssetCollectionAndTagState } from '../state';
 
 interface AssetCountQueryResult {
     assetCount: number;
@@ -20,16 +18,15 @@ interface AssetCountVariables {
     searchTerm?: string;
 }
 
-export default function useAssetCountQuery() {
+export default function useAssetCountQuery(total = false) {
     const searchTerm = useRecoilValue(searchTermState);
-    const selectedTag = useSelectedTag();
-    const assetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
+    const { tagId, assetCollectionId } = useRecoilValue(selectedAssetCollectionAndTagState);
     const assetSourceId = useRecoilValue(selectedAssetSourceState);
     const { data, loading } = useQuery<AssetCountQueryResult, AssetCountVariables>(ASSET_COUNT, {
         variables: {
-            assetCollectionId,
+            assetCollectionId: total ? undefined : assetCollectionId,
             assetSourceId,
-            tagId: selectedTag?.id,
+            tagId: total ? undefined : tagId,
             searchTerm: searchTerm.toString(),
         },
     });

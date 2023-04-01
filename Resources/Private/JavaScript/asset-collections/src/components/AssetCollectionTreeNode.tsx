@@ -106,8 +106,12 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
                 isFocused={isFocused && !isActive}
                 isLoading={false}
                 hasError={false}
-                label={assetCollection?.title || label}
+                label={
+                    (assetCollection?.title || label) +
+                    (assetCollection?.assetCount > 0 ? ` (${assetCollection.assetCount})` : '')
+                }
                 title={assetCollection?.title || title}
+                isHiddenInIndex={assetCollection?.assetCount === 0}
                 customIconComponent={CollectionIcon}
                 nodeDndType={dndTypes.COLLECTION}
                 level={level}
