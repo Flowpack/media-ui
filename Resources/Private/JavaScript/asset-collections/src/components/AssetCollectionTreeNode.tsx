@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
 import { atom, selectorFamily, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { Icon, Tree } from '@neos-project/react-ui-components';
+import { Tree } from '@neos-project/react-ui-components';
 
 import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { selectedAssetCollectionAndTagState, localStorageEffect } from '@media-ui/core/src/state';
+import { IconStack } from '@media-ui/core/src/components';
 
 import TreeNodeProps from '../interfaces/TreeNodeProps';
 import TagTreeNode from './TagTreeNode';
@@ -12,13 +13,12 @@ import selectedAssetCollectionIdState from '../state/selectedAssetCollectionIdSt
 import { assetCollectionFavouriteState } from '../state/assetCollectionFavouritesState';
 import useAssetCollectionQuery from '../hooks/useAssetCollectionQuery';
 
-import classes from './AssetCollectionTreeNode.module.css';
 import { selectedTagIdState } from '@media-ui/feature-asset-tags';
 
 export interface AssetCollectionTreeNodeProps extends TreeNodeProps {
     assetCollectionId: string | null;
     renderChildCollections?: boolean;
-    children?: React.ReactElement[];
+    children?: React.ReactNode;
 }
 
 const assetCollectionTreeCollapsedState = atom<Record<string, boolean>>({
@@ -73,7 +73,7 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     level,
     children = null,
     renderChildCollections = true,
-}: AssetCollectionTreeNodeProps) => {
+}) => {
     const { assetCollection } = useAssetCollectionQuery(assetCollectionId);
     const [collapsed, setCollapsed] = useRecoilState(assetCollectionTreeCollapsedProxyState(assetCollectionId));
     const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
@@ -87,10 +87,16 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     }, [assetCollectionId, selectAssetCollectionAndTag, setCollapsed]);
 
     const CollectionIcon = (
-        <span className={classes.iconStack}>
-            <Icon icon={!assetCollectionId ? 'globe' : !collapsed ? 'folder-open' : 'folder'} />
-            {isFavourite && <Icon icon="star" />}
-        </span>
+        <IconStack
+            primaryIcon={
+                !assetCollectionId
+                    ? 'globe'
+                    : !collapsed && (assetCollection?.tags.length > 0 || assetCollection?.children.length > 0)
+                    ? 'folder-open'
+                    : 'folder'
+            }
+            secondaryIcon={isFavourite ? 'star' : undefined}
+        />
     );
 
     return (

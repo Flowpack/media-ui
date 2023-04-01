@@ -185,6 +185,12 @@ class QueryResolver implements ResolverInterface
         }
 
         if ($tagId && $assetProxyRepository instanceof SupportsTaggingInterface) {
+            if ($tagId === 'UNTAGGED') {
+                return AssetProxyQueryIterator::from(
+                    $assetProxyRepository->findUntagged()->getQuery()
+                );
+            }
+
             /** @var Tag $tag */
             $tag = $this->tagRepository->findByIdentifier($tagId);
             if ($tag) {

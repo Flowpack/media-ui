@@ -18,6 +18,7 @@ import { assetCollectionFavouritesState } from '../state/assetCollectionFavourit
 import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';
 
 import classes from './AssetCollectionTree.module.css';
+import { IconStack } from '@media-ui/core/src/components';
 
 const AssetCollectionTree = () => {
     const { translate } = useIntl();
@@ -89,6 +90,13 @@ const AssetCollectionTree = () => {
                             level={1}
                             assetCollectionId={null}
                         >
+                            <TagTreeNode
+                                tagId={'UNTAGGED'}
+                                label={translate('assetCollectionList.untagged', 'Untagged')}
+                                assetCollectionId={null}
+                                level={2}
+                                customIconComponent={<IconStack primaryIcon="tag" secondaryIcon="times" />}
+                            />
                             {tags?.map((tag) => (
                                 <TagTreeNode
                                     key={tag.id}

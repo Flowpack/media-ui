@@ -4,10 +4,10 @@
 
 .iconStack svg:nth-child(2) {
     position: absolute;
-    bottom: -1px;
-    right: -2px;
-    max-width: 80%;
-    max-height: 80%;
+    bottom: 1px;
+    right: 2px;
+    max-width: 0.8em;
+    max-height: 0.8em;
     color: var(--theme-colors-star);
     filter: drop-shadow(0px -1px #aa6600);
 }
