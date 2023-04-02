@@ -85,15 +85,11 @@ class AssetSourceContext extends BaseContext
         }
 
         try {
-            $assetProxy = $activeAssetSource->getAssetProxyRepository()->getAssetProxy($id);
+            return $activeAssetSource->getAssetProxyRepository()->getAssetProxy($id);
         } catch (\Exception $e) {
             // Some assetproxy repositories like the NeosAssetProxyRepository throw exceptions if an asset was not found
             return null;
         }
-        if (!$assetProxy) {
-            return null;
-        }
-        return $assetProxy;
     }
 
     /**

@@ -14,8 +14,8 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
-use Doctrine\ORM\ORMException;
 use Flowpack\Media\Ui\Domain\Model\AssetProxyIteratorAggregate;
+use Flowpack\Media\Ui\Domain\Model\AssetSource\NeosAssetProxyRepository;
 use Flowpack\Media\Ui\Domain\Model\SearchTerm;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
@@ -153,7 +153,13 @@ class QueryResolver implements ResolverInterface
         if (!$activeAssetSource) {
             return null;
         }
-        $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
+
+        // Use our custom patched repository for querying the Neos asset source
+        if ($activeAssetSource instanceof NeosAssetSource) {
+            $assetProxyRepository = new NeosAssetProxyRepository($activeAssetSource);
+        } else {
+            $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
+        }
 
         if (is_string($mediaType) && !empty($mediaType)) {
             try {
@@ -165,6 +171,11 @@ class QueryResolver implements ResolverInterface
         }
 
         if ($assetCollectionId && $assetProxyRepository instanceof SupportsCollectionsInterface) {
+            if ($assetCollectionId === 'UNASSIGNED') {
+                return AssetProxyQueryIterator::from(
+                    $assetProxyRepository->findUnassigned()->getQuery()
+                );
+            }
             /** @var AssetCollection $assetCollection */
             $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
             if ($assetCollection) {
@@ -415,7 +426,6 @@ class QueryResolver implements ResolverInterface
     /**
      * Retrieves the variants of an asset
      * @return AssetVariantInterface[]
-     * @throws ORMException
      */
     public function assetVariants($_, array $variables, AssetSourceContext $assetSourceContext): array
     {

@@ -29,6 +29,8 @@ const AssetCollectionTree = () => {
     const { assetCount: totalAssetCount } = useAssetCountQuery(true);
     const [assetCollectionTreeView, setAssetCollectionTreeViewState] = useRecoilState(assetCollectionTreeViewState);
     const favourites = useRecoilValue(assetCollectionFavouritesState);
+    // TODO: Retrieve count of unassigned assets
+    const unassignedAssetCount = 0;
 
     const assetCollectionsWithoutParent = useMemo(() => {
         return assetCollections.filter((assetCollection) => !assetCollection.parent);
@@ -86,6 +88,17 @@ const AssetCollectionTree = () => {
                     ))
                 ) : (
                     <>
+                        <AssetCollectionTreeNode
+                            label={
+                                translate('assetCollectionList.unassigned', 'Unassigned') + ` (${unassignedAssetCount})`
+                            }
+                            title={translate(
+                                'assetCollectionList.unassigned.title',
+                                'Show assets which are not assigned to any collection'
+                            )}
+                            level={1}
+                            assetCollectionId="UNASSIGNED"
+                        />
                         <AssetCollectionTreeNode
                             label={translate('assetCollectionList.showAll', 'All') + ` (${totalAssetCount})`}
                             title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}

@@ -86,18 +86,21 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
         setCollapsed(false);
     }, [assetCollectionId, selectAssetCollectionAndTag, setCollapsed]);
 
-    const CollectionIcon = (
-        <IconStack
-            primaryIcon={
-                !assetCollectionId
-                    ? 'globe'
-                    : !collapsed && (assetCollection?.tags.length > 0 || assetCollection?.children.length > 0)
-                    ? 'folder-open'
-                    : 'folder'
-            }
-            secondaryIcon={isFavourite ? 'star' : undefined}
-        />
-    );
+    const CollectionIcon =
+        assetCollectionId === 'UNASSIGNED' ? (
+            <IconStack primaryIcon="folder" secondaryIcon="times" />
+        ) : (
+            <IconStack
+                primaryIcon={
+                    !assetCollectionId
+                        ? 'globe'
+                        : !collapsed && (assetCollection?.tags.length > 0 || assetCollection?.children.length > 0)
+                        ? 'folder-open'
+                        : 'folder'
+                }
+                secondaryIcon={isFavourite ? 'star' : undefined}
+            />
+        );
 
     return (
         <Tree.Node>
