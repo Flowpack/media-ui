@@ -66,7 +66,7 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
                 hasError={false}
                 label={
                     (assetCollection?.title || label) +
-                    (assetCollection?.assetCount > 0 ? ` (${assetCollection.assetCount})` : '')
+                    (assetCollection?.assetCount >= 0 ? ` (${assetCollection?.assetCount})` : '')
                 }
                 title={assetCollection?.title || title}
                 isHiddenInIndex={assetCollection?.assetCount === 0}
