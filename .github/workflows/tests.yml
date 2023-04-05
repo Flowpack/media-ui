@@ -76,7 +76,7 @@ jobs:
           version: 2
 
       - name: Run PHPUnit tests
-        run: composer test
+        run: composer test:ci
 
   js-unit-tests:
     runs-on: ubuntu-latest

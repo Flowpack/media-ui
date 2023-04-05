@@ -233,13 +233,27 @@ First make sure you have [phpstan](https://phpstan.org) installed.
 When the package is installed in a Neos distribution:
 
 ```console
-phpstan analyse --autoload-file ../../Libraries/autoload.php
+composer run codestyle
 ```
     
 When the package is standalone
 
 ```console
-composer run codestyle
+composer run codestyle:ci
+``` 
+
+### Run PHPUnit for unit tests
+
+When the package is installed in a Neos distribution:
+
+```console
+composer run test
+```
+    
+When the package is standalone
+
+```console
+composer run test:ci
 ``` 
     
 ### Other development hints
