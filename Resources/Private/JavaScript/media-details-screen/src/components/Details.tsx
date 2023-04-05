@@ -13,9 +13,12 @@ import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/sta
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
 import LoadingIndicator from '@media-ui/media-module/src/components/LoadingIndicator';
 import ErrorBoundary from '@media-ui/media-module/src/components/ErrorBoundary';
-import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
-import { CreateAssetCollectionDialog, createAssetCollectionDialogState } from '@media-ui/feature-asset-collections';
 import { AssetInspector } from '@media-ui/media-module/src/components/SideBarRight/Inspector';
+import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
+import {
+    CreateAssetCollectionDialog,
+    createAssetCollectionDialogVisibleState,
+} from '@media-ui/feature-asset-collections';
 
 import Preview from './Preview';
 
@@ -30,7 +33,7 @@ const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
     const { containerRef } = useMediaUi();
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
-    const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogState);
+    const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogVisibleState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const selectAsset = useSelectAsset();

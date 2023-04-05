@@ -14,7 +14,10 @@ import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
 import { AssetPreview } from '@media-ui/feature-asset-preview';
 import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
 import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
-import { CreateAssetCollectionDialog, createAssetCollectionDialogState } from '@media-ui/feature-asset-collections';
+import {
+    CreateAssetCollectionDialog,
+    createAssetCollectionDialogVisibleState,
+} from '@media-ui/feature-asset-collections';
 import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import SideBarLeft from './SideBarLeft/SideBarLeft';
@@ -33,7 +36,7 @@ const App = () => {
     const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
-    const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogState);
+    const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogVisibleState);
     const showEditAssetDialog = useRecoilValue(editAssetDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);

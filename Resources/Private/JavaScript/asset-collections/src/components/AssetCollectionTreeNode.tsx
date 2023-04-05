@@ -1,70 +1,25 @@
 import React, { useCallback } from 'react';
-import { atom, selectorFamily, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Tree } from '@neos-project/react-ui-components';
 
 import dndTypes from '@media-ui/core/src/constants/dndTypes';
-import { selectedAssetCollectionAndTagState, localStorageEffect } from '@media-ui/core/src/state';
+import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { IconStack } from '@media-ui/core/src/components';
 
 import TreeNodeProps from '../interfaces/TreeNodeProps';
 import TagTreeNode from './TagTreeNode';
-import selectedAssetCollectionIdState from '../state/selectedAssetCollectionIdState';
-import { assetCollectionFavouriteState } from '../state/assetCollectionFavouritesState';
 import useAssetCollectionQuery from '../hooks/useAssetCollectionQuery';
-
-import { selectedTagIdState } from '@media-ui/feature-asset-tags';
+import { assetCollectionFavouriteState } from '../state/assetCollectionFavouritesState';
+import { assetCollectionTreeCollapsedItemState } from '../state/assetCollectionTreeCollapsedState';
+import { assetCollectionFocusedState } from '../state/assetCollectionFocusedState';
+import { assetCollectionActiveState } from '../state/assetCollectionActiveState';
 
 export interface AssetCollectionTreeNodeProps extends TreeNodeProps {
     assetCollectionId: string | null;
     renderChildCollections?: boolean;
     children?: React.ReactNode;
 }
-
-const assetCollectionTreeCollapsedState = atom<Record<string, boolean>>({
-    key: 'AssetCollectionTreeState',
-    default: {},
-    effects: [localStorageEffect('AssetCollectionTreeState')],
-});
-
-const assetCollectionTreeCollapsedProxyState = selectorFamily<boolean, string>({
-    key: 'AssetCollectionTreeCollapsedProxyState',
-    get:
-        (assetCollectionId) =>
-        ({ get }) =>
-            get(assetCollectionTreeCollapsedState)[assetCollectionId] ?? true,
-    set:
-        (assetCollectionId) =>
-        ({ set }, newValue: boolean) =>
-            set(assetCollectionTreeCollapsedState, (prevState) => {
-                const newState = {
-                    ...prevState,
-                    [assetCollectionId]: newValue,
-                };
-                if (newState[assetCollectionId] === true) {
-                    delete newState[assetCollectionId];
-                }
-                return newState;
-            }),
-});
-
-// This state selector provides the focused state for each individual asset collection
-const assetCollectionFocusedState = selectorFamily<boolean, string>({
-    key: 'AssetCollectionFocusedState',
-    get:
-        (assetCollectionId) =>
-        ({ get }) =>
-            get(selectedAssetCollectionIdState) === assetCollectionId,
-});
-
-// This state selector provides the focused state for each individual asset collection
-const assetCollectionActiveState = selectorFamily<boolean, string[]>({
-    key: 'AssetCollectionActiveState',
-    get:
-        (tags) =>
-        ({ get }) =>
-            tags.includes(get(selectedTagIdState)),
-});
 
 const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     assetCollectionId,
@@ -75,11 +30,11 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     renderChildCollections = true,
 }) => {
     const { assetCollection } = useAssetCollectionQuery(assetCollectionId);
-    const [collapsed, setCollapsed] = useRecoilState(assetCollectionTreeCollapsedProxyState(assetCollectionId));
+    const [collapsed, setCollapsed] = useRecoilState(assetCollectionTreeCollapsedItemState(assetCollectionId));
     const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
     const isFocused = useRecoilValue(assetCollectionFocusedState(assetCollectionId));
     const isFavourite = useRecoilValue(assetCollectionFavouriteState(assetCollectionId));
-    const isActive = useRecoilValue(assetCollectionActiveState(assetCollection?.tags.map((tag) => tag.id) || []));
+    const isActive = useRecoilValue(assetCollectionActiveState(assetCollectionId));
 
     const handleClick = useCallback(() => {
         selectAssetCollectionAndTag({ assetCollectionId, tagId: null });

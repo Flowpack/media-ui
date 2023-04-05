@@ -20,7 +20,13 @@ export { default as createAssetCollection } from './mutations/createAssetCollect
 export { default as deleteAssetCollection } from './mutations/deleteAssetCollection';
 export { default as updateAssetCollection } from './mutations/updateAssetCollection';
 
-export { default as selectedAssetCollectionIdState } from './state/selectedAssetCollectionIdState';
-export { default as createAssetCollectionDialogState } from './state/createAssetCollectionDialogVisibleState';
+export { selectedAssetCollectionIdState } from './state/selectedAssetCollectionIdState';
+export { createAssetCollectionDialogVisibleState } from './state/createAssetCollectionDialogVisibleState';
 export { assetCollectionFavouritesState } from './state/assetCollectionFavouritesState';
 export { assetCollectionTreeViewState } from './state/assetCollectionTreeViewState';
+export { assetCollectionFocusedState } from './state/assetCollectionFocusedState';
+export { assetCollectionActiveState } from './state/assetCollectionActiveState';
+export {
+    assetCollectionTreeCollapsedState,
+    assetCollectionTreeCollapsedItemState,
+} from './state/assetCollectionTreeCollapsedState';

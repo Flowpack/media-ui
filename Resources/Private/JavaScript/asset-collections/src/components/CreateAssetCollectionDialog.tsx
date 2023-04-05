@@ -8,7 +8,7 @@ import { Dialog } from '@media-ui/core/src/components';
 
 import useCreateAssetCollection from '../hooks/useCreateAssetCollection';
 import useSelectedAssetCollection from '../hooks/useSelectedAssetCollection';
-import createAssetCollectionDialogVisibleState from '../state/createAssetCollectionDialogVisibleState';
+import { createAssetCollectionDialogVisibleState } from '../state/createAssetCollectionDialogVisibleState';
 
 import classes from './CreateAssetCollectionDialog.module.css';
 

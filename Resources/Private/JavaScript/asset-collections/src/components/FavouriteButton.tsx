@@ -5,7 +5,7 @@ import { IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 
-import selectedAssetCollectionIdState from '../state/selectedAssetCollectionIdState';
+import { selectedAssetCollectionIdState } from '../state/selectedAssetCollectionIdState';
 import { assetCollectionFavouriteState } from '../state/assetCollectionFavouritesState';
 
 const FavouriteButton: React.FC = () => {

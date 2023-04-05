@@ -5,7 +5,7 @@ import { Button, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 
-import createAssetCollectionDialogVisibleState from '../state/createAssetCollectionDialogVisibleState';
+import { createAssetCollectionDialogVisibleState } from '../state/createAssetCollectionDialogVisibleState';
 import { assetCollectionTreeViewState } from '../state/assetCollectionTreeViewState';
 
 import classes from './AddAssetCollectionButton.module.css';
