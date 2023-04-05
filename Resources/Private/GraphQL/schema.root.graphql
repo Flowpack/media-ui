@@ -403,13 +403,17 @@ Fields to sort assets by
 """
 enum SortBy {
     """
-    The ressource file name
+    The resource file name
     """
     name
     """
     Last modification date
     """
     lastModified
+    """
+    The resource file size
+    """
+    size
 }
 
 """

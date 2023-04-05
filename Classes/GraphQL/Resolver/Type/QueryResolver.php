@@ -188,6 +188,9 @@ class QueryResolver implements ResolverInterface
                 case 'name':
                     $assetProxyRepository->orderBy(['resource.filename' => $sortDirection]);
                     break;
+                case 'size':
+                    $assetProxyRepository->orderBy(['resource.fileSize' => $sortDirection]);
+                    break;
                 case 'lastModified':
                 default:
                     $assetProxyRepository->orderBy(['lastModified' => $sortDirection]);

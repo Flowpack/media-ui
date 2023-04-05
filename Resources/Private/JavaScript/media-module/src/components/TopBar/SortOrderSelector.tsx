@@ -47,6 +47,11 @@ const SortOrderSelector: React.FC = () => {
                 label: translate('sortingState.sortBy.values.name', 'Name'),
                 icon: hideOptionIcon ? '' : 'font',
             },
+            {
+                value: SORT_BY.Size,
+                label: translate('sortingState.sortBy.values.size', 'File size'),
+                icon: hideOptionIcon ? '' : 'weight-hanging',
+            },
         ];
     }, [translate, hideOptionIcon]);
 

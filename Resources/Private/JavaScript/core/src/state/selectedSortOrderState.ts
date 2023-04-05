@@ -5,6 +5,7 @@ import { localStorageEffect } from './localStorageEffect';
 export enum SORT_BY {
     Name = 'name',
     LastModified = 'lastModified',
+    Size = 'size',
 }
 
 export enum SORT_DIRECTION {
