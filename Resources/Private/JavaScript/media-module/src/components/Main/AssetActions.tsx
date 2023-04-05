@@ -74,7 +74,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             )}
             {asset.file?.url && (
                 <a href={asset.file.url} download title={translate('itemActions.download', 'Download asset')}>
-                    <IconButton icon="download" size="regular" style="transparent" hoverStyle="warn" />
+                    <IconButton icon="download" size="regular" style="transparent" hoverStyle="success" />
                 </a>
             )}
             {asset.localId && (
