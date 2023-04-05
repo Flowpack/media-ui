@@ -171,7 +171,7 @@ class QueryResolver implements ResolverInterface
         }
 
         if ($assetCollectionId && $assetProxyRepository instanceof SupportsCollectionsInterface) {
-            if ($assetCollectionId === 'UNASSIGNED') {
+            if ($assetProxyRepository instanceof NeosAssetProxyRepository && $assetCollectionId === 'UNASSIGNED') {
                 return AssetProxyQueryIterator::from(
                     $assetProxyRepository->findUnassigned()->getQuery()
                 );

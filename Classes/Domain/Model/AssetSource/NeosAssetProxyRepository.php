@@ -21,7 +21,6 @@ use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\QueryInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetInterface;
-use Neos\Media\Domain\Model\AssetSource\AssetNotFoundExceptionInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyRepositoryInterface;
@@ -104,7 +103,6 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
      * )
      *
      * @param array $orderings The property names to order by by default
-     * @api
      */
     public function orderBy(array $orderings): void
     {
@@ -127,7 +125,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
     }
 
     /**
-     * @throws AssetNotFoundExceptionInterface
+     * @throws NeosAssetNotFoundException
      */
     public function getAssetProxy(string $identifier): AssetProxyInterface
     {
@@ -170,9 +168,6 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
         return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
     }
 
-    /**
-     * @return AssetProxyQueryResultInterface
-     */
     public function findUnassigned(): AssetProxyQueryResultInterface
     {
         $query = $this->assetRepository->createQuery();
@@ -226,6 +221,9 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
 
     private function filterOutImageVariants(QueryInterface $query): QueryInterface
     {
+        if (!method_exists($query, 'getQueryBuilder')) {
+            return $query;
+        }
         $queryBuilder = $query->getQueryBuilder();
         $queryBuilder->andWhere('e NOT INSTANCE OF Neos\Media\Domain\Model\ImageVariant');
         return $query;
