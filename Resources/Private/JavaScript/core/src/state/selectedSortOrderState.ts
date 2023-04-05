@@ -1,5 +1,7 @@
 import { atom } from 'recoil';
 
+import { localStorageEffect } from './localStorageEffect';
+
 export enum SORT_BY {
     Name = 'name',
     LastModified = 'lastModified',
@@ -21,4 +23,5 @@ export const selectedSortOrderState = atom<SortOrder>({
         sortBy: SORT_BY.LastModified,
         sortDirection: SORT_DIRECTION.Desc,
     },
+    effects: [localStorageEffect('selectedSortOrderState')],
 });

@@ -16,9 +16,6 @@ export function localStorageEffect<T = any>(key: string, validate?: (value: T | 
             setSelf(savedValue);
         }
         onSet((newValue, previousValue: T | undefined, isReset) => {
-            if (!isReset && validate) {
-                newValue = validate(newValue);
-            }
             isReset ? localStorage.removeItem(fullKey) : localStorage.setItem(fullKey, JSON.stringify(newValue));
         });
     };

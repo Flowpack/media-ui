@@ -43,3 +43,5 @@ interface AssetIdentity {
     assetId: string;
     assetSourceId: string;
 }
+
+type AssetMediaType = 'image' | 'video' | 'audio' | 'document' | 'all';

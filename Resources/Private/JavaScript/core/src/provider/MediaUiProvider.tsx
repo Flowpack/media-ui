@@ -10,7 +10,6 @@ import { useNotify } from './Notify';
 import { useIntl } from './Intl';
 import { useInteraction } from './Interaction';
 import { constraintsState, featureFlagsState, selectedMediaTypeState } from '../state';
-import { AssetMediaType } from '../state/selectedMediaTypeState';
 import { ASSET_FRAGMENT } from '../fragments/asset';
 import {
     ApprovalAttainmentStrategy,
@@ -83,7 +82,9 @@ export function MediaUiProvider({
     useEffect(() => {
         setConstraints(constraints);
         setFeatureFlags(featureFlags);
-        setSelectedMediaType(assetType);
+        if (assetType !== 'all') {
+            setSelectedMediaType(assetType);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
