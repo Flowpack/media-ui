@@ -41,6 +41,9 @@ final class AssetProxyQueryIteratorTest extends TestCase
         $assetProxyQueryStub
             ->method('execute')
             ->willReturn($assetProxyQueryResultStub);
+        $assetProxyQueryStub
+            ->method('count')
+            ->willReturn(count($assetProxies));
 
         $assetProxyQueryResultStub
             ->method('getQuery')
@@ -51,9 +54,6 @@ final class AssetProxyQueryIteratorTest extends TestCase
         $assetProxyQueryResultStub
             ->method('toArray')
             ->willReturn($assetProxies);
-        $assetProxyQueryResultStub
-            ->method('count')
-            ->willReturn(count($assetProxies));
         $this->applyArrayIteratorMixinToStub(
             $assetProxyQueryResultStub,
             new \ArrayIterator($assetProxies)
