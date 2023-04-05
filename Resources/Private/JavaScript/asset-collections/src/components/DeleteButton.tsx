@@ -77,7 +77,7 @@ const DeleteButton: React.FC = () => {
             icon="trash-alt"
             size="regular"
             style="transparent"
-            hoverStyle="brand"
+            hoverStyle="error"
             disabled={!selectedAssetCollection && !selectedTag}
             title={translate('assetCollectionTree.toolbar.delete', 'Delete')}
             onClick={onClickDelete}

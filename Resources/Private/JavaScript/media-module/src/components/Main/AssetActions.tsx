@@ -68,7 +68,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     icon="trash"
                     size="regular"
                     style="transparent"
-                    hoverStyle="warn"
+                    hoverStyle="error"
                     onClick={() => handleDeleteAsset(asset)}
                 />
             )}

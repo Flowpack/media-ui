@@ -21,8 +21,8 @@ const FavouriteButton: React.FC = () => {
         <IconButton
             icon="star"
             size="regular"
-            style={isFavourite ? 'warn' : 'transparent'}
-            hoverStyle="warn"
+            style={isFavourite ? 'brand' : 'transparent'}
+            hoverStyle="brand"
             disabled={!selectedAssetCollectionId}
             title={translate('assetCollectionTree.toolbar.favourite', 'Toggle favourite')}
             onClick={toggleFavourite}
