@@ -3,27 +3,30 @@ import { useSetRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify } from '@media-ui/core';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { useDeleteTag, useSelectedTag } from '@media-ui/feature-asset-tags';
 
 import useDeleteAssetCollection from '../hooks/useDeleteAssetCollection';
 import useSelectedAssetCollection from '../hooks/useSelectedAssetCollection';
 
-// TODO: Try to get rid of the hooks which access the tag and assetcollection and only work with the recoil id states
 const DeleteButton: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
+    const { approvalAttainmentStrategy } = useMediaUi();
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
     const { deleteTag } = useDeleteTag();
     const { deleteAssetCollection } = useDeleteAssetCollection();
     const setSelectedAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
 
-    // TODO: Turn this into a hook to prevent re-renders and cleanup the code
-    const onClickDelete = useCallback(() => {
+    const onClickDelete = useCallback(async () => {
         if (selectedTag) {
-            // TODO: Use custom modal
+            const canDeleteTag = await approvalAttainmentStrategy.obtainApprovalToDeleteTag({
+                tag: selectedTag,
+            });
+            if (!canDeleteTag) return;
+            // TODO: Implement `obtainApprovalToDeleteCollection` for deleting
             const confirm = window.confirm(
                 translate('action.deleteTag.confirm', 'Do you really want to delete the tag ' + selectedTag.label, [
                     selectedTag.label,
@@ -39,15 +42,11 @@ const DeleteButton: React.FC = () => {
                     Notify.error(translate('action.deleteTag.error', 'Error while trying to delete the tag'), message);
                 });
         } else if (selectedAssetCollection) {
-            // TODO: Use custom modal
-            const confirm = window.confirm(
-                translate(
-                    'action.deleteAssetCollection.confirm',
-                    'Do you really want to delete the asset collection ' + selectedAssetCollection.title,
-                    [selectedAssetCollection.title]
-                )
-            );
-            if (!confirm) return;
+            const canDeleteAssetCollection = await approvalAttainmentStrategy.obtainApprovalToDeleteAssetCollection({
+                assetCollection: selectedAssetCollection,
+            });
+            if (!canDeleteAssetCollection) return;
+
             deleteAssetCollection(selectedAssetCollection.id)
                 .then(() => {
                     Notify.ok(
@@ -67,8 +66,9 @@ const DeleteButton: React.FC = () => {
         selectedAssetCollection,
         translate,
         deleteTag,
-        setSelectedAssetCollectionAndTag,
         Notify,
+        setSelectedAssetCollectionAndTag,
+        approvalAttainmentStrategy,
         deleteAssetCollection,
     ]);
 

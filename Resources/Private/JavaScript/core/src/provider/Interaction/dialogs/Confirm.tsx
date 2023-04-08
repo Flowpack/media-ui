@@ -37,7 +37,6 @@ const Confirm: React.FC<ConfirmProps> = ({ title, message, buttonLabel, onConfir
                     {translate('general.cancel', 'Cancel')}
                 </Button>,
                 <Button key="confirm" style="error" hoverStyle="error" onClick={handleConfirm}>
-                    <Icon icon="ban" className={classes.buttonIcon} />
                     {buttonLabel}
                 </Button>,
             ]}

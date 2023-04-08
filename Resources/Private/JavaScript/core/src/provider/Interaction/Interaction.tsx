@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 import { Confirm } from './dialogs';
 
@@ -7,15 +7,15 @@ interface InteractionContextValues {
     setElement: (element: null | React.ReactElement) => void;
 }
 
-const InteractionContext = React.createContext<InteractionContextValues>({} as InteractionContextValues);
+const InteractionContext = createContext<InteractionContextValues>({} as InteractionContextValues);
 
 interface InteractionProviderProps {
     children: React.ReactElement;
 }
 
 export const InteractionProvider: React.FC<InteractionProviderProps> = ({ children }: InteractionProviderProps) => {
-    const [element, setElementWithoutCheck] = React.useState<null | React.ReactElement>(null);
-    const setElement = React.useCallback(
+    const [element, setElementWithoutCheck] = useState<null | React.ReactElement>(null);
+    const setElement = useCallback(
         (newElement: React.ReactElement) => {
             if (element === null) {
                 setElementWithoutCheck(newElement);
@@ -30,15 +30,15 @@ export const InteractionProvider: React.FC<InteractionProviderProps> = ({ childr
 };
 
 export const InteractionDialogRenderer: React.FC = () => {
-    const { element } = React.useContext(InteractionContext);
+    const { element } = useContext(InteractionContext);
     return element;
 };
 
 export type Interaction = ReturnType<typeof useInteraction>;
 
 export const useInteraction = () => {
-    const { setElement } = React.useContext(InteractionContext);
-    const confirm = React.useCallback(
+    const { setElement } = useContext(InteractionContext);
+    const confirm = useCallback(
         async (options: { title: string; message: string; buttonLabel: string }) => {
             try {
                 return await new Promise<boolean>((resolve) => {
@@ -59,5 +59,5 @@ export const useInteraction = () => {
         [setElement]
     );
 
-    return React.useMemo(() => ({ confirm }), [confirm]);
+    return useMemo(() => ({ confirm }), [confirm]);
 };

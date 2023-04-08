@@ -1,11 +1,10 @@
-import * as React from 'react';
-import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useApolloClient, gql } from '@apollo/client';
 import { useSetRecoilState } from 'recoil';
 import { isMatch } from 'matcher';
 
 import { Asset, FeatureFlags, SelectionConstraints } from '../interfaces';
-import { useDeleteAsset, useImportAsset } from '../hooks';
+import { useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
 import { useIntl } from './Intl';
 import { useInteraction } from './Interaction';
@@ -64,7 +63,6 @@ export function MediaUiProvider({
     const Notify = useNotify();
     const Interaction = useInteraction();
     const client = useApolloClient();
-    const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
     const setConstraints = useSetRecoilState(constraintsState);
     const setSelectedMediaType = useSetRecoilState(selectedMediaTypeState);
@@ -87,32 +85,6 @@ export function MediaUiProvider({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const handleDeleteAsset = useCallback(
-        async (asset: Asset): Promise<boolean> => {
-            const canDeleteAsset = await approvalAttainmentStrategy.obtainApprovalToDeleteAsset({
-                asset,
-            });
-
-            if (canDeleteAsset) {
-                try {
-                    await deleteAsset({ assetId: asset.id, assetSourceId: asset.assetSource.id });
-
-                    Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
-
-                    return true;
-                } catch ({ message }) {
-                    Notify.error(
-                        translate('action.deleteAsset.error', 'Error while trying to delete the asset'),
-                        message
-                    );
-                }
-            }
-
-            return false;
-        },
-        [Notify, translate, deleteAsset, approvalAttainmentStrategy]
-    );
 
     // TODO: This can properly be optimised by turning it into a recoil readonly selector family
     const isAssetSelectable = useCallback(
@@ -184,7 +156,6 @@ export function MediaUiProvider({
             value={{
                 containerRef,
                 dummyImage,
-                handleDeleteAsset,
                 handleSelectAsset,
                 selectionMode,
                 isInNodeCreationDialog,
