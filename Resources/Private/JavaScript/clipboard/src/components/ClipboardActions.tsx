@@ -47,7 +47,7 @@ const ClipboardActions: React.FC = () => {
                 icon="trash"
                 size="regular"
                 style="transparent"
-                hoverStyle="warn"
+                hoverStyle="danger"
                 onClick={onDeleteClipboard}
             />
             <IconButton

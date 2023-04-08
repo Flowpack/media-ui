@@ -8,6 +8,7 @@ const ASSETS = gql`
         $assetSourceId: AssetSourceId
         $assetCollectionId: AssetCollectionId
         $mediaType: MediaType
+        $assetType: AssetType
         $tagId: TagId
         $limit: Int
         $offset: Int
@@ -21,6 +22,7 @@ const ASSETS = gql`
             assetSourceId: $assetSourceId
             assetCollectionId: $assetCollectionId
             mediaType: $mediaType
+            assetType: $assetType
             tagId: $tagId
             limit: $limit
             offset: $offset

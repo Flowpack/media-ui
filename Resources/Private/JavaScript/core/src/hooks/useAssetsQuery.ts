@@ -15,6 +15,7 @@ import {
     initialLoadCompleteState,
     loadingState,
     searchTermState,
+    selectedAssetTypeState,
     selectedMediaTypeState,
     selectedSortOrderState,
 } from '../state';
@@ -32,7 +33,8 @@ interface AssetsQueryVariables {
     searchTerm: string;
     assetSourceId: string;
     assetCollectionId: string;
-    mediaType: string;
+    mediaType: MediaType | '';
+    assetType: AssetType | '';
     tagId: string;
     limit: number;
     offset: number;
@@ -49,6 +51,7 @@ const useAssetsQuery = () => {
     const assetSourceId = useRecoilValue(selectedAssetSourceState);
     const selectedTagId = useRecoilValue(selectedTagIdState);
     const mediaType = useRecoilValue(selectedMediaTypeState);
+    const assetType = useRecoilValue(selectedAssetTypeState);
     const sortOrderState = useRecoilValue(selectedSortOrderState);
     const currentPage = useRecoilValue(currentPageState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
@@ -63,6 +66,7 @@ const useAssetsQuery = () => {
             searchTerm: searchTerm.toString(),
             assetSourceId,
             assetCollectionId,
+            assetType,
             mediaType,
             tagId: selectedTagId,
             limit: assetsPerPage,
@@ -79,6 +83,7 @@ const useAssetsQuery = () => {
                     searchTerm: searchTerm.toString(),
                     assetSourceId,
                     assetCollectionId,
+                    assetType,
                     mediaType,
                     tagId: selectedTagId,
                     limit: assetsPerPage,

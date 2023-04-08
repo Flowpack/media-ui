@@ -39,7 +39,7 @@ interface MediaDetailsScreenProps {
         queryAssetUsage: boolean;
     };
     neos: Record<string, unknown>;
-    type: AssetMediaType | 'images'; // The image editor sets the type to 'images'
+    type: AssetType | 'images'; // The image editor sets the type to 'images'
     onComplete: (localAssetIdentifier: string) => void;
     isLeftSideBarHidden: boolean;
     isNodeCreationDialogOpen: boolean;

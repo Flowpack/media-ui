@@ -8,7 +8,7 @@ import { useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
 import { useIntl } from './Intl';
 import { useInteraction } from './Interaction';
-import { constraintsState, featureFlagsState, selectedMediaTypeState } from '../state';
+import { constraintsState, featureFlagsState, selectedAssetTypeState, selectedMediaTypeState } from '../state';
 import { ASSET_FRAGMENT } from '../fragments/asset';
 import {
     ApprovalAttainmentStrategy,
@@ -26,19 +26,19 @@ interface MediaUiProviderProps {
     onAssetSelection?: (localAssetIdentifier: string) => void;
     featureFlags: FeatureFlags;
     constraints?: SelectionConstraints;
-    assetType?: AssetMediaType;
+    assetType?: AssetType;
     approvalAttainmentStrategyFactory?: ApprovalAttainmentStrategyFactory;
 }
 
 interface MediaUiProviderValues {
     containerRef: React.RefObject<HTMLDivElement>;
     dummyImage: string;
-    handleDeleteAsset: (asset: Asset) => Promise<boolean>;
     handleSelectAsset: (assetIdentity: AssetIdentity) => void;
+    // TODO: Extract static state values (selectionMode, isIn*) into readonly recoil atom or similar
     selectionMode: boolean;
     isInNodeCreationDialog: boolean;
     isInMediaDetailsScreen: boolean;
-    assetType: AssetMediaType;
+    assetType: AssetType;
     isAssetSelectable: (asset: Asset) => boolean;
     approvalAttainmentStrategy: ApprovalAttainmentStrategy;
 }
@@ -65,6 +65,7 @@ export function MediaUiProvider({
     const client = useApolloClient();
     const { importAsset } = useImportAsset();
     const setConstraints = useSetRecoilState(constraintsState);
+    const setSelectedAssetType = useSetRecoilState(selectedAssetTypeState);
     const setSelectedMediaType = useSetRecoilState(selectedMediaTypeState);
     const setFeatureFlags = useSetRecoilState(featureFlagsState);
     const approvalAttainmentStrategy = useMemo(
@@ -80,8 +81,12 @@ export function MediaUiProvider({
     useEffect(() => {
         setConstraints(constraints);
         setFeatureFlags(featureFlags);
-        if (assetType !== 'all') {
-            setSelectedMediaType(assetType);
+        // If only one media type is allowed by the constraints, preselect the filter
+        if (constraints.mediaTypes?.length === 1 && constraints.mediaTypes[0].startsWith('image')) {
+            setSelectedAssetType('image');
+            setSelectedMediaType(constraints.mediaTypes[0]);
+        } else if (assetType !== 'all') {
+            setSelectedAssetType(assetType);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -104,7 +109,7 @@ export function MediaUiProvider({
         [constraints]
     );
 
-    // Handle selection mode for the secondary Neos UI inspector
+    // TODO: Move into select asset hook, as it's the only place using this method
     const handleSelectAsset = useCallback(
         (assetIdentity: AssetIdentity) => {
             if (!onAssetSelection || !assetIdentity) {

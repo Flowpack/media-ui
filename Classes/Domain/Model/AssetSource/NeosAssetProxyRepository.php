@@ -32,6 +32,7 @@ use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
 use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsSortingInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
+use Neos\Media\Domain\Model\ImageVariant;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\AudioRepository;
@@ -74,6 +75,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
     private $activeAssetCollection;
 
     private string $assetTypeFilter = 'All';
+    private string $mediaTypeFilter = '';
 
     private array $assetRepositoryClassNames = [
         'All' => AssetRepository::class,
@@ -115,6 +117,11 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
         $this->initializeObject();
     }
 
+    public function filterByMediaType(string $mediaType): void
+    {
+        $this->mediaTypeFilter = $mediaType;
+    }
+
     /**
      * NOTE: This needs to be refactored to use an asset collection identifier instead of Media's domain model before
      *       it can become a public API for other asset sources.
@@ -122,6 +129,19 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
     public function filterByCollection(AssetCollection $assetCollection = null): void
     {
         $this->activeAssetCollection = $assetCollection;
+    }
+
+    private function filterQuery(QueryInterface $query, bool $filterOtherCollections = false): QueryInterface
+    {
+        $query = $this->filterOutImportedAssetsFromOtherAssetSources($query);
+        $query = $this->filterOutImageVariants($query);
+        if ($filterOtherCollections) {
+            $query = $this->filterOutAssetsFromOtherAssetCollections($query);
+        }
+        if ($this->mediaTypeFilter) {
+            $query = $this->filterOutAssetsWithOtherMediaTypes($query);
+        }
+        return $query;
     }
 
     /**
@@ -138,73 +158,55 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
 
     public function findAll(): AssetProxyQueryResultInterface
     {
-        $queryResult = $this->assetRepository->findAll($this->activeAssetCollection);
-        $query = $this->filterOutImportedAssetsFromOtherAssetSources($queryResult->getQuery());
-        $query = $this->filterOutImageVariants($query);
+        $query = $this->filterQuery($this->assetRepository->findAll($this->activeAssetCollection)->getQuery());
         return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
     }
 
     public function findBySearchTerm(string $searchTerm): AssetProxyQueryResultInterface
     {
-        $queryResult = $this->assetRepository->findBySearchTermOrTags($searchTerm, [], $this->activeAssetCollection);
-        $query = $this->filterOutImportedAssetsFromOtherAssetSources($queryResult->getQuery());
-        $query = $this->filterOutImageVariants($query);
+        $query = $this->filterQuery($this->assetRepository->findBySearchTermOrTags($searchTerm, [],
+            $this->activeAssetCollection)->getQuery());
         return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
     }
 
     public function findByTag(Tag $tag): AssetProxyQueryResultInterface
     {
-        $queryResult = $this->assetRepository->findByTag($tag, $this->activeAssetCollection);
-        $query = $this->filterOutImportedAssetsFromOtherAssetSources($queryResult->getQuery());
-        $query = $this->filterOutImageVariants($query);
+        $query = $this->filterQuery($this->assetRepository->findByTag($tag, $this->activeAssetCollection)->getQuery());
         return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
     }
 
     public function findUntagged(): AssetProxyQueryResultInterface
     {
-        $queryResult = $this->assetRepository->findUntagged($this->activeAssetCollection);
-        $query = $this->filterOutImportedAssetsFromOtherAssetSources($queryResult->getQuery());
-        $query = $this->filterOutImageVariants($query);
+        $query = $this->filterQuery($this->assetRepository->findUntagged($this->activeAssetCollection)->getQuery());
         return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
     }
 
     public function findUnassigned(): AssetProxyQueryResultInterface
     {
-        $query = $this->assetRepository->createQuery();
-        $query = $this->filterOutImportedAssetsFromOtherAssetSources($query);
+        $query = $this->filterQuery($this->assetRepository->createQuery());
         $query = $this->filterOutAssetsWithAssetCollections($query);
-        $query = $this->filterOutImageVariants($query);
         return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
     }
 
     public function countAll(): int
     {
-        $query = $this->filterOutImportedAssetsFromOtherAssetSources($this->assetRepository->createQuery());
-        $query = $this->filterOutAssetsFromOtherAssetCollections($query);
-        $query = $this->filterOutImageVariants($query);
-        return $query->count();
+        return $this->filterQuery($this->assetRepository->createQuery(), true)->count();
     }
 
     public function countUntagged(): int
     {
-        $query = $this->assetRepository->createQuery();
+        $query = $this->filterQuery($this->assetRepository->createQuery(), true);
         try {
             $query->matching($query->isEmpty('tags'));
         } catch (InvalidQueryException $e) {
         }
-
-        $query = $this->filterOutImportedAssetsFromOtherAssetSources($query);
-        $query = $this->filterOutAssetsFromOtherAssetCollections($query);
-        $query = $this->filterOutImageVariants($query);
         return $query->count();
     }
 
     public function countByTag(Tag $tag): int
     {
-        $queryResult = $this->assetRepository->findByTag($tag, $this->activeAssetCollection);
-        $query = $this->filterOutImportedAssetsFromOtherAssetSources($queryResult->getQuery());
-        $query = $this->filterOutImageVariants($query);
-        return $query->count();
+        return $this->filterQuery($this->assetRepository->findByTag($tag, $this->activeAssetCollection)->getQuery(),
+            true)->count();
     }
 
     private function filterOutImportedAssetsFromOtherAssetSources(QueryInterface $query): QueryInterface
@@ -224,8 +226,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
         if (!method_exists($query, 'getQueryBuilder')) {
             return $query;
         }
-        $queryBuilder = $query->getQueryBuilder();
-        $queryBuilder->andWhere('e NOT INSTANCE OF Neos\Media\Domain\Model\ImageVariant');
+        $query->getQueryBuilder()->andWhere('e NOT INSTANCE OF ' . ImageVariant::class);
         return $query;
     }
 
@@ -236,7 +237,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
             $query->matching(
                 $query->logicalAnd([
                     $constraints,
-                    $query->contains('assetCollections', $this->activeAssetCollection)
+                    $query->contains('assetCollections', $this->activeAssetCollection),
                 ])
             );
         } catch (InvalidQueryException $e) {
@@ -251,11 +252,22 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
             $query->matching(
                 $query->logicalAnd([
                     $constraints,
-                    $query->isEmpty('assetCollections')
+                    $query->isEmpty('assetCollections'),
                 ])
             );
         } catch (InvalidQueryException $e) {
         }
         return $query;
+    }
+
+    private function filterOutAssetsWithOtherMediaTypes(QueryInterface $query)
+    {
+        $constraints = $query->getConstraint();
+        return $query->matching(
+            $query->logicalAnd([
+                $constraints,
+                $query->equals('resource.mediaType', $this->mediaTypeFilter),
+            ])
+        );
     }
 }

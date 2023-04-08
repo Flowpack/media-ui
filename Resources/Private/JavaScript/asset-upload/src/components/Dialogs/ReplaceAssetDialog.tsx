@@ -37,7 +37,7 @@ const ReplaceAssetDialog: React.FC = () => {
         const completeMediaType = selectedAsset?.file.mediaType;
         const regex = /^(?<type>(?:[.!#%&'`^~$*+\-|\w]+))\//;
         const mainType = completeMediaType.match(regex)?.groups?.type;
-        return mainType ? mainType + '/*' : '';
+        return mainType ? (`${mainType}/*` as MediaType) : '';
     }, [selectedAsset]);
 
     const handleUpload = useCallback(async () => {

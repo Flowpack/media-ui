@@ -5,7 +5,7 @@ type AssetFileType = 'AssetFile';
 export default interface AssetFile extends GraphQlEntity {
     __typename: AssetFileType;
     extension: string;
-    mediaType: string;
+    mediaType: MediaType;
     typeIcon: Image;
     size?: number;
     url: string;

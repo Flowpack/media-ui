@@ -11,6 +11,7 @@ type Query {
         assetSourceId: AssetSourceId
         tagId: TagId
         assetCollectionId: AssetCollectionId
+        assetType: AssetType
         mediaType: MediaType
         searchTerm: String
         limit: Int
@@ -26,6 +27,7 @@ type Query {
         assetSourceId: AssetSourceId
         tagId: TagId
         assetCollectionId: AssetCollectionId
+        assetType: AssetType
         mediaType: MediaType
         searchTerm: String
     ): Int!
@@ -453,6 +455,11 @@ scalar UsageDetailsHeaders
 IANA media type of an Asset (e.g. "image/jpeg")
 """
 scalar MediaType
+
+"""
+Neos type of an Asset, can be "All", "Image", "Document", "Video" or "Audio" (see `Neos\Media\Domain\Model\AssetSource\AssetTypeFilter`)
+"""
+scalar AssetType
 
 """
 A File extension (e.g. "pdf")

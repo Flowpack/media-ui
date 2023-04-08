@@ -6,6 +6,7 @@ const ASSET_COUNT = gql`
         $assetSourceId: AssetSourceId
         $assetCollectionId: AssetCollectionId
         $mediaType: MediaType
+        $assetType: AssetType
         $tagId: TagId
     ) {
         assetCount(
@@ -13,6 +14,7 @@ const ASSET_COUNT = gql`
             assetSourceId: $assetSourceId
             assetCollectionId: $assetCollectionId
             mediaType: $mediaType
+            assetType: $assetType
             tagId: $tagId
         )
     }

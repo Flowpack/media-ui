@@ -1,6 +1,4 @@
-import SearchBox from './SearchBox';
-import TopBar from './TopBar';
-import TypeFilter from './TypeFilter';
-import ViewModeSelector from './ViewModeSelector';
-
-export { SearchBox, TopBar, TypeFilter, ViewModeSelector };
+export { default as SearchBox } from './SearchBox';
+export { default as TopBar } from './TopBar';
+export { default as AssetTypeFilter } from './AssetTypeFilter';
+export { default as ViewModeSelector } from './ViewModeSelector';

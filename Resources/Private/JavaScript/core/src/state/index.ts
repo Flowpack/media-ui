@@ -10,4 +10,5 @@ export { selectedAssetCollectionAndTagState } from './selectedAssetCollectionAnd
 export { selectedAssetIdState } from './selectedAssetIdState';
 export { selectedInspectorViewState } from './selectedInspectorViewState';
 export { selectedMediaTypeState } from './selectedMediaTypeState';
+export { selectedAssetTypeState } from './selectedAssetTypeState';
 export { selectedSortOrderState } from './selectedSortOrderState';

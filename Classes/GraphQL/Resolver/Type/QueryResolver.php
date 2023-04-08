@@ -136,6 +136,7 @@ class QueryResolver implements ResolverInterface
             'tagId' => $tagId,
             'assetCollectionId' => $assetCollectionId,
             'mediaType' => $mediaType,
+            'assetType' => $assetType,
             'searchTerm' => $searchTerm,
             'sortBy' => $sortBy,
             'sortDirection' => $sortDirection
@@ -144,6 +145,7 @@ class QueryResolver implements ResolverInterface
             'tagId' => null,
             'assetCollectionId' => null,
             'mediaType' => null,
+            'assetType' => null,
             'searchTerm' => null,
             'sortBy' => null,
             'sortDirection' => null,
@@ -161,12 +163,20 @@ class QueryResolver implements ResolverInterface
             $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
         }
 
-        if (is_string($mediaType) && !empty($mediaType)) {
+        if (is_string($assetType) && !empty($assetType)) {
             try {
-                $assetTypeFilter = new AssetTypeFilter(ucfirst($mediaType));
+                $assetTypeFilter = new AssetTypeFilter(ucfirst($assetType));
                 $assetProxyRepository->filterByType($assetTypeFilter);
             } catch (\InvalidArgumentException $e) {
-                $this->systemLogger->warning('Ignoring invalid mediatype when filtering assets ' . $mediaType);
+                $this->systemLogger->warning('Ignoring invalid asset type when filtering assets ' . $assetType);
+            }
+        }
+
+        if (is_string($mediaType) && !empty($mediaType)) {
+            try {
+                $assetProxyRepository->filterByMediaType($mediaType);
+            } catch (\InvalidArgumentException $e) {
+                $this->systemLogger->warning('Ignoring invalid media-type when filtering assets ' . $mediaType);
             }
         }
 

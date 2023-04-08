@@ -15,7 +15,7 @@ interface UploadSectionProps {
     loading: boolean;
     onSetFiles: (files: UploadedFile[]) => void;
     maxFiles?: number;
-    acceptedFileTypes?: string | string[];
+    acceptedFileTypes?: MediaType | MediaType[] | '';
 }
 
 const UploadSection: React.FC<UploadSectionProps> = ({
