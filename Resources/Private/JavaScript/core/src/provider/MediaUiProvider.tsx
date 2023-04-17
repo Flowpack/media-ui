@@ -34,7 +34,7 @@ interface MediaUiProviderValues {
     containerRef: React.RefObject<HTMLDivElement>;
     dummyImage: string;
     handleSelectAsset: (assetIdentity: AssetIdentity) => void;
-    // TODO: Extract static state values (selectionMode, isIn*) into readonly recoil atom or similar
+    // TODO: Turn view variants into a single view Enum
     selectionMode: boolean;
     isInNodeCreationDialog: boolean;
     isInMediaDetailsScreen: boolean;
