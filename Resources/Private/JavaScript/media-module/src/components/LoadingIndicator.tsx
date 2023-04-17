@@ -5,14 +5,10 @@ import { loadingState } from '@media-ui/core/src/state';
 
 import classes from './LoadingIndicator.module.css';
 
-export default function LoadingIndicator() {
+const LoadingIndicator: React.FC = () => {
     const isLoading = useRecoilValue(loadingState);
 
-    return isLoading ? (
-        <div className={classes.container}>
-            <div className={classes.indicator}>
-                <div className={classes.bar} />
-            </div>
-        </div>
-    ) : null;
-}
+    return <div className={classes.indicator} data-animated={isLoading} role="progressbar" aria-hidden={true}></div>;
+};
+
+export default LoadingIndicator;
