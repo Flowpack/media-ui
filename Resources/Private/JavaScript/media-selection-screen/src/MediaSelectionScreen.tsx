@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { createRef } from 'react';
+import React, { createRef } from 'react';
 import { connect } from 'react-redux';
 import { RecoilRoot } from 'recoil';
 import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
+import cx from 'classnames';
 
 // Neos dependencies are provided by the UI
 // @ts-ignore
@@ -27,8 +27,10 @@ import { ApolloErrorHandler, CacheFactory } from '@media-ui/media-module/src/cor
 import App from '@media-ui/media-module/src/components/App';
 
 // GraphQL type definitions
-import TYPE_DEFS_CORE from '@media-ui/core/schema.graphql';
-import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql';
+import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
+
+import classes from './MediaSelectionScreen.module.css';
 
 let apolloClient = null;
 
@@ -142,7 +144,11 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         const isInNodeCreationDialog = this.state.initialNodeCreationDialogOpenState;
 
         return (
-            <div style={{ transform: 'translateZ(0)', height: '100%', padding: isInNodeCreationDialog ? 0 : '1rem' }}>
+            <div
+                className={cx(classes.mediaSelectionScreen, {
+                    [classes.isInNodeCreationDialog]: isInNodeCreationDialog,
+                })}
+            >
                 <IntlProvider translate={this.translate}>
                     <NotifyProvider notificationApi={Notification}>
                         <InteractionProvider>
@@ -151,7 +157,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                                     <MediaUiProvider
                                         dummyImage={dummyImage}
                                         onAssetSelection={onComplete}
-                                        selectionMode={true}
+                                        selectionMode
                                         isInNodeCreationDialog={isInNodeCreationDialog}
                                         containerRef={containerRef}
                                         featureFlags={featureFlags}

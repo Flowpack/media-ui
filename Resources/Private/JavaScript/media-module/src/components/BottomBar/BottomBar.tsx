@@ -15,10 +15,10 @@ const BottomBar: React.FC = () => {
 
     return (
         <div
-            className={cx(
-                classes.bottomBar,
-                (isInNodeCreationDialog || selectionMode) && classes.bottomBarSelectionMode
-            )}
+            className={cx(classes.bottomBar, {
+                [classes.selectionMode]: isInNodeCreationDialog || selectionMode,
+                [classes.isInNodeCreationDialog]: isInNodeCreationDialog,
+            })}
         >
             {components.map((Component, index) => (
                 <Component key={index} />

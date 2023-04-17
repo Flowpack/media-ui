@@ -22,6 +22,7 @@ import {
 
 import Preview from './Preview';
 
+import theme from '@media-ui/core/src/Theme.module.css';
 import classes from './Details.module.css';
 
 interface DetailsProps {
@@ -44,7 +45,7 @@ const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
     }, [assetIdentity, selectAsset]);
 
     return (
-        <div className={cx(classes.container, loading && classes.loading)} ref={containerRef}>
+        <div className={cx(classes.container, theme.mediaModuleTheme, loading && classes.loading)} ref={containerRef}>
             <LoadingIndicator />
 
             <div className={cx(classes.main, loading && classes.loading)}>

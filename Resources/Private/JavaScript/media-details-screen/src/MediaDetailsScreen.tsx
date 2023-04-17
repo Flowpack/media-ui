@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { createRef } from 'react';
+import React, { createRef } from 'react';
 import { connect } from 'react-redux';
 import { RecoilRoot } from 'recoil';
 import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
@@ -30,6 +29,8 @@ import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage
 
 // GraphQL local resolvers
 import { MediaDetailsScreenApprovalAttainmentStrategyFactory } from './strategy';
+
+import classes from './MediaDetailsScreen.module.css';
 
 let apolloClient = null;
 
@@ -116,7 +117,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
         };
 
         return (
-            <div style={{ transform: 'translateZ(0)', height: '100%', padding: '1rem' }}>
+            <div className={classes.mediaDetailsScreen}>
                 <IntlProvider translate={this.translate}>
                     <NotifyProvider notificationApi={Notification}>
                         <InteractionProvider>
@@ -125,7 +126,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                                     <MediaUiProvider
                                         dummyImage={dummyImage}
                                         onAssetSelection={onComplete}
-                                        selectionMode={true}
+                                        selectionMode
                                         containerRef={containerRef}
                                         featureFlags={featureFlags}
                                         constraints={constraints || {}}
@@ -133,7 +134,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                                         approvalAttainmentStrategyFactory={
                                             MediaDetailsScreenApprovalAttainmentStrategyFactory
                                         }
-                                        isInMediaDetailsScreen={true}
+                                        isInMediaDetailsScreen
                                     >
                                         <Details
                                             buildLinkToMediaUi={buildLinkToMediaUi}

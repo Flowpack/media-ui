@@ -57,13 +57,10 @@ const App = () => {
 
     return (
         <div
-            className={cx(
-                classes.container,
-                selectionMode && classes.containerSelectionMode,
-                isInNodeCreationDialog && classes.containerIsInNodeCreationDialog,
-                classes.mediaModuleApp,
-                theme.mediaModuleTheme
-            )}
+            className={cx(classes.container, classes.mediaModuleApp, theme.mediaModuleTheme, {
+                [classes.selectionMode]: selectionMode,
+                [classes.fullHeight]: isInNodeCreationDialog,
+            })}
             ref={containerRef}
         >
             <LoadingIndicator />

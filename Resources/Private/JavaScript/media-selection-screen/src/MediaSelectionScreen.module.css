@@ -1,0 +1,9 @@
+.mediaSelectionScreen {
+    transform: translateZ(0);
+    height: 100%;
+    padding: 1rem;
+}
+
+.isInNodeCreationDialog {
+    padding: 0;
+}

@@ -21,13 +21,13 @@
     overflow: hidden;
 }
 
-.container--isInNodeCreationDialog {
+.fullHeight {
     --grid-height: calc(100% - 61px - 8px); /* Remove bottom bar and add padding */
 }
 
-.container--selectionMode {
-    --grid-columns: var(--theme-size-sidebarWidth) +  1fr;
-    --grid-areas: "top" "main";
+.selectionMode {
+    --grid-columns: var(--theme-size-sidebarWidth) 1fr;
+    --grid-areas: "left top" "left main";
 }
 
 .gridColumn {
