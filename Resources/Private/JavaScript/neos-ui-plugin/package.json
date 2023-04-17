@@ -13,7 +13,8 @@
   "dependencies": {
     "@media-ui/media-details-screen": "workspace:*",
     "@media-ui/media-selection-screen": "workspace:*",
-    "@neos-project/neos-ui-extensibility": "^8.3.0-beta3"
+    "@neos-project/neos-ui-extensibility": "^8.3.0-beta3",
+    "@neos-project/neos-ui-extensibility-webpack-adapter": "^8.3.0-beta3"
   },
   "devDependencies": {
     "webpack": "^4.46.0",

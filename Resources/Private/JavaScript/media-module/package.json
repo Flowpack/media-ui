@@ -52,11 +52,11 @@
   },
   "devDependencies": {
     "@types/apollo-upload-client": "^14.1.0",
-    "@types/react": "^17.0.55",
+    "@types/react": "^17.0.58",
     "@types/react-dom": "^17.0.19",
     "@types/react-dropzone": "^5.1.0",
     "apollo-server-express": "^2.26.1",
-    "node-sass": "^7.0.3",
+    "node-sass": "^8.0.0",
     "parcel": "^2.8.3"
   }
 }
