@@ -5,16 +5,14 @@ export enum UPLOAD_TYPE {
     update = 'update',
 }
 
-export interface UploadDialogVisibleState {
+export interface UploadDialogState {
     visible: boolean;
     uploadType: UPLOAD_TYPE;
 }
-const uploadDialogVisibleState = atom<UploadDialogVisibleState>({
+export const uploadDialogState = atom<UploadDialogState>({
     key: 'uploadDialogState',
     default: {
         visible: false,
         uploadType: UPLOAD_TYPE.new,
     },
 });
-
-export default uploadDialogVisibleState;

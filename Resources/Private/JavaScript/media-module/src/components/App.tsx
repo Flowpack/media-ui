@@ -9,7 +9,7 @@ import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature
 import { ClipboardWatcher } from '@media-ui/feature-clipboard';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
 import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets';
-import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/state';
+import { uploadDialogState } from '@media-ui/feature-asset-upload/src/state';
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
 import { AssetPreview } from '@media-ui/feature-asset-preview';
 import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
@@ -34,8 +34,8 @@ import './Global.module.css';
 
 const App = () => {
     const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
-    const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
-    const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
+    const uploadDialog = useRecoilValue(uploadDialogState);
+    const createTagDialog = useRecoilValue(createTagDialogState);
     const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogVisibleState);
     const showEditAssetDialog = useRecoilValue(editAssetDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
@@ -93,9 +93,9 @@ const App = () => {
 
             <AssetPreview />
             {showAssetUsagesModal && <AssetUsagesModal />}
-            {showUploadDialog && <UploadDialog />}
+            {uploadDialog.visible && <UploadDialog />}
             {showEditAssetDialog && <EditAssetDialog />}
-            {showCreateTagDialog && <CreateTagDialog />}
+            {createTagDialog.visible && <CreateTagDialog />}
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
             {showSimilarAssetsModal && <SimilarAssetsModal />}
 

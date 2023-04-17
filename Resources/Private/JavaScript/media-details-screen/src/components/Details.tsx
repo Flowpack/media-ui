@@ -9,7 +9,7 @@ import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature
 import { ClipboardWatcher } from '@media-ui/feature-clipboard';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
 import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets';
-import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/state';
+import { uploadDialogState } from '@media-ui/feature-asset-upload/src/state';
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
 import LoadingIndicator from '@media-ui/media-module/src/components/LoadingIndicator';
 import ErrorBoundary from '@media-ui/media-module/src/components/ErrorBoundary';
@@ -32,7 +32,7 @@ interface DetailsProps {
 
 const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
     const { containerRef } = useMediaUi();
-    const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
+    const { visible: showUploadDialog } = useRecoilValue(uploadDialogState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogVisibleState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
