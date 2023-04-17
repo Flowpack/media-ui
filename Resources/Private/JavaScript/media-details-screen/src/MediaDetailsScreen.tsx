@@ -36,15 +36,10 @@ let apolloClient = null;
 
 interface MediaDetailsScreenProps {
     i18nRegistry: I18nRegistry;
-    frontendConfiguration: {
-        queryAssetUsage: boolean;
-    };
+    frontendConfiguration: FeatureFlags;
     neos: Record<string, unknown>;
     type: AssetType | 'images'; // The image editor sets the type to 'images'
     onComplete: (localAssetIdentifier: string) => void;
-    isLeftSideBarHidden: boolean;
-    isNodeCreationDialogOpen: boolean;
-    toggleSidebar: () => void;
     addFlashMessage: (title: string, message: string, severity?: string, timeout?: number) => void;
     constraints?: SelectionConstraints;
     imageIdentity: string;
@@ -100,12 +95,10 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
     };
 
     render() {
-        const { addFlashMessage, onComplete, constraints, type } = this.props;
+        const { addFlashMessage, onComplete, constraints, type, imageIdentity, frontendConfiguration } = this.props;
         const client = this.getApolloClient();
         const { dummyImage, buildLinkToMediaUi } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
-
-        const featureFlags: FeatureFlags = this.props.frontendConfiguration as FeatureFlags;
 
         // The Neos.UI FlashMessages only support the levels 'success', 'error' and 'info'
         const Notification: Notify = {
@@ -128,7 +121,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                                         onAssetSelection={onComplete}
                                         selectionMode
                                         containerRef={containerRef}
-                                        featureFlags={featureFlags}
+                                        featureFlags={frontendConfiguration}
                                         constraints={constraints || {}}
                                         assetType={type === 'images' ? 'image' : type}
                                         approvalAttainmentStrategyFactory={
@@ -139,7 +132,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                                         <Details
                                             buildLinkToMediaUi={buildLinkToMediaUi}
                                             assetIdentity={{
-                                                assetId: this.props.imageIdentity,
+                                                assetId: imageIdentity,
                                                 assetSourceId: 'neos',
                                             }}
                                         />
@@ -154,19 +147,11 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
     }
 }
 
-const mapStateToProps = (state: any) => ({
-    isLeftSideBarHidden: state.ui.leftSideBar.isHidden,
-    isNodeCreationDialogOpen: state.ui.nodeCreationDialog.isOpen,
-});
-
-const mapDispatchToProps = () => ({
-    addFlashMessage: actions.UI.FlashMessages.add,
-    toggleSidebar: actions.UI.LeftSideBar.toggle,
-});
-
 const mapGlobalRegistryToProps = neos((globalRegistry: any) => ({
     i18nRegistry: globalRegistry.get('i18n'),
     frontendConfiguration: globalRegistry.get('frontendConfiguration').get('Flowpack.Media.Ui'),
 }));
 
-export default connect(mapStateToProps, mapDispatchToProps)(mapGlobalRegistryToProps(MediaDetailsScreen));
+export default connect(() => ({}), {
+    addFlashMessage: actions.UI.FlashMessages.add,
+})(mapGlobalRegistryToProps(MediaDetailsScreen));

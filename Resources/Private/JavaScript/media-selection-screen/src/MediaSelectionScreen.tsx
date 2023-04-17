@@ -181,14 +181,12 @@ const mapStateToProps = (state: any) => ({
     isNodeCreationDialogOpen: state.ui.nodeCreationDialog.isOpen,
 });
 
-const mapDispatchToProps = () => ({
-    addFlashMessage: actions.UI.FlashMessages.add,
-    toggleSidebar: actions.UI.LeftSideBar.toggle,
-});
-
 const mapGlobalRegistryToProps = neos((globalRegistry: any) => ({
     i18nRegistry: globalRegistry.get('i18n'),
     frontendConfiguration: globalRegistry.get('frontendConfiguration').get('Flowpack.Media.Ui'),
 }));
 
-export default connect(mapStateToProps, mapDispatchToProps)(mapGlobalRegistryToProps(MediaSelectionScreen));
+export default connect(() => ({}), {
+    addFlashMessage: actions.UI.FlashMessages.add,
+    toggleSidebar: actions.UI.LeftSideBar.toggle,
+})(connect(mapStateToProps)(mapGlobalRegistryToProps(MediaSelectionScreen)));
