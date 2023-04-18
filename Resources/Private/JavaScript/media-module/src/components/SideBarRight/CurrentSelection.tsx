@@ -6,7 +6,11 @@ import { Headline } from '@neos-project/react-ui-components';
 import { useIntl } from '@media-ui/core';
 import { selectedAssetCollectionAndTagState, selectedInspectorViewState } from '@media-ui/core/src/state';
 import { IconLabel } from '@media-ui/core/src/components';
-import { useAssetCollectionsQuery, useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
+import {
+    collectionPath,
+    useAssetCollectionsQuery,
+    useSelectedAssetCollection,
+} from '@media-ui/feature-asset-collections';
 import { useSelectedTag } from '@media-ui/feature-asset-tags';
 
 import classes from './CurrentSelection.module.css';
@@ -22,22 +26,11 @@ const CurrentSelection = () => {
     const selection = useMemo(() => {
         let icon = 'question';
         let label: string = null;
-        const path: { title: string; id: string }[] = [];
+        let path: { title: string; id: string }[] = [];
 
         if (selectedInspectorView !== 'asset') {
             if (selectedAssetCollection) {
-                if (selectedInspectorView === 'tag') {
-                    path.push({ title: selectedAssetCollection.title, id: selectedAssetCollection.id });
-                }
-
-                // Build the absolute path from the selected collection to its root
-                let parentCollection = selectedAssetCollection;
-                while (parentCollection) {
-                    parentCollection = parentCollection.parent
-                        ? assetCollections.find(({ id }) => id === parentCollection.parent.id)
-                        : null;
-                    if (parentCollection) path.push({ title: parentCollection.title, id: parentCollection.id });
-                }
+                path = collectionPath(selectedAssetCollection, assetCollections);
             }
 
             if (selectedInspectorView === 'assetCollection') {
@@ -49,7 +42,7 @@ const CurrentSelection = () => {
             }
         }
 
-        return { icon, label, path: path.reverse() };
+        return { icon, label, path };
     }, [selectedTag, selectedAssetCollection, selectedInspectorView, assetCollections]);
 
     if (!selection.label || selectedInspectorView === 'asset') return null;

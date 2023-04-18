@@ -1,20 +1,36 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
+import {
+    Headline,
+    MultiSelectBox,
+    SelectBox,
+    SelectBox_Option_MultiLineWithThumbnail,
+} from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { Asset } from '@media-ui/core/src/interfaces';
 import { useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState } from '@media-ui/core/src/state';
-import { useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
+import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 
 const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
     return assetCollectionIds.join(',') === asset.collections.map((collection) => collection.id).join(',');
 };
 
-const CollectionSelectBox = () => {
+interface CollectionOption {
+    label: string;
+    id: string;
+    secondaryLabel?: string;
+    tertiaryLabel?: string;
+}
+
+const CollectionPreviewElement: React.FC<{ option: CollectionOption }> = ({ option }) => {
+    return <SelectBox_Option_MultiLineWithThumbnail {...option} />;
+};
+
+const CollectionSelectBox: React.FC = () => {
     const Notify = useNotify();
     const { translate } = useIntl();
     const {
@@ -25,12 +41,17 @@ const CollectionSelectBox = () => {
     const selectedAsset = useSelectedAsset();
     const { limitToSingleAssetCollectionPerAsset } = useRecoilValue(featureFlagsState);
 
-    // TODO: Add secondary and tertiary labels to the selectbox options
-    const selectBoxOptions = useMemo(
+    const selectBoxOptions: CollectionOption[] = useMemo(
         () =>
-            assetCollections.map(({ title, ...rest }) => ({
-                label: title,
-                ...rest,
+            assetCollections.map((collection) => ({
+                label: collection.title,
+                id: collection.id,
+                secondaryLabel: collection.parent
+                    ? '/' +
+                      collectionPath(collection, assetCollections)
+                          .map(({ title }) => title)
+                          .join('/')
+                    : '',
             })),
         [assetCollections]
     );
@@ -117,6 +138,7 @@ const CollectionSelectBox = () => {
                         options={selectBoxOptions}
                         noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
                         onValueChange={handleChange}
+                        ListPreviewElement={CollectionPreviewElement}
                     />
                 </>
             ) : (

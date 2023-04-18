@@ -30,3 +30,5 @@ export {
     assetCollectionTreeCollapsedState,
     assetCollectionTreeCollapsedItemState,
 } from './state/assetCollectionTreeCollapsedState';
+
+export { collectionPath } from './helpers/collectionPath';
