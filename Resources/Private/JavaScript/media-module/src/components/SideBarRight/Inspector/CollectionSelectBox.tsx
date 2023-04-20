@@ -15,19 +15,11 @@ import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState } from '@media-ui/core/src/state';
 import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 
+import * as classes from './CollectionSelectBox.module.css';
+import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
+
 const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
     return assetCollectionIds.join(',') === asset.collections.map((collection) => collection.id).join(',');
-};
-
-interface CollectionOption {
-    label: string;
-    id: string;
-    secondaryLabel?: string;
-    tertiaryLabel?: string;
-}
-
-const CollectionPreviewElement: React.FC<{ option: CollectionOption }> = ({ option }) => {
-    return <SelectBox_Option_MultiLineWithThumbnail {...option} />;
 };
 
 const CollectionSelectBox: React.FC = () => {
@@ -40,6 +32,7 @@ const CollectionSelectBox: React.FC = () => {
     const { setAssetCollections, loading } = useSetAssetCollections();
     const selectedAsset = useSelectedAsset();
     const { limitToSingleAssetCollectionPerAsset } = useRecoilValue(featureFlagsState);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const selectBoxOptions: CollectionOption[] = useMemo(
         () =>
@@ -54,6 +47,11 @@ const CollectionSelectBox: React.FC = () => {
                     : '',
             })),
         [assetCollections]
+    );
+
+    const filteredSelectBoxOptions: CollectionOption[] = useMemo(
+        () => selectBoxOptions.filter(({ label }) => label.toLowerCase().includes(searchTerm)),
+        [selectBoxOptions, searchTerm]
     );
 
     const [selectedAssetCollectionIds, setSelectedAssetCollectionIds] = useState<string[]>([]);
@@ -117,11 +115,14 @@ const CollectionSelectBox: React.FC = () => {
         ]
     );
 
+    const handleSearchTermChange = useCallback((searchTerm) => {
+        setSearchTerm(searchTerm.toLowerCase());
+    }, []);
+
     useEffect(syncSelectedAssetCollectionIds, [syncSelectedAssetCollectionIds]);
 
     if (!selectedAsset) return null;
 
-    // TODO: Show breadcrumb to each collection to make it obvious what will be selected via the multiline preview element
     return (
         <div className="collectionSelectBox">
             {limitToSingleAssetCollectionPerAsset ? (
@@ -130,15 +131,19 @@ const CollectionSelectBox: React.FC = () => {
                         <IconLabel icon="folder" label={translate('inspector.assetCollection', 'Collection')} />
                     </Headline>
                     <SelectBox
-                        className="collectionSelection"
+                        className={classes.collectionSelectBox}
                         disabled={loading || selectedAsset.assetSource.readOnly}
                         placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
                         value={selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
                         optionValueField="id"
-                        options={selectBoxOptions}
+                        options={filteredSelectBoxOptions}
                         noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
                         onValueChange={handleChange}
-                        ListPreviewElement={CollectionPreviewElement}
+                        onSearchTermChange={handleSearchTermChange}
+                        ListPreviewElement={AssetCollectionOptionPreviewElement}
+                        displaySearchBox
+                        allowEmpty
+                        threshold={0}
                     />
                 </>
             ) : (
@@ -147,14 +152,20 @@ const CollectionSelectBox: React.FC = () => {
                         <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Collections')} />
                     </Headline>
                     <MultiSelectBox
-                        className="collectionSelection"
+                        className={classes.collectionSelectBox}
                         disabled={loading || selectedAsset.assetSource.readOnly}
                         placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
                         values={selectedAssetCollectionIds}
                         optionValueField="id"
                         options={selectBoxOptions}
+                        searchOptions={filteredSelectBoxOptions}
                         noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
                         onValuesChange={handleChange}
+                        onSearchTermChange={handleSearchTermChange}
+                        ListPreviewElement={AssetCollectionOptionPreviewElement}
+                        displaySearchBox
+                        allowEmpty
+                        threshold={0}
                     />
                 </>
             )}

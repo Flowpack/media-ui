@@ -1,14 +1,19 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
 import {
+    collectionPath,
     useAssetCollectionsQuery,
     useSelectedAssetCollection,
     useUpdateAssetCollection,
 } from '@media-ui/feature-asset-collections';
+
+import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
+
+import * as classes from './ParentCollectionSelectBox.module.css';
 
 const ParentCollectionSelectBox = () => {
     const Notify = useNotify();
@@ -16,10 +21,26 @@ const ParentCollectionSelectBox = () => {
     const { assetCollections } = useAssetCollectionsQuery();
     const selectedAssetCollection = useSelectedAssetCollection();
     const { updateAssetCollection, loading } = useUpdateAssetCollection();
+    const [searchTerm, setSearchTerm] = useState('');
 
-    const assetCollectionsWithLabel = useMemo(
-        () => assetCollections.map(({ title, ...rest }) => ({ label: title, ...rest })),
+    const selectBoxOptions: CollectionOption[] = useMemo(
+        () =>
+            assetCollections.map((collection) => ({
+                label: collection.title,
+                id: collection.id,
+                secondaryLabel: collection.parent
+                    ? '/' +
+                      collectionPath(collection, assetCollections)
+                          .map(({ title }) => title)
+                          .join('/')
+                    : '',
+            })),
         [assetCollections]
+    );
+
+    const filteredSelectBoxOptions: CollectionOption[] = useMemo(
+        () => selectBoxOptions.filter(({ label }) => label.toLowerCase().includes(searchTerm)),
+        [selectBoxOptions, searchTerm]
     );
 
     const handleChange = useCallback(
@@ -51,20 +72,29 @@ const ParentCollectionSelectBox = () => {
         [selectedAssetCollection, updateAssetCollection, assetCollections, Notify, translate]
     );
 
+    const handleSearchTermChange = useCallback((searchTerm) => {
+        setSearchTerm(searchTerm.toLowerCase());
+    }, []);
+
     return (
         <div>
             <Headline type="h2">
                 <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Parent collection')} />
             </Headline>
             <SelectBox
+                className={classes.collectionSelectBox}
                 disabled={loading}
                 placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
                 value={selectedAssetCollection.parent?.id}
                 optionValueField="id"
-                options={assetCollectionsWithLabel}
-                searchOptions={assetCollectionsWithLabel}
+                options={filteredSelectBoxOptions}
                 noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
                 onValueChange={handleChange}
+                onSearchTermChange={handleSearchTermChange}
+                ListPreviewElement={AssetCollectionOptionPreviewElement}
+                displaySearchBox
+                allowEmpty
+                threshold={0}
             />
         </div>
     );
