@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Tree } from '@neos-project/react-ui-components';
@@ -9,7 +9,8 @@ import { IconStack } from '@media-ui/core/src/components';
 
 import TreeNodeProps from '../interfaces/TreeNodeProps';
 import TagTreeNode from './TagTreeNode';
-import useAssetCollectionQuery from '../hooks/useAssetCollectionQuery';
+import { useAssetCollectionQuery, UNASSIGNED_COLLECTION_ID } from '../hooks/useAssetCollectionQuery';
+import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';
 import { assetCollectionFavouriteState } from '../state/assetCollectionFavouritesState';
 import { assetCollectionTreeCollapsedItemState } from '../state/assetCollectionTreeCollapsedState';
 import { assetCollectionFocusedState } from '../state/assetCollectionFocusedState';
@@ -30,6 +31,7 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     renderChildCollections = true,
 }) => {
     const { assetCollection } = useAssetCollectionQuery(assetCollectionId);
+    const { assetCollections } = useAssetCollectionsQuery();
     const [collapsed, setCollapsed] = useRecoilState(assetCollectionTreeCollapsedItemState(assetCollectionId));
     const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
     const isFocused = useRecoilValue(assetCollectionFocusedState(assetCollectionId));
@@ -41,15 +43,23 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
         setCollapsed(false);
     }, [assetCollectionId, selectAssetCollectionAndTag, setCollapsed]);
 
+    const childCollectionIds = useMemo(() => {
+        return (
+            assetCollections
+                ?.filter((assetCollection) => (assetCollection.parent?.id || null) == assetCollectionId)
+                .map(({ id }) => id) || []
+        );
+    }, [assetCollectionId, assetCollections]);
+
     const CollectionIcon =
-        assetCollectionId === 'UNASSIGNED' ? (
+        assetCollectionId === UNASSIGNED_COLLECTION_ID ? (
             <IconStack primaryIcon="folder" secondaryIcon="times" />
         ) : (
             <IconStack
                 primaryIcon={
                     !assetCollectionId
                         ? 'globe'
-                        : !collapsed && (assetCollection?.tags.length > 0 || assetCollection?.children.length > 0)
+                        : !collapsed && (assetCollection?.tags.length > 0 || childCollectionIds.length > 0)
                         ? 'folder-open'
                         : 'folder'
                 }
@@ -75,22 +85,20 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
                 level={level}
                 onToggle={() => setCollapsed(!collapsed)}
                 onClick={handleClick}
-                isCollapsed={
-                    (assetCollection?.tags.length === 0 && assetCollection?.children.length === 0) || collapsed
-                }
+                isCollapsed={(assetCollection?.tags.length === 0 && childCollectionIds.length === 0) || collapsed}
                 hasChildren={
                     children !== null ||
                     assetCollection?.tags.length > 0 ||
-                    (renderChildCollections && assetCollection?.children.length > 0)
+                    (renderChildCollections && childCollectionIds.length > 0)
                 }
             />
             {!collapsed && assetCollection && (
                 <>
                     {renderChildCollections &&
-                        assetCollection.children?.map((childCollection) => (
+                        childCollectionIds.map((childCollectionId) => (
                             <AssetCollectionTreeNode
-                                key={childCollection.id}
-                                assetCollectionId={childCollection.id}
+                                key={childCollectionId}
+                                assetCollectionId={childCollectionId}
                                 level={level + 1}
                             />
                         ))}
@@ -110,4 +118,4 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     );
 };
 
-export default React.memo(AssetCollectionTreeNode);
+export default AssetCollectionTreeNode;

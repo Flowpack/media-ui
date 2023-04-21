@@ -4,6 +4,7 @@
  */
 const STORAGE_PREFIX = 'flowpack.mediaui';
 
+// TODO: Listen to storage events to allow syncing two tabs
 export function localStorageEffect<T = any>(key: string, validate?: (value: T | undefined) => T) {
     return ({ setSelf, onSet }) => {
         const fullKey = `${STORAGE_PREFIX}.${key}`;

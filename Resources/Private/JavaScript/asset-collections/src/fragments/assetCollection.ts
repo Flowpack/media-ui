@@ -9,10 +9,6 @@ export const ASSET_COLLECTION_FRAGMENT = gql`
             id
             title
         }
-        children {
-            id
-            title
-        }
         tags {
             ...TagProps
         }

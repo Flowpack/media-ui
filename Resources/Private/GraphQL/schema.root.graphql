@@ -148,9 +148,11 @@ type Mutation {
 
     createAssetCollection(title: String!, parent: AssetCollectionId): AssetCollection!
 
-    deleteAssetCollection(id: AssetCollectionId!): DeleteAssetCollectionResult!
+    deleteAssetCollection(id: AssetCollectionId!): Boolean!
 
-    updateAssetCollection(id: AssetCollectionId!, title: String, tagIds: [TagId], parent: AssetCollectionId): AssetCollection!
+    updateAssetCollection(id: AssetCollectionId!, title: String, tagIds: [TagId]): Boolean!
+
+    setAssetCollectionParent(id: AssetCollectionId!, parent: AssetCollectionId): Boolean!
 
     updateTag(id: TagId!, label: String): Tag!
 }
@@ -271,7 +273,6 @@ type AssetCollection {
     title: AssetCollectionTitle!
     assets: [Asset!]!
     parent: AssetCollection
-    children: [AssetCollection!]!
     tags: [Tag!]!
     assetCount: Int!
 }
@@ -335,13 +336,6 @@ type FileUploadResult {
 The result of a single file upload
 """
 type EditAssetResult {
-    success: Boolean!
-}
-
-"""
-The result of asset collection deletion
-"""
-type DeleteAssetCollectionResult {
     success: Boolean!
 }
 

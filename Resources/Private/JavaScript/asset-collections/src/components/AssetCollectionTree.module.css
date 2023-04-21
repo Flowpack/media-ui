@@ -1,5 +1,7 @@
 .assetCollectionTree {
     border: 1px solid var(--theme-colors-border);
+    max-height: 600px;
+    overflow-y: auto;
 }
 
 .assetCollectionTree > * {

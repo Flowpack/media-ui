@@ -656,16 +656,16 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
+     * @param array{id:string, title?: string, tagIds?: string[]} $variables
      * @throws Exception|IllegalObjectTypeException
      */
-    public function updateAssetCollection($_, array $variables): ?AssetCollection
+    public function updateAssetCollection($_, array $variables): bool
     {
         [
             'id' => $id,
             'title' => $title,
             'tagIds' => $tagIds,
-            'parent' => $parent,
-        ] = $variables + ['title' => null, 'tagIds' => null, 'parent' => null];
+        ] = $variables + ['title' => null, 'tagIds' => null];
 
         /** @var AssetCollection $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
@@ -674,15 +674,8 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Asset collection not found', 1590659045);
         }
 
-        if ($title !== null) {
-            // FIXME: Also disallow empty titles
-            $assetCollection->setTitle($title);
-        }
-
-        if ($parent) {
-            $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent);
-            /** @var HierarchicalAssetCollectionInterface $assetCollection */
-            $assetCollection->setParent($parentCollection);
+        if (is_string($title) && trim($title)) {
+            $assetCollection->setTitle(trim($title));
         }
 
         if ($tagIds !== null) {
@@ -699,7 +692,38 @@ class MutationResolver implements ResolverInterface
 
         $this->assetCollectionRepository->update($assetCollection);
 
-        return $assetCollection;
+        return true;
+    }
+
+    /**
+     * @param array{id: string, parent: string} $variables
+     * @throws Exception|IllegalObjectTypeException
+     */
+    public function setAssetCollectionParent($_, array $variables): bool
+    {
+        $id = $variables['id'] ?? null;
+        $parent = $variables['parent'] ?? null;
+
+        /** @var AssetCollection $assetCollection */
+        $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
+
+        if (!$assetCollection) {
+            throw new Exception('Asset collection not found', 1681999816);
+        }
+
+        /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        if ($parent) {
+            /** @var AssetCollection $parentCollection */
+            $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent);
+            if (!$parentCollection) {
+                throw new Exception('Parent asset collection not found', 1681999836);
+            }
+            $assetCollection->setParent($parentCollection);
+        } else {
+            $assetCollection->setParent(null);
+        }
+        $this->assetCollectionRepository->update($assetCollection);
+        return true;
     }
 
     /**

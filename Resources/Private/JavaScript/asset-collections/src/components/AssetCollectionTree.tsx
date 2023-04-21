@@ -4,6 +4,8 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { Tree, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
+import { IconStack } from '@media-ui/core/src/components';
+import useAssetCountQuery from '@media-ui/core/src/hooks/useAssetCountQuery';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
 import { useSelectedAssetSource } from '@media-ui/feature-asset-sources';
 
@@ -16,10 +18,9 @@ import FavouriteButton from './FavouriteButton';
 import { assetCollectionTreeViewState } from '../state/assetCollectionTreeViewState';
 import { assetCollectionFavouritesState } from '../state/assetCollectionFavouritesState';
 import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';
+import { UNASSIGNED_COLLECTION_ID } from '../hooks/useAssetCollectionQuery';
 
 import classes from './AssetCollectionTree.module.css';
-import { IconStack } from '@media-ui/core/src/components';
-import useAssetCountQuery from '@media-ui/core/src/hooks/useAssetCountQuery';
 
 const AssetCollectionTree = () => {
     const { translate } = useIntl();
@@ -30,8 +31,8 @@ const AssetCollectionTree = () => {
     const [assetCollectionTreeView, setAssetCollectionTreeViewState] = useRecoilState(assetCollectionTreeViewState);
     const favourites = useRecoilValue(assetCollectionFavouritesState);
 
-    const assetCollectionsWithoutParent = useMemo(() => {
-        return assetCollections.filter((assetCollection) => !assetCollection.parent);
+    const assetCollectionsIdWithoutParent = useMemo(() => {
+        return assetCollections.filter((assetCollection) => !assetCollection.parent).map(({ id }) => id);
     }, [assetCollections]);
 
     const favouriteAssetCollections = useMemo(() => {
@@ -54,6 +55,8 @@ const AssetCollectionTree = () => {
         ],
         [translate]
     );
+
+    console.debug('root level collection ids', assetCollectionsIdWithoutParent, assetCollections);
 
     if (!selectedAssetSource?.supportsCollections) return null;
 
@@ -99,7 +102,7 @@ const AssetCollectionTree = () => {
                                     'Show assets which are not assigned to any collection'
                                 )}
                                 level={2}
-                                assetCollectionId="UNASSIGNED"
+                                assetCollectionId={UNASSIGNED_COLLECTION_ID}
                             />
                             <TagTreeNode
                                 tagId={'UNTAGGED'}
@@ -118,10 +121,10 @@ const AssetCollectionTree = () => {
                                 />
                             ))}
                         </AssetCollectionTreeNode>
-                        {assetCollectionsWithoutParent.map((assetCollection) => (
+                        {assetCollectionsIdWithoutParent.map((assetCollectionId) => (
                             <AssetCollectionTreeNode
-                                key={assetCollection.id}
-                                assetCollectionId={assetCollection.id}
+                                key={assetCollectionId}
+                                assetCollectionId={assetCollectionId}
                                 level={1}
                             />
                         ))}
@@ -132,4 +135,4 @@ const AssetCollectionTree = () => {
     );
 };
 
-export default React.memo(AssetCollectionTree);
+export default AssetCollectionTree;

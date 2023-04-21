@@ -1,9 +1,10 @@
+import { useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 
 import { Tag } from '@media-ui/feature-asset-tags';
 
 import AssetCollection from '../interfaces/AssetCollection';
-import UPDATE_ASSET_COLLECTION from '../mutations/updateAssetCollection';
+import { UPDATE_ASSET_COLLECTION } from '../mutations/updateAssetCollection';
 
 interface UpdateAssetCollectionProps {
     assetCollection: AssetCollection;
@@ -25,36 +26,40 @@ export default function useUpdateAssetCollection() {
         UpdateAssetCollectionVariables
     >(UPDATE_ASSET_COLLECTION);
 
-    const updateAssetCollection = ({ assetCollection, title, tags, parent }: UpdateAssetCollectionProps) =>
-        action({
-            variables: {
-                id: assetCollection.id,
-                title,
-                tagIds: tags?.map((tag) => tag.id),
-                parent: parent?.id,
-            },
-            optimisticResponse: {
-                updateAssetCollection: {
-                    ...assetCollection,
+    const updateAssetCollection = useCallback(
+        ({ assetCollection, title, tags, parent }: UpdateAssetCollectionProps) =>
+            action({
+                variables: {
+                    id: assetCollection.id,
                     title,
-                    ...(title
-                        ? {
-                              title,
-                          }
-                        : {}),
-                    ...(parent
-                        ? {
-                              ...parent,
-                          }
-                        : {}),
-                    ...(tags
-                        ? {
-                              tags,
-                          }
-                        : {}),
+                    tagIds: tags?.map((tag) => tag.id),
+                    parent: parent === null ? null : parent?.id,
                 },
-            },
-        });
+                refetchQueries: ['ASSET_COLLECTIONS'],
+                optimisticResponse: {
+                    updateAssetCollection: {
+                        ...assetCollection,
+                        title,
+                        ...(title
+                            ? {
+                                  title,
+                              }
+                            : {}),
+                        ...(parent
+                            ? {
+                                  ...parent,
+                              }
+                            : {}),
+                        ...(tags
+                            ? {
+                                  tags,
+                              }
+                            : {}),
+                    },
+                },
+            }),
+        [action]
+    );
 
     return { updateAssetCollection, data, error, loading };
 }

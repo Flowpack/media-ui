@@ -8,7 +8,7 @@ import {
     collectionPath,
     useAssetCollectionsQuery,
     useSelectedAssetCollection,
-    useUpdateAssetCollection,
+    useSetAssetCollectionParent,
 } from '@media-ui/feature-asset-collections';
 
 import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
@@ -20,21 +20,23 @@ const ParentCollectionSelectBox = () => {
     const { translate } = useIntl();
     const { assetCollections } = useAssetCollectionsQuery();
     const selectedAssetCollection = useSelectedAssetCollection();
-    const { updateAssetCollection, loading } = useUpdateAssetCollection();
+    const { setAssetCollectionParent, loading } = useSetAssetCollectionParent();
     const [searchTerm, setSearchTerm] = useState('');
 
     const selectBoxOptions: CollectionOption[] = useMemo(
         () =>
-            assetCollections.map((collection) => ({
-                label: collection.title,
-                id: collection.id,
-                secondaryLabel: collection.parent
-                    ? '/' +
-                      collectionPath(collection, assetCollections)
-                          .map(({ title }) => title)
-                          .join('/')
-                    : '',
-            })),
+            assetCollections
+                .filter(({ id }) => id !== selectedAssetCollection.id)
+                .map((collection) => ({
+                    label: collection.title,
+                    id: collection.id,
+                    secondaryLabel: collection.parent
+                        ? '/' +
+                          collectionPath(collection, assetCollections)
+                              .map(({ title }) => title)
+                              .join('/')
+                        : '',
+                })),
         [assetCollections]
     );
 
@@ -46,9 +48,9 @@ const ParentCollectionSelectBox = () => {
     const handleChange = useCallback(
         async (parentCollectionId: string) => {
             if (parentCollectionId !== selectedAssetCollection.parent?.id) {
-                updateAssetCollection({
+                setAssetCollectionParent({
                     assetCollection: selectedAssetCollection,
-                    parent: assetCollections.find((c) => c.id === parentCollectionId),
+                    parent: parentCollectionId ? assetCollections.find((c) => c.id === parentCollectionId) : null,
                 })
                     .then(() => {
                         Notify.ok(
@@ -69,7 +71,7 @@ const ParentCollectionSelectBox = () => {
                     });
             }
         },
-        [selectedAssetCollection, updateAssetCollection, assetCollections, Notify, translate]
+        [selectedAssetCollection, setAssetCollectionParent, assetCollections, Notify, translate]
     );
 
     const handleSearchTermChange = useCallback((searchTerm) => {
