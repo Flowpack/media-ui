@@ -56,8 +56,6 @@ const AssetCollectionTree = () => {
         [translate]
     );
 
-    console.debug('root level collection ids', assetCollectionsIdWithoutParent, assetCollections);
-
     if (!selectedAssetSource?.supportsCollections) return null;
 
     return (
@@ -135,4 +133,4 @@ const AssetCollectionTree = () => {
     );
 };
 
-export default AssetCollectionTree;
+export default React.memo(AssetCollectionTree);

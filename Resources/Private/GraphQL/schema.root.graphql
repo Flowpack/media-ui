@@ -134,7 +134,7 @@ type Mutation {
 
     setAssetTags(id: AssetId!, assetSourceId: AssetSourceId!, tagIds: [TagId!]!): Asset!
 
-    setAssetCollections(id: AssetId!, assetSourceId: AssetSourceId!, assetCollectionIds: [AssetCollectionId!]!): Asset!
+    setAssetCollections(id: AssetId!, assetSourceId: AssetSourceId!, assetCollectionIds: [AssetCollectionId!]!): Boolean!
 
     deleteTag(id: TagId!): Boolean!
 

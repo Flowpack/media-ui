@@ -26,7 +26,6 @@ export function useSetAssetCollectionParent() {
                     id: assetCollection.id,
                     parent: parent?.id,
                 },
-                // refetchQueries: [{ query: ASSET_COLLECTION, variables: { id: parent?.id } }],
                 optimisticResponse: true,
                 update: (cache, { data }) => {
                     if (!data) return;

@@ -118,4 +118,4 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     );
 };
 
-export default AssetCollectionTreeNode;
+export default React.memo(AssetCollectionTreeNode);

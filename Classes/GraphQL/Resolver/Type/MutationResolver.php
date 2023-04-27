@@ -267,7 +267,7 @@ class MutationResolver implements ResolverInterface
     /**
      * @throws Exception
      */
-    public function setAssetCollections($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    public function setAssetCollections($_, array $variables, AssetSourceContext $assetSourceContext): bool
     {
         [
             'id' => $id,
@@ -276,7 +276,7 @@ class MutationResolver implements ResolverInterface
         ] = $variables;
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
-            return null;
+            return false;
         }
         $asset = $assetSourceContext->getAssetForProxy($assetProxy);
 
@@ -304,7 +304,7 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Failed to assign asset collections', 1594621296);
         }
 
-        return $assetProxy;
+        return true;
     }
 
     /**

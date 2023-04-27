@@ -54,7 +54,7 @@ const useAssetsQuery = () => {
     const assetType = useRecoilValue(selectedAssetTypeState);
     const sortOrderState = useRecoilValue(selectedSortOrderState);
     const currentPage = useRecoilValue(currentPageState);
-    const [isLoading, setIsLoading] = useRecoilState(loadingState);
+    const setIsLoading = useSetRecoilState(loadingState);
     const setInitialLoadComplete = useSetRecoilState(initialLoadCompleteState);
     const [assets, setAssets] = useRecoilState(availableAssetsState);
 
@@ -77,7 +77,7 @@ const useAssetsQuery = () => {
     });
 
     useEffect(() => {
-        if (!loading && !isLoading) {
+        if (!loading) {
             query({
                 variables: {
                     searchTerm: searchTerm.toString(),
@@ -93,18 +93,9 @@ const useAssetsQuery = () => {
                 },
             });
             setIsLoading(true);
-        } else if (data && !loading && isLoading) {
-            // TODO: Use recoil transaction to handle all updates when available with the next release
-            setIsLoading(false);
-            setInitialLoadComplete(true);
-            setAssets(data.assets);
-            // TODO: Update currentPage if asset count changes and current page exceeds limit, maybe as atom effect?
         }
-        // Don't include `isLoading` to prevent constant reloads
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         query,
-        data,
         loading,
         offset,
         searchTerm,
@@ -113,7 +104,21 @@ const useAssetsQuery = () => {
         mediaType,
         selectedTagId,
         sortOrderState,
+        assetType,
+        assetsPerPage,
+        setIsLoading,
     ]);
+
+    useEffect(() => {
+        if (!loading && data) {
+            setAssets((prev) => {
+                const sameSame = data && JSON.stringify(prev) == JSON.stringify(data.assets);
+                return sameSame ? prev : data.assets || [];
+            });
+            setIsLoading(false);
+            setInitialLoadComplete(true);
+        }
+    }, [loading, data, setAssets, setInitialLoadComplete, setIsLoading]);
 
     return { error, assets, refetch };
 };
