@@ -12,7 +12,7 @@
   },
   "scripts": {
     "watch": "parcel watch",
-    "build": "parcel build"
+    "build": "parcel build --no-scope-hoist"
   },
   "dependencies": {
     "@apollo/client": "^3.3.13",
