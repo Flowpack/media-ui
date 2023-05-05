@@ -9,6 +9,7 @@ enum MainViewMode {
     UNUSED_ASSETS,
 }
 
+// FIXME: There should be a single state for the main view mode and selectors to derive the other states from it.
 const mainViewState = selector<MainViewMode>({
     key: 'mainViewState',
     get: ({ get }) => {
