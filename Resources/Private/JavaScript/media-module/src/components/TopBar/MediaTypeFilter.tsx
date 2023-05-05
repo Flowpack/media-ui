@@ -63,7 +63,9 @@ const MediaTypeFilter: React.FC = () => {
         }, []);
     }, [assetType]);
 
-    if (assetTypeFilter !== 'image') return null;
+    if (![MainViewMode.DEFAULT, MainViewMode.UNUSED_ASSETS].includes(mainView) || assetTypeFilter !== 'image') {
+        return null;
+    }
 
     return (
         <div className={classes.typeFilter}>
