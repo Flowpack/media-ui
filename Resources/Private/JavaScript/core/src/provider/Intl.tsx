@@ -6,7 +6,7 @@ export interface I18nRegistry {
     translate: (
         id?: string,
         fallback?: string,
-        params?: Record<string, unknown> | string[],
+        params?: Record<string, unknown> | (string | number)[],
         packageKey?: string,
         sourceName?: string
     ) => string;

@@ -4,6 +4,7 @@ import { Tag } from '@media-ui/feature-asset-tags';
 import { Asset } from '../interfaces';
 import { I18nRegistry, Interaction } from '../provider';
 
+// TODO: Feature packages should be able to extend the ApprovalAttainmentStrategy with their own methods.
 export interface ApprovalAttainmentStrategy {
     obtainApprovalToUpdateAsset: (given: { asset: Asset }) => Promise<boolean>;
     obtainApprovalToSetAssetTags: (given: { asset: Asset; newTags: Tag[] }) => Promise<boolean>;
@@ -12,10 +13,12 @@ export interface ApprovalAttainmentStrategy {
         newAssetCollections: AssetCollection[];
     }) => Promise<boolean>;
     obtainApprovalToDeleteAsset: (given: { asset: Asset }) => Promise<boolean>;
+    obtainApprovalToDeleteAssets: (given: { assets: AssetIdentity[] }) => Promise<boolean>;
     obtainApprovalToDeleteAssetCollection: (given: { assetCollection: AssetCollection }) => Promise<boolean>;
     obtainApprovalToDeleteTag: (given: { tag: Tag }) => Promise<boolean>;
     obtainApprovalToReplaceAsset: (given: { asset: Asset }) => Promise<boolean>;
     obtainApprovalToEditAsset: (given: { asset: Asset }) => Promise<boolean>;
+    obtainApprovalToFlushClipboard: () => Promise<boolean>;
 }
 
 const assumeApproval = () => Promise.resolve(true);
@@ -25,10 +28,12 @@ export const AssumeApprovalForEveryAction: ApprovalAttainmentStrategy = {
     obtainApprovalToSetAssetTags: assumeApproval,
     obtainApprovalToSetAssetCollections: assumeApproval,
     obtainApprovalToDeleteAsset: assumeApproval,
+    obtainApprovalToDeleteAssets: assumeApproval,
     obtainApprovalToDeleteAssetCollection: assumeApproval,
     obtainApprovalToDeleteTag: assumeApproval,
     obtainApprovalToReplaceAsset: assumeApproval,
     obtainApprovalToEditAsset: assumeApproval,
+    obtainApprovalToFlushClipboard: assumeApproval,
 };
 
 export interface ApprovalAttainmentStrategyFactory {
@@ -49,6 +54,20 @@ export const DefaultApprovalAttainmentStrategyFactory: ApprovalAttainmentStrateg
                 'actions.deleteAsset.confirm.buttonLabel',
                 'Yes, proceed with deleting the asset',
                 [asset.label]
+            ),
+        }),
+    obtainApprovalToDeleteAssets: ({ assets }) =>
+        deps.interaction.confirm({
+            title: deps.intl.translate('actions.deleteAssets.confirm.title', 'Delete Assets', [assets.length]),
+            message: deps.intl.translate(
+                'action.deleteAssets.confirm.message',
+                `Do you really want to delete ${assets.length} assets`,
+                [assets.length]
+            ),
+            buttonLabel: deps.intl.translate(
+                'actions.deleteAssets.confirm.buttonLabel',
+                'Yes, proceed with deleting the assets',
+                [assets.length]
             ),
         }),
     obtainApprovalToDeleteAssetCollection: ({ assetCollection }) =>
@@ -79,6 +98,18 @@ export const DefaultApprovalAttainmentStrategyFactory: ApprovalAttainmentStrateg
                 'actions.deleteTag.confirm.buttonLabel',
                 'Yes, proceed with deleting the tag',
                 [tag.label]
+            ),
+        }),
+    obtainApprovalToFlushClipboard: () =>
+        deps.interaction.confirm({
+            title: deps.intl.translate('actions.flushClipboard.confirm.title', 'Flush clipboard'),
+            message: deps.intl.translate(
+                'action.flushClipboard.confirm.message',
+                `Do you really want to remove all assets from the clipboard?`
+            ),
+            buttonLabel: deps.intl.translate(
+                'actions.flushClipboard.confirm.buttonLabel',
+                'Yes, proceed with flushing the clipboard'
             ),
         }),
 });
