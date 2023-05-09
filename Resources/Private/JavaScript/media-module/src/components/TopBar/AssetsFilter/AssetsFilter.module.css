@@ -8,6 +8,10 @@
     cursor: pointer;
 }
 
+.assetsFilter summary:hover {
+    background-color: var(--theme-colors-PrimaryBlue);
+}
+
 .assetsFilter > summary {
     list-style-type: none;
 }

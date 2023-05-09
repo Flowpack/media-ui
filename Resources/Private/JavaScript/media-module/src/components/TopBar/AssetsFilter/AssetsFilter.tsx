@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import cx from 'classnames';
 
+import { useIntl } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
 import { selectedAssetTypeState, selectedMediaTypeState } from '@media-ui/core/src/state';
 
@@ -12,6 +13,7 @@ import AssetTypeFilter from './AssetTypeFilter';
 import classes from './AssetsFilter.module.css';
 
 const AssetsFilter: React.FC = () => {
+    const { translate } = useIntl();
     const mainView = useRecoilValue(mainViewState);
     const assetTypeFilter = useRecoilValue(selectedAssetTypeState);
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
@@ -34,7 +36,7 @@ const AssetsFilter: React.FC = () => {
             ref={detailsRef}
             className={cx(classes.assetsFilter, (assetTypeFilter || mediaTypeFilter) && classes.active)}
         >
-            <summary>
+            <summary title={translate('AssetsFilter.title', 'Toggle asset filters')}>
                 <IconLabel icon="filter" label="Filter" />
             </summary>
             <div className={classes.filterList}>
