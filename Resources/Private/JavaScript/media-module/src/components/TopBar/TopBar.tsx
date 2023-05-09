@@ -4,23 +4,18 @@ import cx from 'classnames';
 import { useMediaUi } from '@media-ui/core';
 import { ClipboardActions } from '@media-ui/feature-clipboard';
 
-import { SearchBox, AssetTypeFilter, ViewModeSelector } from './index';
 import SortOrderSelector from './SortOrderSelector';
+import AssetsFilter from './AssetsFilter/AssetsFilter';
+import ViewModeSelector from './ViewModeSelector';
+import SearchBox from './SearchBox';
 
 import classes from './TopBar.module.css';
-import MediaTypeFilter from './MediaTypeFilter';
 
 const TopBar: React.FC = () => {
     const { selectionMode } = useMediaUi();
 
-    const components = [
-        ClipboardActions,
-        SearchBox,
-        AssetTypeFilter,
-        MediaTypeFilter,
-        SortOrderSelector,
-        ViewModeSelector,
-    ];
+    // TODO: Implement and use a component registry
+    const components = [ClipboardActions, SearchBox, AssetsFilter, SortOrderSelector, ViewModeSelector];
 
     return (
         <div className={cx(classes.topBar, selectionMode && classes.topBarSelectionMode)}>

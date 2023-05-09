@@ -1,0 +1,45 @@
+.assetsFilter {
+    position: relative;
+}
+
+.assetsFilter summary {
+    background-color: var(--theme-colors-captionBackground);
+    padding: 0 1em;
+    cursor: pointer;
+}
+
+.assetsFilter > summary {
+    list-style-type: none;
+}
+
+.assetsFilter[open] > summary::-webkit-details-marker {
+    display: none;
+}
+
+.assetsFilter.active summary {
+    background-color: var(--theme-colors-PrimaryBlue);
+}
+
+.filterList {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    gap: 1px;
+    top: 100%;
+    right: 0;
+    background-color: var(--theme-colors-ContrastDarker);
+}
+
+.typeFilter {
+    display: flex;
+}
+
+.typeFilter svg {
+    /* TODO: This is a workaround for a bug in the SelectBoxHeader which sets the svg height to 100% */
+    height: 1em !important;
+}
+
+.selectBox {
+    min-width: auto;
+}

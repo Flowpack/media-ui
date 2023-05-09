@@ -10,4 +10,7 @@ export default interface FeatureFlags {
     showSimilarAssets: boolean;
     showVariantsEditor: boolean;
     useNewMediaSelection: boolean;
+    mediaTypeFilterOptions: {
+        [key in AssetType]: Record<MediaType, string>;
+    };
 }
