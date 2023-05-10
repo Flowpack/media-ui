@@ -29,6 +29,30 @@ setTimeout(() => {
             showAssetUsage: true,
             showVariantsEditor: true,
             limitToSingleAssetCollectionPerAsset: true,
+            mediaTypeFilterOptions: {
+                all: {},
+                image: {
+                    'image/svg+xml': 'SVG',
+                    'image/png': 'PNG',
+                    'image/jpeg': 'JPEG',
+                    'image/gif': 'GIF',
+                    'image/webp': 'WEBP',
+                },
+                document: {
+                    'application/pdf': 'PDF',
+                },
+                audio: {
+                    'audio/mpeg': 'MP3',
+                    'audio/ogg': 'OGG',
+                    'audio/wav': 'WAV',
+                    'audio/webm': 'WEBM',
+                },
+                video: {
+                    'video/mp4': 'MP4',
+                    'video/ogg': 'OGG',
+                    'video/webm': 'WEBM',
+                },
+            },
         } as FeatureFlags)
     );
     app.setAttribute('data-dummy-image', '/dummy-image.svg');

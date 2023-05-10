@@ -38,17 +38,16 @@ const MediaTypeFilter: React.FC = () => {
         // TODO: Improve the state definition so that this is not so complicated
         if (!mediaTypeFilterOptions || !assetTypeFilter || showUnusedAssets) return [];
 
-        // TODO: Filter out options that are not allowed by constraints
-        const rawOptions = mediaTypeFilterOptions[assetTypeFilter];
-        return Object.keys(rawOptions).map((mediaType) => ({
-            label: rawOptions[mediaType],
-            value: mediaType,
-        }));
-    }, [assetTypeFilter, mediaTypeFilterOptions, showUnusedAssets]);
+        const optionsByType = mediaTypeFilterOptions[assetTypeFilter];
+        return Object.keys(optionsByType)
+            .filter((mediaType: MediaType) => !constraints.mediaTypes || constraints.mediaTypes?.includes(mediaType))
+            .map((mediaType) => ({
+                label: optionsByType[mediaType],
+                value: mediaType,
+            }));
+    }, [assetTypeFilter, constraints.mediaTypes, mediaTypeFilterOptions, showUnusedAssets]);
 
     if (options.length === 0) return null;
-
-    console.debug(options, 'options', assetTypeFilter);
 
     return (
         <div className={classes.typeFilter}>

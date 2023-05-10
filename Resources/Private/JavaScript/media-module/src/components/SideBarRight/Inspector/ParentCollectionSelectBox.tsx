@@ -37,7 +37,7 @@ const ParentCollectionSelectBox = () => {
                               .join('/')
                         : '',
                 })),
-        [assetCollections]
+        [assetCollections, selectedAssetCollection?.id]
     );
 
     const filteredSelectBoxOptions: CollectionOption[] = useMemo(

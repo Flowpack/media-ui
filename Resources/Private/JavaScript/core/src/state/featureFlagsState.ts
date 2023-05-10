@@ -19,5 +19,12 @@ export const featureFlagsState = atom<FeatureFlags>({
             collapsed: false,
         },
         limitToSingleAssetCollectionPerAsset: true,
+        mediaTypeFilterOptions: {
+            all: {},
+            image: {},
+            video: {},
+            document: {},
+            audio: {},
+        },
     },
 });

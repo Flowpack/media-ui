@@ -1,12 +1,7 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import {
-    Headline,
-    MultiSelectBox,
-    SelectBox,
-    SelectBox_Option_MultiLineWithThumbnail,
-} from '@neos-project/react-ui-components';
+import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { Asset } from '@media-ui/core/src/interfaces';
