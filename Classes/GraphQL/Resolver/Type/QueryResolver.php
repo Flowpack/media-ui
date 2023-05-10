@@ -172,7 +172,7 @@ class QueryResolver implements ResolverInterface
             }
         }
 
-        if (is_string($mediaType) && !empty($mediaType)) {
+        if (is_string($mediaType) && !empty($mediaType) && $assetProxyRepository instanceof NeosAssetProxyRepository) {
             try {
                 $assetProxyRepository->filterByMediaType($mediaType);
             } catch (\InvalidArgumentException $e) {
