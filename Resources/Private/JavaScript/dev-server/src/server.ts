@@ -151,6 +151,11 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
                 });
                 return asset;
             },
+            setAssetCollectionParent: ($_, { id, parent }: { id: string; parent: string }) => {
+                const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
+                assetCollection.parent = parent;
+                return true;
+            },
             setAssetTags: (
                 $_,
                 { id, assetSourceId, tagIds }: { id: string; assetSourceId: string; tagIds: string[] }
