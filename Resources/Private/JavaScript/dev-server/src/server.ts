@@ -156,6 +156,41 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
                 assetCollection.parent = parent;
                 return true;
             },
+            updateAssetCollection: ($_, { id, title, tagIds }: { id: string; title: string; tagIds: string[] }) => {
+                const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
+                if (title) {
+                    assetCollection.title = title;
+                }
+                if (Array.isArray(tagIds)) {
+                    assetCollection.tags = tags.filter((tag) => tagIds.includes(tag.id));
+                }
+                return true;
+            },
+            deleteAssetCollection: ($_, { id }: { id: string }) => {
+                const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
+                if (!assetCollection) return false;
+                assetCollections = assetCollections.filter((assetCollection) => assetCollection.id !== id);
+                return true;
+            },
+            createAssetCollection: ($_, { title, parent }: { title: string; parent: string }) => {
+                const parentCollection = parent
+                    ? assetCollections.find((assetCollection) => assetCollection.id === parent)
+                    : null;
+                const newCollection = {
+                    id: `someId_${Date.now()}`,
+                    title,
+                    parent: parentCollection
+                        ? {
+                              id: parentCollection.id,
+                              title: parentCollection.title,
+                          }
+                        : null,
+                    tags: [],
+                    assetCount: 0,
+                };
+                assetCollections.push(newCollection);
+                return newCollection;
+            },
             setAssetTags: (
                 $_,
                 { id, assetSourceId, tagIds }: { id: string; assetSourceId: string; tagIds: string[] }
