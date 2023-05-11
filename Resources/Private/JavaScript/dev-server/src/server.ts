@@ -1,21 +1,38 @@
 const fs = require('fs');
 const path = require('path');
-const Bundler = require('parcel-bundler');
+const Parcel = require('@parcel/core').default;
 const { gql } = require('@apollo/client');
 const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
 const Fixtures = require('./fixtures');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // FIXME: type annotations are missing as they couldn't be included anymore while making the devserver work again
 // import { Tag } from '@media-ui/core/src/interfaces';
 // import { AssetChange, AssetChangeQueryResult, AssetChangeType } from '@media-ui/feature-concurrent-editing/src';
 
 (async () => {
-    const PORT = 8000;
+    const bundlerPort = 8001;
+    const frontendPort = 8000;
 
-    const bundler = new Bundler(path.resolve(__dirname, './index.html'), {
+    const bundler = new Parcel({
+        defaultConfig: require.resolve('@parcel/config-default'),
+        entries: path.resolve(__dirname, './index.html'),
         outDir: path.resolve(__dirname, '../dist'),
+        publicUrl: '/',
+        mode: 'development',
+        // cache: false,
+        logLevel: 4,
+        serveOptions: {
+            publicUrl: '/',
+            port: bundlerPort,
+        },
+        hot: {
+            port: bundlerPort,
+            host: '/',
+        },
     });
+    bundler.watch();
 
     let { assets, assetCollections, assetSources, tags } = Fixtures.loadFixtures();
 
@@ -229,11 +246,15 @@ const Fixtures = require('./fixtures');
         next();
     });
     app.use(express.static(path.join(__dirname, '../public')));
-    app.use(bundler.middleware());
 
-    app.listen(PORT, () => {
+    const parcelMiddleware = createProxyMiddleware({
+        target: `http://localhost:${bundlerPort}`,
+    });
+    app.use('/', parcelMiddleware);
+
+    app.listen(frontendPort, () => {
         console.info(
-            `Media Module dev server running at http://localhost:${PORT} and GraphQL at http://localhost:${PORT}${server.graphqlPath}`
+            `Media Module dev server running at http://localhost:${frontendPort} and GraphQL at http://localhost:${frontendPort}${server.graphqlPath}`
         );
     });
 })();

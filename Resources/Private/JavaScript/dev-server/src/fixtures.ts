@@ -72,15 +72,6 @@ const assetCollections = range(3).map((index) => ({
     id: `someId_${index}`,
     title: `Example collection ${index + 1}`,
     tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
-    children:
-        index === 0
-            ? [
-                  {
-                      id: `someId_1`,
-                      title: `Example collection 2`,
-                  },
-              ]
-            : [],
     parent:
         index == 1
             ? {
@@ -88,6 +79,8 @@ const assetCollections = range(3).map((index) => ({
                   title: `Example collection 1`,
               }
             : null,
+    // TODO: Recalculate assetCount of assetCollections after generation of assets
+    assetCount: 0,
 }));
 
 const getUsageDetailsForAsset = (assetId: string) => {
