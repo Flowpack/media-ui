@@ -223,8 +223,15 @@ First start the dev server via `yarn dev` and the run the following command to e
 yarn e2e
 ```    
 
-The test configuration is defined in `.testcaferc.json`. Change the options there if you want to use
-a different browser or make some other changes.
+The test configuration is defined in `.testcaferc.json`.
+
+To use a different browser you can define it when running the tests:
+
+```console
+yarn test firefox
+```
+
+Checkout the [Testcafe documentation](https://testcafe.io/documentation/402828/guides/intermediate-guides/browsers#browser-support) for more information and supported browsers.
 
 ### Run phpstan for codestyle checks
 
