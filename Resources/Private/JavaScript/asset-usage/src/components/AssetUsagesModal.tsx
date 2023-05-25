@@ -2,10 +2,11 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { Button, Dialog } from '@neos-project/react-ui-components';
+import { Button } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
+import { Dialog } from '@media-ui/core/src/components';
 
 import assetUsageDetailsModalState from '../state/assetUsageDetailsModalState';
 import useAssetUsagesQuery from '../hooks/useAssetUsages';
