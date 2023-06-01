@@ -4,7 +4,6 @@ export {
     InteractionProvider,
     InteractionDialogRenderer,
     MediaUiProvider,
-    Notify,
     NotifyProvider,
     useIntl,
     useInteraction,

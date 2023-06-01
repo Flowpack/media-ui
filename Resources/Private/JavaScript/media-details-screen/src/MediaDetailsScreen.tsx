@@ -11,14 +11,7 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-import {
-    I18nRegistry,
-    InteractionProvider,
-    IntlProvider,
-    MediaUiProvider,
-    Notify,
-    NotifyProvider,
-} from '@media-ui/core';
+import { I18nRegistry, InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
 import { Asset, FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
 import { ApolloErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
 import { Details } from './components';
@@ -101,7 +94,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
         const containerRef = createRef<HTMLDivElement>();
 
         // The Neos.UI FlashMessages only support the levels 'success', 'error' and 'info'
-        const Notification: Notify = {
+        const Notification: NeosNotification = {
             info: (message) => addFlashMessage(message, message, 'info'),
             ok: (message) => addFlashMessage(message, message, 'success'),
             notice: (message) => addFlashMessage(message, message, 'info'),

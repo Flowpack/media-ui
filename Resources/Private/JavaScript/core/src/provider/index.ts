@@ -1,4 +1,4 @@
-import { NotifyProvider, useNotify, Notify } from './Notify';
+import { NotifyProvider, useNotify } from './Notify';
 import { MediaUiProvider, useMediaUi } from './MediaUiProvider';
 import { IntlProvider, useIntl, I18nRegistry } from './Intl';
 import { Interaction, InteractionProvider, InteractionDialogRenderer, useInteraction } from './Interaction';
@@ -10,7 +10,6 @@ export {
     InteractionProvider,
     InteractionDialogRenderer,
     MediaUiProvider,
-    Notify,
     NotifyProvider,
     useIntl,
     useInteraction,

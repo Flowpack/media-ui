@@ -19,7 +19,6 @@ import {
     InteractionProvider,
     IntlProvider,
     MediaUiProvider,
-    Notify,
     NotifyProvider,
 } from '@media-ui/core';
 import { FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
@@ -133,7 +132,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         const featureFlags: FeatureFlags = this.props.frontendConfiguration as FeatureFlags;
 
         // The Neos.UI FlashMessages only support the levels 'success', 'error' and 'info'
-        const Notification: Notify = {
+        const Notification: NeosNotification = {
             info: (message) => addFlashMessage(message, message, 'info'),
             ok: (message) => addFlashMessage(message, message, 'success'),
             notice: (message) => addFlashMessage(message, message, 'info'),
