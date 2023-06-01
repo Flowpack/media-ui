@@ -25,6 +25,7 @@ use Neos\Utility\ObjectAccess;
 
 /**
  * An aspect for adding hierarchical relations to the Neos.Media AssetCollection entity
+ * This is a AOP patch until the same functionality is merged into the Neos core
  *
  * @Flow\Introduce("class(Neos\Media\Domain\Model\AssetCollection)", interfaceName="Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface")
  * @Flow\Aspect
@@ -34,20 +35,12 @@ class HierarchicalAssetCollectionAspect
 
     /**
      * @var AssetCollection
-     * @ORM\ManyToOne(inversedBy="children", cascade={"persist"})
+     * @ORM\ManyToOne(cascade={"persist"})
      * @ORM\JoinColumn(onDelete="SET NULL")
      * @Flow\Lazy
      * @Flow\Introduce("class(Neos\Media\Domain\Model\AssetCollection)")
      */
     protected $parent;
-
-    /**
-     * @var Collection<AssetCollection>
-     * @ORM\OneToMany(mappedBy="parent", orphanRemoval=true)
-     * @Flow\Lazy
-     * @Flow\Introduce("class(Neos\Media\Domain\Model\AssetCollection)")
-     */
-    protected $children;
 
     /**
      * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->getParent())")
@@ -73,44 +66,37 @@ class HierarchicalAssetCollectionAspect
         }
         ObjectAccess::setProperty($assetCollection, 'parent', $parentAssetCollection, true);
 
-        // Throw an error if a circular dependency has been detected
+        // Throws an error if a circular dependency has been detected
         $parent = $assetCollection->getParent();
-        $parents = [$parent];
         while ($parent !== null) {
             $parent = $parent->getParent();
-            if (in_array($parent, $parents, true)) {
-                throw new \InvalidArgumentException('Circular reference detected', 1678330856);
+            if ($parent === $assetCollection->getParent()) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Circular reference detected, parent AssetCollection "%s" appeared twice in the hierarchy',
+                    $parent->getTitle()
+                ), 1678330856);
             }
         }
     }
 
     /**
-     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->addChild())")
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->unsetParent())")
      */
-    public function addChild(JoinPointInterface $joinPoint): void
+    public function unsetParent(JoinPointInterface $joinPoint): void
     {
         /** @var HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $joinPoint->getProxy();
-        $childAssetCollection = $joinPoint->getMethodArgument('child');
-        if ($childAssetCollection instanceof AssetCollection) {
-            throw new \InvalidArgumentException('Child must be an AssetCollection', 1678330906);
-        }
-        /** @var Collection $children */
-        $children = ObjectAccess::getProperty($assetCollection, 'children', true);
-        if (!$children->contains($childAssetCollection)) {
-            $this->children->add($childAssetCollection);
-            $childAssetCollection->setParent($assetCollection);
-        }
+        ObjectAccess::setProperty($assetCollection, 'parent', null, true);
     }
 
     /**
-     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->getChildren())")
-     * @return Collection<HierarchicalAssetCollectionInterface>
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->hasParent())")
      */
-    public function getChildren(JoinPointInterface $joinPoint): Collection
+    public function hasParent(JoinPointInterface $joinPoint): bool
     {
+        /** @var HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $joinPoint->getProxy();
-        return ObjectAccess::getProperty($assetCollection, 'children', true) ?? new ArrayCollection();
+        return ObjectAccess::getProperty($assetCollection, 'parent', true) !== null;
     }
 
     /**

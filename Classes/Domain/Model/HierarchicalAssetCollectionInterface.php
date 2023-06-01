@@ -40,12 +40,12 @@ interface HierarchicalAssetCollectionInterface
     public function setParent(?AssetCollection $parent);
 
     /**
-     * @return Collection<AssetCollection>
-     */
-    public function getChildren();
-
-    /**
      * @return void
      */
-    public function addChild(AssetCollection $child);
+    public function unsetParent();
+
+    /**
+     * @return bool
+     */
+    public function hasParent();
 }
