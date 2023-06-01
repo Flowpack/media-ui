@@ -7,5 +7,5 @@ export const searchTermState = atom<SearchTerm>({
     key: 'searchTermState',
     default:
         typeof window === 'undefined' ? SearchTerm.fromString('') : SearchTerm.fromUrl(new URL(window.location.href)),
-    effects: [localStorageEffect('searchTermState')],
+    effects: [localStorageEffect('searchTermState', ({ value }) => SearchTerm.fromString(value))],
 });
