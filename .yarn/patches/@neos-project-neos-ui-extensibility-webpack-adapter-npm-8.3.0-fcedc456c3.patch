@@ -1,0 +1,16 @@
+diff --git a/scripts/helpers/webpack.config.js b/scripts/helpers/webpack.config.js
+index 25930d442a5aec4d22f1e890bd061ea3256570af..9f94a69f2892c156c5b2da64ba56363ffdaa1dfc 100644
+--- a/scripts/helpers/webpack.config.js
++++ b/scripts/helpers/webpack.config.js
+@@ -135,6 +135,11 @@ module.exports = function (neosPackageJson) {
+                 }
+             ],
+         },
++        performance: {
++            hints : false,
++            maxEntrypointSize: 1000000,
++            maxAssetSize: 1000000
++        },
+         entry: {
+             Plugin: './src/index.js'
+         },
