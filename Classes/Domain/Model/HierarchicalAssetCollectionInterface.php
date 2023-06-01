@@ -17,6 +17,12 @@ namespace Flowpack\Media\Ui\Domain\Model;
 use Doctrine\Common\Collections\Collection;
 use Neos\Media\Domain\Model\AssetCollection;
 
+/**
+ * This interface is required for the HierachicalAssetCollectionAspect to add the
+ * hierarchical collection functionality to the AssetCollection domain model.
+ *
+ * Attention: Keep the docblocks or the HierachicalAssetCollectionAspect will throw errors!
+ */
 interface HierarchicalAssetCollectionInterface
 {
     /**
