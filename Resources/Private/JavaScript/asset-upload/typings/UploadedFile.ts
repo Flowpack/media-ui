@@ -11,4 +11,5 @@ interface UploadedFile extends File {
     copyrightNoticeNotNeeded?: boolean;
     title?: string;
     caption?: string;
+    uploadStateResult?: string;
 }
