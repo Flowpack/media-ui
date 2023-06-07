@@ -1,8 +1,5 @@
 import { useMutation } from '@apollo/client';
 
-import { AssetCollection } from '@media-ui/feature-asset-collections';
-
-import { Asset } from '../interfaces';
 import { SET_ASSET_COLLECTIONS } from '../mutations';
 
 interface SetAssetCollectionsProps {

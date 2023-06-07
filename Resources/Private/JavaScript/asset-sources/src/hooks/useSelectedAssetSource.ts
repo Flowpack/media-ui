@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { AssetSource } from '../interfaces/AssetSource';
 import { useAssetSourcesQuery } from './useAssetSourcesQuery';
 import { selectedAssetSourceState } from '../state/selectedAssetSourceState';
 

@@ -2,12 +2,11 @@ import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
-import { selectedTagIdState, Tag } from '@media-ui/feature-asset-tags';
-import { AssetCollection, selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
-import { AssetSource, selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedTagIdState } from '@media-ui/feature-asset-tags';
+import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
-import { Asset } from '../interfaces';
 import {
     availableAssetsState,
     currentPageState,

@@ -1,5 +1,4 @@
 import React from 'react';
-import AssetVariant from '../interfaces/AssetVariant';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface VariantProps extends AssetVariant {}

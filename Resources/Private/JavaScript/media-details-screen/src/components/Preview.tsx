@@ -2,7 +2,6 @@ import React from 'react';
 import cx from 'classnames';
 
 import { useIntl, useMediaUi } from '@media-ui/core';
-import { Asset } from '@media-ui/core/src/interfaces';
 
 import PreviewActions from './PreviewActions';
 

@@ -4,7 +4,6 @@ import { useRecoilValue } from 'recoil';
 import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { Asset } from '@media-ui/core/src/interfaces';
 import { useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState } from '@media-ui/core/src/state';

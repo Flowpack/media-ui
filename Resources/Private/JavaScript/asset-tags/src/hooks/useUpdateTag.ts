@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
 
 import UPDATE_TAG from '../mutations/updateTag';
-import Tag from '../interfaces/Tag';
 
 interface UpdateTagProps {
     tag: Tag;

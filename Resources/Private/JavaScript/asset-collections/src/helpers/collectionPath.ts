@@ -1,5 +1,3 @@
-import AssetCollection from '../interfaces/AssetCollection';
-
 export function collectionPath(collection: AssetCollection, collections: AssetCollection[]) {
     const path: { title: string; id: string }[] = [];
 

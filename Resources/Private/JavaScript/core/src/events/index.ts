@@ -1,4 +1,4 @@
 import { assetCreatedEvent, assetUpdatedEvent, assetRemovedEvent } from './asset';
-import { createEvent, MediaEvent } from './createEvent';
+import { createEvent } from './createEvent';
 
-export { createEvent, MediaEvent, assetCreatedEvent, assetRemovedEvent, assetUpdatedEvent };
+export { createEvent, assetCreatedEvent, assetRemovedEvent, assetUpdatedEvent };

@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
 
 import { IMPORT_ASSET } from '../mutations';
-import { Asset } from '../interfaces';
 
 interface ImportAssetVariables {
     id: string;

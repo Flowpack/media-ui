@@ -8,7 +8,6 @@ import { Dialog } from '@media-ui/core/src/components';
 import UploadSection from '../UploadSection';
 import PreviewSection from '../PreviewSection';
 import { useUploadDialogState, useUploadFiles } from '../../hooks';
-import { FilesUploadState, UploadedFile } from '../../interfaces';
 import { useAssetsQuery } from '@media-ui/core/src/hooks';
 
 import classes from './NewAssetDialog.module.css';

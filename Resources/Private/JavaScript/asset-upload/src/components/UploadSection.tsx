@@ -6,8 +6,6 @@ import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { humanFileSize } from '@media-ui/core/src/helper';
 
-import { UploadedFile } from '../interfaces';
-
 import classes from './UploadSection.module.css';
 
 interface UploadSectionProps {

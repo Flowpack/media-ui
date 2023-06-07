@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Asset } from '@media-ui/core/src/interfaces';
 import { useMediaUi } from '@media-ui/core';
 
 import classes from './SimilarAsset.module.css';

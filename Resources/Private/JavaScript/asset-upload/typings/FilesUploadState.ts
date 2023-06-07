@@ -1,6 +1,4 @@
-import UploadedFile from './UploadedFile';
-
-export default interface FilesUploadState {
+interface FilesUploadState {
     selected: UploadedFile[];
     finished: UploadedFile[];
     rejected: UploadedFile[];

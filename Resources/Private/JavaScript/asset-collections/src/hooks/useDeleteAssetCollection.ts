@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client';
 
-import AssetCollection from '../interfaces/AssetCollection';
 import { ASSET_COLLECTIONS } from '../queries/assetCollections';
 import { DELETE_ASSET_COLLECTION } from '../mutations/deleteAssetCollection';
 

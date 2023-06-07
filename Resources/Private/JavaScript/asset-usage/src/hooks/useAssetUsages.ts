@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client';
 
 import ASSET_USAGE_DETAILS from '../queries/assetUsages';
-import { UsageDetailsGroup } from '../interfaces/UsageDetails';
 
 interface AssetUsagesQueryResult {
     assetUsageDetails: UsageDetailsGroup[];

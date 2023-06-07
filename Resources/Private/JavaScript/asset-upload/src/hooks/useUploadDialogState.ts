@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { UploadDialogState, uploadDialogState, UPLOAD_TYPE } from '../state';
-import { FilesUploadState } from '../interfaces';
+import { uploadDialogState } from '../state';
+import type { UploadDialogState } from '../state/uploadDialogState';
+import { UPLOAD_TYPE } from '../state/uploadDialogState';
 
 interface UploadDialogStateWithFiles extends UploadDialogState {
     files: FilesUploadState;

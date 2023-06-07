@@ -9,8 +9,6 @@ export { useSetAssetCollectionParent } from './hooks/useSetAssetCollectionParent
 export { default as AssetCollectionTree } from './components/AssetCollectionTree';
 export { default as CreateAssetCollectionDialog } from './components/CreateAssetCollectionDialog';
 
-export { default as AssetCollection } from './interfaces/AssetCollection';
-
 export { ASSET_COLLECTION_FRAGMENT } from './fragments/assetCollection';
 
 export { ASSET_COLLECTION } from './queries/assetCollection';

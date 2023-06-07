@@ -1,4 +1,3 @@
-import { AssetFile, Image } from '@media-ui/core/src/interfaces';
 import { defaultDataIdFromObject } from '@apollo/client';
 
 /**

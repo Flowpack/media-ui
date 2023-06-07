@@ -1,7 +1,7 @@
 type AssetVariantType = 'AssetVariant';
 type CropInformationType = 'CropInformation';
 
-export default interface AssetVariant extends GraphQlEntity {
+interface AssetVariant extends GraphQlEntity {
     __typename: AssetVariantType;
     readonly id: string;
     readonly presetIdentifier: string;

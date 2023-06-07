@@ -4,7 +4,6 @@ import { useSetRecoilState, useRecoilState } from 'recoil';
 import { IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
-import { Asset } from '@media-ui/core/src/interfaces';
 import { useDeleteAsset, useImportAsset } from '@media-ui/core/src/hooks';
 import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview';
 import { clipboardItemState } from '@media-ui/feature-clipboard';

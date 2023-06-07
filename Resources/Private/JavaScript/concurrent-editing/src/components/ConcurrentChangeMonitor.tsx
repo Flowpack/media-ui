@@ -4,7 +4,7 @@ import { useAssetQuery, useAssetsQuery } from '@media-ui/core/src/hooks';
 import { assetCreatedEvent, assetRemovedEvent, assetUpdatedEvent } from '@media-ui/core/src/events';
 import { NEOS_ASSET_SOURCE } from '@media-ui/feature-asset-sources';
 
-import useChangedAssetsQuery, { AssetChangeType } from '../hooks/useChangedAssetsQuery';
+import useChangedAssetsQuery from '../hooks/useChangedAssetsQuery';
 
 /**
  * Renderless component to watch for remote changes, update cached assets and inform the user if necessary

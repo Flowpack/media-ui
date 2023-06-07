@@ -3,7 +3,6 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
 import { currentPageState, featureFlagsState, loadingState } from '@media-ui/core/src/state';
-import { Asset } from '@media-ui/core/src/interfaces';
 
 import UNUSED_ASSETS from '../queries/unusedAssets';
 import showUnusedAssetsState from '../state/showUnusedAssetsState';

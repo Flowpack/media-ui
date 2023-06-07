@@ -4,7 +4,6 @@ import cx from 'classnames';
 
 import { InteractionDialogRenderer, useMediaUi } from '@media-ui/core';
 import { useSelectAsset, useAssetQuery } from '@media-ui/core/src/hooks';
-import { Asset } from '@media-ui/core/src/interfaces';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';

@@ -8,7 +8,6 @@ import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 
 import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
-import { FeatureFlags } from '@media-ui/core/src/interfaces';
 
 // GraphQL type definitions
 import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';

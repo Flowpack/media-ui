@@ -1,29 +1,23 @@
-export enum UsageDetailsMetadataType {
-    TEXT = 'TEXT',
-    DATE = 'DATE',
-    DATETIME = 'DATETIME',
-    URL = 'URL',
-    JSON = 'JSON',
-}
+type UsageDetailsMetadataType = 'TEXT' | 'DATE' | 'DATETIME' | 'URL' | 'JSON';
 
-export interface UsageDetailsMetadataSchema {
+interface UsageDetailsMetadataSchema {
     name: string;
     label: string;
     type: UsageDetailsMetadataType;
 }
 
-export interface UsageDetails {
+interface UsageDetails {
     label: string;
     url: string;
     metadata: UsageDetailsMetadata[];
 }
 
-export interface UsageDetailsMetadata {
+interface UsageDetailsMetadata {
     name: string;
     value: string;
 }
 
-export interface UsageDetailsGroup extends GraphQlEntity {
+interface UsageDetailsGroup extends GraphQlEntity {
     __typename: 'UsageDetailsGroup';
     serviceId: string;
     label: string;

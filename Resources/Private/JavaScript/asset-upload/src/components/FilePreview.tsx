@@ -3,8 +3,6 @@ import cx from 'classnames';
 
 import { Icon } from '@neos-project/react-ui-components';
 
-import { FileUploadResult, UploadedFile } from '../interfaces';
-
 import classes from './FilePreview.module.css';
 
 interface FilePreviewProps {

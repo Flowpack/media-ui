@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
 
 import { UPDATE_ASSET } from '../mutations';
-import { Asset } from '../interfaces';
 
 interface UpdateAssetProps {
     asset: Asset;

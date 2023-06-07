@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useIntl } from '@media-ui/core';
 
-import { FilesUploadState, FileUploadResult } from '../interfaces';
 import FilePreview from './FilePreview';
 
 import classes from './PreviewSection.module.css';

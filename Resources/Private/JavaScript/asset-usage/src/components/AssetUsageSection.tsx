@@ -2,8 +2,6 @@ import * as React from 'react';
 
 import { useIntl } from '@media-ui/core';
 
-import { UsageDetailsGroup } from '../interfaces/UsageDetails';
-
 import classes from './AssetUsageSection.module.css';
 
 interface AssetUsageSectionProps {

@@ -1,5 +1,4 @@
 import { atom, selector } from 'recoil';
-import { Asset } from '../interfaces';
 
 const availableAssetsState = atom<Asset[]>({
     key: 'AvailableAssetsState',

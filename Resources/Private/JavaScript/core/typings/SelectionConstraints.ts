@@ -1,4 +1,4 @@
-export default interface SelectionConstraints {
+interface SelectionConstraints {
     assetSources?: string[];
     mediaTypes?: MediaType[];
 }

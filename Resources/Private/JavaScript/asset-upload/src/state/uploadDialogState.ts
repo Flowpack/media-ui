@@ -9,6 +9,7 @@ export interface UploadDialogState {
     visible: boolean;
     uploadType: UPLOAD_TYPE;
 }
+
 export const uploadDialogState = atom<UploadDialogState>({
     key: 'uploadDialogState',
     default: {

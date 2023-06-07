@@ -12,7 +12,6 @@ import UploadSection from '../UploadSection';
 import PreviewSection from '../PreviewSection';
 import { useUploadDialogState } from '../../hooks';
 import useReplaceAsset, { AssetReplacementOptions } from '../../hooks/useReplaceAsset';
-import { UploadedFile } from '../../interfaces';
 
 import classes from './ReplaceAssetDialog.module.css';
 

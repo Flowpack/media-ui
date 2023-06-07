@@ -14,14 +14,7 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-import {
-    I18nRegistry,
-    InteractionProvider,
-    IntlProvider,
-    MediaUiProvider,
-    NotifyProvider,
-} from '@media-ui/core';
-import { FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
+import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
 import { ApolloErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
 import App from '@media-ui/media-module/src/components/App';
 

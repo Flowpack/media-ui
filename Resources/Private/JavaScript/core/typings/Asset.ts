@@ -1,14 +1,7 @@
-import { AssetCollection } from '@media-ui/feature-asset-collections';
-import { Tag } from '@media-ui/feature-asset-tags';
-import { AssetSource } from '@media-ui/feature-asset-sources';
+type AssetEntityType = 'Asset';
 
-import IptcProperty from './IptcProperty';
-import AssetFile from './AssetFile';
-
-type AssetType = 'Asset';
-
-export default interface Asset extends GraphQlEntity {
-    __typename: AssetType;
+interface Asset extends GraphQlEntity {
+    __typename: AssetEntityType;
     readonly id: string;
     readonly localId?: string;
     assetSource: AssetSource;

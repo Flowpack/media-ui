@@ -1,8 +1,6 @@
-import { Tag } from '@media-ui/feature-asset-tags';
-
 type AssetCollectionType = 'AssetCollection';
 
-export default interface AssetCollection extends GraphQlEntity {
+interface AssetCollection extends GraphQlEntity {
     __typename: AssetCollectionType;
     readonly id: string;
     readonly title: string;

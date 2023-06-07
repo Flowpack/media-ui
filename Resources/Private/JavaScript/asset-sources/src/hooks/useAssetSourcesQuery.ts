@@ -5,7 +5,6 @@ import { useQuery } from '@apollo/client';
 import { constraintsState } from '@media-ui/core/src/state';
 
 import { ASSET_SOURCES } from '../queries/assetSources';
-import { AssetSource } from '../interfaces/AssetSource';
 
 interface AssetSourcesQueryResult {
     assetSources: AssetSource[];

@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client';
 
-import { Asset } from '../interfaces';
 import { ASSET } from '../queries';
 
 interface AssetQueryResult {

@@ -1,8 +1,6 @@
-import Image from './Image';
-
 type AssetFileType = 'AssetFile';
 
-export default interface AssetFile extends GraphQlEntity {
+interface AssetFile extends GraphQlEntity {
     __typename: AssetFileType;
     extension: string;
     mediaType: MediaType;

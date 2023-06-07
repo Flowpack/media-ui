@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 
-import AssetCollection from '../interfaces/AssetCollection';
 import { SET_ASSET_COLLECTION_PARENT } from '../mutations/setAssetCollectionParent';
 
 interface SetAssetCollectionParentProps {

@@ -1,1 +1,1 @@
-export { UploadDialogState, uploadDialogState, UPLOAD_TYPE } from './uploadDialogState';
+export { uploadDialogState } from './uploadDialogState';

@@ -15,6 +15,17 @@ interface NeosI18n {
     initialized: boolean;
 }
 
+// TODO: This is a copy of the interface in Neos.Ui and should preferably be made available to plugins
+interface I18nRegistry {
+    translate: (
+        id?: string,
+        fallback?: string,
+        params?: Record<string, unknown> | (string | number)[],
+        packageKey?: string,
+        sourceName?: string
+    ) => string;
+}
+
 interface NeosNotification {
     notice: (title: string) => void;
     ok: (title: string) => void;
@@ -34,15 +45,6 @@ type PaginationConfig = {
     assetsPerPage: number;
     maximumLinks: number;
 };
-
-interface GraphQlEntity {
-    __typename: string;
-}
-
-interface AssetIdentity {
-    assetId: string;
-    assetSourceId: string;
-}
 
 type AssetType = 'image' | 'video' | 'audio' | 'document' | 'all';
 type MediaType = `${string}/${string}`;

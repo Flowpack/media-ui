@@ -5,8 +5,7 @@ import { Button, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 
-import { uploadDialogState } from '../state';
-import { UPLOAD_TYPE } from '../state/uploadDialogState';
+import { UPLOAD_TYPE, uploadDialogState } from '../state/uploadDialogState';
 
 export default function UploadButton() {
     const { translate } = useIntl();

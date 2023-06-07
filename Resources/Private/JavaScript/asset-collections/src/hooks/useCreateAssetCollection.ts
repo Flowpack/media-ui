@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
 
 import { CREATE_ASSET_COLLECTION } from '../mutations/createAssetCollection';
-import AssetCollection from '../interfaces/AssetCollection';
 import { ASSET_COLLECTIONS } from '../queries/assetCollections';
 
 interface CreateAssetCollectionVariables {

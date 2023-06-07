@@ -7,7 +7,6 @@ import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { IconStack } from '@media-ui/core/src/components';
 
-import TreeNodeProps from '../interfaces/TreeNodeProps';
 import TagTreeNode from './TagTreeNode';
 import { useAssetCollectionQuery, UNASSIGNED_COLLECTION_ID } from '../hooks/useAssetCollectionQuery';
 import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';

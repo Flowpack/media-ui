@@ -1,13 +1,6 @@
 import ASSET_USAGE_DETAILS from './queries/assetUsages';
 import UNUSED_ASSETS from './queries/unusedAssets';
 import USAGE_DETAILS_GROUP_FRAGMENT from './fragments/usageDetailsGroupFragment';
-import {
-    UsageDetailsGroup,
-    UsageDetails,
-    UsageDetailsMetadata,
-    UsageDetailsMetadataSchema,
-    UsageDetailsMetadataType,
-} from './interfaces/UsageDetails';
 import AssetUsagesModal from './components/AssetUsagesModal';
 import AssetUsagesToggleButton from './components/AssetUsagesToggleButton';
 import assetUsageDetailsModalState from './state/assetUsageDetailsModalState';
@@ -24,11 +17,6 @@ export {
     AssetUsagesToggleButton,
     UNUSED_ASSETS,
     USAGE_DETAILS_GROUP_FRAGMENT,
-    UsageDetails,
-    UsageDetailsGroup,
-    UsageDetailsMetadata,
-    UsageDetailsMetadataSchema,
-    UsageDetailsMetadataType,
     assetUsageDetailsModalState,
     showUnusedAssetsState,
     useAssetUsagesQuery,

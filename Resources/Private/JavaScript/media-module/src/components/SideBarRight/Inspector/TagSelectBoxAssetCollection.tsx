@@ -1,12 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { useIntl, useNotify } from '@media-ui/core';
-import { Tag, useTagsQuery } from '@media-ui/feature-asset-tags';
-import {
-    AssetCollection,
-    useSelectedAssetCollection,
-    useUpdateAssetCollection,
-} from '@media-ui/feature-asset-collections';
+import { useTagsQuery } from '@media-ui/feature-asset-tags';
+import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/feature-asset-collections';
 
 import { TagSelectBox } from '.';
 

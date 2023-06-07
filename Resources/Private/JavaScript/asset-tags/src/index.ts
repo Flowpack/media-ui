@@ -6,7 +6,5 @@ export { default as useUpdateTag } from './hooks/useUpdateTag';
 
 export { default as CreateTagDialog } from './components/CreateTagDialog';
 
-export { default as Tag } from './interfaces/Tag';
-
 export { default as selectedTagIdState } from './state/selectedTagIdState';
 export { default as createTagDialogState } from './state/createTagDialogState';

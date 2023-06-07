@@ -1,8 +1,7 @@
 import { useMutation } from '@apollo/client';
 
-import { ASSET_COLLECTIONS, AssetCollection } from '@media-ui/feature-asset-collections';
+import { ASSET_COLLECTIONS } from '@media-ui/feature-asset-collections';
 
-import Tag from '../interfaces/Tag';
 import TAGS from '../queries/tags';
 import CREATE_TAG from '../mutations/createTag';
 

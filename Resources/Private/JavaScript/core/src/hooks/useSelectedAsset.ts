@@ -1,6 +1,5 @@
 import { useRecoilValue } from 'recoil';
 
-import { Asset } from '../interfaces';
 import { selectedAssetIdState } from '../state';
 import useAssetQuery from './useAssetQuery';
 

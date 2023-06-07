@@ -1,5 +1,4 @@
 export {
-    I18nRegistry,
     IntlProvider,
     InteractionProvider,
     InteractionDialogRenderer,

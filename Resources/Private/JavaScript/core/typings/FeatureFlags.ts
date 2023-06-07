@@ -1,4 +1,4 @@
-export default interface FeatureFlags {
+interface FeatureFlags {
     createAssetRedirectsOption: boolean;
     limitToSingleAssetCollectionPerAsset: boolean;
     pagination: PaginationConfig;

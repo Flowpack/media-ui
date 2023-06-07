@@ -2,8 +2,6 @@ import { InMemoryCache } from '@apollo/client';
 import { ApolloCache } from '@apollo/client/cache/core/cache';
 import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 
-import { FeatureFlags } from '@media-ui/core/src/interfaces';
-
 import { IdFromObjectResolver } from './index';
 
 class CacheFactory {

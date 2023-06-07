@@ -1,7 +1,5 @@
 import { atom } from 'recoil';
 
-import { FeatureFlags } from '../interfaces';
-
 export const featureFlagsState = atom<FeatureFlags>({
     key: 'FeatureFlagsState',
     default: {

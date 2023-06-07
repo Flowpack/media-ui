@@ -1,4 +1,4 @@
-export default interface TreeNodeProps {
+interface TreeNodeProps {
     title?: string;
     label?: string;
     level: number;

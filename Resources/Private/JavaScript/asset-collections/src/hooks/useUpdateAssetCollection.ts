@@ -1,9 +1,6 @@
 import { useCallback } from 'react';
 import { useMutation } from '@apollo/client';
 
-import { Tag } from '@media-ui/feature-asset-tags';
-
-import AssetCollection from '../interfaces/AssetCollection';
 import { UPDATE_ASSET_COLLECTION } from '../mutations/updateAssetCollection';
 
 interface UpdateAssetCollectionProps {

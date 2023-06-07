@@ -1,8 +1,4 @@
-import { AssetCollection } from '@media-ui/feature-asset-collections';
-import { Tag } from '@media-ui/feature-asset-tags';
-
-import { Asset } from '../interfaces';
-import { I18nRegistry, Interaction } from '../provider';
+import { Interaction } from '../provider';
 
 // TODO: Feature packages should be able to extend the ApprovalAttainmentStrategy with their own methods.
 export interface ApprovalAttainmentStrategy {
