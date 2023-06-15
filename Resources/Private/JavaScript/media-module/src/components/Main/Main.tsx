@@ -4,7 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Button } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
-import { availableAssetIdentitiesState } from '@media-ui/core/src/state';
+import { availableAssetIdentitiesState, searchTermState } from '@media-ui/core/src/state';
 import { clipboardState, clipboardVisibleState } from '@media-ui/feature-clipboard';
 import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage';
 
@@ -20,6 +20,7 @@ const Main: React.FC = () => {
     const clipboard = useRecoilValue(clipboardState);
     const mainView = useRecoilValue(mainViewState);
     const setClipboardVisible = useSetRecoilState(clipboardVisibleState);
+    const searchTerm = useRecoilValue(searchTermState);
     const { translate } = useIntl();
     const availableAssetIdentities = useRecoilValue(availableAssetIdentitiesState);
     const [visibleAssetIdentities, setVisibleAssetIdentities] = useState<AssetIdentity[]>(availableAssetIdentities);
@@ -57,7 +58,13 @@ const Main: React.FC = () => {
             ) : (
                 <LoadingLabel
                     loadingText={translate('assetList.loading', 'Loading assets')}
-                    emptyText={translate('assetList.empty', 'No assets found')}
+                    emptyText={
+                        searchTerm
+                            ? translate('assetList.emptyForSearchTerm', 'No assets found for "{searchTerm}"', {
+                                  searchTerm,
+                              })
+                            : translate('assetList.empty', 'No assets found')
+                    }
                 />
             )}
         </div>
