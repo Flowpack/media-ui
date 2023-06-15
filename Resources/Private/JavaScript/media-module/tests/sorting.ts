@@ -16,7 +16,7 @@ test('The sort direction is changed on click of button', async (t) => {
 test('The sorting is changed on click of sort by name', async (t) => {
     await t
         .click(page.sortingSelection)
-        .click(page.sortingSelection.findReact('ListPreviewElement').withText('Name'))
+        .click(page.getDropdownElement('Name'))
         .expect(page.firstThumbnail.innerText)
         .eql('Example asset 9');
 });

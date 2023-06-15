@@ -9,7 +9,16 @@
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "skipLibCheck": true,
     "target": "ES2019",
-    "typeRoots": ["./Resources/Private/JavaScript/core/typings"],
+    "typeRoots": [
+      "./Resources/Private/JavaScript/core/typings",
+      "./Resources/Private/JavaScript/asset-usage/typings",
+      "./Resources/Private/JavaScript/asset-tags/typings",
+      "./Resources/Private/JavaScript/asset-collections/typings",
+      "./Resources/Private/JavaScript/asset-variants/typings",
+      "./Resources/Private/JavaScript/asset-upload/typings",
+      "./Resources/Private/JavaScript/asset-sources/typings",
+      "./Resources/Private/JavaScript/concurrent-editing/typings"
+    ],
     "paths": {
       "@media-ui/feature-asset-usage/src/*": ["./Resources/Private/JavaScript/asset-usage/src/*"],
       "@media-ui/feature-asset-variants/src/*": ["./Resources/Private/JavaScript/asset-variants/src/*"],
@@ -29,9 +38,9 @@
     "node_modules/@media-ui/core/src/**/*"
   ],
   "exclude": [
-    "node_modules",
+    "node_modules"
   ],
   "ts-node": {
-    "esm": true,
+    "esm": true
   }
 }

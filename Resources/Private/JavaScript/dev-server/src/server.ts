@@ -1,35 +1,41 @@
-const fs = require('fs');
-const path = require('path');
-const Parcel = require('@parcel/core').default;
-const { gql } = require('@apollo/client');
-const { ApolloServer } = require('apollo-server-express');
-const express = require('express');
-const Fixtures = require('./fixtures');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+import { Parcel } from '@parcel/core';
+import { gql } from '@apollo/client';
+import { ApolloServer } from 'apollo-server-express';
+import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+
+import * as Fixtures from './fixtures/index';
 
 // FIXME: type annotations are missing as they couldn't be included anymore while making the devserver work again
-// import { Tag } from '@media-ui/core/src/interfaces';
 // import { AssetChange, AssetChangeQueryResult, AssetChangeType } from '@media-ui/feature-concurrent-editing/src';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 (async () => {
     const bundlerPort = 8001;
     const frontendPort = 8000;
 
     const bundler = new Parcel({
-        defaultConfig: require.resolve('@parcel/config-default'),
+        defaultConfig: '@parcel/config-default',
         entries: path.resolve(__dirname, './index.html'),
-        outDir: path.resolve(__dirname, '../dist'),
-        publicUrl: '/',
+        defaultTargetOptions: {
+            distDir: path.resolve(__dirname, '../dist'),
+            publicUrl: '/',
+        },
         mode: 'development',
         // cache: false,
-        logLevel: 4,
+        logLevel: 'info',
         serveOptions: {
             publicUrl: '/',
             port: bundlerPort,
+            host: 'localhost',
         },
-        hot: {
+        hmrOptions: {
             port: bundlerPort,
-            host: '/',
+            host: 'localhost',
         },
     });
     bundler.watch();
@@ -111,6 +117,9 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
                     changes: since ? changes.filter((change) => change.lastModified > since) : changes,
                 };
             },
+            similarAssets: ($_, { id, assetSourceId }) => {
+                throw new Error('Not implemented');
+            },
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assetCount: (
                 $_,
@@ -120,6 +129,9 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
             },
             assetUsageDetails: ($_, { id }) => {
                 return Fixtures.getUsageDetailsForAsset(id);
+            },
+            assetUsageCount: ($_, { id, assetSourceId }) => {
+                throw new Error('Not implemented');
             },
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assetVariants: ($_, { id }) => {
@@ -260,6 +272,30 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
                 }
                 return null;
             },
+            updateTag: ($_, { id, label }) => {
+                throw new Error('Not implemented');
+            },
+            replaceAsset: ($_, { id, assetSourceId, file, options }) => {
+                throw new Error('Not implemented');
+            },
+            editAsset: ($_, { id, assetSourceId, filename, options }) => {
+                throw new Error('Not implemented');
+            },
+            tagAsset: ($_, { id, assetSourceId, tagId }) => {
+                throw new Error('Not implemented');
+            },
+            untagAsset: ($_, { id, assetSourceId, tagId }) => {
+                throw new Error('Not implemented');
+            },
+            uploadFile: ($_, { file, tagId, assetCollectionId }) => {
+                throw new Error('Not implemented');
+            },
+            uploadFiles: ($_, { files, tagId, assetCollectionId }) => {
+                throw new Error('Not implemented');
+            },
+            importAsset: ($_, { id, assetSourceId }) => {
+                throw new Error('Not implemented');
+            },
         },
     };
 
@@ -272,6 +308,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
     const server = new ApolloServer({ typeDefs, resolvers, uploads: false });
     const app = express();
 
+    // @ts-ignore
     server.applyMiddleware({ app, path: '/graphql' });
 
     app.use((req, res, next) => {

@@ -5,6 +5,7 @@
   "dependencies": {
     "@media-ui/media-module": "workspace:*"
   },
+  "type": "module",
   "devDependencies": {
     "@types/node": "^16.18.34",
     "express": "^4.18.2",

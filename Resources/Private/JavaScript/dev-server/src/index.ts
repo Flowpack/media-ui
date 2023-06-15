@@ -1,5 +1,3 @@
-import { FeatureFlags } from '@media-ui/core/src/interfaces';
-
 setTimeout(() => {
     console.info('Started Media Module dev server script');
 
@@ -57,6 +55,7 @@ setTimeout(() => {
     );
     app.setAttribute('data-dummy-image', '/dummy-image.svg');
 
+    // @ts-ignore
     document.getElementById('content').appendChild(app);
 
     // Apply mock
@@ -65,17 +64,17 @@ setTimeout(() => {
         I18n: {
             initialized: true,
             // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
-            translate: (id, fallback: string, packageKey = null, source = null, args = []) => {
+            translate: (id: string, fallback: string, packageKey = null, source = null, args = []) => {
                 Object.keys(args).forEach((key) => (fallback = fallback.replace(`{${key}}`, args[key])));
                 return fallback;
             },
         },
         Notification: {
-            notice: (title) => console.log(title),
-            ok: (title) => console.log(title),
-            error: (title, message) => console.error(message, title),
-            warning: (title, message) => console.warn(message, title),
-            info: (title) => console.info(title),
+            notice: (title: string) => console.log(title),
+            ok: (title: string) => console.log(title),
+            error: (title: string, message: string) => console.error(message, title),
+            warning: (title: string, message: string) => console.warn(message, title),
+            info: (title: string) => console.info(title),
         },
     };
 }, 0);

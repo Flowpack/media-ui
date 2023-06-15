@@ -1,3 +1,4 @@
+import { Selector } from 'testcafe';
 import { ReactSelector } from 'testcafe-react-selectors';
 
 class Page {
@@ -5,12 +6,9 @@ class Page {
     public thumbnails: Selector;
     public assetCollections: Selector;
     public pagination: Selector;
-    public paginationItems: Selector;
     public assetCount: Selector;
     public tags: Selector;
     public sortOrder: Selector;
-    public sortingButton: Selector;
-    public sortingSelection: Selector;
     public lightbox: Selector;
     public currentSelection: Selector;
     public tagSelection: Selector;
@@ -36,12 +34,9 @@ class Page {
 
         // Pagination
         this.pagination = ReactSelector('Pagination');
-        this.paginationItems = this.pagination.findReact('PaginationItem');
 
         // Sorting
         this.sortOrder = ReactSelector('SortOrderSelector');
-        this.sortingSelection = this.sortOrder.findReact('SelectBox');
-        this.sortingButton = this.sortOrder.findReact('IconButton');
 
         // Right sidebar
         this.assetInspector = ReactSelector('AssetInspector');
@@ -55,7 +50,24 @@ class Page {
     }
 
     public get firstCollection() {
-        return this.thumbnails.nth(0);
+        return this.assetCollections.nth(0);
+    }
+
+    public get paginationItems() {
+        return this.pagination.findReact('PaginationItem');
+    }
+
+    public get sortingSelection() {
+        return this.sortOrder.findReact('SelectBox');
+    }
+
+    public get sortingButton() {
+        return this.sortOrder.findReact('IconButton');
+    }
+
+    // FIXME: This is a workaround for issues with selecting elements inside a portal which is used by the UI react components for dropdowns
+    public getDropdownElement(label: string): Selector {
+        return Selector('ul[class*="dropDown__contents"]').find('[role="button"]').withText(label);
     }
 }
 

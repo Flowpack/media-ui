@@ -1,16 +1,12 @@
-const cloneDeep = require('lodash.clonedeep');
-
-// FIXME: type annotations are missing as they couldn't be included anymore while making the devserver work again
-// import { Asset, AssetCollection, AssetSource, Image, IptcProperty, Tag } from '@media-ui/core/src/interfaces';
-// import { UsageDetailsGroup } from '@media-ui/feature-asset-usage/src';
+import cloneDeep from 'lodash.clonedeep';
 
 const exampleImages = ['example1.jpg', 'example2.jpg', 'example3.jpg'];
 
 const range = (length: number) => [...Array(length)].map((val, i) => i);
 const getExampleFilename = (seed = 0) => exampleImages[seed % exampleImages.length];
-const getExampleImagePath = (filename) => `Assets/${filename}`;
+const getExampleImagePath = (filename: string) => `Assets/${filename}`;
 
-const getIptcProperties = (seed: number) => [
+const getIptcProperties = (seed: number): IptcProperty[] => [
     {
         __typename: 'IptcProperty',
         propertyName: 'Camera',
@@ -38,7 +34,7 @@ const typeIcons = {
     },
 };
 
-const assetSources = [
+const assetSources: AssetSource[] = [
     {
         __typename: 'AssetSource',
         id: 'neos',
@@ -61,13 +57,13 @@ const assetSources = [
     },
 ];
 
-const tags = range(10).map((index) => ({
+const tags: Tag[] = range(10).map((index) => ({
     __typename: 'Tag',
     id: `index ${index + 1}`,
     label: `Example tag ${index + 1}`,
 }));
 
-const assetCollections = range(3).map((index) => ({
+const assetCollections: AssetCollection[] = range(3).map((index) => ({
     __typename: 'AssetCollection',
     id: `someId_${index}`,
     title: `Example collection ${index + 1}`,
@@ -83,7 +79,7 @@ const assetCollections = range(3).map((index) => ({
     assetCount: 0,
 }));
 
-const getUsageDetailsForAsset = (assetId: string) => {
+const getUsageDetailsForAsset = (assetId: string): UsageDetailsGroup[] => {
     const usageCount = (parseInt(assetId) || 0) % 5;
 
     return [
@@ -200,5 +196,4 @@ const loadFixtures = () => {
     };
 };
 
-exports.loadFixtures = loadFixtures;
-exports.getUsageDetailsForAsset = getUsageDetailsForAsset;
+export { loadFixtures, getUsageDetailsForAsset };
