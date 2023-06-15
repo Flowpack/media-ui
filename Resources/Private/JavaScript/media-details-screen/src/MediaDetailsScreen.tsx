@@ -12,7 +12,7 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
 import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
-import { ApolloErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
+import { createErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
 import { Details } from './components';
 
 // GraphQL type definitions
@@ -43,6 +43,21 @@ interface MediaDetailsScreenState {
 }
 
 export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenProps, MediaDetailsScreenState> {
+    notificationHandler: NeosNotification;
+
+    constructor(props: MediaDetailsScreenProps) {
+        super(props);
+
+        // The Neos.UI FlashMessages only support the levels 'success', 'error' and 'info'
+        this.notificationHandler = {
+            info: (message) => props.addFlashMessage(message, message, 'info'),
+            ok: (message) => props.addFlashMessage(message, message, 'success'),
+            notice: (message) => props.addFlashMessage(message, message, 'info'),
+            warning: (title, message = '') => props.addFlashMessage(title, message, 'error'),
+            error: (title, message = '') => props.addFlashMessage(title, message, 'error'),
+        };
+    }
+
     getConfig() {
         return {
             endpoints: {
@@ -64,7 +79,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
             apolloClient = new ApolloClient({
                 cache,
                 link: ApolloLink.from([
-                    ApolloErrorHandler,
+                    createErrorHandler(this.notificationHandler),
                     createUploadLink({
                         uri: endpoints.graphql,
                         credentials: 'same-origin',

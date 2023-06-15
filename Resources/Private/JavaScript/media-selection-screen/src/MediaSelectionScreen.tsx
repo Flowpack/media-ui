@@ -15,7 +15,7 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
 import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
-import { ApolloErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
+import { createErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
 import App from '@media-ui/media-module/src/components/App';
 
 // GraphQL type definitions
@@ -47,11 +47,22 @@ interface MediaSelectionScreenState {
 }
 
 class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps, MediaSelectionScreenState> {
+    notificationHandler: NeosNotification;
+
     constructor(props: MediaSelectionScreenProps) {
         super(props);
         this.state = {
             initialLeftSideBarHiddenState: false,
             initialNodeCreationDialogOpenState: false,
+        };
+
+        // The Neos.UI FlashMessages only support the levels 'success', 'error' and 'info'
+        this.notificationHandler = {
+            info: (message) => props.addFlashMessage(message, message, 'info'),
+            ok: (message) => props.addFlashMessage(message, message, 'success'),
+            notice: (message) => props.addFlashMessage(message, message, 'info'),
+            warning: (title, message = '') => props.addFlashMessage(title, message, 'error'),
+            error: (title, message = '') => props.addFlashMessage(title, message, 'error'),
         };
     }
 
@@ -94,7 +105,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
             apolloClient = new ApolloClient({
                 cache,
                 link: ApolloLink.from([
-                    ApolloErrorHandler,
+                    createErrorHandler(this.notificationHandler),
                     createUploadLink({
                         uri: endpoints.graphql,
                         credentials: 'same-origin',
@@ -117,21 +128,12 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
     };
 
     render() {
-        const { addFlashMessage, onComplete, constraints, type } = this.props;
+        const { onComplete, constraints, type } = this.props;
         const client = this.getApolloClient();
         const { dummyImage } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
 
         const featureFlags: FeatureFlags = this.props.frontendConfiguration as FeatureFlags;
-
-        // The Neos.UI FlashMessages only support the levels 'success', 'error' and 'info'
-        const Notification: NeosNotification = {
-            info: (message) => addFlashMessage(message, message, 'info'),
-            ok: (message) => addFlashMessage(message, message, 'success'),
-            notice: (message) => addFlashMessage(message, message, 'info'),
-            warning: (title, message = '') => addFlashMessage(title, message, 'error'),
-            error: (title, message = '') => addFlashMessage(title, message, 'error'),
-        };
 
         const isInNodeCreationDialog = this.state.initialNodeCreationDialogOpenState;
 
@@ -142,7 +144,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                 })}
             >
                 <IntlProvider translate={this.translate}>
-                    <NotifyProvider notificationApi={Notification}>
+                    <NotifyProvider notificationApi={this.notificationHandler}>
                         <InteractionProvider>
                             <ApolloProvider client={client}>
                                 <RecoilRoot>
