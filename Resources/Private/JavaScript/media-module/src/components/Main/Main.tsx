@@ -60,7 +60,7 @@ const Main: React.FC = () => {
                     loadingText={translate('assetList.loading', 'Loading assets')}
                     emptyText={
                         searchTerm
-                            ? translate('assetList.emptyForSearchTerm', 'No assets found for "{searchTerm}"', {
+                            ? translate('assetList.emptyForSearchTerm', `No assets found for "${searchTerm}"`, {
                                   searchTerm,
                               })
                             : translate('assetList.empty', 'No assets found')
