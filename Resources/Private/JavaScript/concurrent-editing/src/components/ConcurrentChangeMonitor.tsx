@@ -17,22 +17,22 @@ const ConcurrentChangeMonitor: React.FC = () => {
     useEffect(() => {
         changedAssets?.forEach((change) => {
             switch (change.type) {
-                case AssetChangeType.ASSET_REPLACED:
-                case AssetChangeType.ASSET_UPDATED:
+                case 'ASSET_REPLACED':
+                case 'ASSET_UPDATED':
                     refetchAsset({ id: change.assetId, assetSourceId: NEOS_ASSET_SOURCE }).then(() => {
                         // TODO: Show some notification in the ui
                         console.info(change.assetId, change.type, 'An asset was updated due to a remote change');
                     });
                     assetUpdatedEvent({ assetId: change.assetId, assetSourceId: NEOS_ASSET_SOURCE });
                     break;
-                case AssetChangeType.ASSET_CREATED:
+                case 'ASSET_CREATED':
                     refetchAssets().then(() => {
                         // TODO: Show some notification in the ui
                         console.info(change.assetId, change.type, 'An asset was created remotely');
                     });
                     assetCreatedEvent({ assetId: change.assetId, assetSourceId: NEOS_ASSET_SOURCE });
                     break;
-                case AssetChangeType.ASSET_REMOVED:
+                case 'ASSET_REMOVED':
                     refetchAssets().then(() => {
                         // TODO: Show some notification in the ui
                         console.info(change.assetId, change.type, 'An asset was removed remotely');
