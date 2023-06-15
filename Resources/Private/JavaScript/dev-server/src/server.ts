@@ -54,13 +54,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         });
     };
 
-    const sortAssets = (assets, sortBy, sortDirection) => {
+    const sortAssets = (assets: Asset[], sortBy, sortDirection) => {
         const sorted = assets.sort((a, b) => {
             if (sortBy === 'name') {
                 // Using the label here since teh filename is the same in every fixture
-                return a['label'].localeCompare(b['label']);
+                return a.label.localeCompare(b.label);
             }
-            return new Date(a['lastModified']).getTime() - new Date(b['lastModified']).getTime();
+            return new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime();
         });
 
         return sortDirection === 'DESC' ? sorted.reverse() : sorted;
@@ -96,7 +96,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     sortBy = 'lastModified',
                     sortDirection = 'DESC',
                 }
-            ) =>
+            ): Asset[] =>
                 sortAssets(
                     filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm).slice(
                         offset,
@@ -105,9 +105,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     sortBy,
                     sortDirection
                 ),
-            unusedAssets: ($_, { limit = 20, offset = 0 }) =>
+            unusedAssets: ($_, { limit = 20, offset = 0 }): Asset[] =>
                 assets.filter(({ isInUse }) => !isInUse).slice(offset, offset + limit),
-            unusedAssetCount: () => assets.filter(({ isInUse }) => !isInUse).length,
+            unusedAssetCount: (): number => assets.filter(({ isInUse }) => !isInUse).length,
             changedAssets: ($_, { since }) => {
                 const { lastModified, changes } = changedAssetsResponse.changedAssets;
                 since = since ? new Date(since) : null;
@@ -124,25 +124,26 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             assetCount: (
                 $_,
                 { assetSourceId = 'neos', tagId = null, assetCollectionId = null, mediaType = '', searchTerm = '' }
-            ) => {
+            ): number => {
                 return filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm).length;
             },
-            assetUsageDetails: ($_, { id }) => {
+            assetUsageDetails: ($_, { id }): UsageDetailsGroup[] => {
                 return Fixtures.getUsageDetailsForAsset(id);
             },
-            assetUsageCount: ($_, { id, assetSourceId }) => {
+            assetUsageCount: ($_, { id, assetSourceId }): number => {
                 throw new Error('Not implemented');
             },
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            assetVariants: ($_, { id }) => {
+            assetVariants: ($_, { id }): AssetVariant[] => {
                 // TODO: Implement assetVariants
                 return [];
             },
-            assetSources: () => assetSources,
-            assetCollections: () => assetCollections,
-            assetCollection: ($_, { id }) => assetCollections.find((assetCollection) => assetCollection.id === id),
-            tags: () => tags,
-            tag: ($_, { id }) => tags.find((tag) => tag.id === id),
+            assetSources: (): AssetSource[] => assetSources,
+            assetCollections: (): AssetCollection[] => assetCollections,
+            assetCollection: ($_, { id }): AssetCollection =>
+                assetCollections.find((assetCollection) => assetCollection.id === id),
+            tags: (): Tag[] => tags,
+            tag: ($_, { id }): Tag => tags.find((tag) => tag.id === id),
             config: () => ({
                 uploadMaxFileSize: 1024 * 1024,
                 uploadMaxFileUploadLimit: 2,
@@ -150,7 +151,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             }),
         },
         Mutation: {
-            updateAsset: ($_, { id, assetSourceId, label, caption, copyrightNotice }) => {
+            updateAsset: ($_, { id, assetSourceId, label, caption, copyrightNotice }): Asset => {
                 const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
                 asset.label = label;
                 asset.caption = caption;
@@ -163,14 +164,30 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 });
                 return asset;
             },
-            setAssetCollectionParent: ($_, { id, parent }: { id: string; parent: string }) => {
+            setAssetCollectionParent: ($_, { id, parent }: { id: string; parent: string }): boolean => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
-                assetCollection.parent = parent;
+                const parentCollection = assetCollections.find((assetCollection) => assetCollection.id === parent);
+                if (!assetCollection || !parentCollection) return false;
+
+                // Check if there would be a recursion
+                let tmpParent = parentCollection;
+                while (tmpParent) {
+                    tmpParent = tmpParent.parent as AssetCollection;
+                    if (tmpParent.id === parentCollection.id) {
+                        return false;
+                    }
+                }
+
+                assetCollection.parent = parentCollection;
                 return true;
             },
-            updateAssetCollection: ($_, { id, title, tagIds }: { id: string; title: string; tagIds: string[] }) => {
+            updateAssetCollection: (
+                $_,
+                { id, title, tagIds }: { id: string; title: string; tagIds: string[] }
+            ): boolean => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
                 if (title) {
+                    // @ts-ignore we intentionally overwrite the readonly property here
                     assetCollection.title = title;
                 }
                 if (Array.isArray(tagIds)) {
@@ -178,17 +195,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 }
                 return true;
             },
-            deleteAssetCollection: ($_, { id }: { id: string }) => {
+            deleteAssetCollection: ($_, { id }: { id: string }): boolean => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
                 if (!assetCollection) return false;
                 assetCollections = assetCollections.filter((assetCollection) => assetCollection.id !== id);
                 return true;
             },
-            createAssetCollection: ($_, { title, parent }: { title: string; parent: string }) => {
+            createAssetCollection: ($_, { title, parent }: { title: string; parent: string }): AssetCollection => {
                 const parentCollection = parent
                     ? assetCollections.find((assetCollection) => assetCollection.id === parent)
                     : null;
-                const newCollection = {
+                const newCollection: AssetCollection = {
+                    __typename: 'AssetCollection',
                     id: `someId_${Date.now()}`,
                     title,
                     parent: parentCollection
@@ -206,7 +224,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             setAssetTags: (
                 $_,
                 { id, assetSourceId, tagIds }: { id: string; assetSourceId: string; tagIds: string[] }
-            ) => {
+            ): Asset => {
                 const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
                 asset.tags = tags.filter((tag) => tagIds.includes(tag.id));
                 addAssetChange({
@@ -223,7 +241,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     assetSourceId,
                     assetCollectionIds: newAssetCollectionIds,
                 }: { id: string; assetSourceId: string; assetCollectionIds: string[] }
-            ) => {
+            ): boolean => {
                 const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
                 asset.collections = assetCollections.filter((collection) =>
                     newAssetCollectionIds.includes(collection.id)
@@ -233,17 +251,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     assetId: id,
                     type: 'ASSET_UPDATED',
                 });
-                return asset;
+                return true;
             },
-            deleteTag: ($_, { id }) => {
+            deleteTag: ($_, { id }): boolean => {
                 tags.splice(
                     tags.findIndex((tag) => tag.id === id),
                     1
                 );
-                // TODO: Remove tag from assets
+                // Remove tag from assets
+                assets.forEach((asset) => {
+                    asset.tags = asset.tags.filter((tag) => tag.id !== id);
+                });
                 return true;
             },
-            deleteAsset: ($_, { id: id, assetSourceId }) => {
+            deleteAsset: ($_, { id: id, assetSourceId }): boolean => {
                 const inUse = Fixtures.getUsageDetailsForAsset(id).reduce(
                     (prev, { usages }) => prev && usages.length > 0,
                     false
@@ -265,35 +286,35 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 }
                 return false;
             },
-            createTag: ($_, { tag: newTag }: { tag }) => {
+            createTag: ($_, { tag: newTag }: { tag: Tag }): Tag => {
                 if (!tags.find((tag) => tag === newTag)) {
                     tags.push(newTag);
                     return newTag;
                 }
                 return null;
             },
-            updateTag: ($_, { id, label }) => {
+            updateTag: ($_, { id, label }): Tag => {
                 throw new Error('Not implemented');
             },
-            replaceAsset: ($_, { id, assetSourceId, file, options }) => {
+            replaceAsset: ($_, { id, assetSourceId, file, options }): FileUploadResult => {
                 throw new Error('Not implemented');
             },
-            editAsset: ($_, { id, assetSourceId, filename, options }) => {
+            editAsset: ($_, { id, assetSourceId, filename, options }): boolean => {
                 throw new Error('Not implemented');
             },
-            tagAsset: ($_, { id, assetSourceId, tagId }) => {
+            tagAsset: ($_, { id, assetSourceId, tagId }): Asset => {
                 throw new Error('Not implemented');
             },
-            untagAsset: ($_, { id, assetSourceId, tagId }) => {
+            untagAsset: ($_, { id, assetSourceId, tagId }): Asset => {
                 throw new Error('Not implemented');
             },
-            uploadFile: ($_, { file, tagId, assetCollectionId }) => {
+            uploadFile: ($_, { file, tagId, assetCollectionId }): FileUploadResult => {
                 throw new Error('Not implemented');
             },
-            uploadFiles: ($_, { files, tagId, assetCollectionId }) => {
+            uploadFiles: ($_, { files, tagId, assetCollectionId }): FileUploadResult[] => {
                 throw new Error('Not implemented');
             },
-            importAsset: ($_, { id, assetSourceId }) => {
+            importAsset: ($_, { id, assetSourceId }): Asset => {
                 throw new Error('Not implemented');
             },
         },

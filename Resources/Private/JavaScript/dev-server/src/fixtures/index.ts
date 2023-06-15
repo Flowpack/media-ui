@@ -189,10 +189,10 @@ const assets = range(150).map((index) => {
 
 const loadFixtures = () => {
     return {
-        assets: cloneDeep(assets),
-        assetCollections: cloneDeep(assetCollections),
-        assetSources: cloneDeep(assetSources),
-        tags: cloneDeep(tags),
+        assets: cloneDeep(assets) as Asset[],
+        assetCollections: cloneDeep(assetCollections) as AssetCollection[],
+        assetSources: cloneDeep(assetSources) as AssetSource[],
+        tags: cloneDeep(tags) as Tag[],
     };
 };
 
