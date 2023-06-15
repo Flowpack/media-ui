@@ -14,7 +14,7 @@ import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
 // Internal dependencies
-import { ApolloErrorHandler, CacheFactory } from './core';
+import { createErrorHandler, CacheFactory } from './core';
 import App from './components/App';
 import ErrorBoundary from './components/ErrorBoundary';
 import loadIconLibrary from './lib/FontAwesome';
@@ -37,19 +37,6 @@ window.onload = async (): Promise<void> => {
     // Cache for ApolloClient
     const cache = CacheFactory.createCache(featureFlags);
 
-    const client = new ApolloClient({
-        connectToDevTools: true,
-        cache,
-        link: ApolloLink.from([
-            ApolloErrorHandler,
-            createUploadLink({
-                uri: endpoints.graphql,
-                credentials: 'same-origin',
-            }),
-        ]),
-        typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_ASSET_USAGE],
-    });
-
     const containerRef = createRef<HTMLDivElement>();
 
     const { Notification } = window.NeosCMS;
@@ -57,6 +44,19 @@ window.onload = async (): Promise<void> => {
     const translate = (id, value = null, args = {}, packageKey = 'Flowpack.Media.Ui', source = 'Main') => {
         return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
     };
+
+    const client = new ApolloClient({
+        connectToDevTools: true,
+        cache,
+        link: ApolloLink.from([
+            createErrorHandler(Notification),
+            createUploadLink({
+                uri: endpoints.graphql,
+                credentials: 'same-origin',
+            }),
+        ]),
+        typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_ASSET_USAGE],
+    });
 
     render(
         <IntlProvider translate={translate}>
