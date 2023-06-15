@@ -126,7 +126,7 @@ type Mutation {
         assetSourceId: AssetSourceId!
         filename: Filename!
         options: AssetEditOptionsInput!
-    ): EditAssetResult!
+    ): Boolean!
 
     tagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tagId: TagId!): Asset!
 
@@ -330,13 +330,6 @@ type FileUploadResult {
     filename: Filename!
     success: Boolean!
     result: String!
-}
-
-"""
-The result of a single file upload
-"""
-type EditAssetResult {
-    success: Boolean!
 }
 
 """

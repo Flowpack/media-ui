@@ -526,7 +526,7 @@ class MutationResolver implements ResolverInterface
     /**
      * @throws Exception|\Neos\Flow\ResourceManagement\Exception
      */
-    public function editAsset($_, array $variables, AssetSourceContext $assetSourceContext): array
+    public function editAsset($_, array $variables, AssetSourceContext $assetSourceContext): bool
     {
         [
             'id' => $id,
@@ -580,9 +580,7 @@ class MutationResolver implements ResolverInterface
             $this->systemLogger->error(sprintf('Asset %s could not be replace with the renamed copy', $asset->getIdentifier()), [$exception]);
         }
 
-        return [
-            'success' => $success,
-        ];
+        return $success;
     }
 
     /**
