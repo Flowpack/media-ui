@@ -43,12 +43,14 @@ class AssetCollectionsCommandController extends CommandController
     public function hierarchyCommand(): void
     {
         $rows = array_map(function (HierarchicalAssetCollectionInterface $assetCollection) {
+            $children = $this->assetCollectionRepository->findByParent($assetCollection)->toArray();
+
             return [
                 $this->persistenceManager->getIdentifierByObject($assetCollection),
                 $assetCollection->getTitle(),
                 $assetCollection->getParent() ? $this->persistenceManager->getIdentifierByObject($assetCollection->getParent()) : 'None',
                 $assetCollection->getParent() ? $assetCollection->getParent()->getTitle() : 'None',
-                implode(', ', array_map(static fn (AssetCollection $assetCollection) => $assetCollection->getTitle(), $assetCollection->getChildren()->toArray())),
+                implode(', ', array_map(static fn (AssetCollection $assetCollection) => $assetCollection->getTitle(), $children)),
                 implode("\n", array_map(static fn (Tag $tag) => $tag->getLabel(), $assetCollection->getTags()->toArray())),
             ];
         }, $this->assetCollectionRepository->findAll()->toArray());

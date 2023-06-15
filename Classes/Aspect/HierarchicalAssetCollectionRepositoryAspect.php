@@ -40,7 +40,7 @@ class HierarchicalAssetCollectionRepositoryAspect
      */
     public function remove(JoinPointInterface $joinPoint): void
     {
-        /** @var AssetCollectionRepository $assetCollection */
+        /** @var AssetCollectionRepository $assetCollectionRepository */
         $assetCollectionRepository = $joinPoint->getProxy();
         /** @var AssetCollection $assetCollection */
         $assetCollection = $joinPoint->getMethodArgument('object');
