@@ -42,7 +42,7 @@ final class AssetProxyQueryIterator implements AssetProxyIteratorAggregate
 
     public function setOffset(int $offset): void
     {
-        $this->assetProxyQuery->setOffset($offset > $this->count() ? 0 : $offset);
+        $this->assetProxyQuery->setOffset($offset >= $this->count() ? 0 : $offset);
     }
 
     /**

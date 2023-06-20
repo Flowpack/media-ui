@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Flowpack\Media\Ui\Tests\Helper;
+namespace Flowpack\Media\Ui\Tests\Unit\Infrastructure\Neos\Media;
 
 /*
  * This file is part of the Flowpack.Media.Ui package.

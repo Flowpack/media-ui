@@ -15,15 +15,14 @@ namespace Flowpack\Media\Ui\Tests\Unit\Infrastructure\Neos\Media;
  */
 
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyQueryIterator;
-use Flowpack\Media\Ui\Tests\Helper\ApplyArrayIteratorMixinToStubTrait;
+use Neos\Flow\Tests\UnitTestCase;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Stub;
-use PHPUnit\Framework\TestCase;
 
-final class AssetProxyQueryIteratorTest extends TestCase
+final class AssetProxyQueryIteratorTest extends UnitTestCase
 {
     use ApplyArrayIteratorMixinToStubTrait;
 
