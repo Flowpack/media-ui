@@ -6,7 +6,7 @@ Neos:
           # Allow the user to let the system create redirects when assets are replaced or renamed
           createAssetRedirectsOption: true
           # Only allow a single asset collection selection per asset to treat collection like folders
-          limitToSingleAssetCollectionPerAsset: true
+          limitToSingleAssetCollectionPerAsset: false
           # Set the number of assets and links to be displayed per page
           pagination:
             assetsPerPage: 20

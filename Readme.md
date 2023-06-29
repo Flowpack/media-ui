@@ -36,7 +36,29 @@ Neos:
           useNewMediaSelection: false
 ``` 
 
+#### Hierarchical asset collections
+
+This package will enable a hierarchical asset collection structure via AOP (until the feature is in the Neos core).
+With this feature you can add a collection in another collection or assign existing ones to another and
+this way create a structure comparable with folders in your computers filesystem.
+
+It is recommended to enable the feature flag `limitToSingleAssetCollectionPerAsset` (see below) for a better experience. 
+
 ## Optional features
+
+### Limit assets to be only assigned to one AssetCollection
+
+By limiting assets to only be in one collection you can enforce a more folder like experience:
+
+```yaml
+Neos:
+  Neos:
+    Ui:
+      frontendConfiguration:
+        Flowpack.Media.Ui:
+          # Only allow a single asset collection selection per asset to treat collection like folders
+          limitToSingleAssetCollectionPerAsset: true
+```
 
 ### Fast asset usage calculation & unused assets view
            
