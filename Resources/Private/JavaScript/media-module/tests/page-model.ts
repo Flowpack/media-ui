@@ -54,7 +54,8 @@ class Page {
     }
 
     public get paginationItems() {
-        return this.pagination.findReact('PaginationItem');
+        // FIXME: The ReactSelector does not work in the CI build, so we use a CSS selector as workaround for now
+        return this.pagination.find('li');
     }
 
     public get sortingSelection() {
