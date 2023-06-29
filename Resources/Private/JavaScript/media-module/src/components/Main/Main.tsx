@@ -59,7 +59,7 @@ const Main: React.FC = () => {
                 <LoadingLabel
                     loadingText={translate('assetList.loading', 'Loading assets')}
                     emptyText={
-                        searchTerm
+                        searchTerm?.toString()
                             ? translate('assetList.emptyForSearchTerm', `No assets found for "${searchTerm}"`, {
                                   searchTerm,
                               })
