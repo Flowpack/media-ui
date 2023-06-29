@@ -1,10 +1,10 @@
-import * as React from 'react';
+import React from 'react';
+import { useRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { useIntl } from '@media-ui/core/src';
-import { Asset } from '@media-ui/core/src/interfaces';
-import { useClipboard } from '@media-ui/feature-clipboard/src';
+import { useIntl } from '@media-ui/core';
+import { clipboardItemState } from '@media-ui/feature-clipboard';
 
 interface PreviewActionsProps {
     asset: Asset;
@@ -13,7 +13,9 @@ interface PreviewActionsProps {
 
 const PreviewActions: React.FC<PreviewActionsProps> = ({ asset, buildLinkToMediaUi }: PreviewActionsProps) => {
     const { translate } = useIntl();
-    const { toggleClipboardState } = useClipboard();
+    const [isInClipboard, toggleClipboardState] = useRecoilState(
+        clipboardItemState({ assetId: asset.id, assetSourceId: asset.assetSource.id })
+    );
 
     return (
         <>
@@ -43,12 +45,12 @@ const PreviewActions: React.FC<PreviewActionsProps> = ({ asset, buildLinkToMedia
             {asset.localId && (
                 <IconButton
                     title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}
-                    icon={asset.isInClipboard ? 'clipboard-check' : 'clipboard'}
+                    icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
                     size="regular"
                     style="transparent"
                     hoverStyle="brand"
-                    className={asset.isInClipboard ? 'button--active' : ''}
-                    onClick={() => toggleClipboardState({ assetId: asset.id, assetSourceId: asset.assetSource.id })}
+                    className={isInClipboard ? 'button--active' : ''}
+                    onClick={toggleClipboardState}
                 />
             )}
         </>

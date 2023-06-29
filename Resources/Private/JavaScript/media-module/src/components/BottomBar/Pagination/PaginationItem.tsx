@@ -1,19 +1,9 @@
-import * as React from 'react';
+import React from 'react';
+import cx from 'classnames';
 
 import { IconButton, Button } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles } from '@media-ui/core/src';
-
-const useStyles = createUseMediaUiStyles({
-    item: {
-        userSelect: 'none',
-        '& button': {
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-        },
-    },
-});
+import classes from './PaginationItem.module.css';
 
 interface PaginationItemProps {
     title: string;
@@ -34,9 +24,8 @@ const PaginationItem: React.FC<PaginationItemProps> = ({
     disabled = false,
     icon,
 }: PaginationItemProps) => {
-    const classes = useStyles();
     return (
-        <li className={[classes.item, selected ? classes.selected : ''].join(' ')}>
+        <li className={cx(classes.item, selected && classes.selected)}>
             {icon ? (
                 <IconButton
                     icon={icon}

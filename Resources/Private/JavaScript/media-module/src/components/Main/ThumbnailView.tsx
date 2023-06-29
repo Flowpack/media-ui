@@ -1,28 +1,18 @@
-import * as React from 'react';
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
 import { useSelectAsset } from '@media-ui/core/src/hooks';
-import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview/src';
+import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview';
 
 import { Thumbnail } from './index';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    thumbnailView: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-        gridGap: theme.spacing.full,
-    },
-}));
+import classes from './ThumbnailView.module.css';
 
 interface ThumbnailViewProps {
     assetIdentities: AssetIdentity[];
 }
 
 const ThumbnailView: React.FC<ThumbnailViewProps> = ({ assetIdentities }: ThumbnailViewProps) => {
-    const classes = useStyles();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const selectAsset = useSelectAsset();
 

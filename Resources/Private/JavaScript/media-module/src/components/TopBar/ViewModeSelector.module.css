@@ -1,0 +1,12 @@
+.viewModeSelector {
+    display: flex;
+    align-items: baseline;
+}
+
+.viewModeSelector label {
+    margin-right: var(--theme-spacing-Quarter);
+}
+
+.selectBox {
+    min-width: auto;
+}

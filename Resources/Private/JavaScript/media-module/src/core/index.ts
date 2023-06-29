@@ -1,6 +1,3 @@
-import * as PersistentStateManager from './PersistentStateManager';
-import IdFromObjectResolver from './IdFromObjectResolver';
-import ApolloErrorHandler from './ApolloErrorHandler';
-import CacheFactory from './Cache';
-
-export { ApolloErrorHandler, CacheFactory, IdFromObjectResolver, PersistentStateManager };
+export { default as IdFromObjectResolver } from './IdFromObjectResolver';
+export { default as createErrorHandler } from './CreateErrorHandler';
+export { default as CacheFactory } from './Cache';

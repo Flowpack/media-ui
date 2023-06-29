@@ -1,8 +1,7 @@
 import { useMutation } from '@apollo/client';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import { DELETE_ASSET } from '../mutations';
-import { AssetIdentity } from '../interfaces';
 import { selectedAssetIdState } from '../state';
 import { ASSET } from '../queries';
 import { useEvent } from './index';
@@ -15,7 +14,7 @@ interface DeleteAssetVariables {
 
 export default function useDeleteAsset() {
     const [action, { error, data }] = useMutation<{ deleteAsset: boolean }, DeleteAssetVariables>(DELETE_ASSET);
-    const [selectedAssetId, setSelectedAsset] = useRecoilState(selectedAssetIdState);
+    const setSelectedAsset = useSetRecoilState(selectedAssetIdState);
     const assetRemoved = useEvent(assetRemovedEvent);
 
     // TODO: Check whether an optimisticResponse can be used here
@@ -44,9 +43,7 @@ export default function useDeleteAsset() {
             assetRemoved({ assetId, assetSourceId });
 
             // Unselect currently selected asset if it was just deleted
-            if (assetId === selectedAssetId?.assetId) {
-                setSelectedAsset(null);
-            }
+            setSelectedAsset((prev) => (prev.assetId === assetId ? null : prev));
         });
 
     return { deleteAsset, data, error };

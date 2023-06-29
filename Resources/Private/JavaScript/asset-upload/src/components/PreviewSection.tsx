@@ -1,23 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 
-import { FilesUploadState, FileUploadResult } from '../interfaces';
 import FilePreview from './FilePreview';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    fileList: {
-        marginTop: theme.spacing.full,
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    fileListHeader: {
-        flex: '1 1 100%',
-        marginBottom: theme.spacing.full,
-        fontSize: theme.fontSize,
-    },
-}));
+import classes from './PreviewSection.module.css';
 
 interface PreviewSectionProps {
     files: FilesUploadState;
@@ -27,7 +14,6 @@ interface PreviewSectionProps {
 
 const PreviewSection: React.FC<PreviewSectionProps> = ({ files, loading, uploadState }: PreviewSectionProps) => {
     const { translate } = useIntl();
-    const classes = useStyles();
 
     // FIXME: Mapping the uploadState to the files name is not the best solution as the same filename might be used multiple times
 

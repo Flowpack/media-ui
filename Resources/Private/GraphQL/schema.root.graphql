@@ -11,6 +11,7 @@ type Query {
         assetSourceId: AssetSourceId
         tagId: TagId
         assetCollectionId: AssetCollectionId
+        assetType: AssetType
         mediaType: MediaType
         searchTerm: String
         limit: Int
@@ -26,6 +27,7 @@ type Query {
         assetSourceId: AssetSourceId
         tagId: TagId
         assetCollectionId: AssetCollectionId
+        assetType: AssetType
         mediaType: MediaType
         searchTerm: String
     ): Int!
@@ -124,7 +126,7 @@ type Mutation {
         assetSourceId: AssetSourceId!
         filename: Filename!
         options: AssetEditOptionsInput!
-    ): EditAssetResult!
+    ): Boolean!
 
     tagAsset(id: AssetId!, assetSourceId: AssetSourceId!, tagId: TagId!): Asset!
 
@@ -132,7 +134,7 @@ type Mutation {
 
     setAssetTags(id: AssetId!, assetSourceId: AssetSourceId!, tagIds: [TagId!]!): Asset!
 
-    setAssetCollections(id: AssetId!, assetSourceId: AssetSourceId!, assetCollectionIds: [AssetCollectionId!]!): Asset!
+    setAssetCollections(id: AssetId!, assetSourceId: AssetSourceId!, assetCollectionIds: [AssetCollectionId!]!): Boolean!
 
     deleteTag(id: TagId!): Boolean!
 
@@ -144,11 +146,13 @@ type Mutation {
 
     importAsset(id: AssetId!, assetSourceId: AssetSourceId!): Asset!
 
-    createAssetCollection(title: String!): AssetCollection!
+    createAssetCollection(title: String!, parent: AssetCollectionId): AssetCollection!
 
-    deleteAssetCollection(id: AssetCollectionId!): DeleteAssetCollectionResult!
+    deleteAssetCollection(id: AssetCollectionId!): Boolean!
 
-    updateAssetCollection(id: AssetCollectionId!, title: String, tagIds: [TagId]): AssetCollection!
+    updateAssetCollection(id: AssetCollectionId!, title: String, tagIds: [TagId]): Boolean!
+
+    setAssetCollectionParent(id: AssetCollectionId!, parent: AssetCollectionId): Boolean!
 
     updateTag(id: TagId!, label: String): Tag!
 }
@@ -268,7 +272,9 @@ type AssetCollection {
     id: AssetCollectionId
     title: AssetCollectionTitle!
     assets: [Asset!]!
+    parent: AssetCollection
     tags: [Tag!]!
+    assetCount: Int!
 }
 
 """
@@ -324,20 +330,6 @@ type FileUploadResult {
     filename: Filename!
     success: Boolean!
     result: String!
-}
-
-"""
-The result of a single file upload
-"""
-type EditAssetResult {
-    success: Boolean!
-}
-
-"""
-The result of asset collection deletion
-"""
-type DeleteAssetCollectionResult {
-    success: Boolean!
 }
 
 """
@@ -400,13 +392,17 @@ Fields to sort assets by
 """
 enum SortBy {
     """
-    The ressource file name
+    The resource file name
     """
     name
     """
     Last modification date
     """
     lastModified
+    """
+    The resource file size
+    """
+    size
 }
 
 """
@@ -446,6 +442,11 @@ scalar UsageDetailsHeaders
 IANA media type of an Asset (e.g. "image/jpeg")
 """
 scalar MediaType
+
+"""
+Neos type of an Asset, can be "All", "Image", "Document", "Video" or "Audio" (see `Neos\Media\Domain\Model\AssetSource\AssetTypeFilter`)
+"""
+scalar AssetType
 
 """
 A File extension (e.g. "pdf")

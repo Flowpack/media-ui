@@ -1,0 +1,34 @@
+.listView {
+    height: auto;
+}
+
+.listView--fullHeight {
+    height: 100%;
+}
+
+.listView table {
+    border-spacing: 0 1px;
+    width: 100%;
+}
+
+.listView table th {
+    text-align: left;
+    line-height: var(--theme-spacing-GoldenUnit);
+    padding: 0 var(--theme-spacing-Half);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    user-select: none;
+}
+
+.listView table th:first-child,
+.listView table th:last-child {
+    padding: 0;
+}
+
+.tableHeader {
+    position: sticky;
+    background-color: var(--theme-colors-tableHeader);
+    top: 0;
+    z-index: 1;
+}

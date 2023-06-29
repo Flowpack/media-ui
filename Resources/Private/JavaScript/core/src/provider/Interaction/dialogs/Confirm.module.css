@@ -1,0 +1,7 @@
+.dialogBody {
+    padding: var(--theme-spacing-Full);
+}
+
+.modalTitle {
+    margin-left: var(--theme-spacing-Full);
+}

@@ -1,45 +1,19 @@
-import * as React from 'react';
+import React from 'react';
 import { useDropzone } from 'react-dropzone';
+import cx from 'classnames';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } from '@media-ui/core/src';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { humanFileSize } from '@media-ui/core/src/helper';
-import { UploadedFile } from '../interfaces';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    dropzone: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: theme.spacing.goldenUnit,
-        borderWidth: 2,
-        borderRadius: 2,
-        borderColor: ({ isDragAccept, isDragActive, isDragReject }) => {
-            if (isDragAccept) return theme.colors.success;
-            if (isDragReject) return theme.colors.error;
-            if (isDragActive) return theme.colors.primary;
-            return theme.colors.disabled;
-        },
-        borderStyle: 'dashed',
-        backgroundColor: theme.colors.alternatingBackground,
-        color: theme.colors.text,
-        outline: 'none',
-        cursor: 'pointer',
-        userSelect: 'none',
-        transition: 'border .24s ease-in-out',
-        '& p': {
-            margin: 0,
-            lineHeight: 1.6,
-        },
-    },
-}));
+import classes from './UploadSection.module.css';
 
 interface UploadSectionProps {
     files: UploadedFile[];
     loading: boolean;
     onSetFiles: (files: UploadedFile[]) => void;
     maxFiles?: number;
-    acceptedFileTypes?: string | string[];
+    acceptedFileTypes?: MediaType | MediaType[] | '';
 }
 
 const UploadSection: React.FC<UploadSectionProps> = ({
@@ -110,11 +84,19 @@ const UploadSection: React.FC<UploadSectionProps> = ({
         preventDropOnDocument: true,
         accept: acceptedFileTypes,
     });
-    const classes = useStyles({ isDragAccept, isDragActive, isDragReject });
 
     return (
         <section>
-            <div {...getRootProps({ className: classes.dropzone })}>
+            <div
+                {...getRootProps({
+                    className: cx(
+                        classes.dropzone,
+                        isDragAccept && classes.dropzoneAccept,
+                        isDragActive && classes.dropzoneActive,
+                        isDragReject && classes.dropzoneReject
+                    ),
+                })}
+            >
                 <input {...getInputProps()} />
                 <p>
                     {translate(

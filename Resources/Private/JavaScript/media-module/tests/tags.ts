@@ -5,6 +5,8 @@ fixture('Tags').page(SERVER_NAME);
 
 test('Clicking first tag updates list and only assets should be shown that are assigned to it', async (t) => {
     await t
+        // Uncollapse the tag list
+        .click(page.assetCollections.withText('All'))
         .expect(page.tags.withExactText('Example tag 1').exists)
         .ok('Tag "Example tag 1" should exist')
         // FIXME: For some reason it only works when we click the element twice

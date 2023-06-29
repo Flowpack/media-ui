@@ -39,7 +39,7 @@ class SimilarityService
     protected $objectManager;
 
     /**
-     * @return array<AssetSimilarityStrategyInterface>
+     * @return AssetSimilarityStrategyInterface[]
      */
     protected function getSimilarityStrategies(): array
     {
@@ -52,8 +52,7 @@ class SimilarityService
     }
 
     /**
-     * @param AssetInterface $asset
-     * @return array<AssetInterface>
+     * @return AssetInterface[]
      */
     public function getSimilarAssets(AssetInterface $asset): array
     {

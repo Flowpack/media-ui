@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+
 import { CONFIG } from '../queries';
 
 interface ConfigQueryResult {

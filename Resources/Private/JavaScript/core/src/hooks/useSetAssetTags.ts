@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client';
 
-import { Asset, Tag } from '../interfaces';
 import { SET_ASSET_TAGS } from '../mutations';
 
 interface SetAssetTagsProps {

@@ -4,9 +4,9 @@ import { useRecoilValue } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
-import { useSelectedTag, useUpdateTag } from '@media-ui/core/src/hooks';
+import { useSelectedTag, useUpdateTag } from '@media-ui/feature-asset-tags';
 
 import Actions from './Actions';
 import Property from './Property';

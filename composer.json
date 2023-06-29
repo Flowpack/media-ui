@@ -19,9 +19,10 @@
       "flowpack/entity-usage-databasestorage": "Required for the asset usage features"
     },
     "scripts": {
-      "test": "phpunit --enforce-time-limit --bootstrap vendor/autoload.php --testdox Tests",
+      "test": "../../../bin/phpunit --enforce-time-limit --bootstrap ../../Libraries/autoload.php --testdox Tests",
+      "test:ci": "phpunit --enforce-time-limit --bootstrap vendor/autoload.php --testdox Tests",
       "codestyle": "phpstan analyse --autoload-file ../../Libraries/autoload.php",
-      "codestyle-standalone": "phpstan analyse"
+      "codestyle:ci": "phpstan analyse"
     },
     "license": "GPL-3.0-or-later",
     "autoload": {

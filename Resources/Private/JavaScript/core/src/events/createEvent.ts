@@ -1,16 +1,5 @@
 import PubSub from 'pubsub-js';
 
-type Topic = string;
-type Token = string;
-type Subscriber<A> = (topic: Topic, payload: A) => void;
-
-export interface MediaEvent<E> {
-    (payload: E): E;
-    subscribe(subscriber: Subscriber<E>): Token;
-    unsubscribe(subscriber: Subscriber<E> | Token): void;
-    publish(payload: E): boolean;
-}
-
 /**
  * Wraps the used pubsub library and exposes the methods we need
  */

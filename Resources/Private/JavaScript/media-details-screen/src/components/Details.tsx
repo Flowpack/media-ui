@@ -1,50 +1,28 @@
-import * as React from 'react';
+import React from 'react';
 import { useRecoilValue } from 'recoil';
 import cx from 'classnames';
 
-import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
+import { InteractionDialogRenderer, useMediaUi } from '@media-ui/core';
 import { useSelectAsset, useAssetQuery } from '@media-ui/core/src/hooks';
-import { Asset, AssetIdentity } from '@media-ui/core/src/interfaces';
-import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
-import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
-import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing/src';
-import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets/src';
-import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/state';
+import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
+import { ClipboardWatcher } from '@media-ui/feature-clipboard';
+import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
+import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets';
+import { uploadDialogState } from '@media-ui/feature-asset-upload/src/state';
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
-
 import LoadingIndicator from '@media-ui/media-module/src/components/LoadingIndicator';
 import ErrorBoundary from '@media-ui/media-module/src/components/ErrorBoundary';
-import { createAssetCollectionDialogState, createTagDialogState } from '@media-ui/media-module/src/state';
-import { CreateTagDialog, CreateAssetCollectionDialog } from '@media-ui/media-module/src/components/Dialogs';
 import { AssetInspector } from '@media-ui/media-module/src/components/SideBarRight/Inspector';
+import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
+import {
+    CreateAssetCollectionDialog,
+    createAssetCollectionDialogVisibleState,
+} from '@media-ui/feature-asset-collections';
+
 import Preview from './Preview';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    container: {
-        height: `calc(100vh - 3 * ${theme.spacing.goldenUnit} + ${theme.spacing.half})`,
-        lineHeight: 1.5,
-        overflow: 'hidden',
-        paddingTop: `calc(${theme.spacing.goldenUnit} - 1rem)`, // To account for the top right button of the secondary inspector
-    },
-    main: {
-        display: 'grid',
-        gridTemplateColumns: `${theme.size.sidebarWidth} 1fr`,
-        height: '100%',
-        gridGap: theme.spacing.full,
-    },
-    inspector: {
-        height: '100%',
-        overflow: 'auto',
-    },
-    loading: {
-        '&$container': {
-            cursor: 'wait',
-        },
-        '&$main': {
-            pointerEvents: 'none',
-        },
-    },
-}));
+import theme from '@media-ui/core/src/Theme.module.css';
+import classes from './Details.module.css';
 
 interface DetailsProps {
     assetIdentity: AssetIdentity;
@@ -52,22 +30,21 @@ interface DetailsProps {
 }
 
 const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
-    const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
-    const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
+    const { containerRef } = useMediaUi();
+    const { visible: showUploadDialog } = useRecoilValue(uploadDialogState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
-    const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
+    const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogVisibleState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const selectAsset = useSelectAsset();
     const { asset, loading } = useAssetQuery(assetIdentity);
-    const classes = useStyles({ selectionMode, isInNodeCreationDialog });
 
     React.useEffect(() => {
         selectAsset(assetIdentity);
     }, [assetIdentity, selectAsset]);
 
     return (
-        <div className={cx(classes.container, loading && classes.loading)} ref={containerRef}>
+        <div className={cx(classes.container, theme.mediaModuleTheme, loading && classes.loading)} ref={containerRef}>
             <LoadingIndicator />
 
             <div className={cx(classes.main, loading && classes.loading)}>

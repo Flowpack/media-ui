@@ -1,54 +1,29 @@
-import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify, useMediaUi } from '@media-ui/core/src';
+import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
+import { IconLabel } from '@media-ui/core/src/components';
+import { featureFlagsState } from '@media-ui/core/src/state';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
-import { IconLabel } from '../../Presentation';
 import Tasks from './Tasks';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    textArea: {
-        // TODO: Remove when overriding rule is removed from Minimal Module Style in Neos
-        '.neos textarea&': {
-            padding: theme.spacing.half,
-        },
-    },
-    propertyPanel: {},
-    propertyPanelHeader: {
-        '& h2': {
-            padding: 0,
-        },
-        '& button': {
-            position: 'absolute',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-    },
-    propertyPanelContents: {
-        display: 'flex',
-        flexDirection: 'column',
-        padding: 0,
-        gap: theme.spacing.full,
-    },
-}));
+import classes from './PropertyInspector.module.css';
 
 const PropertyInspector = () => {
-    const classes = useStyles();
     const selectedAsset = useSelectedAsset();
     const Notify = useNotify();
     const { translate } = useIntl();
     const {
-        featureFlags,
         approvalAttainmentStrategy: { obtainApprovalToUpdateAsset },
     } = useMediaUi();
+    const featureFlags = useRecoilValue(featureFlagsState);
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
     const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
@@ -105,6 +80,8 @@ const PropertyInspector = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAsset?.id]);
 
+    if (!selectedAsset) return null;
+
     return (
         <InspectorContainer>
             <ToggablePanel
@@ -155,6 +132,7 @@ const PropertyInspector = () => {
                             handleApply={handleApply}
                             handleDiscard={handleDiscard}
                             hasUnpublishedChanges={hasUnpublishedChanges}
+                            inputValid={!!label}
                         />
                     )}
                 </ToggablePanel.Contents>

@@ -1,35 +1,31 @@
-import * as React from 'react';
-import { useCallback } from 'react';
-import { useRecoilValue } from 'recoil';
+import React, { useCallback } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useNotify } from '@media-ui/core/src';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useDeleteAsset } from '@media-ui/core/src/hooks';
 
-import useClipboard from '../hooks/useClipboard';
-import clipboardVisibleState from '../state/clipboardVisibleState';
+import { clipboardState } from '../state/clipboardState';
+import { clipboardVisibleState } from '../state/clipboardVisibleState';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    clipboardActions: {
-        display: 'flex',
-        alignItems: 'baseline',
-        backgroundColor: theme.colors.captionBackground,
-    },
-}));
+import classes from './ClipboardActions.module.css';
 
 const ClipboardActions: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
+    const { approvalAttainmentStrategy } = useMediaUi();
     const clipboardVisible = useRecoilValue(clipboardVisibleState);
-    const { clipboard, flushClipboard } = useClipboard();
+    const [clipboard, setClipboard] = useRecoilState(clipboardState);
     const { deleteAsset } = useDeleteAsset();
     const Notify = useNotify();
 
-    const onDeleteClipboard = useCallback(() => {
-        if (!confirm(translate('clipboard.deleteAssets.confirm', 'Delete all assets in the clipboard?'))) return;
+    // TODO: If any of the selected assets in the clipboard are in use the operation should be blocked, ideally with a message explaining why
+    const onDeleteClipboard = useCallback(async () => {
+        const canDeleteAssets = await approvalAttainmentStrategy.obtainApprovalToDeleteAssets({ assets: clipboard });
 
-        Promise.all(Object.values(clipboard).map(async (assetIdentity) => await deleteAsset(assetIdentity)))
+        if (!canDeleteAssets) return;
+
+        Promise.all(clipboard.map(async (assetIdentity) => await deleteAsset(assetIdentity)))
             .then(() => {
                 Notify.ok(translate('clipboard.deleteAssets.success', 'The assets have been deleted'));
             })
@@ -39,12 +35,13 @@ const ClipboardActions: React.FC = () => {
                     message
                 );
             });
-    }, [translate, clipboard, deleteAsset, Notify]);
+    }, [approvalAttainmentStrategy, clipboard, deleteAsset, Notify, translate]);
 
     const onFlushClipboard = useCallback(() => {
-        if (!confirm(translate('clipboard.flush.confirm', 'Remove all assets from clipboard?'))) return;
-        flushClipboard();
-    }, [flushClipboard, translate]);
+        const canFlushClipboard = approvalAttainmentStrategy.obtainApprovalToFlushClipboard();
+        if (!canFlushClipboard) return;
+        setClipboard([]);
+    }, [approvalAttainmentStrategy, setClipboard]);
 
     if (!clipboardVisible) return null;
 
@@ -55,7 +52,7 @@ const ClipboardActions: React.FC = () => {
                 icon="trash"
                 size="regular"
                 style="transparent"
-                hoverStyle="warn"
+                hoverStyle="error"
                 onClick={onDeleteClipboard}
             />
             <IconButton

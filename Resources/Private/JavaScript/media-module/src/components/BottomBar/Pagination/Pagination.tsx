@@ -1,43 +1,26 @@
-import * as React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { useIntl, createUseMediaUiStyles, useMediaUi } from '@media-ui/core/src';
-import { currentPageState } from '@media-ui/core/src/state';
+import { useIntl } from '@media-ui/core';
+import { currentPageState, featureFlagsState } from '@media-ui/core/src/state';
 
 import PaginationItem from './PaginationItem';
-import { MainViewState, mainViewState } from '../../../state';
+import { MainViewMode, mainViewState } from '../../../state';
 import { useAssetCount } from '../../../hooks';
 
-const useStyles = createUseMediaUiStyles({
-    pagination: {
-        justifySelf: 'center',
-    },
-    list: {
-        display: 'flex',
-        justifySelf: 'center',
-        listStyleType: 'none',
-        textAlign: 'center',
-        padding: 0,
-    },
-    ellipsis: {
-        lineHeight: '2.4rem',
-    },
-});
+import classes from './Pagination.module.css';
+import cx from 'classnames';
 
 const Pagination: React.FC = () => {
-    const classes = useStyles();
     const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
     const assetCount = useAssetCount();
     const {
-        featureFlags: {
-            pagination: { assetsPerPage, maximumLinks },
-        },
-    } = useMediaUi();
+        pagination: { assetsPerPage, maximumLinks },
+    } = useRecoilValue(featureFlagsState);
     const { translate } = useIntl();
     const mainView = useRecoilValue(mainViewState);
 
-    const disabled = ![MainViewState.DEFAULT, MainViewState.UNUSED_ASSETS].includes(mainView);
+    const disabled = ![MainViewMode.DEFAULT, MainViewMode.UNUSED_ASSETS].includes(mainView);
     const numberOfPages = Math.ceil(assetCount / assetsPerPage);
     const [displayRange, setDisplayRange] = useState({
         start: 0,
@@ -83,7 +66,7 @@ const Pagination: React.FC = () => {
     return (
         <nav className={classes.pagination}>
             {numberOfPages > 0 && (
-                <ol className={classes.list}>
+                <ol className={cx(classes.list, disabled && classes.disabled)}>
                     <PaginationItem
                         icon="angle-left"
                         title={translate('pagination.previousPageTitle', `Go to previous page`)}

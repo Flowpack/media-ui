@@ -1,0 +1,24 @@
+.propertyList {
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+}
+
+.propertyList dt {
+    background-color: var(--theme-colors-alternatingBackground);
+    color: white;
+    font-weight: bold;
+    padding: var(--theme-spacing-Half) var(--theme-spacing-Half) 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.propertyList dd {
+    background-color: var(--theme-colors-alternatingBackground);
+    color: var(--theme-colors-inactive);
+    margin: 0 0 1px;
+    padding: var(--theme-spacing-Half);
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    white-space: nowrap;
+}

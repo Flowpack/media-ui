@@ -1,16 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 import { Label } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles } from '@media-ui/core/src';
-
-const useStyles = createUseMediaUiStyles({
-    propertyGroup: {},
-});
-
-const Property = ({ children, label }: { children: React.ReactNode; label: React.ReactNode }) => {
-    const classes = useStyles();
+const Property: React.FC<{ label: React.ReactNode }> = ({ children, label }) => {
     return (
-        <div className={classes.propertyGroup}>
+        <div className="propertyGroup">
             <Label>{label}</Label>
             {children}
         </div>

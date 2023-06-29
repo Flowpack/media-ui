@@ -1,9 +1,6 @@
 import { useQuery } from '@apollo/client';
 
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
-
 import ASSET_USAGE_DETAILS from '../queries/assetUsages';
-import { UsageDetailsGroup } from '../interfaces/UsageDetails';
 
 interface AssetUsagesQueryResult {
     assetUsageDetails: UsageDetailsGroup[];

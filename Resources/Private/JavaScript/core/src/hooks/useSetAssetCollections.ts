@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client';
 
-import { Asset, AssetCollection } from '../interfaces';
 import { SET_ASSET_COLLECTIONS } from '../mutations';
 
 interface SetAssetCollectionsProps {
@@ -15,10 +14,9 @@ interface SetAssetCollectionsVariables {
 }
 
 export default function useSetAssetCollections() {
-    const [action, { error, data, loading }] = useMutation<
-        { __typename: string; setAssetCollections: Asset },
-        SetAssetCollectionsVariables
-    >(SET_ASSET_COLLECTIONS);
+    const [action, { error, data, loading }] = useMutation<boolean, SetAssetCollectionsVariables>(
+        SET_ASSET_COLLECTIONS
+    );
 
     const setAssetCollections = ({ asset, assetCollections }: SetAssetCollectionsProps) =>
         action({
@@ -27,12 +25,27 @@ export default function useSetAssetCollections() {
                 assetSourceId: asset.assetSource.id,
                 assetCollectionIds: assetCollections.map((c) => c.id),
             },
-            optimisticResponse: {
-                __typename: 'Mutation',
-                setAssetCollections: {
-                    ...asset,
-                    collections: assetCollections,
-                },
+            optimisticResponse: true,
+            // The ASSETS query should be triggered to again show the full amount of assets in the current collection
+            // FIXME: The ASSET_COLLECTIONS query is triggered to update the asset count in the asset collection list, which could be modified directly in the cache update method below
+            refetchQueries: ['ASSETS', 'ASSET_COLLECTIONS'],
+            update: (cache, { data }) => {
+                if (!data) return;
+                cache.modify({
+                    id: cache.identify({
+                        __typename: 'Asset',
+                        id: asset.id,
+                    }),
+                    fields: {
+                        assetCollections: () =>
+                            assetCollections?.map((collection) => ({
+                                __ref: cache.identify({
+                                    __typename: 'AssetCollection',
+                                    id: collection.id,
+                                }),
+                            })),
+                    },
+                });
             },
         });
 

@@ -162,8 +162,10 @@ class UsageDetailsService
             // Should be solved via an interface in the future
             if (method_exists($strategy, 'getLabel')) {
                 $usageByStrategy['label'] = $strategy->getLabel();
-            } else if ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
-                $usageByStrategy['label'] = $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.label');
+            } else {
+                if ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
+                    $usageByStrategy['label'] = $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.label');
+                }
             }
 
             if ($strategy instanceof UsageDetailsProviderInterface) {
@@ -174,7 +176,8 @@ class UsageDetailsService
                 try {
                     $usageReferences = $strategy->getUsageReferences($asset);
                     if (count($usageReferences) && $usageReferences[0] instanceof AssetUsageInNodeProperties) {
-                        $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema($includeSites, $includeDimensions)->toArray();
+                        $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema($includeSites,
+                            $includeDimensions)->toArray();
                         $usageByStrategy['usages'] = array_map(function (AssetUsageInNodeProperties $usage) use (
                             $includeSites,
                             $includeDimensions
@@ -192,21 +195,28 @@ class UsageDetailsService
         });
     }
 
-    protected function getNodePropertiesUsageMetadataSchema(bool $includeSites, bool $includeDimensions): UsageMetadataSchema
-    {
+    protected function getNodePropertiesUsageMetadataSchema(
+        bool $includeSites,
+        bool $includeDimensions
+    ): UsageMetadataSchema {
         $schema = new UsageMetadataSchema();
 
         if ($includeSites) {
-            $schema->withMetadata('site', $this->translateById('assetUsage.header.site'), UsageMetadataSchema::TYPE_TEXT);
+            $schema->withMetadata('site', $this->translateById('assetUsage.header.site'),
+                UsageMetadataSchema::TYPE_TEXT);
         }
 
         $schema
-            ->withMetadata('document', $this->translateById('assetUsage.header.document'), UsageMetadataSchema::TYPE_TEXT)
-            ->withMetadata('workspace', $this->translateById('assetUsage.header.workspace'), UsageMetadataSchema::TYPE_TEXT)
-            ->withMetadata('lastModified', $this->translateById('assetUsage.header.lastModified'), UsageMetadataSchema::TYPE_DATETIME);
+            ->withMetadata('document', $this->translateById('assetUsage.header.document'),
+                UsageMetadataSchema::TYPE_TEXT)
+            ->withMetadata('workspace', $this->translateById('assetUsage.header.workspace'),
+                UsageMetadataSchema::TYPE_TEXT)
+            ->withMetadata('lastModified', $this->translateById('assetUsage.header.lastModified'),
+                UsageMetadataSchema::TYPE_DATETIME);
 
         if ($includeDimensions) {
-            $schema->withMetadata('contentDimensions', $this->translateById('assetUsage.header.contentDimensions'), UsageMetadataSchema::TYPE_JSON);
+            $schema->withMetadata('contentDimensions', $this->translateById('assetUsage.header.contentDimensions'),
+                UsageMetadataSchema::TYPE_JSON);
         }
         return $schema;
     }

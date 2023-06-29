@@ -1,5 +1,2 @@
-import createAssetCollectionDialogState from './createAssetCollectionDialogState';
-import createTagDialogState from './createTagDialogState';
-import { mainViewState, MainViewState } from './mainViewState';
-
-export { createAssetCollectionDialogState, createTagDialogState, mainViewState, MainViewState };
+export { mainViewState, MainViewMode } from './mainViewState';
+export { viewModeState, VIEW_MODES } from './viewModeState';

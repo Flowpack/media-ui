@@ -1,16 +1,16 @@
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { uploadDialogVisibleState } from '../state';
-import { UploadDialogVisibleState, UPLOAD_TYPE } from '../state/uploadDialogVisibleState';
-import { FilesUploadState } from '../interfaces';
+import { uploadDialogState } from '../state';
+import type { UploadDialogState } from '../state/uploadDialogState';
+import { UPLOAD_TYPE } from '../state/uploadDialogState';
 
-interface UploadDialogState extends UploadDialogVisibleState {
+interface UploadDialogStateWithFiles extends UploadDialogState {
     files: FilesUploadState;
 }
 
 const useUploadDialogState = (): {
-    state: UploadDialogState;
+    state: UploadDialogStateWithFiles;
     closeDialog(): void;
     setFiles: Dispatch<SetStateAction<FilesUploadState>>;
 } => {
@@ -20,7 +20,7 @@ const useUploadDialogState = (): {
         finished: [],
         rejected: [],
     });
-    const [dialogState, setDialogState] = useRecoilState(uploadDialogVisibleState);
+    const [dialogState, setDialogState] = useRecoilState(uploadDialogState);
 
     const handleClose = useCallback(() => {
         // Make sure to revoke the data uris to avoid memory leaks

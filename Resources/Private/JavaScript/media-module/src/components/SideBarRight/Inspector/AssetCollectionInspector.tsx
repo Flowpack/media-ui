@@ -1,28 +1,33 @@
-import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { TextInput } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify } from '@media-ui/core/src';
-import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/core/src/hooks';
+import { useIntl, useNotify } from '@media-ui/core';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
+import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/feature-asset-collections';
 
 import { TagSelectBoxAssetCollection } from '.';
-import { useRecoilValue } from 'recoil';
 import Actions from './Actions';
 import Property from './Property';
 import InspectorContainer from './InspectorContainer';
+import ParentCollectionSelectBox from './ParentCollectionSelectBox';
 
+// TASK: Move into media module package
 const AssetCollectionInspector = () => {
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();
     const { translate } = useIntl();
-    const [title, setTitle] = useState<string>(null);
+    const [title, setTitle] = useState<string>('');
 
     const { updateAssetCollection } = useUpdateAssetCollection();
 
     const hasUnpublishedChanges = selectedAssetCollection && title !== selectedAssetCollection.title;
+
+    const handleChange = useCallback((value: string) => {
+        setTitle(value.trim());
+    }, []);
 
     const handleDiscard = useCallback(() => {
         if (selectedAssetCollection) {
@@ -60,16 +65,18 @@ const AssetCollectionInspector = () => {
     return (
         <InspectorContainer>
             <Property label={translate('inspector.title', 'Title')}>
-                <TextInput type="text" value={title || ''} onChange={setTitle} onEnterKey={handleApply} />
+                <TextInput type="text" value={title} onChange={handleChange} onEnterKey={handleApply} />
             </Property>
 
             <Actions
                 handleApply={handleApply}
                 handleDiscard={handleDiscard}
                 hasUnpublishedChanges={hasUnpublishedChanges}
+                inputValid={!!title}
             />
 
             <TagSelectBoxAssetCollection />
+            <ParentCollectionSelectBox />
         </InspectorContainer>
     );
 };

@@ -1,0 +1,26 @@
+:global(#media-ui-app) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--theme-colors-scrollbarForeground) var(--theme-colors-scrollbarBackground);
+}
+
+:global(#media-ui-app ::-webkit-scrollbar) {
+    width: var(--theme-size-scrollbarSize);
+    height: var(--theme-size-scrollbarSize);
+}
+
+:global(#media-ui-app ::-webkit-scrollbar-track) {
+    background: var(--theme-colors-scrollbarBackground);
+}
+
+:global(#media-ui-app ::-webkit-scrollbar-thumb) {
+    background-color: var(--theme-colors-scrollbarForeground);
+}
+
+:global(.neos.neos-module-management-mediaui > .neos-module-wrap) {
+    padding: 3rem 1rem 0;
+}
+
+/* Hack to prevent a dropdown to be behind the bottom bar - issue #79 */
+:global(body > [class*="_selectBox__contents_"]) {
+    z-index: 99999;
+}

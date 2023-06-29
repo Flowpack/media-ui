@@ -1,7 +1,5 @@
 import { useMutation } from '@apollo/client';
 
-import { Asset } from '@media-ui/core/src/interfaces';
-
 import EDIT_ASSET from '../mutations/editAsset';
 
 export interface AssetEditOptions {

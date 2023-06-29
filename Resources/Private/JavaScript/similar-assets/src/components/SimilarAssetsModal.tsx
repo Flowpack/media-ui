@@ -4,24 +4,16 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Dialog } from '@neos-project/react-ui-components';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 
 import similarAssetsModalState from '../state/similarAssetsModalState';
 import useSimilarAssetsQuery from '../hooks/useSimilarAssets';
 import SimilarAsset from './SimilarAsset';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    assetUsage: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-        gridGap: theme.spacing.full,
-        padding: theme.spacing.full,
-    },
-}));
+import classes from './SimilarAssetsModal.module.css';
 
 const SimilarAssetsModal: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
     const [isOpen, setIsOpen] = useRecoilState(similarAssetsModalState);
     const asset = useSelectedAsset();

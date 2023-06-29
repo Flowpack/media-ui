@@ -8,6 +8,7 @@ const ASSETS = gql`
         $assetSourceId: AssetSourceId
         $assetCollectionId: AssetCollectionId
         $mediaType: MediaType
+        $assetType: AssetType
         $tagId: TagId
         $limit: Int
         $offset: Int
@@ -15,13 +16,13 @@ const ASSETS = gql`
         $sortDirection: SortDirection
         $includeUsage: Boolean = false
     ) {
-        selectedAssetSourceId @client(always: true) @export(as: "assetSourceId")
         includeUsage @client(always: true) @export(as: "includeUsage")
         assets(
             searchTerm: $searchTerm
             assetSourceId: $assetSourceId
             assetCollectionId: $assetCollectionId
             mediaType: $mediaType
+            assetType: $assetType
             tagId: $tagId
             limit: $limit
             offset: $offset

@@ -1,9 +1,10 @@
 import { gql } from '@apollo/client';
 
-import { ASSET_SOURCE_FRAGMENT } from './assetSource';
+import { TAG_FRAGMENT } from '@media-ui/feature-asset-tags/src/fragments/tag';
+
+import { ASSET_SOURCE_FRAGMENT } from '@media-ui/feature-asset-sources';
 import { IPTC_PROPERTY_FRAGMENT } from './iptcProperty';
 import { FILE_FRAGMENT } from './file';
-import { TAG_FRAGMENT } from './tag';
 
 // TODO: Somehow extend `isInClipboard` from clipboard feature package
 
@@ -37,7 +38,6 @@ export const ASSET_FRAGMENT = gql`
         }
         thumbnailUrl
         previewUrl
-        isInClipboard @client
         isInUse @include(if: $includeUsage)
     }
     ${ASSET_SOURCE_FRAGMENT}

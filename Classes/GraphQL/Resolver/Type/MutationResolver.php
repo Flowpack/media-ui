@@ -17,6 +17,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  */
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
@@ -266,7 +267,7 @@ class MutationResolver implements ResolverInterface
     /**
      * @throws Exception
      */
-    public function setAssetCollections($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
+    public function setAssetCollections($_, array $variables, AssetSourceContext $assetSourceContext): bool
     {
         [
             'id' => $id,
@@ -275,7 +276,7 @@ class MutationResolver implements ResolverInterface
         ] = $variables;
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
-            return null;
+            return false;
         }
         $asset = $assetSourceContext->getAssetForProxy($assetProxy);
 
@@ -303,7 +304,7 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Failed to assign asset collections', 1594621296);
         }
 
-        return $assetProxy;
+        return true;
     }
 
     /**
@@ -525,7 +526,7 @@ class MutationResolver implements ResolverInterface
     /**
      * @throws Exception|\Neos\Flow\ResourceManagement\Exception
      */
-    public function editAsset($_, array $variables, AssetSourceContext $assetSourceContext): array
+    public function editAsset($_, array $variables, AssetSourceContext $assetSourceContext): bool
     {
         [
             'id' => $id,
@@ -579,9 +580,7 @@ class MutationResolver implements ResolverInterface
             $this->systemLogger->error(sprintf('Asset %s could not be replace with the renamed copy', $asset->getIdentifier()), [$exception]);
         }
 
-        return [
-            'success' => $success,
-        ];
+        return $success;
     }
 
     /**
@@ -609,9 +608,15 @@ class MutationResolver implements ResolverInterface
     {
         [
             'title' => $title,
-        ] = $variables;
+            'parent' => $parent,
+        ] = $variables + ['parent' => null];
 
         $newAssetCollection = new AssetCollection($title);
+        if ($parent) {
+            $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent);
+            /** @var HierarchicalAssetCollectionInterface $newAssetCollection */
+            $newAssetCollection->setParent($parentCollection);
+        }
 
         // FIXME: Multiple asset collections with the same title can exist, but do we want that?
 
@@ -649,14 +654,15 @@ class MutationResolver implements ResolverInterface
     }
 
     /**
+     * @param array{id:string, title?: string, tagIds?: string[]} $variables
      * @throws Exception|IllegalObjectTypeException
      */
-    public function updateAssetCollection($_, array $variables): ?AssetCollection
+    public function updateAssetCollection($_, array $variables): bool
     {
         [
             'id' => $id,
             'title' => $title,
-            'tagIds' => $tagIds
+            'tagIds' => $tagIds,
         ] = $variables + ['title' => null, 'tagIds' => null];
 
         /** @var AssetCollection $assetCollection */
@@ -666,8 +672,8 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Asset collection not found', 1590659045);
         }
 
-        if ($title !== null) {
-            $assetCollection->setTitle($title);
+        if (is_string($title) && trim($title)) {
+            $assetCollection->setTitle(trim($title));
         }
 
         if ($tagIds !== null) {
@@ -684,7 +690,38 @@ class MutationResolver implements ResolverInterface
 
         $this->assetCollectionRepository->update($assetCollection);
 
-        return $assetCollection;
+        return true;
+    }
+
+    /**
+     * @param array{id: string, parent: string} $variables
+     * @throws Exception|IllegalObjectTypeException
+     */
+    public function setAssetCollectionParent($_, array $variables): bool
+    {
+        $id = $variables['id'] ?? null;
+        $parent = $variables['parent'] ?? null;
+
+        /** @var AssetCollection $assetCollection */
+        $assetCollection = $this->assetCollectionRepository->findByIdentifier($id);
+
+        if (!$assetCollection) {
+            throw new Exception('Asset collection not found', 1681999816);
+        }
+
+        /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        if ($parent) {
+            /** @var AssetCollection $parentCollection */
+            $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent);
+            if (!$parentCollection) {
+                throw new Exception('Parent asset collection not found', 1681999836);
+            }
+            $assetCollection->setParent($parentCollection);
+        } else {
+            $assetCollection->setParent(null);
+        }
+        $this->assetCollectionRepository->update($assetCollection);
+        return true;
     }
 
     /**

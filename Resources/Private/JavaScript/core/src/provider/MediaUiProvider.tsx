@@ -1,17 +1,13 @@
-import * as React from 'react';
-import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { useApolloClient, gql } from '@apollo/client';
 import { useSetRecoilState } from 'recoil';
 import { isMatch } from 'matcher';
 
-import { useIntl } from '@media-ui/core/src';
-
-import { Asset, AssetIdentity, FeatureFlags, SelectionConstraints } from '../interfaces';
-import { useAssetsQuery, useDeleteAsset, useImportAsset } from '../hooks';
+import { useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
+import { useIntl } from './Intl';
 import { useInteraction } from './Interaction';
-import { selectedMediaTypeState } from '../state';
-import { AssetMediaType } from '../state/selectedMediaTypeState';
+import { constraintsState, featureFlagsState, selectedAssetTypeState, selectedMediaTypeState } from '../state';
 import { ASSET_FRAGMENT } from '../fragments/asset';
 import {
     ApprovalAttainmentStrategy,
@@ -29,23 +25,19 @@ interface MediaUiProviderProps {
     onAssetSelection?: (localAssetIdentifier: string) => void;
     featureFlags: FeatureFlags;
     constraints?: SelectionConstraints;
-    assetType?: AssetMediaType;
+    assetType?: AssetType;
     approvalAttainmentStrategyFactory?: ApprovalAttainmentStrategyFactory;
 }
 
 interface MediaUiProviderValues {
     containerRef: React.RefObject<HTMLDivElement>;
     dummyImage: string;
-    handleDeleteAsset: (asset: Asset) => Promise<boolean>;
     handleSelectAsset: (assetIdentity: AssetIdentity) => void;
+    // TODO: Turn view variants into a single view Enum
     selectionMode: boolean;
     isInNodeCreationDialog: boolean;
     isInMediaDetailsScreen: boolean;
-    assets: Asset[];
-    refetchAssets: () => Promise<any>;
-    featureFlags: FeatureFlags;
-    constraints: SelectionConstraints;
-    assetType: AssetMediaType;
+    assetType: AssetType;
     isAssetSelectable: (asset: Asset) => boolean;
     approvalAttainmentStrategy: ApprovalAttainmentStrategy;
 }
@@ -70,10 +62,11 @@ export function MediaUiProvider({
     const Notify = useNotify();
     const Interaction = useInteraction();
     const client = useApolloClient();
-    const { deleteAsset } = useDeleteAsset();
     const { importAsset } = useImportAsset();
-    const { assets, refetch: refetchAssets } = useAssetsQuery(featureFlags.pagination);
+    const setConstraints = useSetRecoilState(constraintsState);
+    const setSelectedAssetType = useSetRecoilState(selectedAssetTypeState);
     const setSelectedMediaType = useSetRecoilState(selectedMediaTypeState);
+    const setFeatureFlags = useSetRecoilState(featureFlagsState);
     const approvalAttainmentStrategy = useMemo(
         () =>
             approvalAttainmentStrategyFactory({
@@ -85,37 +78,19 @@ export function MediaUiProvider({
 
     // Set initial media type state
     useEffect(() => {
-        if (assetType) {
-            setSelectedMediaType(assetType);
+        setConstraints(constraints);
+        setFeatureFlags(featureFlags);
+        // If only one media type is allowed by the constraints, preselect the filter
+        if (constraints.mediaTypes?.length === 1 && constraints.mediaTypes[0].startsWith('image')) {
+            setSelectedAssetType('image');
+            setSelectedMediaType(constraints.mediaTypes[0]);
+        } else if (assetType !== 'all') {
+            setSelectedAssetType(assetType);
         }
-    }, [assetType, setSelectedMediaType]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const handleDeleteAsset = useCallback(
-        async (asset: Asset): Promise<boolean> => {
-            const canDeleteAsset = await approvalAttainmentStrategy.obtainApprovalToDeleteAsset({
-                asset,
-            });
-
-            if (canDeleteAsset) {
-                try {
-                    await deleteAsset({ assetId: asset.id, assetSourceId: asset.assetSource.id });
-
-                    Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
-
-                    return true;
-                } catch ({ message }) {
-                    Notify.error(
-                        translate('action.deleteAsset.error', 'Error while trying to delete the asset'),
-                        message
-                    );
-                }
-            }
-
-            return false;
-        },
-        [Notify, translate, deleteAsset, approvalAttainmentStrategy]
-    );
-
+    // TODO: This can properly be optimised by turning it into a recoil readonly selector family
     const isAssetSelectable = useCallback(
         (asset: Asset) => {
             if (constraints.mediaTypes?.length > 0) {
@@ -133,7 +108,7 @@ export function MediaUiProvider({
         [constraints]
     );
 
-    // Handle selection mode for the secondary Neos UI inspector
+    // TODO: Move into select asset hook, as it's the only place using this method
     const handleSelectAsset = useCallback(
         (assetIdentity: AssetIdentity) => {
             if (!onAssetSelection || !assetIdentity) {
@@ -185,15 +160,10 @@ export function MediaUiProvider({
             value={{
                 containerRef,
                 dummyImage,
-                handleDeleteAsset,
                 handleSelectAsset,
                 selectionMode,
                 isInNodeCreationDialog,
                 isInMediaDetailsScreen,
-                assets,
-                refetchAssets,
-                featureFlags,
-                constraints,
                 assetType,
                 isAssetSelectable,
                 approvalAttainmentStrategy,

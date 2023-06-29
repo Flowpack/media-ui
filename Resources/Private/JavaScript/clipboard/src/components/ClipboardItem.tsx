@@ -1,24 +1,10 @@
 import * as React from 'react';
 import { useCallback } from 'react';
 
-import { useIntl, createUseMediaUiStyles, MediaUiTheme, useMediaUi, useNotify } from '@media-ui/core/src';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useAssetQuery, useSelectAsset } from '@media-ui/core/src/hooks';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    clipboardItem: {
-        cursor: 'pointer',
-        minWidth: theme.spacing.goldenUnit,
-        width: theme.spacing.goldenUnit,
-        height: theme.spacing.goldenUnit,
-        '& img': {
-            display: 'block',
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-        },
-    },
-}));
+import classes from './ClipboardItem.module.css';
 
 interface ClipboardItemProps {
     assetIdentity: AssetIdentity;
@@ -28,7 +14,6 @@ const ClipboardItem: React.FC<ClipboardItemProps> = ({ assetIdentity }: Clipboar
     const { asset } = useAssetQuery(assetIdentity);
     const { dummyImage } = useMediaUi();
     const Notify = useNotify();
-    const classes = useStyles();
     const selectAsset = useSelectAsset();
     const { translate } = useIntl();
 
@@ -41,14 +26,14 @@ const ClipboardItem: React.FC<ClipboardItemProps> = ({ assetIdentity }: Clipboar
     }, [assetIdentity, selectAsset, Notify, translate]);
 
     return (
-        <span onClick={onClick} className={classes.clipboardItem} title={asset?.isInClipboard + ''}>
+        <button type="button" onClick={onClick} className={classes.clipboardItem} title={asset?.label}>
             <img
                 src={asset?.thumbnailUrl || dummyImage}
                 alt={asset?.label || assetIdentity.assetId}
                 width={40}
                 height={36}
             />
-        </span>
+        </button>
     );
 };
 

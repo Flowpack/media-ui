@@ -1,28 +1,17 @@
-import * as React from 'react';
+import React from 'react';
+import { useRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useIntl } from '@media-ui/core/src';
+import { useIntl } from '@media-ui/core';
 
-import { useViewModeSelection, VIEW_MODES } from '../../hooks';
+import { VIEW_MODES, viewModeState } from '../../state';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    viewModeSelector: {
-        display: 'flex',
-        alignItems: 'baseline',
-        '& label': {
-            marginRight: theme.spacing.quarter,
-        },
-    },
-    selectBox: {
-        minWidth: 'auto',
-    },
-}));
+import classes from './ViewModeSelector.module.css';
 
 const ViewModeSelector: React.FC = () => {
-    const classes = useStyles();
     const { translate } = useIntl();
-    const [viewModeSelection, setViewModeSelection] = useViewModeSelection();
+    const [viewModeSelection, setViewModeSelection] = useRecoilState(viewModeState);
 
     return (
         <div className={classes.viewModeSelector}>
@@ -38,9 +27,7 @@ const ViewModeSelector: React.FC = () => {
                 style="neutral"
                 hoverStyle="brand"
                 onClick={() =>
-                    setViewModeSelection(
-                        viewModeSelection === VIEW_MODES.List ? VIEW_MODES.Thumbnails : VIEW_MODES.List
-                    )
+                    setViewModeSelection((prev) => (prev === VIEW_MODES.List ? VIEW_MODES.Thumbnails : VIEW_MODES.List))
                 }
             />
         </div>

@@ -1,4 +1,8 @@
-declare module '*.module.css';
+declare module '*.module.css' {
+    const classes: { [key: string]: string };
+    export = classes;
+    export default classes;
+}
 
 interface NeosI18n {
     translate: (
@@ -9,6 +13,17 @@ interface NeosI18n {
         args: Record<string, unknown> | string[]
     ) => string;
     initialized: boolean;
+}
+
+// TODO: This is a copy of the interface in Neos.Ui and should preferably be made available to plugins
+interface I18nRegistry {
+    translate: (
+        id?: string,
+        fallback?: string,
+        params?: Record<string, unknown> | (string | number)[],
+        packageKey?: string,
+        sourceName?: string
+    ) => string;
 }
 
 interface NeosNotification {
@@ -30,3 +45,6 @@ type PaginationConfig = {
     assetsPerPage: number;
     maximumLinks: number;
 };
+
+type AssetType = 'image' | 'video' | 'audio' | 'document' | 'all';
+type MediaType = `${string}/${string}`;

@@ -1,9 +1,55 @@
-/**
- * Define theme variables by using the ones provided by Neos with a fallback to the default values.
- */
 .mediaModuleApp {
-    --theme-spacing-GoldenUnit: var(--spacing-Half, 40px);
-    --theme-spacing-Full: var(--spacing-Half, 16px);
-    --theme-spacing-Half: var(--spacing-Half, 8px);
-    --theme-spacing-Quarter: var(--spacing-Half, 4px);
+}
+
+.container {
+    /* TODO: Find a way to not calculate height to allow scrolling in main grid area */
+    --grid-height: calc(100vh - 48px - 61px - 41px); /* Remove top bar; body padding and bottom bar */
+    --grid-areas: "left top right" "left main right";
+    --grid-columns: var(--theme-size-sidebarWidth) 1fr var(--theme-size-sidebarWidth);
+    --grid-area-left: left;
+    --grid-area-right: right;
+    --grid-area-top: top;
+    --grid-area-main: main;
+
+    display: grid;
+    height: var(--grid-height);
+    grid-template-rows: 40px 1fr;
+    grid-template-columns: var(--grid-columns);
+    grid-template-areas: var(--grid-areas);
+    gap: var(--theme-spacing-Full);
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+.fullHeight {
+    --grid-height: calc(100% - 61px - 8px); /* Remove bottom bar and add padding */
+}
+
+.selectionMode {
+    --grid-columns: var(--theme-size-sidebarWidth) 1fr;
+    --grid-areas: "left top" "left main";
+}
+
+.gridColumn {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.gridRight {
+    composes: gridColumn;
+    grid-area: var(--grid-area-right);
+}
+
+.gridLeft {
+    composes: gridColumn;
+    grid-area: var(--grid-area-left);
+}
+
+.gridMain {
+    composes: gridColumn;
+    grid-area: var(--grid-area-main);
+}
+
+.gridTop {
+    grid-area: var(--grid-area-top);
 }

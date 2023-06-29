@@ -1,42 +1,18 @@
-import {
-    I18nRegistry,
+export {
     IntlProvider,
     InteractionProvider,
     InteractionDialogRenderer,
     MediaUiProvider,
-    MediaUiTheme,
-    MediaUiThemeProvider,
-    Notify,
     NotifyProvider,
-    createUseMediaUiStyles,
     useIntl,
     useInteraction,
     useMediaUi,
-    useMediaUiTheme,
     useNotify,
 } from './provider';
+export { typeDefs } from './typeDefs';
 
 import * as Events from './events';
 import * as Components from './components';
 import * as Helper from './helper';
 
-export {
-    Components,
-    Events,
-    Helper,
-    I18nRegistry,
-    IntlProvider,
-    InteractionProvider,
-    InteractionDialogRenderer,
-    MediaUiProvider,
-    MediaUiTheme,
-    MediaUiThemeProvider,
-    Notify,
-    NotifyProvider,
-    createUseMediaUiStyles,
-    useIntl,
-    useInteraction,
-    useMediaUi,
-    useMediaUiTheme,
-    useNotify,
-};
+export { Components, Events, Helper };

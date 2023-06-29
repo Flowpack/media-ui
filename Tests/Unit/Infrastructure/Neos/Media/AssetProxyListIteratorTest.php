@@ -15,10 +15,10 @@ namespace Flowpack\Media\Ui\Tests\Unit\Infrastructure\Neos\Media;
  */
 
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyListIterator;
+use Neos\Flow\Tests\UnitTestCase;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
-use PHPUnit\Framework\TestCase;
 
-final class AssetProxyListIteratorTest extends TestCase
+final class AssetProxyListIteratorTest extends UnitTestCase
 {
     /**
      * @test

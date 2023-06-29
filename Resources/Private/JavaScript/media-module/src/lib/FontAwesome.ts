@@ -1,5 +1,4 @@
 // We need to import Icon here, so that we can UNDO the config change to fontawesome-svg-core which happened in "Icon".
-// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
 // noinspection ES6UnusedImports
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Icon } from '@neos-project/react-ui-components';
@@ -57,6 +56,11 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons/faEdit';
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons/faExchangeAlt';
 import { faEquals } from '@fortawesome/free-solid-svg-icons/faEquals';
 import { faLink } from '@fortawesome/free-solid-svg-icons/faLink';
+import { faStar } from '@fortawesome/free-solid-svg-icons/faStar';
+import { faGlobe } from '@fortawesome/free-solid-svg-icons/faGlobe';
+import { faWeightHanging } from '@fortawesome/free-solid-svg-icons/faWeightHanging';
+import { faFilter } from '@fortawesome/free-solid-svg-icons/faFilter';
+import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
 
 import { faNeos } from '@fortawesome/free-brands-svg-icons/faNeos';
 import { faCreativeCommonsZero } from '@fortawesome/free-brands-svg-icons/faCreativeCommonsZero';
@@ -66,7 +70,6 @@ config.replacementClass = 'svg-inline--fa';
 
 export default function loadIconLibrary() {
     library.add(
-        // @ts-ignore
         faAngleLeft,
         faAngleRight,
         faBan,
@@ -119,6 +122,11 @@ export default function loadIconLibrary() {
         faEdit,
         faExchangeAlt,
         faEquals,
-        faLink
+        faLink,
+        faStar,
+        faGlobe,
+        faWeightHanging,
+        faFilter,
+        faSearch
     );
 }

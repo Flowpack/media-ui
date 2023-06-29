@@ -1,10 +1,9 @@
 import { atom } from 'recoil';
 
-export type AssetMediaType = 'image' | 'video' | 'audio' | 'document' | 'all';
+import { localStorageEffect } from './localStorageEffect';
 
-const selectedMediaTypeState = atom<AssetMediaType>({
+export const selectedMediaTypeState = atom<MediaType | ''>({
     key: 'selectedMediaTypeState',
-    default: 'all',
+    default: '',
+    effects: [localStorageEffect('selectedMediaTypeState')],
 });
-
-export default selectedMediaTypeState;

@@ -1,0 +1,20 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    height: var(--theme-spacing-GoldenUnit);
+    gap: var(--theme-spacing-Half);
+}
+
+.iconWrap {
+    display: flex;
+}
+
+.label {
+    font-weight: bold;
+    user-select: none;
+}
+
+.imgIcon {
+    width: auto;
+    height: 18px;
+}

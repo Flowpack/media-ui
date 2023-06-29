@@ -1,115 +1,50 @@
-import * as React from 'react';
-import { useRecoilValue } from 'recoil';
-import classNames from 'classnames';
+import React from 'react';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import cx from 'classnames';
 
-import { createUseMediaUiStyles, InteractionDialogRenderer, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { useSelectAsset, useSelectAssetSource } from '@media-ui/core/src/hooks';
+import { InteractionDialogRenderer, useMediaUi } from '@media-ui/core';
+import { useSelectAsset } from '@media-ui/core/src/hooks';
 import { searchTermState } from '@media-ui/core/src/state';
-import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage/src';
-import { ClipboardWatcher } from '@media-ui/feature-clipboard/src';
-import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing/src';
-import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets/src';
-import { uploadDialogVisibleState } from '@media-ui/feature-asset-upload/src/state';
+import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
+import { ClipboardWatcher } from '@media-ui/feature-clipboard';
+import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
+import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets';
+import { uploadDialogState } from '@media-ui/feature-asset-upload/src/state';
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
-import { AssetPreview } from '@media-ui/feature-asset-preview/src';
+import { AssetPreview } from '@media-ui/feature-asset-preview';
+import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
+import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
+import {
+    CreateAssetCollectionDialog,
+    createAssetCollectionDialogVisibleState,
+} from '@media-ui/feature-asset-collections';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
-import { SideBarLeft } from './SideBarLeft';
+import SideBarLeft from './SideBarLeft/SideBarLeft';
 import { SideBarRight } from './SideBarRight';
 import LoadingIndicator from './LoadingIndicator';
 import { BottomBar } from './BottomBar';
 import { TopBar } from './TopBar';
 import { Main } from './Main';
 import ErrorBoundary from './ErrorBoundary';
-import { createAssetCollectionDialogState, createTagDialogState } from '../state';
-import { CreateTagDialog, CreateAssetCollectionDialog } from './Dialogs';
-import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
 
-import * as styles from './App.module.css';
-
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    container: ({ selectionMode, isInNodeCreationDialog }) => ({
-        display: 'grid',
-        // TODO: Find a way to not calculate height to allow scrolling in main grid area
-        height: isInNodeCreationDialog
-            ? `calc(100% - 61px - 8px)` // Remove bottom bar and add padding
-            : `calc(100vh - 48px - 61px - 41px)`, // Remove top bar, body padding and bottom bar
-        gridTemplateRows: '40px 1fr',
-        gridTemplateColumns: selectionMode
-            ? theme.size.sidebarWidth + ' 1fr'
-            : theme.size.sidebarWidth + ' 1fr ' + theme.size.sidebarWidth,
-        gridTemplateAreas: selectionMode
-            ? `
-            "left top"
-            "left main"
-        `
-            : `
-            "left top right"
-            "left main right"
-        `,
-        gridGap: theme.spacing.full,
-        lineHeight: 1.5,
-        overflow: 'hidden',
-    }),
-    gridColumn: {
-        height: '100%',
-        overflowY: 'auto',
-    },
-    gridRight: {
-        extend: 'gridColumn',
-        gridArea: 'right',
-    },
-    gridLeft: {
-        extend: 'gridColumn',
-        gridArea: 'left',
-    },
-    gridMain: {
-        extend: 'gridColumn',
-        gridArea: 'main',
-    },
-    gridTop: {
-        gridArea: 'top',
-    },
-    '@global': {
-        '#media-ui-app': {
-            scrollbarWidth: 'thin',
-            scrollbarColor: `${theme.colors.scrollbarForeground} ${theme.colors.scrollbarBackground}`,
-
-            '& ::-webkit-scrollbar': {
-                width: theme.size.scrollbarSize,
-            },
-            '& ::-webkit-scrollbar-track': {
-                background: theme.colors.scrollbarBackground,
-            },
-            '& ::-webkit-scrollbar-thumb': {
-                backgroundColor: theme.colors.scrollbarForeground,
-            },
-        },
-        '.neos.neos-module-management-mediaui > .neos-module-wrap': {
-            paddingLeft: '1rem',
-            paddingRight: '1rem',
-            paddingTop: '3rem',
-            paddingBottom: '0',
-        },
-        // Hack to prevent a dropdown to be behind the bottom bar - issue #79
-        'body > [class*="_selectBox__contents_"]': {
-            zIndex: 99999,
-        },
-    },
-}));
+import theme from '@media-ui/core/src/Theme.module.css';
+import classes from './App.module.css';
+import './Global.module.css';
 
 const App = () => {
     const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
-    const { visible: showUploadDialog } = useRecoilValue(uploadDialogVisibleState);
-    const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
-    const { visible: showCreateAssetCollectionDialog } = useRecoilValue(createAssetCollectionDialogState);
+    const uploadDialog = useRecoilValue(uploadDialogState);
+    const createTagDialog = useRecoilValue(createTagDialogState);
+    const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogVisibleState);
     const showEditAssetDialog = useRecoilValue(editAssetDialogState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const searchTerm = useRecoilValue(searchTermState);
     const selectAsset = useSelectAsset();
-    const [, selectAssetSource] = useSelectAssetSource();
-    const classes = useStyles({ selectionMode, isInNodeCreationDialog });
+    const selectAssetSource = useSetRecoilState(selectedAssetSourceState);
 
+    // TODO: Implement asset source selection via recoil an atom effect in `searchTermState` to avoid this dangerous effect
     React.useEffect(() => {
         const assetId = searchTerm.getAssetIdentifierIfPresent();
         if (assetId) {
@@ -121,7 +56,13 @@ const App = () => {
     }, [searchTerm]);
 
     return (
-        <div className={classNames(classes.container, styles.mediaModuleApp)} ref={containerRef}>
+        <div
+            className={cx(classes.container, classes.mediaModuleApp, theme.mediaModuleTheme, {
+                [classes.selectionMode]: selectionMode,
+                [classes.fullHeight]: isInNodeCreationDialog,
+            })}
+            ref={containerRef}
+        >
             <LoadingIndicator />
 
             <div className={classes.gridLeft}>
@@ -152,9 +93,9 @@ const App = () => {
 
             <AssetPreview />
             {showAssetUsagesModal && <AssetUsagesModal />}
-            {showUploadDialog && <UploadDialog />}
+            {uploadDialog.visible && <UploadDialog />}
             {showEditAssetDialog && <EditAssetDialog />}
-            {showCreateTagDialog && <CreateTagDialog />}
+            {createTagDialog.visible && <CreateTagDialog />}
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
             {showSimilarAssetsModal && <SimilarAssetsModal />}
 

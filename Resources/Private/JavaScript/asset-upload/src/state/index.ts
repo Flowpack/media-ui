@@ -1,3 +1,1 @@
-import uploadDialogVisibleState from './uploadDialogVisibleState';
-
-export { uploadDialogVisibleState };
+export { uploadDialogState } from './uploadDialogState';

@@ -1,0 +1,13 @@
+.iconStack {
+    position: relative;
+}
+
+.iconStack svg:nth-child(2) {
+    position: absolute;
+    bottom: 1px;
+    right: 2px;
+    max-width: 0.8em;
+    max-height: 0.8em;
+    color: var(--theme-colors-star);
+    filter: drop-shadow(0px -1px #aa6600);
+}

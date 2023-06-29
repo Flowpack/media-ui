@@ -1,22 +1,11 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Button, Label, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl } from '../../Intl';
-import { createUseMediaUiStyles, MediaUiTheme } from '../../MediaUiTheme';
 import { Dialog } from '../../../components';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    dialogBody: {
-        padding: 16,
-    },
-    modalTitle: {
-        marginLeft: theme.spacing.full,
-    },
-    buttonIcon: {
-        marginRight: theme.spacing.half,
-    },
-}));
+import classes from './Confirm.module.css';
 
 interface ConfirmProps {
     title: string;
@@ -27,7 +16,6 @@ interface ConfirmProps {
 }
 
 const Confirm: React.FC<ConfirmProps> = ({ title, message, buttonLabel, onConfirm, onDeny }: ConfirmProps) => {
-    const classes = useStyles();
     const { translate } = useIntl();
 
     const handleRequestClose = React.useCallback(() => onDeny(), [onDeny]);
@@ -49,7 +37,6 @@ const Confirm: React.FC<ConfirmProps> = ({ title, message, buttonLabel, onConfir
                     {translate('general.cancel', 'Cancel')}
                 </Button>,
                 <Button key="confirm" style="error" hoverStyle="error" onClick={handleConfirm}>
-                    <Icon icon="ban" className={classes.buttonIcon} />
                     {buttonLabel}
                 </Button>,
             ]}

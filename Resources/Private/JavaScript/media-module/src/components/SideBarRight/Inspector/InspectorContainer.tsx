@@ -1,21 +1,8 @@
-import * as React from 'react';
+import React from 'react';
 
-import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
+import classes from './InspectorContainer.module.css';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    inspector: {
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr)',
-        gridAutoRows: 'auto',
-        gridGap: theme.spacing.full,
-        '& input, & textarea': {
-            width: '100%',
-        },
-    },
-}));
-
-const InspectorContainer = ({ children }: { children: React.ReactNode }) => {
-    const classes = useStyles();
+const InspectorContainer: React.FC = ({ children }) => {
     return <div className={classes.inspector}>{children}</div>;
 };
 

@@ -1,20 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
-import useSelectedAssetCollection from './useSelectedAssetCollection';
-import useSelectedTag from './useSelectedTag';
-import { Asset, AssetCollection, AssetSource, Tag } from '../interfaces';
+import { selectedTagIdState } from '@media-ui/feature-asset-tags';
+import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+
+import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
 import {
-    searchTermState,
-    selectedMediaTypeState,
-    loadingState,
+    availableAssetsState,
     currentPageState,
+    featureFlagsState,
     initialLoadCompleteState,
+    loadingState,
+    searchTermState,
+    selectedAssetTypeState,
+    selectedMediaTypeState,
     selectedSortOrderState,
 } from '../state';
 import { ASSETS } from '../queries';
-import { SORT_BY, SORT_DIRECTION } from '../state/selectedSortOrderState';
 
 interface AssetsQueryResult {
     assets: Asset[];
@@ -26,8 +30,10 @@ interface AssetsQueryResult {
 
 interface AssetsQueryVariables {
     searchTerm: string;
+    assetSourceId: string;
     assetCollectionId: string;
-    mediaType: string;
+    mediaType: MediaType | '';
+    assetType: AssetType | '';
     tagId: string;
     limit: number;
     offset: number;
@@ -35,17 +41,21 @@ interface AssetsQueryVariables {
     sortDirection: SORT_DIRECTION;
 }
 
-const useAssetsQuery = (paginationConfig: PaginationConfig) => {
-    const { assetsPerPage } = paginationConfig;
+const useAssetsQuery = () => {
+    const {
+        pagination: { assetsPerPage },
+    } = useRecoilValue(featureFlagsState);
     const searchTerm = useRecoilValue(searchTermState);
-    const selectedAssetCollection = useSelectedAssetCollection();
-    const selectedTag = useSelectedTag();
-    const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
+    const assetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedTagId = useRecoilValue(selectedTagIdState);
+    const mediaType = useRecoilValue(selectedMediaTypeState);
+    const assetType = useRecoilValue(selectedAssetTypeState);
     const sortOrderState = useRecoilValue(selectedSortOrderState);
     const currentPage = useRecoilValue(currentPageState);
-    const [isLoading, setIsLoading] = useRecoilState(loadingState);
+    const setIsLoading = useSetRecoilState(loadingState);
     const setInitialLoadComplete = useSetRecoilState(initialLoadCompleteState);
-    const [assets, setAssets] = useState<Asset[]>([]);
+    const [assets, setAssets] = useRecoilState(availableAssetsState);
 
     const offset = (currentPage - 1) * assetsPerPage;
 
@@ -53,9 +63,11 @@ const useAssetsQuery = (paginationConfig: PaginationConfig) => {
         notifyOnNetworkStatusChange: false,
         variables: {
             searchTerm: searchTerm.toString(),
-            assetCollectionId: selectedAssetCollection?.id,
-            mediaType: mediaTypeFilter,
-            tagId: selectedTag?.id,
+            assetSourceId,
+            assetCollectionId,
+            assetType,
+            mediaType,
+            tagId: selectedTagId,
             limit: assetsPerPage,
             offset,
             sortBy: sortOrderState.sortBy,
@@ -64,13 +76,15 @@ const useAssetsQuery = (paginationConfig: PaginationConfig) => {
     });
 
     useEffect(() => {
-        if (!loading && !isLoading) {
+        if (!loading) {
             query({
                 variables: {
                     searchTerm: searchTerm.toString(),
-                    assetCollectionId: selectedAssetCollection?.id,
-                    mediaType: mediaTypeFilter,
-                    tagId: selectedTag?.id,
+                    assetSourceId,
+                    assetCollectionId,
+                    assetType,
+                    mediaType,
+                    tagId: selectedTagId,
                     limit: assetsPerPage,
                     offset,
                     sortBy: sortOrderState.sortBy,
@@ -78,25 +92,32 @@ const useAssetsQuery = (paginationConfig: PaginationConfig) => {
                 },
             });
             setIsLoading(true);
-        } else if (data && !loading && isLoading) {
-            setIsLoading(false);
-            setInitialLoadComplete(true);
-            setAssets(data.assets);
-            // TODO: Update currentPage if asset count changes and current page exceeds limit
         }
-        // Don't include `isLoading` to prevent constant reloads
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         query,
-        data,
         loading,
         offset,
         searchTerm,
-        selectedAssetCollection?.title,
-        mediaTypeFilter,
-        selectedTag?.id,
+        assetSourceId,
+        assetCollectionId,
+        mediaType,
+        selectedTagId,
         sortOrderState,
+        assetType,
+        assetsPerPage,
+        setIsLoading,
     ]);
+
+    useEffect(() => {
+        if (!loading && data) {
+            setAssets((prev) => {
+                const sameSame = data && JSON.stringify(prev) == JSON.stringify(data.assets);
+                return sameSame ? prev : data.assets || [];
+            });
+            setIsLoading(false);
+            setInitialLoadComplete(true);
+        }
+    }, [loading, data, setAssets, setInitialLoadComplete, setIsLoading]);
 
     return { error, assets, refetch };
 };

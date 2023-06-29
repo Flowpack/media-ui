@@ -1,10 +1,9 @@
 import { atom } from 'recoil';
 
-import AssetIdentity from '../interfaces/AssetIdentity';
+import { localStorageEffect } from './localStorageEffect';
 
-const selectedAssetIdState = atom<AssetIdentity>({
+export const selectedAssetIdState = atom<AssetIdentity>({
     key: 'selectedAssetIdState',
     default: null,
+    effects: [localStorageEffect('selectedAssetIdState')],
 });
-
-export default selectedAssetIdState;

@@ -1,0 +1,8 @@
+.sortingState {
+    display: flex;
+    min-width: 0;
+}
+
+.selectBox {
+    min-width: 0;
+}

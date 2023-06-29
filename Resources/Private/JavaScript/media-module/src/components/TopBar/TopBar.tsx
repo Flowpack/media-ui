@@ -1,37 +1,24 @@
-import * as React from 'react';
-import { useMemo } from 'react';
+import React from 'react';
+import cx from 'classnames';
 
-import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { ClipboardActions } from '@media-ui/feature-clipboard/src';
+import { useMediaUi } from '@media-ui/core';
+import { ClipboardActions } from '@media-ui/feature-clipboard';
 
-import { SearchBox, TypeFilter, ViewModeSelector } from './index';
 import SortOrderSelector from './SortOrderSelector';
+import AssetsFilter from './AssetsFilter/AssetsFilter';
+import ViewModeSelector from './ViewModeSelector';
+import SearchBox from './SearchBox';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    topBar: {
-        display: 'flex',
-        flexWrap: 'nowrap',
-        justifyContent: 'flex-end',
-        margin: `0 -${theme.spacing.half}`,
-        // Add spacing in selection mode to prevent overlap with close button of secondary inspector view
-        paddingRight: (props) => (props.selectionMode ? theme.spacing.goldenUnit : null),
-        '& > *': {
-            margin: `0 ${theme.spacing.half}`,
-        },
-    },
-}));
+import classes from './TopBar.module.css';
 
 const TopBar: React.FC = () => {
     const { selectionMode } = useMediaUi();
-    const classes = useStyles({ selectionMode });
 
-    const components = useMemo(
-        () => [ClipboardActions, SearchBox, TypeFilter, SortOrderSelector, ViewModeSelector],
-        []
-    );
+    // TODO: Implement and use a component registry
+    const components = [ClipboardActions, SearchBox, AssetsFilter, SortOrderSelector, ViewModeSelector];
 
     return (
-        <div className={classes.topBar}>
+        <div className={cx(classes.topBar, selectionMode && classes.topBarSelectionMode)}>
             {components.map((Component, index) => (
                 <Component key={index} />
             ))}

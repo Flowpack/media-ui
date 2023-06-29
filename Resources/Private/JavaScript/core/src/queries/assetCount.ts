@@ -6,14 +6,15 @@ const ASSET_COUNT = gql`
         $assetSourceId: AssetSourceId
         $assetCollectionId: AssetCollectionId
         $mediaType: MediaType
+        $assetType: AssetType
         $tagId: TagId
     ) {
-        selectedAssetSourceId @client(always: true) @export(as: "assetSourceId")
         assetCount(
             searchTerm: $searchTerm
             assetSourceId: $assetSourceId
             assetCollectionId: $assetCollectionId
             mediaType: $mediaType
+            assetType: $assetType
             tagId: $tagId
         )
     }

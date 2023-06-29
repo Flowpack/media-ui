@@ -1,90 +1,19 @@
-import * as React from 'react';
-import { useCallback, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useCallback, useMemo } from 'react';
+import { selectorFamily, useRecoilValue } from 'recoil';
+import cx from 'classnames';
 
 import { Icon } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useMediaUi } from '@media-ui/core/src';
-import { AssetIdentity } from '@media-ui/core/src/interfaces';
+import { useMediaUi } from '@media-ui/core';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 import { humanFileSize } from '@media-ui/core/src/helper';
+import { AssetLabel } from '@media-ui/core/src/components';
 
 import { AssetActions } from './index';
-import { AssetLabel } from '../Presentation';
 import MissingAssetActions from './MissingAssetActions';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    listViewItem: {
-        backgroundColor: theme.colors.mainBackground,
-        '&:nth-of-type(2n)': {
-            backgroundColor: theme.colors.alternatingBackground,
-        },
-        '&:hover': {
-            backgroundColor: theme.colors.primary,
-        },
-    },
-    selected: {
-        backgroundColor: theme.colors.primary,
-        '&:nth-of-type(2n)': {
-            backgroundColor: theme.colors.primary,
-        },
-    },
-    textColumn: {
-        padding: `0 ${theme.spacing.half}`,
-        whiteSpace: 'nowrap',
-        userSelect: 'none',
-        cursor: 'pointer',
-        width: '1px',
-        '& > *': {
-            verticalAlign: 'middle',
-        },
-    },
-    previewColumn: {
-        minWidth: theme.spacing.goldenUnit,
-        width: theme.spacing.goldenUnit,
-        cursor: 'pointer',
-        '& picture': {
-            display: 'block',
-            width: '100%',
-            height: theme.spacing.goldenUnit,
-            textAlign: 'center',
-            '& img, & svg': {
-                display: 'inline-block',
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-            },
-        },
-    },
-    labelColumn: {
-        extend: 'textColumn',
-        display: 'table',
-        tableLayout: 'fixed',
-        width: '100%',
-        lineHeight: theme.spacing.goldenUnit,
-        userSelect: 'text',
-        '& > *': {
-            width: '100%',
-        },
-    },
-    lastModifiedColumn: {
-        extend: 'textColumn',
-    },
-    fileSizeColumn: {
-        extend: 'textColumn',
-    },
-    mediaTypeColumn: {
-        extend: 'textColumn',
-        maxWidth: '100px',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-    },
-    actionsColumn: {
-        extend: 'textColumn',
-        textAlign: 'right',
-    },
-}));
+import classes from './ListViewItem.module.css';
 
 const dateFormatOptions: Record<string, DateTimeFormatOption> = {
     weekday: 'short',
@@ -98,18 +27,24 @@ interface ListViewItemProps {
     onSelect: (assetIdentity: AssetIdentity, openPreview: boolean) => void;
 }
 
+const listViewItemSelectionState = selectorFamily<boolean, string>({
+    key: 'ListViewItemSelection',
+    get:
+        (assetId) =>
+        ({ get }) => {
+            return get(selectedAssetIdState)?.assetId === assetId;
+        },
+});
+
 const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: ListViewItemProps) => {
-    const classes = useStyles();
     const { dummyImage, isAssetSelectable } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
-    const [selectedAssetId] = useRecoilState(selectedAssetIdState);
-    const isSelected = selectedAssetId?.assetId === assetIdentity.assetId;
-
+    const isSelected = useRecoilValue(listViewItemSelectionState(assetIdentity.assetId));
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
     const onSelectItem = useCallback(() => onSelect(assetIdentity, isSelected), [onSelect, assetIdentity, isSelected]);
 
     return (
-        <tr className={[classes.listViewItem, isSelected ? classes.selected : ''].join(' ')}>
+        <tr className={cx(classes.listViewItem, isSelected && classes.selected)}>
             <td className={classes.previewColumn} onClick={onSelectItem}>
                 <picture>
                     {canBeSelected ? (

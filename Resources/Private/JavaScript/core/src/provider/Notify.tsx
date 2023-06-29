@@ -1,21 +1,13 @@
 import * as React from 'react';
 import { createContext, useContext } from 'react';
 
-export interface Notify {
-    notice: (title: string) => void;
-    ok: (title: string) => void;
-    error: (title: string, message?: string) => void;
-    warning: (title: string, message?: string) => void;
-    info: (title: string) => void;
-}
-
 interface ProviderProps {
-    notificationApi: Notify;
+    notificationApi: NeosNotification;
     children: React.ReactElement;
 }
 
 export const NotifyContext = createContext(null);
-export const useNotify = (): Notify => useContext(NotifyContext);
+export const useNotify = (): NeosNotification => useContext(NotifyContext);
 
 export function NotifyProvider({ children, notificationApi }: ProviderProps) {
     const error = (title: string, message = '') => notificationApi['error'](title, message);

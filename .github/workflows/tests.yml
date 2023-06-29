@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version-file: '.nvmrc'
           cache: 'yarn'
 
       - name: Install dependencies
@@ -53,7 +53,17 @@ jobs:
           command: analyse
 
   php-unit-tests:
+    env:
+      FLOW_CONTEXT: Testing
+      FLOW_FOLDER: ../flow-base-distribution
+
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['7.4']
+        flow-versions: ['7.3']
 
     steps:
       - uses: actions/checkout@v2
@@ -61,7 +71,10 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, xml, json, zlib, iconv, intl, pdo_sqlite, mysql
+          coverage: xdebug #optional
+          ini-values: opcache.fast_shutdown=0
 
       - name: Cache dependencies
         uses: actions/cache@v2
@@ -69,24 +82,38 @@ jobs:
           path: ~/.composer/cache
           key: dependencies-composer-${{ hashFiles('composer.json') }}
 
-      - name: Install dependencies
-        uses: php-actions/composer@v6
-        with:
-          php_version: 7.4
-          version: 2
+      - name: Prepare Flow distribution
+        run: |
+          git clone https://github.com/neos/flow-base-distribution.git -b ${{ matrix.flow-versions }} ${FLOW_FOLDER}
+          cd ${FLOW_FOLDER}
+          composer require --no-update --no-interaction flowpack/media-ui
 
-      - name: Run PHPUnit tests
-        run: composer test
+      - name: Install distribution
+        run: |
+          cd ${FLOW_FOLDER}
+          composer install --no-interaction --no-progress
+          rm -rf Packages/Application/Flowpack.Media.Ui
+          cp -r ../media-ui Packages/Application/Flowpack.Media.Ui
+
+      - name: Run Unit tests
+        run: |
+          cd ${FLOW_FOLDER}
+          bin/phpunit --colors -c Build/BuildEssentials/PhpUnit/UnitTests.xml Packages/Application/Flowpack.Media.Ui/Tests/Unit/
+
+      - name: Run Functional tests
+        run: |
+          cd ${FLOW_FOLDER}
+          bin/phpunit --colors -c Build/BuildEssentials/PhpUnit/FunctionalTests.xml Packages/Application/Flowpack.Media.Ui/Tests/Functional/
 
   js-unit-tests:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version-file: '.nvmrc'
           cache: 'yarn'
-      - uses: actions/checkout@v2
 
       - name: Install dependencies
         run: yarn
@@ -105,7 +132,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version-file: '.nvmrc'
           cache: 'yarn'
 
       - name: Install dependencies

@@ -1,52 +1,9 @@
 import React from 'react';
-import { createUseMediaUiStyles, MediaUiTheme } from '@media-ui/core/src';
-import AssetVariant from '../interfaces/AssetVariant';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface VariantProps extends AssetVariant {}
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    variantContainer: {
-        backgroundColor: theme.colors.assetBackground,
-    },
-    picture: {
-        height: 200,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    image: {
-        maxWidth: '100%',
-        maxHeight: '100%',
-        objectFit: 'contain',
-        display: 'block',
-        backgroundImage:
-            'repeating-linear-gradient(45deg, #999999 25%, transparent 25%, transparent 75%, #999999 75%, #999999), repeating-linear-gradient(45deg, #999999 25%, #e5e5f7 25%, #e5e5f7 75%, #999999 75%, #999999)',
-        backgroundPosition: '0 0, 10px 10px',
-        backgroundSize: '20px 20px',
-    },
-    caption: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: theme.spacing.half,
-        backgroundColor: theme.colors.captionBackground,
-    },
-    infoContainer: {
-        display: 'flex',
-        flexDirection: 'column',
-        minWidth: 0,
-        maxWidth: theme.size.sidebarWidth,
-    },
-    info: {
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-    },
-    variantSizes: {
-        fontSize: theme.fontSize.small,
-    },
-}));
+import classes from './Variant.module.css';
 
 const Variant: React.FC<VariantProps> = ({
     presetIdentifier,
@@ -55,7 +12,6 @@ const Variant: React.FC<VariantProps> = ({
     height,
     previewUrl,
 }: VariantProps) => {
-    const classes = useStyles();
     return (
         <div className={classes.variantContainer}>
             <picture className={classes.picture}>

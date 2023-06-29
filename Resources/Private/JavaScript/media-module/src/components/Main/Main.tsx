@@ -1,45 +1,29 @@
-import * as React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
-import { clipboardVisibleState, useClipboard } from '@media-ui/feature-clipboard/src';
-import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage/src';
+import { useIntl } from '@media-ui/core';
+import { availableAssetIdentitiesState, searchTermState } from '@media-ui/core/src/state';
+import { clipboardState, clipboardVisibleState } from '@media-ui/feature-clipboard';
+import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage';
 
-import { useViewModeSelection, VIEW_MODES } from '../../hooks';
 import { ListView, ThumbnailView } from './index';
 import LoadingLabel from '../LoadingLabel';
-import { MainViewState, mainViewState } from '../../state';
+import { MainViewMode, mainViewState, VIEW_MODES, viewModeState } from '../../state';
 
-const useStyles = createUseMediaUiStyles({
-    emptyStateWrapper: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 'inherit',
-    },
-});
+import classes from './Main.module.css';
 
 const Main: React.FC = () => {
-    const classes = useStyles();
-    const [viewModeSelection] = useViewModeSelection();
-    const { assets } = useMediaUi();
+    const viewModeSelection = useRecoilValue(viewModeState);
     const { assets: unusedAssets } = useUnusedAssetsQuery();
-    const { clipboard } = useClipboard();
+    const clipboard = useRecoilValue(clipboardState);
     const mainView = useRecoilValue(mainViewState);
     const setClipboardVisible = useSetRecoilState(clipboardVisibleState);
+    const searchTerm = useRecoilValue(searchTermState);
     const { translate } = useIntl();
-    const [assetIdentities, setAssetIdentities] = useState([]);
-
-    const queriedAssets = useMemo(() => {
-        return assets
-            .filter((asset) => asset?.id)
-            .map(({ id, assetSource }) => {
-                return { assetId: id, assetSourceId: assetSource.id };
-            });
-    }, [assets]);
+    const availableAssetIdentities = useRecoilValue(availableAssetIdentitiesState);
+    const [visibleAssetIdentities, setVisibleAssetIdentities] = useState<AssetIdentity[]>(availableAssetIdentities);
 
     const queriedUnusedAssets = useMemo(() => {
         return unusedAssets
@@ -50,31 +34,37 @@ const Main: React.FC = () => {
     }, [unusedAssets]);
 
     useEffect(() => {
-        if (mainView === MainViewState.CLIPBOARD) {
-            setAssetIdentities(Object.values(clipboard));
-        } else if (mainView === MainViewState.UNUSED_ASSETS) {
-            setAssetIdentities(queriedUnusedAssets);
+        if (mainView === MainViewMode.CLIPBOARD) {
+            setVisibleAssetIdentities(clipboard);
+        } else if (mainView === MainViewMode.UNUSED_ASSETS) {
+            setVisibleAssetIdentities(queriedUnusedAssets);
         } else {
-            setAssetIdentities(queriedAssets);
+            setVisibleAssetIdentities(availableAssetIdentities);
         }
-    }, [mainView, queriedAssets, queriedUnusedAssets, clipboard, setAssetIdentities]);
+    }, [mainView, availableAssetIdentities, queriedUnusedAssets, clipboard]);
 
-    return assetIdentities.length > 0 ? (
+    return visibleAssetIdentities.length > 0 ? (
         viewModeSelection === VIEW_MODES.List ? (
-            <ListView assetIdentities={assetIdentities} />
+            <ListView assetIdentities={visibleAssetIdentities} />
         ) : (
-            <ThumbnailView assetIdentities={assetIdentities} />
+            <ThumbnailView assetIdentities={visibleAssetIdentities} />
         )
     ) : (
         <div className={classes.emptyStateWrapper}>
-            {mainView === MainViewState.CLIPBOARD ? (
+            {mainView === MainViewMode.CLIPBOARD ? (
                 <Button size="regular" style="brand" hoverStyle="brand" onClick={() => setClipboardVisible(false)}>
                     {translate('clipboard.close', 'Close clipboard')}
                 </Button>
             ) : (
                 <LoadingLabel
                     loadingText={translate('assetList.loading', 'Loading assets')}
-                    emptyText={translate('assetList.empty', 'No assets found')}
+                    emptyText={
+                        searchTerm?.toString()
+                            ? translate('assetList.emptyForSearchTerm', `No assets found for "${searchTerm}"`, {
+                                  searchTerm,
+                              })
+                            : translate('assetList.empty', 'No assets found')
+                    }
                 />
             )}
         </div>

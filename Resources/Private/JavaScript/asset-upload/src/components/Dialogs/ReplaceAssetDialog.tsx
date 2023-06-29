@@ -1,58 +1,42 @@
-import * as React from 'react';
-import { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useIntl, useMediaUi, useNotify } from '@media-ui/core/src';
-import { useSelectedAsset } from '@media-ui/core/src/hooks';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
+import { useAssetsQuery, useSelectedAsset } from '@media-ui/core/src/hooks';
 import { Dialog } from '@media-ui/core/src/components';
+import { featureFlagsState } from '@media-ui/core/src/state';
 
 import UploadSection from '../UploadSection';
 import PreviewSection from '../PreviewSection';
 import { useUploadDialogState } from '../../hooks';
 import useReplaceAsset, { AssetReplacementOptions } from '../../hooks/useReplaceAsset';
-import { UploadedFile } from '../../interfaces';
 
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    uploadArea: {
-        padding: theme.spacing.full,
-    },
-    optionSection: {
-        marginTop: theme.spacing.full,
-        marginBottom: theme.spacing.full,
-    },
-    option: {
-        marginTop: theme.spacing.half,
-        marginBottom: theme.spacing.half,
-    },
-    label: {
-        display: 'flex',
-    },
-}));
+import classes from './ReplaceAssetDialog.module.css';
 
 const ReplaceAssetDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
     const selectedAsset = useSelectedAsset();
     const { replaceAsset, uploadState, loading } = useReplaceAsset();
+    const { refetch } = useAssetsQuery();
     const {
-        refetchAssets,
-        featureFlags,
         approvalAttainmentStrategy: { obtainApprovalToReplaceAsset },
     } = useMediaUi();
+    const featureFlags = useRecoilValue(featureFlagsState);
     const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
     const [replacementOptions, setReplacementOptions] = React.useState<AssetReplacementOptions>({
         keepOriginalFilename: false,
         generateRedirects: false,
     });
     const uploadPossible = !loading && dialogState.files.selected.length > 0;
-    const classes = useStyles();
     const acceptedFileTypes = useMemo(() => {
         // TODO: Extract this into a helper function
         const completeMediaType = selectedAsset?.file.mediaType;
         const regex = /^(?<type>(?:[.!#%&'`^~$*+\-|\w]+))\//;
         const mainType = completeMediaType.match(regex)?.groups?.type;
-        return mainType ? mainType + '/*' : '';
+        return mainType ? (`${mainType}/*` as MediaType) : '';
     }, [selectedAsset]);
 
     const handleUpload = useCallback(async () => {
@@ -70,7 +54,7 @@ const ReplaceAssetDialog: React.FC = () => {
 
                 Notify.ok(translate('uploadDialog.replacementFinished', 'Replacement finished'));
                 closeDialog();
-                void refetchAssets();
+                void refetch();
             } catch (error) {
                 Notify.error(translate('assetReplacement.error', 'Replacement failed'), error);
             }
@@ -81,7 +65,7 @@ const ReplaceAssetDialog: React.FC = () => {
         translate,
         dialogState,
         replacementOptions,
-        refetchAssets,
+        refetch,
         selectedAsset,
         closeDialog,
         obtainApprovalToReplaceAsset,

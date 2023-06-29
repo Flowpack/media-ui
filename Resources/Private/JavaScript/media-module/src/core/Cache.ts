@@ -2,10 +2,7 @@ import { InMemoryCache } from '@apollo/client';
 import { ApolloCache } from '@apollo/client/cache/core/cache';
 import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 
-import { FeatureFlags } from '@media-ui/core/src/interfaces';
-
-import { IdFromObjectResolver, PersistentStateManager } from './index';
-import { ClipboardItems } from '@media-ui/feature-clipboard/src';
+import { IdFromObjectResolver } from './index';
 
 class CacheFactory {
     public static createCache(featureFlags: FeatureFlags): ApolloCache<NormalizedCacheObject> {
@@ -24,6 +21,9 @@ class CacheFactory {
                         assetCollection(_, { args, toReference }) {
                             return args.id ? toReference({ __typename: 'AssetCollection', id: args.id }) : null;
                         },
+                        assetSource(_, { args, toReference }) {
+                            return args.id ? toReference({ __typename: 'AssetSource', id: args.id }) : null;
+                        },
                         includeUsage() {
                             return featureFlags.queryAssetUsage;
                         },
@@ -38,12 +38,6 @@ class CacheFactory {
                 },
                 Asset: {
                     keyFields: ['id'],
-                    fields: {
-                        isInClipboard(_, { variables }) {
-                            const clipboard = PersistentStateManager.getItem<ClipboardItems>('clipboard') || [];
-                            return {}.hasOwnProperty.call(clipboard, variables.id);
-                        },
-                    },
                 },
                 Tag: {
                     keyFields: ['id'],

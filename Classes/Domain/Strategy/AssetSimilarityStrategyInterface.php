@@ -21,25 +21,18 @@ interface AssetSimilarityStrategyInterface
 {
     /**
      * Returns true if the asset has at least one similar other asset
-     *
-     * @param AssetInterface $asset
-     * @return boolean
      */
     public function hasSimilarAssets(AssetInterface $asset): bool;
 
     /**
      * Returns the total count of similar assets
-     *
-     * @param AssetInterface $asset
-     * @return integer
      */
     public function getSimilarAssetCount(AssetInterface $asset): int;
 
     /**
      * Returns an array of similar assets.
      *
-     * @param AssetInterface $asset
-     * @return array<AssetInterface>
+     * @return AssetInterface[]
      */
     public function getSimilarAssets(AssetInterface $asset): array;
 }

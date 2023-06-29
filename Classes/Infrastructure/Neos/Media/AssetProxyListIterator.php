@@ -15,9 +15,11 @@ namespace Flowpack\Media\Ui\Infrastructure\Neos\Media;
  */
 
 use Flowpack\Media\Ui\Domain\Model\AssetProxyIteratorAggregate;
+use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 
 /**
+ * @Flow\Proxy(false)
  * @internal
  */
 final class AssetProxyListIterator implements AssetProxyIteratorAggregate
@@ -25,7 +27,7 @@ final class AssetProxyListIterator implements AssetProxyIteratorAggregate
     /**
      * @var AssetProxyInterface[]
      */
-    private $assetProxies;
+    private array $assetProxies;
 
     private int $offset = 0;
     private ?int $limit = null;
@@ -45,16 +47,8 @@ final class AssetProxyListIterator implements AssetProxyIteratorAggregate
         $this->offset = $offset;
     }
 
-    /**
-     * @param null|integer $limit
-     * @return void
-     */
-    public function setLimit($limit): void
+    public function setLimit(?int $limit): void
     {
-        // TODO: Replace this assertion with a proper type hint
-        // once support for PHP 7.0 is dropped
-        assert($limit === null || is_int($limit));
-
         $this->limit = $limit;
     }
 

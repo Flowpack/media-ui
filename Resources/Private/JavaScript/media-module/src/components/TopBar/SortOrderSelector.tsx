@@ -1,23 +1,14 @@
-import * as React from 'react';
-import { useCallback, useMemo } from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useCallback, useMemo } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { SelectBox, IconButton } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, useIntl, useMediaUi } from '@media-ui/core/src';
+import { useIntl, useMediaUi } from '@media-ui/core';
 
-import selectedSortOrderState, { SORT_BY, SORT_DIRECTION } from '@media-ui/core/src/state/selectedSortOrderState';
+import { selectedSortOrderState, SORT_BY, SORT_DIRECTION } from '@media-ui/core/src/state/selectedSortOrderState';
 
-const useStyles = createUseMediaUiStyles({
-    sortingState: {
-        display: 'flex',
-        flex: 1,
-        minWidth: 0,
-    },
-    selectBox: {
-        minWidth: 0,
-    },
-});
+import classes from './SortOrderSelector.module.css';
+import { MainViewMode, mainViewState } from '../../state';
 
 interface SortByOption {
     value: SORT_BY;
@@ -27,7 +18,6 @@ interface SortByOption {
 
 const SortOrderSelector: React.FC = () => {
     const { isInNodeCreationDialog, selectionMode } = useMediaUi();
-    const classes = useStyles();
     const [sortOrderState, setSortOrderState] = useRecoilState(selectedSortOrderState);
     const { translate } = useIntl();
     const hideOptionIcon = isInNodeCreationDialog || selectionMode;
@@ -37,6 +27,7 @@ const SortOrderSelector: React.FC = () => {
         },
         [sortOrderState, setSortOrderState]
     );
+    const mainView = useRecoilValue(mainViewState);
 
     const handleSwitchSortDirection = useCallback(() => {
         setSortOrderState({
@@ -58,8 +49,17 @@ const SortOrderSelector: React.FC = () => {
                 label: translate('sortingState.sortBy.values.name', 'Name'),
                 icon: hideOptionIcon ? '' : 'font',
             },
+            {
+                value: SORT_BY.Size,
+                label: translate('sortingState.sortBy.values.size', 'File size'),
+                icon: hideOptionIcon ? '' : 'weight-hanging',
+            },
         ];
     }, [translate, hideOptionIcon]);
+
+    if (![MainViewMode.DEFAULT, MainViewMode.UNUSED_ASSETS].includes(mainView)) {
+        return null;
+    }
 
     return (
         <div className={classes.sortingState}>

@@ -36,7 +36,29 @@ Neos:
           useNewMediaSelection: false
 ``` 
 
+#### Hierarchical asset collections
+
+This package will enable a hierarchical asset collection structure via AOP (until the feature is in the Neos core).
+With this feature you can add a collection in another collection or assign existing ones to another and
+this way create a structure comparable with folders in your computers filesystem.
+
+It is recommended to enable the feature flag `limitToSingleAssetCollectionPerAsset` (see below) for a better experience. 
+
 ## Optional features
+
+### Limit assets to be only assigned to one AssetCollection
+
+By limiting assets to only be in one collection you can enforce a more folder like experience:
+
+```yaml
+Neos:
+  Neos:
+    Ui:
+      frontendConfiguration:
+        Flowpack.Media.Ui:
+          # Only allow a single asset collection selection per asset to treat collection like folders
+          limitToSingleAssetCollectionPerAsset: true
+```
 
 ### Fast asset usage calculation & unused assets view
            
@@ -223,8 +245,15 @@ First start the dev server via `yarn dev` and the run the following command to e
 yarn e2e
 ```    
 
-The test configuration is defined in `.testcaferc.json`. Change the options there if you want to use
-a different browser or make some other changes.
+The test configuration is defined in `.testcaferc.json`.
+
+To use a different browser you can define it when running the tests:
+
+```console
+yarn test firefox
+```
+
+Checkout the [Testcafe documentation](https://testcafe.io/documentation/402828/guides/intermediate-guides/browsers#browser-support) for more information and supported browsers.
 
 ### Run phpstan for codestyle checks
 
@@ -233,13 +262,27 @@ First make sure you have [phpstan](https://phpstan.org) installed.
 When the package is installed in a Neos distribution:
 
 ```console
-phpstan analyse --autoload-file ../../Libraries/autoload.php
+composer run codestyle
 ```
     
 When the package is standalone
 
 ```console
-composer run codestyle
+composer run codestyle:ci
+``` 
+
+### Run PHPUnit for unit tests
+
+When the package is installed in a Neos distribution:
+
+```console
+composer run test
+```
+    
+When the package is standalone
+
+```console
+composer run test:ci
 ``` 
     
 ### Other development hints

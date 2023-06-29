@@ -15,9 +15,9 @@ namespace Flowpack\Media\Ui\Tests\Unit\Domain\Model;
  */
 
 use Flowpack\Media\Ui\Domain\Model\SearchTerm;
-use PHPUnit\Framework\TestCase;
+use Neos\Flow\Tests\UnitTestCase;
 
-final class SearchTermTest extends TestCase
+final class SearchTermTest extends UnitTestCase
 {
     /**
      * @test

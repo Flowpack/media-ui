@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { createRef } from 'react';
+import React, { createRef } from 'react';
 import { connect } from 'react-redux';
 import { RecoilRoot } from 'recoil';
 import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
+import cx from 'classnames';
 
 // Neos dependencies are provided by the UI
 // @ts-ignore
@@ -14,28 +14,15 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-import {
-    I18nRegistry,
-    InteractionProvider,
-    IntlProvider,
-    MediaUiProvider,
-    MediaUiThemeProvider,
-    Notify,
-    NotifyProvider,
-} from '@media-ui/core/src';
-import { FeatureFlags, SelectionConstraints } from '@media-ui/core/src/interfaces';
-import { AssetMediaType } from '@media-ui/core/src/state/selectedMediaTypeState';
-import { ApolloErrorHandler, CacheFactory, PersistentStateManager } from '@media-ui/media-module/src/core';
+import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
+import { createErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
 import App from '@media-ui/media-module/src/components/App';
 
 // GraphQL type definitions
-import TYPE_DEFS_CORE from '@media-ui/core/schema.graphql';
-import TYPE_DEFS_CLIPBOARD from '@media-ui/feature-clipboard/schema.graphql';
-import TYPE_DEFS_ASSET_USAGE from '@media-ui/feature-asset-usage/schema.graphql';
+import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
-// GraphQL local resolvers
-import buildClipboardResolver from '@media-ui/feature-clipboard/src/resolvers/mutation';
-import buildModuleResolver from '@media-ui/media-module/src/resolvers/mutation';
+import classes from './MediaSelectionScreen.module.css';
 
 let apolloClient = null;
 
@@ -45,7 +32,7 @@ interface MediaSelectionScreenProps {
         queryAssetUsage: boolean;
     };
     neos: Record<string, unknown>;
-    type: AssetMediaType | 'images'; // The image editor sets the type to 'images'
+    type: AssetType | 'images'; // The image editor sets the type to 'images'
     onComplete: (localAssetIdentifier: string) => void;
     isLeftSideBarHidden: boolean;
     isNodeCreationDialogOpen: boolean;
@@ -60,11 +47,22 @@ interface MediaSelectionScreenState {
 }
 
 class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps, MediaSelectionScreenState> {
+    notificationHandler: NeosNotification;
+
     constructor(props: MediaSelectionScreenProps) {
         super(props);
         this.state = {
             initialLeftSideBarHiddenState: false,
             initialNodeCreationDialogOpenState: false,
+        };
+
+        // The Neos.UI FlashMessages only support the levels 'success', 'error' and 'info'
+        this.notificationHandler = {
+            info: (message) => props.addFlashMessage(message, message, 'info'),
+            ok: (message) => props.addFlashMessage(message, message, 'success'),
+            notice: (message) => props.addFlashMessage(message, message, 'info'),
+            warning: (title, message = '') => props.addFlashMessage(title, message, 'error'),
+            error: (title, message = '') => props.addFlashMessage(title, message, 'error'),
         };
     }
 
@@ -103,22 +101,17 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
             const cache = CacheFactory.createCache(this.props.frontendConfiguration as FeatureFlags);
-            PersistentStateManager.restoreLocalState(cache, this.props.constraints);
 
             apolloClient = new ApolloClient({
                 cache,
                 link: ApolloLink.from([
-                    ApolloErrorHandler,
+                    createErrorHandler(this.notificationHandler),
                     createUploadLink({
                         uri: endpoints.graphql,
                         credentials: 'same-origin',
                     }),
                 ]),
-                typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_CLIPBOARD, TYPE_DEFS_ASSET_USAGE],
-                resolvers: [
-                    buildModuleResolver(PersistentStateManager.updateLocalState),
-                    buildClipboardResolver(PersistentStateManager.updateLocalState),
-                ],
+                typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_ASSET_USAGE],
             });
         }
         return apolloClient;
@@ -135,44 +128,37 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
     };
 
     render() {
-        const { addFlashMessage, onComplete, constraints, type } = this.props;
+        const { onComplete, constraints, type } = this.props;
         const client = this.getApolloClient();
         const { dummyImage } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
 
         const featureFlags: FeatureFlags = this.props.frontendConfiguration as FeatureFlags;
 
-        // The Neos.UI FlashMessages only support the levels 'success', 'error' and 'info'
-        const Notification: Notify = {
-            info: (message) => addFlashMessage(message, message, 'info'),
-            ok: (message) => addFlashMessage(message, message, 'success'),
-            notice: (message) => addFlashMessage(message, message, 'info'),
-            warning: (title, message = '') => addFlashMessage(title, message, 'error'),
-            error: (title, message = '') => addFlashMessage(title, message, 'error'),
-        };
-
         const isInNodeCreationDialog = this.state.initialNodeCreationDialogOpenState;
 
         return (
-            <div style={{ transform: 'translateZ(0)', height: '100%', padding: isInNodeCreationDialog ? 0 : '1rem' }}>
+            <div
+                className={cx(classes.mediaSelectionScreen, {
+                    [classes.isInNodeCreationDialog]: isInNodeCreationDialog,
+                })}
+            >
                 <IntlProvider translate={this.translate}>
-                    <NotifyProvider notificationApi={Notification}>
+                    <NotifyProvider notificationApi={this.notificationHandler}>
                         <InteractionProvider>
                             <ApolloProvider client={client}>
                                 <RecoilRoot>
                                     <MediaUiProvider
                                         dummyImage={dummyImage}
                                         onAssetSelection={onComplete}
-                                        selectionMode={true}
+                                        selectionMode
                                         isInNodeCreationDialog={isInNodeCreationDialog}
                                         containerRef={containerRef}
                                         featureFlags={featureFlags}
                                         constraints={constraints || {}}
                                         assetType={type === 'images' ? 'image' : type}
                                     >
-                                        <MediaUiThemeProvider>
-                                            <App />
-                                        </MediaUiThemeProvider>
+                                        <App />
                                     </MediaUiProvider>
                                 </RecoilRoot>
                             </ApolloProvider>
@@ -189,14 +175,12 @@ const mapStateToProps = (state: any) => ({
     isNodeCreationDialogOpen: state.ui.nodeCreationDialog.isOpen,
 });
 
-const mapDispatchToProps = () => ({
-    addFlashMessage: actions.UI.FlashMessages.add,
-    toggleSidebar: actions.UI.LeftSideBar.toggle,
-});
-
 const mapGlobalRegistryToProps = neos((globalRegistry: any) => ({
     i18nRegistry: globalRegistry.get('i18n'),
     frontendConfiguration: globalRegistry.get('frontendConfiguration').get('Flowpack.Media.Ui'),
 }));
 
-export default connect(mapStateToProps, mapDispatchToProps)(mapGlobalRegistryToProps(MediaSelectionScreen));
+export default connect(() => ({}), {
+    addFlashMessage: actions.UI.FlashMessages.add,
+    toggleSidebar: actions.UI.LeftSideBar.toggle,
+})(connect(mapStateToProps)(mapGlobalRegistryToProps(MediaSelectionScreen)));

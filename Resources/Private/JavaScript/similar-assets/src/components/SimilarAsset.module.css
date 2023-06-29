@@ -1,0 +1,32 @@
+.similarAsset {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.picture {
+    background-color: var(--theme-colors-assetBackground);
+}
+
+.picture img {
+    display: block;
+    height: 250px;
+    width: 100%;
+    object-fit: contain;
+}
+
+.caption {
+    background-color: var(--theme-colors-captionBackground);
+    transition: background-color var(--theme-transition-fast);
+    padding: var(--theme-spacing-Half);
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.caption img {
+    width: 1.3rem;
+    height: auto;
+    margin-right: var(--theme-spacing-Half);
+}
