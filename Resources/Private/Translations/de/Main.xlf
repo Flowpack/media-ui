@@ -31,6 +31,14 @@
                 <source>Neos documents and content</source>
                 <target>Neos Dokumente und Inhalte</target>
             </trans-unit>
+            <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode" xml:space="preserve" approved="yes">
+                <source>Inaccessible node</source>
+                <target>Unerreichbarer Inhalt</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable" xml:space="preserve" approved="yes">
+                <source>n/a</source>
+                <target>k.A.</target>
+            </trans-unit>
             <trans-unit id="assetUsage.header" xml:space="preserve" approved="yes">
                 <source>Usage details for "{asset}"</source>
                 <target>Details zur Nutzung von "{asset}"</target>

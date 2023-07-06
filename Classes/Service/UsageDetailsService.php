@@ -231,8 +231,7 @@ class UsageDetailsService
         $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
         $accessible = $this->usageIsAccessible($usage->getWorkspaceName());
 
-        $label = $accessible && $node ? $node->getLabel() : 'n/a';
-        $metadata = [];
+        $label = $accessible && $node ? $node->getLabel() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode');
 
         $url = $accessible && $closestDocumentNode ? $this->getUriBuilder()->uriFor(
             'preview',
@@ -241,27 +240,32 @@ class UsageDetailsService
             'Neos.Neos'
         ) : '';
 
-        if ($node && $closestDocumentNode) {
-            /** @var ContentContext $context */
-            $context = $node->getContext();
-            $site = $context->getCurrentSite();
-
-            if ($includeSites && $site) {
-                $metadata[] = [
-                    'name' => 'site',
-                    'value' => $site->getName(),
-                ];
-            }
-
-            $metadata[] = [
-                'name' => 'document',
-                'value' => $closestDocumentNode->getLabel(),
-            ];
-
-            $metadata[] = [
+        $metadata = [
+            [
                 'name' => 'workspace',
                 'value' => $usage->getWorkspaceName(),
-            ];
+            ],
+            [
+                'name' => 'document',
+                'value' => $closestDocumentNode ? $closestDocumentNode->getLabel() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable'),
+            ],
+            [
+                'name' => 'lastModified',
+                'value' => $node && $node->getLastPublicationDateTime() ? $node->getLastModificationDateTime()->format(DATE_W3C) : null,
+            ]
+        ];
+
+        if ($node) {
+            if ($includeSites) {
+                /** @var ContentContext $context */
+                $context = $node->getContext();
+                $site = $context->getCurrentSite();
+
+                $metadata[] = [
+                    'name' => 'site',
+                    'value' => $site ? $site->getName() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable'),
+                ];
+            }
 
             // Only add content dimensions if they are configured
             if ($includeDimensions) {
@@ -270,11 +274,6 @@ class UsageDetailsService
                     'value' => json_encode($this->resolveDimensionValuesForNode($node)),
                 ];
             }
-
-            $metadata[] = [
-                'name' => 'lastModified',
-                'value' => $node->getLastPublicationDateTime() ? $node->getLastModificationDateTime()->format(DATE_W3C) : null,
-            ];
         }
 
         return new AssetUsageDetails($label, $url, $metadata);

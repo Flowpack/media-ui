@@ -54,9 +54,13 @@ const AssetUsageSection: React.FC<AssetUsageSectionProps> = ({ usageDetailsGroup
                         {usages.map((assetUsage, index) => (
                             <tr key={index}>
                                 <td>
-                                    <a href={assetUsage.url} target="_blank" rel="noreferrer">
-                                        {assetUsage.label}
-                                    </a>
+                                    {assetUsage.url ? (
+                                        <a href={assetUsage.url} target="_blank" rel="noreferrer">
+                                            {assetUsage.label}
+                                        </a>
+                                    ) : (
+                                        assetUsage.label
+                                    )}
                                 </td>
                                 {metadataSchema.map(({ name, type }, index) => {
                                     const usage = assetUsage.metadata.find((usage) => usage.name == name);
