@@ -293,6 +293,12 @@ Please don't add the compiled frontend assets to your commits/PRs.
 
 We will build the assets when a new release is due.
 
+When you want to build the assets for a release, use the following command to prevent cache issues:
+
+```console
+yarn build:no-cache
+```
+
 #### Register additional icons
 
 Font Awesome icons are registered in `Resources/Private/JavaScript/src/lib/FontAwesome`.
