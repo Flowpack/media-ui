@@ -230,6 +230,7 @@ class UsageDetailsService
         $node = $this->getNodeFrom($usage);
         $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
         $accessible = $this->usageIsAccessible($usage->getWorkspaceName());
+        $workspace = $this->workspaceRepository->findByIdentifier($usage->getWorkspaceName());
 
         $label = $accessible && $node ? $node->getLabel() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode');
 
@@ -243,7 +244,7 @@ class UsageDetailsService
         $metadata = [
             [
                 'name' => 'workspace',
-                'value' => $usage->getWorkspaceName(),
+                'value' => $workspace ? $workspace->getTitle() : $usage->getWorkspaceName(),
             ],
             [
                 'name' => 'document',
