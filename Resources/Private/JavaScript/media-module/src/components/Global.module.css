@@ -1,19 +1,23 @@
-:global(#media-ui-app) {
+:global(#media-ui-app > div) {
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-colors-scrollbarForeground) var(--theme-colors-scrollbarBackground);
+    scrollbar-color: #999 transparent;
 }
 
-:global(#media-ui-app ::-webkit-scrollbar) {
-    width: var(--theme-size-scrollbarSize);
-    height: var(--theme-size-scrollbarSize);
+:global(#media-ui-app > div ::-webkit-scrollbar) {
+    width: 4px;
+    height: 4px;
 }
 
-:global(#media-ui-app ::-webkit-scrollbar-track) {
-    background: var(--theme-colors-scrollbarBackground);
+:global(#media-ui-app > div ::-webkit-scrollbar-track) {
+    background: transparent;
 }
 
-:global(#media-ui-app ::-webkit-scrollbar-thumb) {
-    background-color: var(--theme-colors-scrollbarForeground);
+:global(#media-ui-app > div ::-webkit-scrollbar-thumb) {
+    background-color: #999;
+}
+
+:global(#media-ui-app > div ::-webkit-scrollbar-corner) {
+    background-color: #3f3f3f;
 }
 
 :global(.neos.neos-module-management-mediaui > .neos-module-wrap) {
