@@ -76,16 +76,19 @@ export function MediaUiProvider({
         [approvalAttainmentStrategyFactory, Interaction, translate]
     );
 
-    // Set initial media type state
+    // Update some state variables which can be influenced by the current context
     useEffect(() => {
-        setConstraints(constraints);
         setFeatureFlags(featureFlags);
-        // If only one media type is allowed by the constraints, preselect the filter
-        if (constraints.mediaTypes?.length === 1 && constraints.mediaTypes[0].startsWith('image')) {
-            setSelectedAssetType('image');
-            setSelectedMediaType(constraints.mediaTypes[0]);
-        } else if (assetType !== 'all') {
+
+        if (assetType !== 'all') {
             setSelectedAssetType(assetType);
+        }
+
+        setConstraints(constraints);
+        if (constraints.mediaTypes?.length > 0) {
+            // Reset mediatype selection to prevent an empty screen with no matching assets or an invalid state
+            // FIXME: The previous state could be valid, but this would require a more complex check with the given constraints
+            setSelectedMediaType(null);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
