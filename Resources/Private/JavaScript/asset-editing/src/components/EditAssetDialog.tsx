@@ -85,12 +85,15 @@ const EditAssetDialog: React.FC = () => {
                         type="text"
                         ref={inputRef}
                         defaultValue={filenameWithoutExtension}
+                        onSubmit={handleUpdate}
+                        disabled={loading}
                     />
                 </Label>
                 <Label className={classes.label}>
                     <CheckBox
                         isChecked={editOptions.generateRedirects}
                         onChange={(generateRedirects) => setEditOptions({ ...editOptions, generateRedirects })}
+                        disabled={loading}
                     />
                     <span>{translate('uploadDialog.generateRedirects', 'Generate redirects')}</span>
                 </Label>

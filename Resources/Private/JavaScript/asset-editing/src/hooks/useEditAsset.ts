@@ -13,7 +13,7 @@ interface EditAssetProps {
 }
 
 export default function useEditAsset() {
-    const [action, { error, data, loading }] = useMutation<{ editAsset: { success: boolean } }>(EDIT_ASSET);
+    const [action, { error, data, loading }] = useMutation<{ editAsset: boolean }>(EDIT_ASSET);
 
     const editAsset = ({ asset, filename, options }: EditAssetProps) => {
         return action({
