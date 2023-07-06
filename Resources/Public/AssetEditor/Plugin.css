@@ -176,7 +176,8 @@
 .AssetCollectionTree-module__assetCollectionTree___OqKzj {
     border: 1px solid var(--theme-colors-border);
     max-height: 600px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .AssetCollectionTree-module__assetCollectionTree___OqKzj > * {
@@ -1802,22 +1803,26 @@
     grid-area: var(--grid-area-top);
 }
 
-#media-ui-app {
+#media-ui-app > div {
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-colors-scrollbarForeground) var(--theme-colors-scrollbarBackground);
+    scrollbar-color: #999 transparent;
 }
 
-#media-ui-app ::-webkit-scrollbar {
-    width: var(--theme-size-scrollbarSize);
-    height: var(--theme-size-scrollbarSize);
+#media-ui-app > div ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
 }
 
-#media-ui-app ::-webkit-scrollbar-track {
-    background: var(--theme-colors-scrollbarBackground);
+#media-ui-app > div ::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-#media-ui-app ::-webkit-scrollbar-thumb {
-    background-color: var(--theme-colors-scrollbarForeground);
+#media-ui-app > div ::-webkit-scrollbar-thumb {
+    background-color: #999;
+}
+
+#media-ui-app > div ::-webkit-scrollbar-corner {
+    background-color: #3f3f3f;
 }
 
 .neos.neos-module-management-mediaui > .neos-module-wrap {
