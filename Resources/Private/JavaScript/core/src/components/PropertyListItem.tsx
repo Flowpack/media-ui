@@ -9,7 +9,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({ label, value }: Pro
     return (
         <>
             <dt>{label}</dt>
-            <dd>{value}</dd>
+            <dd title={value}>{value}</dd>
         </>
     );
 };
