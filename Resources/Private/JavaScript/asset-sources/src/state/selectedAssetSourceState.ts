@@ -5,7 +5,6 @@ import { clipboardVisibleState } from '@media-ui/feature-clipboard';
 
 export const NEOS_ASSET_SOURCE = 'neos';
 
-// TODO: Make sure that constraints are respected when restoring the state
 const selectedAssetSourceIdState = atom<string>({
     key: 'SelectedAssetSourceIdState',
     default: NEOS_ASSET_SOURCE,
