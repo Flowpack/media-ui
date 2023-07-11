@@ -7,15 +7,18 @@ import { selectedAssetIdState, selectedInspectorViewState } from '../state';
 const useSelectAsset = () => {
     const setSelectedAssetId = useSetRecoilState(selectedAssetIdState);
     const setSelectedInspectorView = useSetRecoilState(selectedInspectorViewState);
-    const { handleSelectAsset } = useMediaUi();
+    const { handleSelectAsset, selectionMode } = useMediaUi();
     return useCallback(
         (assetIdentity: AssetIdentity) => {
             if (!assetIdentity) return;
-            setSelectedAssetId(assetIdentity);
             handleSelectAsset(assetIdentity);
-            setSelectedInspectorView('asset');
+            if (!selectionMode) {
+                // Don't store the last selected asset during selection mode
+                setSelectedAssetId(assetIdentity);
+                setSelectedInspectorView('asset');
+            }
         },
-        [setSelectedAssetId, handleSelectAsset, setSelectedInspectorView]
+        [selectionMode, setSelectedAssetId, handleSelectAsset, setSelectedInspectorView]
     );
 };
 export default useSelectAsset;
