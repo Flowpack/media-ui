@@ -37,11 +37,14 @@ const listViewItemSelectionState = selectorFamily<boolean, string>({
 });
 
 const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect }: ListViewItemProps) => {
-    const { dummyImage, isAssetSelectable } = useMediaUi();
+    const { dummyImage, isAssetSelectable, selectionMode } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
     const isSelected = useRecoilValue(listViewItemSelectionState(assetIdentity.assetId));
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
-    const onSelectItem = useCallback(() => onSelect(assetIdentity, isSelected), [onSelect, assetIdentity, isSelected]);
+    const onSelectItem = useCallback(
+        () => onSelect(assetIdentity, isSelected && !selectionMode),
+        [onSelect, assetIdentity, isSelected, selectionMode]
+    );
 
     return (
         <tr className={cx(classes.listViewItem, isSelected && classes.selected)}>

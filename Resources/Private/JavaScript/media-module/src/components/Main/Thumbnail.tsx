@@ -30,7 +30,7 @@ const thumbnailSelectionState = selectorFamily<boolean, string>({
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: ThumbnailProps) => {
     const { translate } = useIntl();
-    const { dummyImage, isAssetSelectable } = useMediaUi();
+    const { dummyImage, isAssetSelectable, selectionMode } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
     const isSelected = useRecoilValue(thumbnailSelectionState(assetIdentity.assetId));
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
@@ -38,7 +38,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect }: Thumbn
     return (
         <figure className={cx(classes.thumbnail, !canBeSelected && classes.disabled)} title={asset?.label}>
             {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
-            <picture onClick={() => onSelect(assetIdentity, isSelected)} className={classes.picture}>
+            <picture onClick={() => onSelect(assetIdentity, isSelected && !selectionMode)} className={classes.picture}>
                 <img src={loading || !asset ? dummyImage : asset.thumbnailUrl} alt={asset?.label} />
             </picture>
             <figcaption className={cx(classes.caption, isSelected && classes.selected)}>
