@@ -4,7 +4,10 @@ interface Asset extends GraphQlEntity {
     __typename: AssetEntityType;
     readonly id: string;
     readonly localId?: string;
-    assetSource: AssetSource;
+    readonly assetSource: {
+        readonly id: AssetSourceId;
+        readonly readOnly: boolean;
+    };
     imported: boolean;
 
     // usage will only be queried if fast usage calculation is supported by the backend

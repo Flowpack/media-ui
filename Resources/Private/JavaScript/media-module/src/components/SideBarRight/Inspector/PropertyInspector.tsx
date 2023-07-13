@@ -15,9 +15,11 @@ import InspectorContainer from './InspectorContainer';
 import Tasks from './Tasks';
 
 import classes from './PropertyInspector.module.css';
+import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
 const PropertyInspector = () => {
     const selectedAsset = useSelectedAsset();
+    const { assetSources } = useAssetSourcesQuery();
     const Notify = useNotify();
     const { translate } = useIntl();
     const {
@@ -39,6 +41,8 @@ const PropertyInspector = () => {
         (label !== selectedAsset.label ||
             caption !== selectedAsset.caption ||
             copyrightNotice !== selectedAsset.copyrightNotice);
+
+    const assetSourceForSelectedAsset = assetSources.find(({ id }) => id === selectedAsset.assetSource.id);
 
     const handleDiscard = useCallback(() => {
         if (selectedAsset) {
@@ -138,8 +142,8 @@ const PropertyInspector = () => {
                 </ToggablePanel.Contents>
             </ToggablePanel>
 
-            {selectedAsset.assetSource.supportsCollections && <CollectionSelectBox />}
-            {selectedAsset.assetSource.supportsTagging && <TagSelectBoxAsset />}
+            {assetSourceForSelectedAsset.supportsCollections && <CollectionSelectBox />}
+            {assetSourceForSelectedAsset.supportsTagging && <TagSelectBoxAsset />}
 
             <Tasks />
             <MetadataView />
