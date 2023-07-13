@@ -30,10 +30,6 @@ class TagResolver implements ResolverInterface
      */
     protected $persistenceManager;
 
-    /**
-     * @param Tag $tag
-     * @return string
-     */
     public function id(Tag $tag): string
     {
         return $this->persistenceManager->getIdentifierByObject($tag);
