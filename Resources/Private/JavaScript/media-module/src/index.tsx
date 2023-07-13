@@ -26,7 +26,7 @@ window.onload = async (): Promise<void> => {
 
     const root = document.getElementById('media-ui-app');
     const { dummyImage } = root.dataset;
-    const endpoints = JSON.parse(root.dataset.endpoints);
+    const endpoints = JSON.parse(root.dataset.endpoints) as Endpoints;
     const featureFlags: FeatureFlags = JSON.parse(root.dataset.features);
 
     // Modal for the lightbox

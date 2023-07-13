@@ -48,6 +48,10 @@ type PaginationConfig = {
     maximumLinks: number;
 };
 
+type Endpoints = {
+    graphql: string;
+};
+
 type AssetType = 'image' | 'video' | 'audio' | 'document' | 'all';
 type MediaType = `${string}/${string}`;
 
