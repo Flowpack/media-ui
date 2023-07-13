@@ -24,37 +24,21 @@ use t3n\GraphQL\ResolverInterface;
  */
 class AssetSourceResolver implements ResolverInterface
 {
-    /**
-     * @param AssetSourceInterface $assetSource
-     * @return string
-     */
     public function id(AssetSourceInterface $assetSource): string
     {
         return $assetSource->getIdentifier();
     }
 
-    /**
-     * @param AssetSourceInterface $assetSource
-     * @return bool
-     */
     public function supportsTagging(AssetSourceInterface $assetSource): bool
     {
         return $assetSource->getAssetProxyRepository() instanceof SupportsTaggingInterface;
     }
 
-    /**
-     * @param AssetSourceInterface $assetSource
-     * @return bool
-     */
     public function supportsCollections(AssetSourceInterface $assetSource): bool
     {
         return $assetSource->getAssetProxyRepository() instanceof SupportsCollectionsInterface;
     }
 
-    /**
-     * @param AssetSourceInterface $assetSource
-     * @return string
-     */
     public function description(AssetSourceInterface $assetSource): string
     {
         if (method_exists($assetSource, 'getDescription')) {
@@ -63,10 +47,6 @@ class AssetSourceResolver implements ResolverInterface
         return '';
     }
 
-    /**
-     * @param AssetSourceInterface $assetSource
-     * @return string
-     */
     public function iconUri(AssetSourceInterface $assetSource): string
     {
         if (method_exists($assetSource, 'getIconUri')) {
