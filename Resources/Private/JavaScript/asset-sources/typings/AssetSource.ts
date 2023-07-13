@@ -1,8 +1,10 @@
 type AssetSourceType = 'AssetSource';
 
+type AssetSourceId = string;
+
 interface AssetSource extends GraphQlEntity {
     __typename: AssetSourceType;
-    readonly id: string;
+    readonly id: AssetSourceId;
     readonly label: string;
     readonly description: string;
     readonly iconUri: string;

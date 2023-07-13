@@ -13,7 +13,8 @@ export const ASSET_FRAGMENT = gql`
         id
         localId
         assetSource {
-            ...AssetSourceProps
+            id
+            readOnly
         }
         imported
         label
@@ -40,7 +41,6 @@ export const ASSET_FRAGMENT = gql`
         previewUrl
         isInUse @include(if: $includeUsage)
     }
-    ${ASSET_SOURCE_FRAGMENT}
     ${IPTC_PROPERTY_FRAGMENT}
     ${FILE_FRAGMENT}
     ${TAG_FRAGMENT}
