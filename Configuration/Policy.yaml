@@ -2,6 +2,8 @@ privilegeTargets:
   'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
     'Flowpack.Media.Ui:ManageAssets':
       matcher: 'method(public Flowpack\Media\Ui\Controller\MediaController->(.*)Action())'
+    'Flowpack.Media.Ui:ImageApi':
+      matcher: 'method(public Flowpack\Media\Ui\Controller\ImageApiController->(.*)Action())'
     'Flowpack.Media.Ui:Queries':
       matcher: 'method(public Flowpack\Media\Ui\GraphQL\Resolver\(.*)Resolver->.*()) || method(t3n\GraphQL\Controller\GraphQLController->queryAction())'
 
@@ -15,6 +17,8 @@ roles:
       - privilegeTarget: 'Flowpack.Media.Ui:Backend.Module.Management.Media'
         permission: GRANT
       - privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
+        permission: GRANT
+      - privilegeTarget: 'Flowpack.Media.Ui:ImageApi'
         permission: GRANT
       - privilegeTarget: 'Flowpack.Media.Ui:Queries'
         permission: GRANT

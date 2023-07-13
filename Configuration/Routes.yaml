@@ -1,7 +1,15 @@
-- name: 'Media API'
+- name: 'Media GraphQL API'
   uriPattern: 'neos/graphql/<GraphQLSubroutes>'
   subRoutes:
     'GraphQLSubroutes':
       package: 't3n.GraphQL'
       variables:
         'endpoint': 'media-assets'
+
+- name: 'Media Async Image API'
+  uriPattern: 'neos/media-ui/{@action}/{assetSourceId}/{assetProxyId}'
+  defaults:
+    '@package': 'Flowpack.Media.Ui'
+    '@controller': 'ImageApi'
+    '@format': 'html'
+  appendExceedingArguments: true

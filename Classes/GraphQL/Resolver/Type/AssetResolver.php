@@ -16,6 +16,10 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Core\Bootstrap;
+use Neos\Flow\Http\HttpRequestHandlerInterface;
+use Neos\Flow\Mvc\ActionRequest;
+use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
@@ -57,6 +61,20 @@ class AssetResolver implements ResolverInterface
      */
     protected $assetService;
 
+    /**
+     * @Flow\Inject
+     * @var UriBuilder
+     */
+    protected $uriBuilder;
+
+    /**
+     * @Flow\Inject
+     * @var Bootstrap
+     */
+    protected $bootstrap;
+
+    protected array $imageBaseUris = [];
+
     public function id(AssetProxyInterface $assetProxy): ?string
     {
         return $assetProxy->getIdentifier();
@@ -70,8 +88,11 @@ class AssetResolver implements ResolverInterface
     /**
      * Returns the title of the associated local asset data or the label of the proxy as fallback
      */
-    public function label(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
-    {
+    public function label(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?string {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         if ($localAssetData && $localAssetData->getTitle()) {
             return $localAssetData->getTitle();
@@ -82,8 +103,11 @@ class AssetResolver implements ResolverInterface
     /**
      * Returns true if the asset is at least used once
      */
-    public function isInUse(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?bool
-    {
+    public function isInUse(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?bool {
         if (!$assetProxy->getLocalAssetIdentifier()) {
             return false;
         }
@@ -93,8 +117,11 @@ class AssetResolver implements ResolverInterface
     /**
      * Returns the caption of the associated local asset data
      */
-    public function caption(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
-    {
+    public function caption(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?string {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         return $localAssetData instanceof Asset ? $localAssetData->getCaption() : null;
     }
@@ -169,22 +196,31 @@ class AssetResolver implements ResolverInterface
         return [];
     }
 
-    public function copyrightNotice(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
-    {
+    public function copyrightNotice(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?string {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         return $localAssetData instanceof Asset ? $localAssetData->getCopyrightNotice() : null;
     }
 
-    public function lastModified(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
-    {
+    public function lastModified(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?string {
         return $assetProxy->getLastModified() ? $assetProxy->getLastModified()->format(DATE_W3C) : null;
     }
 
     /**
      * @return Tag[]
      */
-    public function tags(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): array
-    {
+    public function tags(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): array {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         return $localAssetData instanceof Asset ? $localAssetData->getTags()->toArray() : [];
     }
@@ -192,8 +228,11 @@ class AssetResolver implements ResolverInterface
     /**
      * @return AssetCollection[]
      */
-    public function collections(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): array
-    {
+    public function collections(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): array {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         return $localAssetData instanceof Asset ? $localAssetData->getAssetCollections()->toArray() : [];
     }
@@ -210,23 +249,48 @@ class AssetResolver implements ResolverInterface
 
     public function thumbnailUrl(AssetProxyInterface $assetProxy): string
     {
-        return (string)$assetProxy->getThumbnailUri();
+        return $this->getImageUri($assetProxy, 'thumbnail');
     }
 
     public function previewUrl(AssetProxyInterface $assetProxy): string
     {
-        return (string)$assetProxy->getPreviewUri();
+        return $this->getImageUri($assetProxy, 'preview');
     }
 
-    public function thumbnail(
-        AssetProxyInterface $assetProxy,
-        int $maximumWidth,
-        int $maximumHeight,
-        string $ratioMode,
-        bool $allowUpScaling,
-        bool $allowCropping
-    ): array {
-        // TODO: Implement
-        throw new \RuntimeException('Not implemented yet', 1590840085);
+    protected function getImageUri(AssetProxyInterface $assetProxy, string $type): string
+    {
+        $imageBaseUri = null;
+        if (array_key_exists($type, $this->imageBaseUris)) {
+            $imageBaseUri = $this->imageBaseUris[$type];
+        } else {
+            try {
+                $this->uriBuilder->setRequest($this->createActionRequest()->getMainRequest());
+                $imageBaseUri = $this->imageBaseUris[$type] = $this->uriBuilder
+                    ->reset()
+                    ->setCreateAbsoluteUri(true)
+                    ->uriFor(
+                        $type,
+                        ['assetProxyId' => 'asset-proxy-id', 'assetSourceId' => 'asset-source-id'],
+                        'ImageApi',
+                        'Flowpack.Media.Ui'
+                    );
+            } catch (\Exception $e) {
+                // TODO: Return dummy image
+            }
+        }
+        return str_replace(
+            ['asset-proxy-id', 'asset-source-id'],
+            [$assetProxy->getIdentifier(), $assetProxy->getAssetSource()->getIdentifier()],
+            $imageBaseUri
+        );
+    }
+
+    private function createActionRequest(): ?ActionRequest
+    {
+        $requestHandler = $this->bootstrap->getActiveRequestHandler();
+        if ($requestHandler instanceof HttpRequestHandlerInterface) {
+            return ActionRequest::fromHttpRequest($requestHandler->getHttpRequest());
+        }
+        return null;
     }
 }
