@@ -24,7 +24,7 @@ class ImageApiController extends ActionController
     protected $assetSourceService;
 
     /**
-     * @throws StopActionException
+     * @throws StopActionException|UnsupportedRequestTypeException
      */
     public function thumbnailAction(string $assetProxyId, string $assetSourceId): void
     {
@@ -33,7 +33,7 @@ class ImageApiController extends ActionController
     }
 
     /**
-     * @throws StopActionException
+     * @throws StopActionException|UnsupportedRequestTypeException
      */
     public function previewAction(string $assetProxyId, string $assetSourceId): void
     {
