@@ -1,31 +1,27 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
-import { useApolloClient, gql } from '@apollo/client';
-import { useSetRecoilState } from 'recoil';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import { gql, useApolloClient } from '@apollo/client';
 import { isMatch } from 'matcher';
 
 import { useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
 import { useIntl } from './Intl';
 import { useInteraction } from './Interaction';
-import { constraintsState, featureFlagsState, selectedAssetTypeState, selectedMediaTypeState } from '../state';
 import { ASSET_FRAGMENT } from '../fragments/asset';
 import {
     ApprovalAttainmentStrategy,
     ApprovalAttainmentStrategyFactory,
     DefaultApprovalAttainmentStrategyFactory,
 } from '../strategy';
+import { useRecoilValue } from 'recoil';
+import { constraintsState } from '../state';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
     dummyImage: string;
     selectionMode?: boolean;
     isInNodeCreationDialog?: boolean;
-    isInMediaDetailsScreen?: boolean;
     containerRef: React.RefObject<HTMLDivElement>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
-    featureFlags: FeatureFlags;
-    constraints?: SelectionConstraints;
-    assetType?: AssetType;
     approvalAttainmentStrategyFactory?: ApprovalAttainmentStrategyFactory;
 }
 
@@ -36,8 +32,6 @@ interface MediaUiProviderValues {
     // TODO: Turn view variants into a single view Enum
     selectionMode: boolean;
     isInNodeCreationDialog: boolean;
-    isInMediaDetailsScreen: boolean;
-    assetType: AssetType;
     isAssetSelectable: (asset: Asset) => boolean;
     approvalAttainmentStrategy: ApprovalAttainmentStrategy;
 }
@@ -50,12 +44,8 @@ export function MediaUiProvider({
     dummyImage,
     selectionMode = false,
     isInNodeCreationDialog = false,
-    isInMediaDetailsScreen = false,
     onAssetSelection = null,
     containerRef,
-    featureFlags,
-    constraints = {},
-    assetType = 'all',
     approvalAttainmentStrategyFactory = DefaultApprovalAttainmentStrategyFactory,
 }: MediaUiProviderProps) {
     const { translate } = useIntl();
@@ -63,10 +53,7 @@ export function MediaUiProvider({
     const Interaction = useInteraction();
     const client = useApolloClient();
     const { importAsset } = useImportAsset();
-    const setConstraints = useSetRecoilState(constraintsState);
-    const setSelectedAssetType = useSetRecoilState(selectedAssetTypeState);
-    const setSelectedMediaType = useSetRecoilState(selectedMediaTypeState);
-    const setFeatureFlags = useSetRecoilState(featureFlagsState);
+    const constraints = useRecoilValue(constraintsState);
     const approvalAttainmentStrategy = useMemo(
         () =>
             approvalAttainmentStrategyFactory({
@@ -75,23 +62,6 @@ export function MediaUiProvider({
             }),
         [approvalAttainmentStrategyFactory, Interaction, translate]
     );
-
-    // Update some state variables which can be influenced by the current context
-    useEffect(() => {
-        setFeatureFlags(featureFlags);
-
-        if (assetType !== 'all') {
-            setSelectedAssetType(assetType);
-        }
-
-        setConstraints(constraints);
-        if (constraints.mediaTypes?.length > 0) {
-            // Reset mediatype selection to prevent an empty screen with no matching assets or an invalid state
-            // FIXME: The previous state could be valid, but this would require a more complex check with the given constraints
-            setSelectedMediaType(null);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     // TODO: This can properly be optimised by turning it into a recoil readonly selector family
     const isAssetSelectable = useCallback(
@@ -166,8 +136,6 @@ export function MediaUiProvider({
                 handleSelectAsset,
                 selectionMode,
                 isInNodeCreationDialog,
-                isInMediaDetailsScreen,
-                assetType,
                 isAssetSelectable,
                 approvalAttainmentStrategy,
             }}

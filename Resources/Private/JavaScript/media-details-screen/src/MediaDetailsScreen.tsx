@@ -1,7 +1,6 @@
 import React, { createRef } from 'react';
 import { connect } from 'react-redux';
-import { RecoilRoot } from 'recoil';
-import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
+import { ApolloClient, ApolloLink } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 
 // Neos dependencies are provided by the UI
@@ -11,12 +10,11 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
-import { createErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
-import { Details } from './components';
-
 // GraphQL type definitions
-import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import { MediaUiProvider, typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import MediaApplicationWrapper from '@media-ui/core/src/components/MediaApplicationWrapper';
+import { CacheFactory, createErrorHandler } from '@media-ui/media-module/src/core';
+import { Details } from './components';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
 // GraphQL local resolvers
@@ -101,9 +99,25 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
         return this.props.i18nRegistry.translate(id, fallback, params, packageKey, sourceName);
     };
 
+    getInitialState = () => {
+        const { frontendConfiguration, imageIdentity, type, constraints } = this.props;
+
+        return {
+            applicationContext: 'details' as ApplicationContext,
+            featureFlags: frontendConfiguration,
+            selectedAsset: {
+                assetId: imageIdentity,
+                // FIXME: Set the correct asset source id (do we even have it at this point?)
+                assetSourceId: 'neos',
+            },
+            selectedInspectorView: 'asset' as InspectorViewMode,
+            constraints: constraints || {},
+            assetType: type === 'images' ? 'image' : type,
+        };
+    };
+
     render() {
-        const { addFlashMessage, onComplete, constraints, type, imageIdentity, frontendConfiguration } = this.props;
-        const client = this.getApolloClient();
+        const { addFlashMessage, onComplete } = this.props;
         const { dummyImage, buildLinkToMediaUi } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
 
@@ -118,37 +132,22 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
 
         return (
             <div className={classes.mediaDetailsScreen}>
-                <IntlProvider translate={this.translate}>
-                    <NotifyProvider notificationApi={Notification}>
-                        <InteractionProvider>
-                            <ApolloProvider client={client}>
-                                <RecoilRoot>
-                                    <MediaUiProvider
-                                        dummyImage={dummyImage}
-                                        onAssetSelection={onComplete}
-                                        selectionMode
-                                        containerRef={containerRef}
-                                        featureFlags={frontendConfiguration}
-                                        constraints={constraints || {}}
-                                        assetType={type === 'images' ? 'image' : type}
-                                        approvalAttainmentStrategyFactory={
-                                            MediaDetailsScreenApprovalAttainmentStrategyFactory
-                                        }
-                                        isInMediaDetailsScreen
-                                    >
-                                        <Details
-                                            buildLinkToMediaUi={buildLinkToMediaUi}
-                                            assetIdentity={{
-                                                assetId: imageIdentity,
-                                                assetSourceId: 'neos',
-                                            }}
-                                        />
-                                    </MediaUiProvider>
-                                </RecoilRoot>
-                            </ApolloProvider>
-                        </InteractionProvider>
-                    </NotifyProvider>
-                </IntlProvider>
+                <MediaApplicationWrapper
+                    client={this.getApolloClient()}
+                    translate={this.translate}
+                    notificationApi={Notification}
+                    initialState={this.getInitialState()}
+                >
+                    <MediaUiProvider
+                        dummyImage={dummyImage}
+                        onAssetSelection={onComplete}
+                        selectionMode
+                        containerRef={containerRef}
+                        approvalAttainmentStrategyFactory={MediaDetailsScreenApprovalAttainmentStrategyFactory}
+                    >
+                        <Details buildLinkToMediaUi={buildLinkToMediaUi} />
+                    </MediaUiProvider>
+                </MediaApplicationWrapper>
             </div>
         );
     }
