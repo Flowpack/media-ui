@@ -36,7 +36,7 @@ const MediaTypeFilter: React.FC = () => {
 
     const options = useMemo(() => {
         // TODO: Improve the state definition so that this is not so complicated
-        if (!mediaTypeFilterOptions || !assetTypeFilter || showUnusedAssets) return [];
+        if (!mediaTypeFilterOptions || !assetTypeFilter || assetTypeFilter == 'all' || showUnusedAssets) return [];
 
         const optionsByType = mediaTypeFilterOptions[assetTypeFilter];
         return Object.keys(optionsByType)
@@ -56,7 +56,7 @@ const MediaTypeFilter: React.FC = () => {
                 options={options}
                 onValueChange={onValueChange}
                 value={currentValue}
-                allowEmpty={!constraints.mediaTypes}
+                allowEmpty={!constraints.mediaTypes || constraints.mediaTypes.length > 1}
                 placeholder={translate('typeFilter.assetType.values.all', 'Mediatype')}
                 optionValueField="value"
             />

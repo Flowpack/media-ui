@@ -111,8 +111,10 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                 assetSourceId: 'neos',
             },
             selectedInspectorView: 'asset' as InspectorViewMode,
-            constraints: constraints || {},
-            assetType: type === 'images' ? 'image' : type,
+            constraints: {
+                ...(constraints || {}),
+                assetType: type === 'images' ? 'image' : type,
+            },
         };
     };
 

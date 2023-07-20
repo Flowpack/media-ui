@@ -129,8 +129,10 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         return {
             applicationContext: 'selection' as ApplicationContext,
             featureFlags: frontendConfiguration,
-            constraints: constraints || {},
-            assetType: type === 'images' ? 'image' : type,
+            constraints: {
+                ...(constraints || {}),
+                assetType: type === 'images' ? 'image' : type,
+            },
         };
     };
 

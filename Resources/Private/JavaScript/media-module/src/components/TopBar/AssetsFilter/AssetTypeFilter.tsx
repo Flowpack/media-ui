@@ -5,6 +5,7 @@ import { SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import {
+    constraintsState,
     currentPageState,
     featureFlagsState,
     selectedAssetTypeState,
@@ -24,8 +25,8 @@ interface AssetTypeOptions {
 }
 
 const AssetTypeFilter: React.FC = () => {
-    const assetType = useRecoilValue(selectedAssetTypeState);
     const featureFlags = useRecoilValue(featureFlagsState);
+    const { assetType: assetTypeConstraint } = useRecoilValue(constraintsState);
     const [assetTypeFilter, setAssetTypeFilter] = useRecoilState(selectedAssetTypeState);
     const setMediaTypeFilter = useSetRecoilState(selectedMediaTypeState);
     const [showUnusedAssets, setShowUnusedAssets] = useRecoilState(showUnusedAssetsState);
@@ -47,27 +48,28 @@ const AssetTypeFilter: React.FC = () => {
     );
 
     const assetTypeOptions = useMemo((): AssetTypeOptions => {
+        const notAll = assetTypeConstraint && assetTypeConstraint !== 'all';
         const options = {
             video: {
                 value: 'video' as AssetType,
                 label: translate('typeFilter.assetType.values.video', 'Video'),
-                disabled: assetType !== 'all' && assetType !== 'video',
+                disabled: notAll && assetTypeConstraint !== 'video',
             },
             audio: {
                 value: 'audio' as AssetType,
                 label: translate('typeFilter.assetType.values.audio', 'Audio'),
-                disabled: assetType !== 'all' && assetType !== 'audio',
+                disabled: notAll && assetTypeConstraint !== 'audio',
             },
             image: {
                 value: 'image' as AssetType,
                 label: translate('typeFilter.assetType.values.image', 'Image'),
-                disabled: assetType !== 'all' && assetType !== 'image',
+                disabled: notAll && assetTypeConstraint !== 'image',
             },
             // TODO: The Media API currently only knows "Document" internally which is not a valid mimetype, we should "translate" this value on the internal API side and only use "application"
             document: {
                 value: 'document' as AssetType,
                 label: translate('typeFilter.assetType.values.document', 'Document'),
-                disabled: assetType !== 'all' && assetType !== 'document',
+                disabled: notAll && assetTypeConstraint !== 'document',
             },
         };
 
@@ -76,12 +78,12 @@ const AssetTypeFilter: React.FC = () => {
             options[UNUSED_FILTER_VALUE] = {
                 value: UNUSED_FILTER_VALUE,
                 label: translate('typeFilter.assetType.values.unused', 'Unused'),
-                disabled: assetType !== 'all',
+                disabled: notAll,
             };
         }
 
         return options;
-    }, [translate, featureFlags, assetType]);
+    }, [translate, featureFlags, assetTypeConstraint]);
 
     return (
         <div className={classes.typeFilter}>
@@ -90,7 +92,7 @@ const AssetTypeFilter: React.FC = () => {
                 options={Object.values(assetTypeOptions)}
                 onValueChange={onValueChange}
                 value={currentValue}
-                allowEmpty={assetType === 'all'}
+                allowEmpty={!assetTypeConstraint || assetTypeConstraint === 'all'}
                 placeholder={translate('typeFilter.assetType.values.all', 'All')}
                 optionValueField="value"
             />

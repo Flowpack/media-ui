@@ -19,7 +19,6 @@ interface InitialStateProps {
     featureFlags: FeatureFlags;
     selectedAsset?: AssetIdentity;
     selectedInspectorView?: InspectorViewMode;
-    assetType: AssetType;
     constraints?: SelectionConstraints;
 }
 
@@ -42,8 +41,7 @@ const MediaApplicationWrapper: React.FC<MediaApplicationWrapperProps> = ({
     initialState,
 }) => {
     const initializeState = ({ set }: MutableSnapshot) => {
-        const { applicationContext, featureFlags, constraints, selectedInspectorView, selectedAsset, assetType } =
-            initialState;
+        const { applicationContext, featureFlags, constraints, selectedInspectorView, selectedAsset } = initialState;
 
         set(applicationContextState, applicationContext);
         set(featureFlagsState, featureFlags);
@@ -56,15 +54,14 @@ const MediaApplicationWrapper: React.FC<MediaApplicationWrapperProps> = ({
             set(selectedInspectorViewState, selectedInspectorView);
         }
 
-        if (assetType !== 'all') {
-            set(selectedAssetTypeState, assetType);
-        }
-
         set(constraintsState, constraints);
         if (constraints.mediaTypes?.length > 0) {
             // Reset mediatype selection to prevent an empty screen with no matching assets or an invalid state
             // FIXME: The previous state could be valid, but this would require a more complex check with the given constraints
             set(selectedMediaTypeState, null);
+        }
+        if (constraints.assetType) {
+            set(selectedAssetTypeState, constraints.assetType);
         }
     };
 
