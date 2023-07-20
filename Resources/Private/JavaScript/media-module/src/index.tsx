@@ -1,20 +1,18 @@
 import React, { createRef } from 'react';
 import { render } from 'react-dom';
 import Modal from 'react-modal';
-import { RecoilRoot } from 'recoil';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
+import { ApolloClient, ApolloLink } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 
-import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
-
 // GraphQL type definitions
-import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import { MediaUiProvider, typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import MediaApplicationWrapper from '@media-ui/core/src/components/MediaApplicationWrapper';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
 // Internal dependencies
-import { createErrorHandler, CacheFactory } from './core';
+import { CacheFactory, createErrorHandler } from './core';
 import App from './components/App';
 import ErrorBoundary from './components/ErrorBoundary';
 import loadIconLibrary from './lib/FontAwesome';
@@ -58,28 +56,28 @@ window.onload = async (): Promise<void> => {
         typeDefs: [TYPE_DEFS_CORE, TYPE_DEFS_ASSET_USAGE],
     });
 
+    const initialState = {
+        applicationContext: 'browser' as ApplicationContext,
+        featureFlags,
+        constraints: {},
+        assetType: 'all' as AssetType,
+    };
+
     render(
-        <IntlProvider translate={translate}>
-            <NotifyProvider notificationApi={Notification}>
-                <InteractionProvider>
-                    <ApolloProvider client={client}>
-                        <RecoilRoot>
-                            <ErrorBoundary>
-                                <MediaUiProvider
-                                    dummyImage={dummyImage}
-                                    containerRef={containerRef}
-                                    featureFlags={featureFlags}
-                                >
-                                    <DndProvider backend={HTML5Backend}>
-                                        <App />
-                                    </DndProvider>
-                                </MediaUiProvider>
-                            </ErrorBoundary>
-                        </RecoilRoot>
-                    </ApolloProvider>
-                </InteractionProvider>
-            </NotifyProvider>
-        </IntlProvider>,
+        <MediaApplicationWrapper
+            client={client}
+            translate={translate}
+            notificationApi={Notification}
+            initialState={initialState}
+        >
+            <ErrorBoundary>
+                <MediaUiProvider dummyImage={dummyImage} containerRef={containerRef}>
+                    <DndProvider backend={HTML5Backend}>
+                        <App />
+                    </DndProvider>
+                </MediaUiProvider>
+            </ErrorBoundary>
+        </MediaApplicationWrapper>,
         root
     );
 };

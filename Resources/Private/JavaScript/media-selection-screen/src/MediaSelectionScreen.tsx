@@ -1,7 +1,6 @@
 import React, { createRef } from 'react';
 import { connect } from 'react-redux';
-import { RecoilRoot } from 'recoil';
-import { ApolloClient, ApolloLink, ApolloProvider } from '@apollo/client';
+import { ApolloClient, ApolloLink } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 import cx from 'classnames';
 
@@ -14,12 +13,11 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-import { InteractionProvider, IntlProvider, MediaUiProvider, NotifyProvider } from '@media-ui/core';
-import { createErrorHandler, CacheFactory } from '@media-ui/media-module/src/core';
-import App from '@media-ui/media-module/src/components/App';
-
 // GraphQL type definitions
-import { typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import { MediaUiProvider, typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
+import MediaApplicationWrapper from '@media-ui/core/src/components/MediaApplicationWrapper';
+import { CacheFactory, createErrorHandler } from '@media-ui/media-module/src/core';
+import App from '@media-ui/media-module/src/components/App';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
 import classes from './MediaSelectionScreen.module.css';
@@ -28,9 +26,7 @@ let apolloClient = null;
 
 interface MediaSelectionScreenProps {
     i18nRegistry: I18nRegistry;
-    frontendConfiguration: {
-        queryAssetUsage: boolean;
-    };
+    frontendConfiguration: FeatureFlags;
     neos: Record<string, unknown>;
     type: AssetType | 'images'; // The image editor sets the type to 'images'
     onComplete: (localAssetIdentifier: string) => void;
@@ -127,14 +123,21 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         return this.props.i18nRegistry.translate(id, fallback, params, packageKey, sourceName);
     };
 
+    getInitialState = () => {
+        const { frontendConfiguration, constraints, type } = this.props;
+
+        return {
+            applicationContext: 'selection' as ApplicationContext,
+            featureFlags: frontendConfiguration,
+            constraints: constraints || {},
+            assetType: type === 'images' ? 'image' : type,
+        };
+    };
+
     render() {
-        const { onComplete, constraints, type } = this.props;
-        const client = this.getApolloClient();
+        const { onComplete } = this.props;
         const { dummyImage } = this.getConfig();
         const containerRef = createRef<HTMLDivElement>();
-
-        const featureFlags: FeatureFlags = this.props.frontendConfiguration as FeatureFlags;
-
         const isInNodeCreationDialog = this.state.initialNodeCreationDialogOpenState;
 
         return (
@@ -143,28 +146,22 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                     [classes.isInNodeCreationDialog]: isInNodeCreationDialog,
                 })}
             >
-                <IntlProvider translate={this.translate}>
-                    <NotifyProvider notificationApi={this.notificationHandler}>
-                        <InteractionProvider>
-                            <ApolloProvider client={client}>
-                                <RecoilRoot>
-                                    <MediaUiProvider
-                                        dummyImage={dummyImage}
-                                        onAssetSelection={onComplete}
-                                        selectionMode
-                                        isInNodeCreationDialog={isInNodeCreationDialog}
-                                        containerRef={containerRef}
-                                        featureFlags={featureFlags}
-                                        constraints={constraints || {}}
-                                        assetType={type === 'images' ? 'image' : type}
-                                    >
-                                        <App />
-                                    </MediaUiProvider>
-                                </RecoilRoot>
-                            </ApolloProvider>
-                        </InteractionProvider>
-                    </NotifyProvider>
-                </IntlProvider>
+                <MediaApplicationWrapper
+                    client={this.getApolloClient()}
+                    translate={this.translate}
+                    notificationApi={this.notificationHandler}
+                    initialState={this.getInitialState()}
+                >
+                    <MediaUiProvider
+                        dummyImage={dummyImage}
+                        onAssetSelection={onComplete}
+                        selectionMode
+                        isInNodeCreationDialog={isInNodeCreationDialog}
+                        containerRef={containerRef}
+                    >
+                        <App />
+                    </MediaUiProvider>
+                </MediaApplicationWrapper>
             </div>
         );
     }

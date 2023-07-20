@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { SelectBox } from '@neos-project/react-ui-components';
 
-import { useIntl, useMediaUi } from '@media-ui/core';
+import { useIntl } from '@media-ui/core';
 import {
     currentPageState,
     featureFlagsState,
@@ -11,6 +11,7 @@ import {
     selectedMediaTypeState,
 } from '@media-ui/core/src/state';
 import { showUnusedAssetsState } from '@media-ui/feature-asset-usage';
+import classes from './AssetsFilter.module.css';
 
 const UNUSED_FILTER_VALUE = 'unused';
 
@@ -22,10 +23,8 @@ interface AssetTypeOptions {
     };
 }
 
-import classes from './AssetsFilter.module.css';
-
 const AssetTypeFilter: React.FC = () => {
-    const { assetType } = useMediaUi();
+    const assetType = useRecoilValue(selectedAssetTypeState);
     const featureFlags = useRecoilValue(featureFlagsState);
     const [assetTypeFilter, setAssetTypeFilter] = useRecoilState(selectedAssetTypeState);
     const setMediaTypeFilter = useSetRecoilState(selectedMediaTypeState);

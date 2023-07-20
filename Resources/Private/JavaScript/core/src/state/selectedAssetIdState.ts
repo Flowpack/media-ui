@@ -1,9 +1,19 @@
-import { atom } from 'recoil';
+import { atomFamily, selector } from 'recoil';
 
 import { localStorageEffect } from './localStorageEffect';
+import { applicationContextState } from './applicationContextState';
 
-export const selectedAssetIdState = atom<AssetIdentity>({
-    key: 'selectedAssetIdState',
+const selectedAssetIdForContextState = atomFamily<AssetIdentity, ApplicationContext>({
+    key: 'selectedAssetIdForContextState',
     default: null,
-    effects: [localStorageEffect('selectedAssetIdState')],
+    effects: (applicationContext) => [
+        localStorageEffect('selectedAssetIdForContextState', undefined, applicationContext),
+    ],
+});
+
+export const selectedAssetIdState = selector<AssetIdentity>({
+    key: 'selectedAssetIdState',
+    get: ({ get }) => get(selectedAssetIdForContextState(get(applicationContextState))),
+    set: ({ get, set }, assetIdentity) =>
+        set(selectedAssetIdForContextState(get(applicationContextState)), assetIdentity),
 });

@@ -15,15 +15,17 @@ interface NeosI18n {
     initialized: boolean;
 }
 
+type TranslateFunction = (
+    id?: string,
+    fallback?: string,
+    params?: Record<string, unknown> | (string | number)[],
+    packageKey?: string,
+    sourceName?: string
+) => string;
+
 // TODO: This is a copy of the interface in Neos.Ui and should preferably be made available to plugins
 interface I18nRegistry {
-    translate: (
-        id?: string,
-        fallback?: string,
-        params?: Record<string, unknown> | (string | number)[],
-        packageKey?: string,
-        sourceName?: string
-    ) => string;
+    translate: TranslateFunction;
 }
 
 interface NeosNotification {
@@ -48,3 +50,6 @@ type PaginationConfig = {
 
 type AssetType = 'image' | 'video' | 'audio' | 'document' | 'all';
 type MediaType = `${string}/${string}`;
+
+type ApplicationContext = 'browser' | 'details' | 'selection';
+type InspectorViewMode = 'asset' | 'assetCollection' | 'tag';

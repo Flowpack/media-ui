@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 import cx from 'classnames';
 
 import { InteractionDialogRenderer, useMediaUi } from '@media-ui/core';
-import { useSelectAsset, useAssetQuery } from '@media-ui/core/src/hooks';
+import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
@@ -23,25 +23,22 @@ import Preview from './Preview';
 
 import theme from '@media-ui/core/src/Theme.module.css';
 import classes from './Details.module.css';
+import { selectedAssetIdState } from '@media-ui/core/src/state';
 
 interface DetailsProps {
-    assetIdentity: AssetIdentity;
     buildLinkToMediaUi: (asset: Asset) => string;
 }
 
-const Details = ({ assetIdentity, buildLinkToMediaUi }: DetailsProps) => {
+const Details = ({ buildLinkToMediaUi }: DetailsProps) => {
     const { containerRef } = useMediaUi();
     const { visible: showUploadDialog } = useRecoilValue(uploadDialogState);
     const { visible: showCreateTagDialog } = useRecoilValue(createTagDialogState);
     const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogVisibleState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
-    const selectAsset = useSelectAsset();
-    const { asset, loading } = useAssetQuery(assetIdentity);
-
-    React.useEffect(() => {
-        selectAsset(assetIdentity);
-    }, [assetIdentity, selectAsset]);
+    const selectedAssetId = useRecoilValue(selectedAssetIdState);
+    // FIXME: Adjust useSelectedAssetHook and use its loading state
+    const { asset, loading } = useAssetQuery(selectedAssetId);
 
     return (
         <div className={cx(classes.container, theme.mediaModuleTheme, loading && classes.loading)} ref={containerRef}>
