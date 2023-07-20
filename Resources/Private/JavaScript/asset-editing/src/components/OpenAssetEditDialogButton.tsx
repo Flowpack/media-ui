@@ -19,7 +19,7 @@ const OpenAssetEditDialogButton: React.FC = () => {
             onClick={() => setDialogVisible(true)}
         >
             <Icon icon="edit" />
-            {translate('OpenAssetEditDialogButton.open', 'Edit asset')}
+            {translate('OpenAssetEditDialogButton.open', 'Rename asset')}
         </Button>
     );
 };

@@ -65,7 +65,7 @@ const EditAssetDialog: React.FC = () => {
     return (
         <Dialog
             isOpen={dialogVisible}
-            title={translate('uploadDialog.title', 'Edit asset')}
+            title={translate('EditAssetDialog.title', 'Rename asset')}
             onRequestClose={() => setDialogVisible(false)}
             actions={[
                 <Button key="cancel" style="neutral" hoverStyle="darken" onClick={closeDialog}>
