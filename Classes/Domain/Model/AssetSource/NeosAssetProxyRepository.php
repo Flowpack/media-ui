@@ -76,6 +76,8 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
 
     private string $assetTypeFilter = 'All';
     private string $mediaTypeFilter = '';
+    private bool $filterAssetsInCollections = false;
+    private bool $filterAssetsWithTags = false;
 
     private array $assetRepositoryClassNames = [
         'All' => AssetRepository::class,
@@ -137,6 +139,11 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
         $query = $this->filterOutImageVariants($query);
         if ($filterOtherCollections) {
             $query = $this->filterOutAssetsFromOtherAssetCollections($query);
+        } elseif ($this->filterAssetsInCollections) {
+            $query = $this->filterOutAssetsWithAssetCollections($query);
+        }
+        if ($this->filterAssetsWithTags) {
+            $query = $this->filterOutAssetsWithTags($query);
         }
         if ($this->mediaTypeFilter) {
             $query = $this->filterOutAssetsWithOtherMediaTypes($query);
@@ -181,11 +188,14 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
         return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
     }
 
-    public function findUnassigned(): AssetProxyQueryResultInterface
+    public function filterUnassigned(): void
     {
-        $query = $this->filterQuery($this->assetRepository->createQuery());
-        $query = $this->filterOutAssetsWithAssetCollections($query);
-        return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
+        $this->filterAssetsInCollections = true;
+    }
+
+    public function filterUntagged(): void
+    {
+        $this->filterAssetsWithTags = true;
     }
 
     public function countAll(): int
@@ -227,6 +237,21 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
             return $query;
         }
         $query->getQueryBuilder()->andWhere('e NOT INSTANCE OF ' . ImageVariant::class);
+        return $query;
+    }
+
+    private function filterOutAssetsWithTags(QueryInterface $query): QueryInterface
+    {
+        $constraints = $query->getConstraint();
+        try {
+            $query->matching(
+                $query->logicalAnd([
+                    $constraints,
+                    $query->isEmpty('tags'),
+                ])
+            );
+        } catch (InvalidQueryException $e) {
+        }
         return $query;
     }
 
