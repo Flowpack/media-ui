@@ -81,6 +81,23 @@ class AssetProxyIteratorBuilder
             $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
         }
 
+        $this->filterByAssetType($assetType, $assetProxyRepository);
+        $this->filterByMediaType($mediaType, $assetProxyRepository);
+        $this->filterByAssetCollection($assetCollectionId, $assetProxyRepository);
+        $this->filterByTag($tagId, $assetProxyRepository);
+        $this->sort($sortBy, $assetProxyRepository, $sortDirection);
+
+        if ($searchTerm = SearchTerm::from($searchTerm)) {
+            return $this->applySearchTerm($searchTerm, $assetProxyRepository);
+        }
+
+        return AssetProxyQueryIterator::from(
+            $assetProxyRepository->findAll()->getQuery()
+        );
+    }
+
+    protected function filterByAssetType($assetType, $assetProxyRepository): void
+    {
         if (is_string($assetType) && !empty($assetType)) {
             try {
                 $assetTypeFilter = new AssetTypeFilter(ucfirst($assetType));
@@ -89,7 +106,10 @@ class AssetProxyIteratorBuilder
                 $this->systemLogger->warning('Ignoring invalid asset type when filtering assets ' . $assetType);
             }
         }
+    }
 
+    protected function filterByMediaType($mediaType, $assetProxyRepository): void
+    {
         if (is_string($mediaType) && !empty($mediaType) && $assetProxyRepository instanceof NeosAssetProxyRepository) {
             try {
                 $assetProxyRepository->filterByMediaType($mediaType);
@@ -97,7 +117,10 @@ class AssetProxyIteratorBuilder
                 $this->systemLogger->warning('Ignoring invalid media-type when filtering assets ' . $mediaType);
             }
         }
+    }
 
+    protected function filterByAssetCollection($assetCollectionId, $assetProxyRepository): void
+    {
         if ($assetCollectionId && $assetProxyRepository instanceof SupportsCollectionsInterface) {
             if ($assetProxyRepository instanceof NeosAssetProxyRepository && $assetCollectionId === 'UNASSIGNED') {
                 $assetProxyRepository->filterUnassigned();
@@ -109,7 +132,10 @@ class AssetProxyIteratorBuilder
                 }
             }
         }
+    }
 
+    protected function sort($sortBy, $assetProxyRepository, $sortDirection): void
+    {
         if ($sortBy && $assetProxyRepository instanceof SupportsSortingInterface) {
             switch ($sortBy) {
                 case 'name':
@@ -124,7 +150,10 @@ class AssetProxyIteratorBuilder
                     break;
             }
         }
+    }
 
+    protected function filterByTag($tagId, $assetProxyRepository): void
+    {
         if ($tagId && $assetProxyRepository instanceof SupportsTaggingInterface) {
             if ($assetProxyRepository instanceof NeosAssetProxyRepository && $tagId === 'UNTAGGED') {
                 $assetProxyRepository->filterUntagged();
@@ -132,27 +161,21 @@ class AssetProxyIteratorBuilder
                 /** @var Tag $tag */
                 $tag = $this->tagRepository->findByIdentifier($tagId);
                 if ($tag) {
-                    return AssetProxyQueryIterator::from(
-                        $assetProxyRepository->findByTag($tag)->getQuery()
-                    );
+                    $assetProxyRepository->filterByTag($tag);
                 }
             }
         }
+    }
 
-        if ($searchTerm = SearchTerm::from($searchTerm)) {
-            if ($identifier = $searchTerm->getAssetIdentifierIfPresent()) {
-                return AssetProxyListIterator::of(
-                    $assetProxyRepository->getAssetProxy($identifier)
-                );
-            }
-
-            return AssetProxyQueryIterator::from(
-                $assetProxyRepository->findBySearchTerm((string)$searchTerm)->getQuery()
+    protected function applySearchTerm(SearchTerm $searchTerm, $assetProxyRepository): AssetProxyIteratorAggregate
+    {
+        if ($identifier = $searchTerm->getAssetIdentifierIfPresent()) {
+            return AssetProxyListIterator::of(
+                $assetProxyRepository->getAssetProxy($identifier)
             );
         }
-
         return AssetProxyQueryIterator::from(
-            $assetProxyRepository->findAll()->getQuery()
+            $assetProxyRepository->findBySearchTerm((string)$searchTerm)->getQuery()
         );
     }
 }

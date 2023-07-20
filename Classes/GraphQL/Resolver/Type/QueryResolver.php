@@ -15,13 +15,9 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  */
 
 use Flowpack\Media\Ui\Domain\Model\AssetProxyIteratorAggregate;
-use Flowpack\Media\Ui\Domain\Model\AssetSource\NeosAssetProxyRepository;
-use Flowpack\Media\Ui\Domain\Model\SearchTerm;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyIteratorBuilder;
-use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyListIterator;
-use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyQueryIterator;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
@@ -31,12 +27,8 @@ use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
-use Neos\Media\Domain\Model\AssetSource\AssetTypeFilter;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
-use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
-use Neos\Media\Domain\Model\AssetSource\SupportsSortingInterface;
-use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
 use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Model\VariantSupportInterface;

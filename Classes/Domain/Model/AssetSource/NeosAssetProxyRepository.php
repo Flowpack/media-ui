@@ -69,10 +69,8 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
      */
     private $assetRepository;
 
-    /**
-     * @var AssetCollection
-     */
-    private $activeAssetCollection;
+    private ?AssetCollection $activeAssetCollection = null;
+    protected ?Tag $activeTag = null;
 
     private string $assetTypeFilter = 'All';
     private string $mediaTypeFilter = '';
@@ -133,18 +131,28 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
         $this->activeAssetCollection = $assetCollection;
     }
 
+    public function filterByTag(Tag $tag): void
+    {
+        $this->activeTag = $tag;
+    }
+
     private function filterQuery(QueryInterface $query, bool $filterOtherCollections = false): QueryInterface
     {
         $query = $this->filterOutImportedAssetsFromOtherAssetSources($query);
         $query = $this->filterOutImageVariants($query);
+
         if ($filterOtherCollections) {
             $query = $this->filterOutAssetsFromOtherAssetCollections($query);
         } elseif ($this->filterAssetsInCollections) {
             $query = $this->filterOutAssetsWithAssetCollections($query);
         }
-        if ($this->filterAssetsWithTags) {
+
+        if ($this->activeTag) {
+            $query = $this->filterOutAssetsWithoutActiveTag($query);
+        } else if ($this->filterAssetsWithTags) {
             $query = $this->filterOutAssetsWithTags($query);
         }
+
         if ($this->mediaTypeFilter) {
             $query = $this->filterOutAssetsWithOtherMediaTypes($query);
         }
@@ -248,6 +256,21 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
                 $query->logicalAnd([
                     $constraints,
                     $query->isEmpty('tags'),
+                ])
+            );
+        } catch (InvalidQueryException $e) {
+        }
+        return $query;
+    }
+
+    private function filterOutAssetsWithoutActiveTag(QueryInterface $query): QueryInterface
+    {
+        $constraints = $query->getConstraint();
+        try {
+            $query->matching(
+                $query->logicalAnd([
+                    $constraints,
+                    $query->contains('tags', $this->activeTag)
                 ])
             );
         } catch (InvalidQueryException $e) {

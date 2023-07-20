@@ -14,8 +14,11 @@ namespace Flowpack\Media\Ui\Domain\Model;
  * source code.
  */
 
+use Neos\Flow\Annotations as Flow;
+
  /**
   * @internal
+  * @Flow\Proxy(false)
   */
 final class SearchTerm
 {
