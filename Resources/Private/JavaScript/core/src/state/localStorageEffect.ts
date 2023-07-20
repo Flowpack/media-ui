@@ -23,11 +23,16 @@ export function localStorageEffect<T = any>(
         const fullKey = `${STORAGE_PREFIX}.${key}`;
         const savedValueJSON = localStorage.getItem(fullKey);
         if (savedValueJSON != null) {
-            let savedValue = JSON.parse(savedValueJSON);
-            if (validate) {
-                savedValue = validate(savedValue);
+            try {
+                let savedValue = JSON.parse(savedValueJSON);
+                if (validate) {
+                    savedValue = validate(savedValue);
+                }
+                setSelf(savedValue);
+            } catch (e) {
+                console.warn(`[MEDIA UI]: Could not parse saved value for stored setting ${fullKey}`);
+                localStorage.removeItem(fullKey);
             }
-            setSelf(savedValue);
         }
         onSet((newValue, previousValue: T | undefined, isReset) => {
             // Don't write the state in selection screen
