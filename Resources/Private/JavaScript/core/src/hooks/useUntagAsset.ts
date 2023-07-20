@@ -33,6 +33,9 @@ export default function useUntagAsset() {
                     tags: [...asset.tags.filter((tag) => tag.label !== tagName)],
                 },
             },
+            // The ASSETS query should be triggered to again show the full amount of assets in the current collection
+            // FIXME: The TAGS query is triggered to update the asset count in the asset collection list, which could be modified directly in the cache update method below
+            refetchQueries: ['ASSETS', 'TAGS'],
         });
 
     return { untagAsset, data, error, loading };

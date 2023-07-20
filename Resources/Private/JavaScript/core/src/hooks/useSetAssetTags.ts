@@ -33,6 +33,9 @@ export default function useSetAssetTags() {
                     tags,
                 },
             },
+            // The ASSETS query should be triggered to again show the full amount of assets in the current collection
+            // FIXME: The TAGS query is triggered to update the asset count in the asset collection list, which could be modified directly in the cache update method below
+            refetchQueries: ['ASSETS', 'TAGS'],
         });
 
     return { setAssetTags, data, error, loading };
