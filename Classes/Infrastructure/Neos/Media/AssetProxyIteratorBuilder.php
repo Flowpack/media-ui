@@ -10,6 +10,8 @@ use Flowpack\Media\Ui\Domain\Model\SearchTerm;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
+use Neos\Media\Domain\Model\AssetSource\AssetProxyRepositoryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetTypeFilter;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
 use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
@@ -81,11 +83,18 @@ class AssetProxyIteratorBuilder
             $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
         }
 
+        $this->sort($sortBy, $assetProxyRepository, $sortDirection);
+
         $this->filterByAssetType($assetType, $assetProxyRepository);
         $this->filterByMediaType($mediaType, $assetProxyRepository);
         $this->filterByAssetCollection($assetCollectionId, $assetProxyRepository);
-        $this->filterByTag($tagId, $assetProxyRepository);
-        $this->sort($sortBy, $assetProxyRepository, $sortDirection);
+
+        // The tag filter operates differently on normal assets sources than our modified one that allows combining filters.
+        // Therefore, we have to return a new query iterator here and cannot add the search term filter.
+        $queryResult = $this->filterByTag($tagId, $assetProxyRepository);
+        if ($queryResult) {
+            return AssetProxyQueryIterator::from($queryResult);
+        }
 
         if ($searchTerm = SearchTerm::from($searchTerm)) {
             return $this->applySearchTerm($searchTerm, $assetProxyRepository);
@@ -96,7 +105,7 @@ class AssetProxyIteratorBuilder
         );
     }
 
-    protected function filterByAssetType($assetType, $assetProxyRepository): void
+    protected function filterByAssetType(?string $assetType, AssetProxyRepositoryInterface $assetProxyRepository): void
     {
         if (is_string($assetType) && !empty($assetType)) {
             try {
@@ -108,7 +117,7 @@ class AssetProxyIteratorBuilder
         }
     }
 
-    protected function filterByMediaType($mediaType, $assetProxyRepository): void
+    protected function filterByMediaType($mediaType, AssetProxyRepositoryInterface $assetProxyRepository): void
     {
         if (is_string($mediaType) && !empty($mediaType) && $assetProxyRepository instanceof NeosAssetProxyRepository) {
             try {
@@ -119,7 +128,7 @@ class AssetProxyIteratorBuilder
         }
     }
 
-    protected function filterByAssetCollection($assetCollectionId, $assetProxyRepository): void
+    protected function filterByAssetCollection($assetCollectionId, AssetProxyRepositoryInterface $assetProxyRepository): void
     {
         if ($assetCollectionId && $assetProxyRepository instanceof SupportsCollectionsInterface) {
             if ($assetProxyRepository instanceof NeosAssetProxyRepository && $assetCollectionId === 'UNASSIGNED') {
@@ -134,7 +143,7 @@ class AssetProxyIteratorBuilder
         }
     }
 
-    protected function sort($sortBy, $assetProxyRepository, $sortDirection): void
+    protected function sort(?string $sortBy, AssetProxyRepositoryInterface $assetProxyRepository, ?string $sortDirection): void
     {
         if ($sortBy && $assetProxyRepository instanceof SupportsSortingInterface) {
             switch ($sortBy) {
@@ -152,10 +161,20 @@ class AssetProxyIteratorBuilder
         }
     }
 
-    protected function filterByTag($tagId, $assetProxyRepository): void
+    /**
+     * This method is a bit of a hack, as it adds additional filters to our own NeosAssetProxyRepository,
+     * but returns a new query in case of other AssetProxyRepositories as their interface does not allow
+     * combining all filters.
+     */
+    protected function filterByTag(?string $tagId, AssetProxyRepositoryInterface $assetProxyRepository): ?AssetProxyQueryInterface
     {
-        if ($tagId && $assetProxyRepository instanceof SupportsTaggingInterface) {
-            if ($assetProxyRepository instanceof NeosAssetProxyRepository && $tagId === 'UNTAGGED') {
+        if (!$tagId || !$assetProxyRepository instanceof SupportsTaggingInterface) {
+            return null;
+        }
+
+        if ($assetProxyRepository instanceof NeosAssetProxyRepository) {
+            // Add our custom filter
+            if ($tagId === 'UNTAGGED') {
                 $assetProxyRepository->filterUntagged();
             } else {
                 /** @var Tag $tag */
@@ -164,10 +183,22 @@ class AssetProxyIteratorBuilder
                     $assetProxyRepository->filterByTag($tag);
                 }
             }
+        } else {
+            // Return a new query for other AssetProxyRepositories
+            if ($tagId === 'UNTAGGED') {
+                return $assetProxyRepository->findUntagged()->getQuery();
+            }
+
+            /** @var Tag $tag */
+            $tag = $this->tagRepository->findByIdentifier($tagId);
+            if ($tag) {
+                return $assetProxyRepository->findByTag($tag)->getQuery();
+            }
         }
+        return null;
     }
 
-    protected function applySearchTerm(SearchTerm $searchTerm, $assetProxyRepository): AssetProxyIteratorAggregate
+    protected function applySearchTerm(SearchTerm $searchTerm, AssetProxyRepositoryInterface $assetProxyRepository): AssetProxyIteratorAggregate
     {
         if ($identifier = $searchTerm->getAssetIdentifierIfPresent()) {
             return AssetProxyListIterator::of(
