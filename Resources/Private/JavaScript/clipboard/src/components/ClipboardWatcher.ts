@@ -6,7 +6,7 @@ import { assetRemovedEvent } from '@media-ui/core/src/events';
 import { clipboardState } from '@media-ui/feature-clipboard';
 
 /**
- * Renderless component to keep the clipboard updated when certain event occur
+ * Renderless component to keep the clipboard updated when certain events occur
  */
 const ClipboardWatcher = () => {
     const setClipboardState = useSetRecoilState(clipboardState);

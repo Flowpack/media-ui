@@ -60,8 +60,6 @@ const Details = ({ buildLinkToMediaUi }: DetailsProps) => {
             {showSimilarAssetsModal && <SimilarAssetsModal />}
 
             <InteractionDialogRenderer />
-            <ClipboardWatcher />
-            <ConcurrentChangeMonitor />
         </div>
     );
 };
