@@ -18,7 +18,7 @@ export const selectedAssetTypeState = selector<AssetType | ''>({
     },
     set: ({ get, set }, assetType) => {
         const constraints = get(constraintsState);
-        if (constraints && constraints.assetType !== assetType) {
+        if (constraints?.assetType && constraints.assetType !== assetType) {
             assetType = constraints.assetType;
         }
         set(selectedAssetTypeInternalState, assetType);
