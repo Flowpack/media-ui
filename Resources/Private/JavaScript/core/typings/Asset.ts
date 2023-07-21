@@ -27,4 +27,6 @@ interface Asset extends GraphQlEntity {
     file: AssetFile;
     thumbnailUrl?: string;
     previewUrl?: string;
+
+    type?: AssetType;
 }

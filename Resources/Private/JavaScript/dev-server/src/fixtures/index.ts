@@ -184,6 +184,7 @@ const assets = range(150).map((index) => {
             (prev, usageByService) => prev || usageByService.usages.length > 0,
             false
         ),
+        type: 'image',
     };
 });
 

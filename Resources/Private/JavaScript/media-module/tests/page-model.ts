@@ -15,6 +15,7 @@ class Page {
     public assetInspector: Selector;
     public inspectorActions: Selector;
     public assetSourceList: Selector;
+    public assetsFilter: Selector;
 
     constructor() {
         // Collection tree
@@ -37,6 +38,9 @@ class Page {
 
         // Sorting
         this.sortOrder = ReactSelector('SortOrderSelector');
+
+        // Filtering
+        this.assetsFilter = ReactSelector('AssetsFilter');
 
         // Right sidebar
         this.assetInspector = ReactSelector('AssetInspector');
@@ -64,6 +68,14 @@ class Page {
 
     public get sortingButton() {
         return this.sortOrder.findReact('IconButton');
+    }
+
+    public get assetTypeFilter() {
+        return this.assetsFilter.findReact('AssetTypeFilter');
+    }
+
+    public get mediaTypeFilter() {
+        return this.assetsFilter.findReact('MediaTypeFilter');
     }
 
     // FIXME: This is a workaround for issues with selecting elements inside a portal which is used by the UI react components for dropdowns

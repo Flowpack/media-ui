@@ -42,14 +42,22 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
     let { assets, assetCollections, assetSources, tags } = Fixtures.loadFixtures();
 
-    const filterAssets = (assetSourceId = '', tagId = '', assetCollectionId = '', mediaType = '', searchTerm = '') => {
+    const filterAssets = (
+        assetSourceId = '',
+        tagId = '',
+        assetCollectionId = '',
+        mediaType = '',
+        searchTerm = '',
+        assetType = null
+    ) => {
         return assets.filter((asset) => {
             return (
                 (!assetSourceId || asset.assetSource.id === assetSourceId) &&
                 (!tagId || asset.tags.find(({ id }) => id === tagId)) &&
                 (!assetCollectionId || asset.collections.find(({ id }) => id === assetCollectionId)) &&
                 (!searchTerm || asset.label.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0) &&
-                (!mediaType || mediaType === 'all' || asset.file.mediaType.indexOf(mediaType) >= 0)
+                (!mediaType || mediaType === 'all' || asset.file.mediaType.indexOf(mediaType) >= 0) &&
+                (!assetType || assetType === asset.type)
             );
         });
     };
@@ -95,10 +103,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     offset = 0,
                     sortBy = 'lastModified',
                     sortDirection = 'DESC',
+                    assetType = null,
                 }
             ): Asset[] =>
                 sortAssets(
-                    filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm).slice(
+                    filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm, assetType).slice(
                         offset,
                         offset + limit
                     ),
@@ -123,9 +132,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assetCount: (
                 $_,
-                { assetSourceId = 'neos', tagId = null, assetCollectionId = null, mediaType = '', searchTerm = '' }
+                {
+                    assetSourceId = 'neos',
+                    tagId = null,
+                    assetCollectionId = null,
+                    mediaType = '',
+                    searchTerm = '',
+                    assetType = null,
+                }
             ): number => {
-                return filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm).length;
+                return filterAssets(assetSourceId, tagId, assetCollectionId, mediaType, searchTerm, assetType).length;
             },
             assetUsageDetails: ($_, { id }): UsageDetailsGroup[] => {
                 return Fixtures.getUsageDetailsForAsset(id);
