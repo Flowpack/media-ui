@@ -83,11 +83,11 @@ class AssetProxyIteratorBuilder
             $assetProxyRepository = $activeAssetSource->getAssetProxyRepository();
         }
 
-        $this->sort($sortBy, $assetProxyRepository, $sortDirection);
-
         $this->filterByAssetType($assetType, $assetProxyRepository);
         $this->filterByMediaType($mediaType, $assetProxyRepository);
         $this->filterByAssetCollection($assetCollectionId, $assetProxyRepository);
+
+        $this->sort($sortBy, $assetProxyRepository, $sortDirection);
 
         // The tag filter operates differently on normal assets sources than our modified one that allows combining filters.
         // Therefore, we have to return a new query iterator here and cannot add the search term filter.
