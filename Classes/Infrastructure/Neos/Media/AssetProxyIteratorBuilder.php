@@ -201,6 +201,8 @@ class AssetProxyIteratorBuilder
     protected function applySearchTerm(SearchTerm $searchTerm, AssetProxyRepositoryInterface $assetProxyRepository): AssetProxyIteratorAggregate
     {
         if ($identifier = $searchTerm->getAssetIdentifierIfPresent()) {
+            // Reset the type filter as it prevents the asset from being found if it is not of the same type
+            $assetProxyRepository->filterByType(null);
             return AssetProxyListIterator::of(
                 $assetProxyRepository->getAssetProxy($identifier)
             );
