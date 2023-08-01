@@ -34,4 +34,8 @@ export class SearchTerm {
     public readonly toString = (): string => {
         return this.value;
     };
+
+    public readonly empty = (): boolean => {
+        return this.value === '';
+    };
 }

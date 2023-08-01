@@ -5,7 +5,11 @@ import { localStorageEffect } from './localStorageEffect';
 
 export const searchTermState = atom<SearchTerm>({
     key: 'searchTermState',
-    default:
-        typeof window === 'undefined' ? SearchTerm.fromString('') : SearchTerm.fromUrl(new URL(window.location.href)),
-    effects: [localStorageEffect('searchTermState', ({ value }) => SearchTerm.fromString(value))],
+    default: SearchTerm.fromString(''),
+    effects: [
+        localStorageEffect('searchTermState', ({ value }) => {
+            const searchTerm = SearchTerm.fromString(value);
+            return searchTerm.empty() ? undefined : searchTerm;
+        }),
+    ],
 });

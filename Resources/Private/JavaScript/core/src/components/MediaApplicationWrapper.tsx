@@ -8,11 +8,13 @@ import {
     applicationContextState,
     constraintsState,
     featureFlagsState,
+    searchTermState,
     selectedAssetIdState,
     selectedAssetTypeState,
     selectedInspectorViewState,
     selectedMediaTypeState,
 } from '@media-ui/core/src/state';
+import { SearchTerm } from '../domain/SearchTerm';
 
 interface InitialStateProps {
     applicationContext: ApplicationContext;
@@ -62,6 +64,11 @@ const MediaApplicationWrapper: React.FC<MediaApplicationWrapperProps> = ({
         }
         if (constraints.assetType) {
             set(selectedAssetTypeState, constraints.assetType);
+        }
+
+        const searchTermFromUrl = SearchTerm.fromUrl(new URL(window.location.href));
+        if (!searchTermFromUrl.empty()) {
+            set(searchTermState, searchTermFromUrl);
         }
     };
 
