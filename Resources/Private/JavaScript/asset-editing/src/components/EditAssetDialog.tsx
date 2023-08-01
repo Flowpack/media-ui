@@ -1,11 +1,12 @@
 import React, { useCallback, useRef } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Button, CheckBox, Label } from '@neos-project/react-ui-components';
 
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { Dialog } from '@media-ui/core/src/components';
 import { useAssetsQuery, useSelectedAsset } from '@media-ui/core/src/hooks';
+import { featureFlagsState } from '@media-ui/core/src/state';
 
 import editAssetDialogState from '../state/editAssetDialogState';
 import useEditAsset, { AssetEditOptions } from '../hooks/useEditAsset';
@@ -15,6 +16,7 @@ import classes from './EditAssetDialog.module.css';
 const EditAssetDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
+    const featureFlags = useRecoilValue(featureFlagsState);
     const [dialogVisible, setDialogVisible] = useRecoilState(editAssetDialogState);
     const { editAsset, loading } = useEditAsset();
     const {
@@ -89,14 +91,16 @@ const EditAssetDialog: React.FC = () => {
                         disabled={loading}
                     />
                 </Label>
-                <Label className={classes.label}>
-                    <CheckBox
-                        isChecked={editOptions.generateRedirects}
-                        onChange={(generateRedirects) => setEditOptions({ ...editOptions, generateRedirects })}
-                        disabled={loading}
-                    />
-                    <span>{translate('uploadDialog.generateRedirects', 'Generate redirects')}</span>
-                </Label>
+                {featureFlags.createAssetRedirectsOption && (
+                    <Label className={classes.label}>
+                        <CheckBox
+                            isChecked={editOptions.generateRedirects}
+                            onChange={(generateRedirects) => setEditOptions({ ...editOptions, generateRedirects })}
+                            disabled={loading}
+                        />
+                        <span>{translate('uploadDialog.generateRedirects', 'Generate redirects')}</span>
+                    </Label>
+                )}
                 {loading && <p>{translate('EditAssetDialog.updating', 'Updating…')}</p>}
             </section>
         </Dialog>

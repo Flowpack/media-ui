@@ -13,5 +13,5 @@
 }
 
 .label {
-    display: flex;
+    display: flex !important;
 }
