@@ -19,6 +19,7 @@ use Flowpack\Media\Ui\Domain\Model\Dto\AssetUsageDetails;
 use Flowpack\Media\Ui\Domain\Model\Dto\UsageMetadataSchema;
 use Flowpack\Media\Ui\Exception;
 use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
@@ -26,8 +27,10 @@ use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\ContentRepository\Exception\NodeConfigurationException;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception as FlowException;
+use Neos\Flow\Http\Exception as HttpException;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
+use Neos\Flow\Mvc\Routing\Exception\MissingActionNameException;
 use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\Package\PackageManager;
@@ -39,8 +42,8 @@ use Neos\Media\Domain\Strategy\AssetUsageStrategyInterface;
 use Neos\Neos\Controller\BackendUserTranslationTrait;
 use Neos\Neos\Controller\CreateContentContextTrait;
 use Neos\Neos\Domain\Model\Dto\AssetUsageInNodeProperties;
+use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Domain\Repository\SiteRepository;
-use Neos\Neos\Domain\Service\ContentContext;
 use Neos\Neos\Domain\Service\UserService as DomainUserService;
 use Neos\Neos\Domain\Strategy\AssetUsageInNodePropertiesStrategy;
 use Neos\Neos\Service\LinkingService;
@@ -109,11 +112,6 @@ class UsageDetailsService
     protected $reflectionService;
 
     /**
-     * @var UriBuilder
-     */
-    protected $uriBuilder;
-
-    /**
      * @Flow\Inject
      * @var EntityManagerInterface
      */
@@ -162,10 +160,8 @@ class UsageDetailsService
             // Should be solved via an interface in the future
             if (method_exists($strategy, 'getLabel')) {
                 $usageByStrategy['label'] = $strategy->getLabel();
-            } else {
-                if ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
-                    $usageByStrategy['label'] = $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.label');
-                }
+            } elseif ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
+                $usageByStrategy['label'] = $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.label');
             }
 
             if ($strategy instanceof UsageDetailsProviderInterface) {
@@ -228,18 +224,14 @@ class UsageDetailsService
     ): AssetUsageDetails {
         /** @var Node $node */
         $node = $this->getNodeFrom($usage);
+        $siteNode = $this->getSiteNodeFrom($node);
+        $site = $siteNode ? $this->siteRepository->findOneByNodeName($siteNode->getName()) : null;
         $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
         $accessible = $this->usageIsAccessible($usage->getWorkspaceName());
         $workspace = $this->workspaceRepository->findByIdentifier($usage->getWorkspaceName());
-
         $label = $accessible && $node ? $node->getLabel() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode');
 
-        $url = $accessible && $closestDocumentNode ? $this->getUriBuilder()->uriFor(
-            'preview',
-            ['node' => $closestDocumentNode],
-            'Frontend\\Node',
-            'Neos.Neos'
-        ) : '';
+        $url = $accessible && $closestDocumentNode ? $this->buildNodeUri($site, $closestDocumentNode) : '';
 
         $metadata = [
             [
@@ -258,10 +250,6 @@ class UsageDetailsService
 
         if ($node) {
             if ($includeSites) {
-                /** @var ContentContext $context */
-                $context = $node->getContext();
-                $site = $context->getCurrentSite();
-
                 $metadata[] = [
                     'name' => 'site',
                     'value' => $site ? $site->getName() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable'),
@@ -327,19 +315,48 @@ class UsageDetailsService
         return $accessible;
     }
 
-    protected function getUriBuilder(): UriBuilder
+    /**
+     * This is a rather hacky way to build a URI for a node in a given site,
+     * as the uriBuilder will always use the baseUri of the current request and ignores
+     * the hostname defined in the provided ActionRequest.
+     *
+     * Therefore, we create a relative uri and prepend the scheme, hostname and port manually.
+     *
+     * @throws HttpException|MissingActionNameException
+     */
+    protected function buildNodeUri(?Site $site, NodeInterface $node): string
     {
-        if ($this->uriBuilder) {
-            return $this->uriBuilder;
+        $serverRequest = ServerRequest::fromGlobals();
+        $domain = $site ? $site->getPrimaryDomain() : null;
+
+        // Build the URI with the correct scheme and hostname for the node in the given site
+        if ($domain && $domain->getHostname() !== $serverRequest->getUri()->getHost()) {
+            if (!$domain->getScheme()) {
+                $domain->setScheme($serverRequest->getUri()->getScheme());
+            }
+            $serverRequest = $serverRequest->withUri(new Uri((string)$domain));
         }
-        $request = ActionRequest::fromHttpRequest(ServerRequest::fromGlobals());
+
+        $request = ActionRequest::fromHttpRequest($serverRequest);//$this->getActionRequestForUriBuilder($domain ? $domain->getHostname() : null);
 
         $uriBuilder = new UriBuilder();
         $uriBuilder->setRequest($request);
-        $uriBuilder->setCreateAbsoluteUri(true);
-        $uriBuilder->setFormat('html');
+        $uriBuilder->setCreateAbsoluteUri(false);
 
-        return $this->uriBuilder = $uriBuilder;
+        $requestUri = $serverRequest->getUri();
+        $relativeNodeBackendUri = $uriBuilder->uriFor(
+            'index',
+            ['node' => $node],
+            'Backend',
+            'Neos.Neos.Ui'
+        );
+        return sprintf(
+            '%s://%s%s%s',
+            $requestUri->getScheme(),
+            $requestUri->getHost(),
+            $requestUri->getPort() ? ':' . $requestUri->getPort() : '',
+            $relativeNodeBackendUri
+        );
     }
 
     /**
@@ -442,5 +459,15 @@ class UsageDetailsService
     protected function translateById(string $id): ?string
     {
         return $this->translator->translateById($id, [], null, null, 'Main', 'Flowpack.Media.Ui') ?? $id;
+    }
+
+    /**
+     * Resolve the site node in the context of the given node
+     */
+    protected function getSiteNodeFrom(NodeInterface $node): ?NodeInterface
+    {
+        // Take the first two path segments of the node path
+        $sitePath = implode('/', array_slice(explode('/', $node->getPath(), 4), 0, 3));
+        return $node->getContext()->getNode($sitePath);
     }
 }
