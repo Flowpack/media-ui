@@ -42,7 +42,9 @@ const PropertyInspector = () => {
             caption !== selectedAsset.caption ||
             copyrightNotice !== selectedAsset.copyrightNotice);
 
-    const assetSourceForSelectedAsset = assetSources.find(({ id }) => id === selectedAsset.assetSource.id);
+    const assetSourceForSelectedAsset = selectedAsset
+        ? assetSources.find(({ id }) => id === selectedAsset.assetSource.id)
+        : null;
 
     const handleDiscard = useCallback(() => {
         if (selectedAsset) {
