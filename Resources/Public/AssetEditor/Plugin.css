@@ -600,7 +600,7 @@
 }
 
 .ReplaceAssetDialog-module__label___huLhV {
-    display: flex;
+    display: flex !important;
 }
 
 @keyframes LoadingIndicator-module__cssLoadWidth___2Sud9 {
