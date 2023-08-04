@@ -68,7 +68,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                 title={translate('itemActions.preview', 'Preview asset')}
                 icon="expand-alt"
                 size="regular"
-                style="transparent"
+                style="neutral"
                 hoverStyle="brand"
                 onClick={() => setSelectedAssetForPreview({ assetId: asset.id, assetSourceId: asset.assetSource.id })}
             />
@@ -77,7 +77,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     title={translate('itemActions.import', 'Import asset')}
                     icon="cloud-download-alt"
                     size="regular"
-                    style="transparent"
+                    style="neutral"
                     hoverStyle="brand"
                     onClick={onImportAsset}
                 />
@@ -92,14 +92,14 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     disabled={asset.isInUse}
                     icon="trash"
                     size="regular"
-                    style="transparent"
+                    style="neutral"
                     hoverStyle="error"
                     onClick={() => onDeleteAsset(asset)}
                 />
             )}
             {asset.file?.url && (
                 <a href={asset.file.url} download title={translate('itemActions.download', 'Download asset')}>
-                    <IconButton icon="download" size="regular" style="transparent" hoverStyle="success" />
+                    <IconButton icon="download" size="regular" style="neutral" hoverStyle="success" />
                 </a>
             )}
             {asset.localId && (
@@ -107,7 +107,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}
                     icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
                     size="regular"
-                    style="transparent"
+                    style="neutral"
                     hoverStyle="brand"
                     className={isInClipboard ? 'button--active' : ''}
                     onClick={toggleClipboardState}
