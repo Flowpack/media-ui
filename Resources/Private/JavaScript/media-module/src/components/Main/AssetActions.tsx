@@ -104,9 +104,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     <IconButton
                         icon="download"
                         size="regular"
-                        style={viewModeSelection === VIEW_MODES.List
-                            ? 'transparent'
-                            : 'neutral'}
+                        style={viewModeSelection === VIEW_MODES.List ? 'transparent' : 'neutral'}
                         hoverStyle="success"
                     />
                 </a>
