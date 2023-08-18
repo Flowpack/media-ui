@@ -23,7 +23,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     const [isInClipboard, toggleClipboardState] = useRecoilState(
         clipboardItemState({ assetId: asset.id, assetSourceId: asset.assetSource.id })
     );
-    const [viewModeSelection, setViewModeSelection] = useRecoilState(viewModeState);
+    const [viewModeSelection] = useRecoilState(viewModeState);
 
     // TODO: Optimize rendering this component when hooks change, as it takes quite a bit of time
     const onImportAsset = useCallback(() => {
