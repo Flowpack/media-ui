@@ -59,7 +59,9 @@ class AssetProxyIteratorBuilder
             'assetType' => $assetType,
             'searchTerm' => $searchTerm,
             'sortBy' => $sortBy,
-            'sortDirection' => $sortDirection
+            'sortDirection' => $sortDirection,
+            'limit' => $limit,
+            'offset' => $offset,
         ] = $variables + [
             'assetSourceId' => 'neos',
             'tagId' => null,
@@ -69,6 +71,8 @@ class AssetProxyIteratorBuilder
             'searchTerm' => null,
             'sortBy' => null,
             'sortDirection' => null,
+            'limit' => 0,
+            'offset' => 0,
         ];
 
         $activeAssetSource = $assetSourceContext->getAssetSource($assetSourceId);
@@ -93,16 +97,26 @@ class AssetProxyIteratorBuilder
         // Therefore, we have to return a new query iterator here and cannot add the search term filter.
         $queryResult = $this->filterByTag($tagId, $assetProxyRepository);
         if ($queryResult) {
-            return AssetProxyQueryIterator::from($queryResult);
+            $assetProxyQueryIterator = AssetProxyQueryIterator::from($queryResult);
+        } elseif ($searchTerm = SearchTerm::from($searchTerm)) {
+            $assetProxyQueryIterator = $this->applySearchTerm($searchTerm, $assetProxyRepository);
+        } elseif ($assetProxyRepository instanceof NeosAssetProxyRepository) {
+            $assetProxyQueryIterator = AssetProxyQueryIterator::from($assetProxyRepository->getQuery());
+        } else {
+            // For the default case we can only access the query from the result
+            $assetProxyQueryIterator = AssetProxyQueryIterator::from(
+                $assetProxyRepository->findAll()->getQuery()
+            );
         }
 
-        if ($searchTerm = SearchTerm::from($searchTerm)) {
-            return $this->applySearchTerm($searchTerm, $assetProxyRepository);
+        if ($offset) {
+            $assetProxyQueryIterator->setOffset($offset);
+        }
+        if ($limit) {
+            $assetProxyQueryIterator->setLimit($limit);
         }
 
-        return AssetProxyQueryIterator::from(
-            $assetProxyRepository->findAll()->getQuery()
-        );
+        return $assetProxyQueryIterator;
     }
 
     protected function filterByAssetType(?string $assetType, AssetProxyRepositoryInterface $assetProxyRepository): void
@@ -117,7 +131,7 @@ class AssetProxyIteratorBuilder
         }
     }
 
-    protected function filterByMediaType($mediaType, AssetProxyRepositoryInterface $assetProxyRepository): void
+    protected function filterByMediaType(?string $mediaType, AssetProxyRepositoryInterface $assetProxyRepository): void
     {
         if (is_string($mediaType) && !empty($mediaType) && $assetProxyRepository instanceof NeosAssetProxyRepository) {
             try {
@@ -128,7 +142,7 @@ class AssetProxyIteratorBuilder
         }
     }
 
-    protected function filterByAssetCollection($assetCollectionId, AssetProxyRepositoryInterface $assetProxyRepository): void
+    protected function filterByAssetCollection(?string $assetCollectionId, AssetProxyRepositoryInterface $assetProxyRepository): void
     {
         if ($assetCollectionId && $assetProxyRepository instanceof SupportsCollectionsInterface) {
             if ($assetProxyRepository instanceof NeosAssetProxyRepository && $assetCollectionId === 'UNASSIGNED') {

@@ -216,16 +216,12 @@ class QueryResolver implements ResolverInterface
         array $variables,
         AssetSourceContext $assetSourceContext
     ): ?AssetProxyIteratorAggregate {
-        ['limit' => $limit, 'offset' => $offset] = $variables + ['limit' => 20, 'offset' => 0];
-        $iterator = $this->assetProxyIteratorBuilder->build($assetSourceContext, $variables);
+        $iterator = $this->assetProxyIteratorBuilder->build($assetSourceContext, $variables + ['limit' => 20, 'offset' => 0]);
 
         if (!$iterator) {
             $this->systemLogger->error('Could not build assets query for given variables', $variables);
             return null;
         }
-
-        $iterator->setOffset($offset);
-        $iterator->setLimit($limit);
 
         return $iterator;
     }
