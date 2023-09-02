@@ -47,7 +47,7 @@ const CreateAssetCollectionDialog = () => {
             })}
             onRequestClose={handleRequestClose}
             actions={[
-                <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>
+                <Button key="cancel" style="neutral" hoverStyle="error" onClick={handleRequestClose}>
                     {translate('general.cancel', 'Cancel')}
                 </Button>,
                 <Button key="upload" style="success" hoverStyle="success" disabled={!title} onClick={handleCreate}>
