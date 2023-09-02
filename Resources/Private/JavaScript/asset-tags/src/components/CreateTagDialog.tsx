@@ -40,7 +40,7 @@ const CreateTagDialog: React.FC = () => {
             title={translate('createTagDialog.title', 'Create tag')}
             onRequestClose={handleRequestClose}
             actions={[
-                <Button key="cancel" style="neutral" hoverStyle="darken" onClick={handleRequestClose}>
+                <Button key="cancel" style="neutral" hoverStyle="error" onClick={handleRequestClose}>
                     {translate('general.cancel', 'Cancel')}
                 </Button>,
                 <Button
@@ -55,7 +55,7 @@ const CreateTagDialog: React.FC = () => {
             ]}
         >
             <div className={classes.formBody}>
-                <Label>{translate('general.label', 'Label')}</Label>
+                <Label>{translate('general.label', 'Title')}</Label>
                 <TextInput
                     setFocus
                     type="text"
