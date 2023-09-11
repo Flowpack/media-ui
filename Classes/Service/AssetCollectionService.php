@@ -43,7 +43,7 @@ class AssetCollectionService
         $rsm->addScalarResult('c', 'count');
 
         $queryString = "
-            SELECT collectionmm.media_assetcollection id, count(collectionmm.media_assetcollection) c
+            SELECT collectionmm.media_assetcollection id, count(*) c
                 FROM neos_media_domain_model_assetcollection_assets_join collectionmm
                 GROUP BY collectionmm.media_assetcollection;
         ";
