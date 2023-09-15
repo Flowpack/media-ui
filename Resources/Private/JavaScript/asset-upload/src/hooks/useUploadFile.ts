@@ -18,6 +18,7 @@ export default function useUploadFile() {
                 tagId,
                 assetCollectionId,
             },
+            refetchQueries: ['ASSET_COLLECTIONS'],
         });
 
     return { uploadFile, uploadState: data?.uploadFile || {}, error, loading };

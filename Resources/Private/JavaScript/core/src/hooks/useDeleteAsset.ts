@@ -27,6 +27,7 @@ export default function useDeleteAsset() {
                     query: ASSET,
                     variables: { id: assetId, assetSourceId: assetSourceId },
                 },
+                'ASSET_COLLECTIONS',
             ],
             update: (cache, { data: { deleteAsset: success } }) => {
                 if (!success) return;
