@@ -44,7 +44,7 @@ export default function useDeleteAsset() {
             assetRemoved({ assetId, assetSourceId });
 
             // Unselect currently selected asset if it was just deleted
-            setSelectedAsset((prev) => (prev.assetId === assetId ? null : prev));
+            setSelectedAsset((prev) => (prev?.assetId === assetId ? null : prev));
         });
 
     return { deleteAsset, data, error };
