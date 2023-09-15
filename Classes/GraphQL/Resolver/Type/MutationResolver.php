@@ -17,6 +17,7 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  */
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
@@ -27,7 +28,6 @@ use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\Asset;
-use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\Tag;
@@ -104,9 +104,8 @@ class MutationResolver implements ResolverInterface
 
     /**
      * @throws Exception
-     * @throws AssetServiceException
      */
-    public function deleteAsset($_, array $variables, AssetSourceContext $assetSourceContext): bool
+    public function deleteAsset($_, array $variables, AssetSourceContext $assetSourceContext): MutationResult
     {
         [
             'id' => $id,
@@ -115,21 +114,23 @@ class MutationResolver implements ResolverInterface
 
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
-            return false;
+            return new MutationResult(false, ['Asset could not be resolved']);
         }
         $asset = $assetSourceContext->getAssetForProxy($assetProxy);
 
         if (!$asset) {
-            throw new Exception('Cannot delete asset that was never imported', 1591553708);
+            return new MutationResult(false, ['Cannot delete asset that was never imported']);
         }
 
         try {
             $this->assetRepository->remove($asset);
-        } catch (IllegalObjectTypeException $e) {
+        } catch (AssetServiceException $e) {
+            return new MutationResult(false, [$e->getMessage()]);
+        } catch (\Exception $e) {
             throw new Exception('Failed to delete asset', 1591537315);
         }
 
-        return true;
+        return new MutationResult(true, ['Asset deleted']);
     }
 
     /**

@@ -112,7 +112,7 @@ type Mutation {
         copyrightNotice: String
     ): Asset!
 
-    deleteAsset(id: AssetId!, assetSourceId: AssetSourceId!): Boolean!
+    deleteAsset(id: AssetId!, assetSourceId: AssetSourceId!): DeleteAssetResult!
 
     replaceAsset(
         id: AssetId!
@@ -321,6 +321,11 @@ type Image {
     height: Int!
     url: Url!
     alt: String
+}
+
+type DeleteAssetResult {
+    success: Boolean!
+    messages: [String!]!
 }
 
 """

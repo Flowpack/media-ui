@@ -48,10 +48,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
 
                     return true;
                 } catch ({ message }) {
-                    Notify.error(
-                        translate('action.deleteAsset.error', 'Error while trying to delete the asset'),
-                        message
-                    );
+                    Notify.error(message);
                 }
             }
 
