@@ -21,10 +21,6 @@
                 <source>You can only select any of the following types: {types}</source>
             </trans-unit>
 
-            <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
-                <source>You can only select any of the following types: {types}</source>
-            </trans-unit>
-
             <!-- Labels for the asset-usage package -->
             <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.label" xml:space="preserve" approved="yes">
                 <source>Neos documents and content</source>
