@@ -40,7 +40,7 @@ class AssetCollectionService
 
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('id', 'id');
-        $rsm->addScalarResult('c', 'count');
+        $rsm->addScalarResult('c', 'count', 'integer');
 
         $queryString = "
             SELECT collectionmm.media_assetcollection id, count(*) c
