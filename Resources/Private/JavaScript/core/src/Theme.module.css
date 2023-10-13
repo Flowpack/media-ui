@@ -80,6 +80,7 @@
     --theme-zIndex-lightbox: 10023;
     --theme-zIndex-loadingIndicator: 10024;
 
-    --theme-size-sidebarWidth: 250px;
+    /* The content module sidebars are 320px, so we subtract the grid gap and outer module padding */
+    --theme-size-sidebarWidth: calc(320px - 2 * var(--theme-spacing-Full));
     --theme-size-scrollbarSize: 4px;
 }
