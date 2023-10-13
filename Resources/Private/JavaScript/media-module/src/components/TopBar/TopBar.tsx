@@ -18,7 +18,7 @@ const TopBar: React.FC = () => {
     const components = [ClipboardActions, SearchBox, AssetsFilter, SortOrderSelector, ViewModeSelector];
 
     return (
-        <div className={cx(classes.topBar, selectionMode && classes.topBarSelectionMode)}>
+        <div className={cx(classes.topBar, selectionMode && classes['topBar--selectionMode'])}>
             {components.map((Component, index) => (
                 <Component key={index} />
             ))}
