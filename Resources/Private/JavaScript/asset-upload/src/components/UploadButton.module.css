@@ -1,0 +1,7 @@
+.uploadButton {
+    display: flex;
+}
+
+.uploadButton button {
+    flex: 1;
+}
