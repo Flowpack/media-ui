@@ -6,6 +6,87 @@
                 <source>Media (new)</source>
                 <target>Media (nowe)</target>
             </trans-unit>
+
+            <trans-unit id="module.description" xml:space="preserve" approved="yes">
+                <source>The Media Module allows you to manage all your assets, including images, documents, videos, and audio files.</source>
+                <target>Moduł Media pozwala Ci zarządzać wszystkimi twoimi zasobami, w tym obrazami, dokumentami, filmami i plikami audio.</target>
+            </trans-unit>
+
+            <trans-unit id="uploadDialog.maxFileSize" xml:space="preserve" approved="yes">
+                <source>Maximum file size is {size} and file limit is {limit}</source>
+                <target>Maksymalny rozmiar pliku to {size}, a limit plików to {limit}.</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.label.uploading" xml:space="preserve" approved="yes">
+                <source>Uploading…</source>
+                <target>Przesyłanie…</target>
+            </trans-unit>
+
+            <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
+                <source>You can only select any of the following types: {types}</source>
+                <target>Możesz wybrać tylko dowolne z następujących typów: {types}</target>
+            </trans-unit>
+
+            <!-- Labels for the asset-usage package -->
+            <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.label" xml:space="preserve" approved="yes">
+                <source>Neos documents and content</source>
+                <target>Dokumenty i treści Neosa</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode" xml:space="preserve" approved="yes">
+                <source>Inaccessible node</source>
+                <target>Niedostępny węzeł</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable" xml:space="preserve" approved="yes">
+                <source>n/a</source>
+                <target>brak danych</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header" xml:space="preserve" approved="yes">
+                <source>Usage details for "{asset}"</source>
+                <target>Szczegóły użycia dla "{asset}"</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.strategy.assetUsageInNodeProperties.label" xml:space="preserve" approved="yes">
+                <source>Neos documents and content</source>
+                <target>Dokumenty i treści Neosa</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.label" xml:space="preserve" approved="yes">
+                <source>Label</source>
+                <target>Etykieta</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.site" xml:space="preserve" approved="yes">
+                <source>Site</source>
+                <target>Strona</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.document" xml:space="preserve" approved="yes">
+                <source>Document</source>
+                <target>Dokument</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.contentDimensions" xml:space="preserve" approved="yes">
+                <source>Content dimensions</source>
+                <target>Wymiary treści</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.workspace" xml:space="preserve" approved="yes">
+                <source>Workspace</source>
+                <target>Przestrzeń robocza</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.header.lastModified" xml:space="preserve" approved="yes">
+                <source>Last modified</source>
+                <target>Ostatnio modyfikowany</target>
+            </trans-unit>
+            <trans-unit id="assetUsagesModal.loading" xml:space="preserve" approved="yes">
+                <source>Loading…</source>
+                <target>Ładowanie…</target>
+            </trans-unit>
+            <trans-unit id="assetUsagesModal.noResults" xml:space="preserve" approved="yes">
+                <source>No results</source>
+                <target>Brak wyników</target>
+            </trans-unit>
+            <trans-unit id="assetUsage.close" xml:space="preserve" approved="yes">
+                <source>Close</source>
+                <target>Zamknij</target>
+            </trans-unit>
+            <trans-unit id="assetUsageList.toggle" xml:space="preserve" approved="yes">
+                <source>Show usages</source>
+                <target>Pokaż użycia</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
