@@ -80,7 +80,8 @@
     --theme-zIndex-lightbox: 10023;
     --theme-zIndex-loadingIndicator: 10024;
 
-    --theme-size-sidebarWidth: 250px;
+    /* The content module sidebars are 320px, so we subtract the grid gap and outer module padding */
+    --theme-size-sidebarWidth: calc(320px - 2 * var(--theme-spacing-Full));
     --theme-size-scrollbarSize: 4px;
 }
 
@@ -601,6 +602,14 @@
 
 .ReplaceAssetDialog-module__label___huLhV {
     display: flex !important;
+}
+
+.UploadButton-module__uploadButton___1tTaJ {
+    display: flex;
+}
+
+.UploadButton-module__uploadButton___1tTaJ button {
+    flex: 1;
 }
 
 @keyframes LoadingIndicator-module__cssLoadWidth___2Sud9 {
@@ -1446,7 +1455,7 @@
 }
 
 .AssetsFilter-module__filterList___3vink {
-    z-index: 1;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     position: absolute;
