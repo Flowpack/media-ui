@@ -144,8 +144,8 @@ const PropertyInspector = () => {
                 </ToggablePanel.Contents>
             </ToggablePanel>
 
-            {assetSourceForSelectedAsset.supportsCollections && <CollectionSelectBox />}
-            {assetSourceForSelectedAsset.supportsTagging && <TagSelectBoxAsset />}
+            {assetSourceForSelectedAsset?.supportsCollections && <CollectionSelectBox />}
+            {assetSourceForSelectedAsset?.supportsTagging && <TagSelectBoxAsset />}
 
             <Tasks />
             <MetadataView />
