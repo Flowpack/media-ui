@@ -28,3 +28,7 @@
 :global(body > [class*="_selectBox__contents_"]) {
     z-index: 99999;
 }
+
+:global([class*="_dropDown__btn"]) {
+    padding-left: 0;
+}
