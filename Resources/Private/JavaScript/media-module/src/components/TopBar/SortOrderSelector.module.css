@@ -5,4 +5,5 @@
 
 .selectBox {
     min-width: 0;
+    display: flex;
 }
