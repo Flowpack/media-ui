@@ -17,6 +17,8 @@
     grid-template-columns: var(--grid-columns);
     grid-template-areas: var(--grid-areas);
     gap: var(--theme-spacing-Full);
+    /* Padding is necessary to prevent cutting of button outlines in the topbar */
+    padding-top: 1px;
     line-height: 1.5;
     overflow: hidden;
 }
