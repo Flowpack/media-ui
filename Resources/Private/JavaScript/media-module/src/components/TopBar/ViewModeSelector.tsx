@@ -22,7 +22,7 @@ const ViewModeSelector: React.FC = () => {
                     `viewModeSelector.viewMode.${
                         viewModeSelection === VIEW_MODES.List ? VIEW_MODES.Thumbnails : VIEW_MODES.List
                     }`,
-                    `Switch mode`
+                    translate('viewModeSelector.viewMode', 'Switch view')
                 )}
                 style="neutral"
                 hoverStyle="brand"
