@@ -1426,27 +1426,25 @@
 
 .SortOrderSelector-module__selectBox___g81tx {
     min-width: 0;
+    display: flex;
 }
 
 .AssetsFilter-module__assetsFilter___3rCkH {
     position: relative;
 }
 
-.AssetsFilter-module__assetsFilter___3rCkH summary {
+.AssetsFilter-module__assetsFilter___3rCkH > summary {
     background-color: var(--theme-colors-captionBackground);
     padding: 0 1em;
     cursor: pointer;
+    list-style-type: none;
 }
 
 .AssetsFilter-module__assetsFilter___3rCkH summary:hover {
     background-color: var(--theme-colors-PrimaryBlue);
 }
 
-.AssetsFilter-module__assetsFilter___3rCkH > summary {
-    list-style-type: none;
-}
-
-.AssetsFilter-module__assetsFilter___3rCkH[open] > summary::-webkit-details-marker {
+.AssetsFilter-module__assetsFilter___3rCkH > summary::-webkit-details-marker {
     display: none;
 }
 
@@ -1492,17 +1490,25 @@
 }
 
 .SearchBox-module__searchBox___3GzI7 {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.SearchBox-module__searchBox__inputWrapper___1ZW3b {
     flex: 1;
 }
 
-.SearchBox-module__searchBox___3GzI7 input[type="search"] {
-    -webkit-appearance: searchfield;
+.SearchBox-module__searchBox__inputWrapper___1ZW3b > input {
     width: 100%;
 }
 
-.SearchBox-module__searchBox___3GzI7 input[type="search"]::-webkit-search-cancel-button {
-    -webkit-appearance: searchfield-cancel-button;
-    cursor: pointer;
+.SearchBox-module__searchBox__searchButton___1Khrw {
+
+}
+
+.SearchBox-module__searchBox__clearButton___3s_q4 {
+
 }
 
 .TopBar-module__topBar___3QcJr {
@@ -1778,6 +1784,8 @@
     grid-template-columns: var(--grid-columns);
     grid-template-areas: var(--grid-areas);
     gap: var(--theme-spacing-Full);
+    /* Padding is necessary to prevent cutting of button outlines in the topbar */
+    padding-top: 1px;
     line-height: 1.5;
     overflow: hidden;
 }
@@ -1842,6 +1850,10 @@
 
 body > [class*="_selectBox__contents_"] {
     z-index: 99999;
+}
+
+[class*="_dropDown__btn"] {
+    padding-left: 0;
 }
 
 .MediaSelectionScreen-module__mediaSelectionScreen___2qXAm {
