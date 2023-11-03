@@ -2,21 +2,18 @@
     position: relative;
 }
 
-.assetsFilter summary {
+.assetsFilter > summary {
     background-color: var(--theme-colors-captionBackground);
     padding: 0 1em;
     cursor: pointer;
+    list-style-type: none;
 }
 
 .assetsFilter summary:hover {
     background-color: var(--theme-colors-PrimaryBlue);
 }
 
-.assetsFilter > summary {
-    list-style-type: none;
-}
-
-.assetsFilter[open] > summary::-webkit-details-marker {
+.assetsFilter > summary::-webkit-details-marker {
     display: none;
 }
 
