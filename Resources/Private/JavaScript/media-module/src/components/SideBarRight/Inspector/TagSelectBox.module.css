@@ -1,0 +1,5 @@
+.tagSelectBox input {
+    /* Hack to override Neos backend CSS override */
+    background-color: transparent !important;
+    border: none !important;
+}
