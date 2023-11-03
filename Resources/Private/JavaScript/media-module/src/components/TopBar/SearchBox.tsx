@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { TextInput } from '@neos-project/react-ui-components';
+import { IconButton, TextInput } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { currentPageState, searchTermState } from '@media-ui/core/src/state';
@@ -23,16 +23,41 @@ const SearchBox: React.FC = () => {
         setCurrentPage(1);
     }, [searchValue, setCurrentPage, setSearchTerm]);
 
+    const clearSearchBox = useCallback(() => {
+        setSearchValue('');
+        setSearchTerm(SearchTerm.fromString(''));
+        setCurrentPage(1);
+    }, [setSearchValue, setSearchTerm, handleSearch]);
+
     if (mainView !== MainViewMode.DEFAULT) return null;
 
     return (
         <div className={classes.searchBox}>
+            <IconButton
+                icon="search"
+                size="regular"
+                style="neutral"
+                className={classes.searchBox__searchButton}
+                hoverStyle="brand"
+                onClick={handleSearch}
+                disabled={!searchValue}
+            />
             <TextInput
                 value={searchValue}
                 type="search"
+                containerClassName={classes.searchBox__inputWrapper}
                 onChange={(value) => setSearchValue(value)}
                 onEnterKey={handleSearch}
                 placeholder={translate('searchBox.placeholder', 'Search')}
+            />
+            <IconButton
+                icon="close"
+                size="regular"
+                style="neutral"
+                className={classes.searchBox__clearButton}
+                hoverStyle="brand"
+                onClick={clearSearchBox}
+                disabled={!searchValue}
             />
         </div>
     );
