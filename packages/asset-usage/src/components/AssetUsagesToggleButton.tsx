@@ -1,12 +1,15 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
 
-import { Button, Icon } from '@neos-project/react-ui-components';
+import { Badge, Button, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 
 import assetUsageDetailsModalState from '../state/assetUsageDetailsModalState';
+import useAssetUsagesQuery from '@media-ui/feature-asset-usage/src/hooks/useAssetUsages';
+
+import classes from './AssetUsagesToggleButton.module.css';
 
 interface AssetUsagesToggleButtonProps {
     variant?: 'button' | 'menuItem';
@@ -19,10 +22,13 @@ const AssetUsagesToggleButton: React.FC<AssetUsagesToggleButtonProps> = ({
     menuItemClassName,
     menuItemDisabledClassName,
 }) => {
-    const { isInUse } = useSelectedAsset();
+    const asset = useSelectedAsset();
+    const { assetUsageDetails } = useAssetUsagesQuery(
+        asset ? { assetId: asset.id, assetSourceId: asset.assetSource.id } : null
+    );
     const [assetUsagesModalOpen, setAssetUsagesModalOpen] = useRecoilState(assetUsageDetailsModalState);
     const { translate } = useIntl();
-    const disabled = isInUse === false;
+    const disabled = asset.isInUse === false;
     const label = translate('assetUsageList.toggle', 'Show usages');
 
     if (variant === 'menuItem') {
@@ -33,6 +39,11 @@ const AssetUsagesToggleButton: React.FC<AssetUsagesToggleButtonProps> = ({
             >
                 <Icon icon="link" />
                 <span>{label}</span>
+                {assetUsageDetails?.[0]?.usages ? (
+                    <Badge label={assetUsageDetails[0].usages.length} className={classes.assetUsageBadge} />
+                ) : (
+                    ''
+                )}
             </li>
         );
     }
@@ -47,6 +58,11 @@ const AssetUsagesToggleButton: React.FC<AssetUsagesToggleButtonProps> = ({
             title={label}
         >
             <Icon icon="link" />
+            {assetUsageDetails?.[0]?.usages ? (
+                <Badge label={assetUsageDetails[0].usages.length} className={classes.assetUsageBadge} />
+            ) : (
+                ''
+            )}
         </Button>
     );
 };
