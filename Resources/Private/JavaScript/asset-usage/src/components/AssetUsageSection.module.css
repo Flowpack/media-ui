@@ -9,6 +9,8 @@
     width: 100%;
     margin-top: var(--theme-spacing-Full);
     line-height: 1.5;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .usageTable th {
@@ -18,17 +20,13 @@
 
 .usageTable td,
 .usageTable th {
-    padding: var(--theme-spacing-Quarter);
+    padding: 0 var(--theme-spacing-Half);
+    height: var(--theme-unit);
 }
 
-.usageTable td:first-child,
-.usageTable th:first-child {
-    padding-left: 0;
-}
-
-.usageTable td:last-child,
-.usageTable th:last-child {
-    padding-right: 0;
+.usageTable td {
+    border-top: 1px solid var(--theme-colors-ContrastDarker);
+    background-color: var(--theme-colors-ContrastNeutral);
 }
 
 /* This is for specificity; otherwise `.neos.neos-module a` would override this link style in the backend module */
