@@ -76,10 +76,10 @@ const SortOrderSelector: React.FC = () => {
                 icon={sortOrderState.sortDirection === SORT_DIRECTION.Asc ? 'sort-amount-up' : 'sort-amount-down'}
                 size="regular"
                 title={translate(
-                    `sortingState.dortOrder.value.${
+                    `sortingState.sortOrder.value.${
                         sortOrderState.sortDirection === SORT_DIRECTION.Asc ? SORT_DIRECTION.Desc : SORT_DIRECTION.Asc
                     }`,
-                    `Switch sort direction`
+                    translate('sortingState.sortOrder.switchSortDirection', 'Switch sort direction')
                 )}
                 style="neutral"
                 hoverStyle="brand"

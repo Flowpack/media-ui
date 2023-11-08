@@ -10,15 +10,300 @@
                 <source>The Media Module allows you to manage all your assets, including images, documents, videos, and audio files.</source>
             </trans-unit>
 
+            <trans-unit id="module.loadingMediaModuleUi" xml:space="preserve" approved="yes">
+                <source>Loading media module UI...</source>
+            </trans-unit>
+
+            <trans-unit id="uploadButton.label" xml:space="preserve" approved="yes">
+                <source>Upload</source>
+            </trans-unit>
+            <trans-unit id="uploadDialog.dropzone.caption" xml:space="preserve" approved="yes">
+                <source>Drag 'n' drop some files here, or click to select files.</source>
+            </trans-unit>
             <trans-unit id="uploadDialog.maxFileSize" xml:space="preserve" approved="yes">
                 <source>Maximum file size is {size} and file limit is {limit}</source>
             </trans-unit>
             <trans-unit id="uploadDialog.label.uploading" xml:space="preserve" approved="yes">
                 <source>Uploading…</source>
             </trans-unit>
+            <trans-unit id="uploadDialog.replaceAsset" xml:space="preserve" approved="yes">
+                <source>Replace asset</source>
+            </trans-unit>
+            <trans-unit id="uploadDialog.generateRedirects" xml:space="preserve" approved="yes">
+                <source>Generate redirects</source>
+            </trans-unit>
+            <trans-unit id="uploadDialog.keepOriginalFilename" xml:space="preserve" approved="yes">
+                <source>Keep original filename</source>
+            </trans-unit>
+            <trans-unit id="uploadDialog.replace" xml:space="preserve" approved="yes">
+                <source>Replace</source>
+            </trans-unit>
+            <trans-unit id="uploadDialog.close" xml:space="preserve" approved="yes">
+                <source>Close</source>
+            </trans-unit>
+            <trans-unit id="uploadDialog.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+            </trans-unit>
 
             <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
                 <source>You can only select any of the following types: {types}</source>
+            </trans-unit>
+            <trans-unit id="actions.replaceAsset.confirm.title" xml:space="preserve" approved="yes">
+                <source>Replace asset</source>
+            </trans-unit>
+
+            <trans-unit id="general.title" xml:space="preserve" approved="yes">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="general.noMatchesFound" xml:space="preserve" approved="yes">
+                <source>No matches found</source>
+            </trans-unit>
+            <trans-unit id="pagination.assetCount" xml:space="preserve" approved="yes">
+                <source>assets</source>
+            </trans-unit>
+            <trans-unit id="clipboard.toggle" xml:space="preserve" approved="yes">
+                <source>Clipboard</source>
+            </trans-unit>
+            <trans-unit id="clipboard.close" xml:space="preserve" approved="yes">
+                <source>Close clipboard</source>
+            </trans-unit>
+
+            <!-- asset actions -->
+
+            <trans-unit id="assetActions.import.success" xml:space="preserve" approved="yes">
+                <source>Asset was successfully imported</source>
+            </trans-unit>
+            <trans-unit id="assetActions.import.error" xml:space="preserve" approved="yes">
+                <source>Failed to import asset</source>
+            </trans-unit>
+            <trans-unit id="action.deleteAsset.success" xml:space="preserve" approved="yes">
+                <source>The asset has been deleted</source>
+            </trans-unit>
+            <trans-unit id="itemActions.preview" xml:space="preserve" approved="yes">
+                <source>Preview asset</source>
+            </trans-unit>
+            <trans-unit id="itemActions.import" xml:space="preserve" approved="yes">
+                <source>Import asset</source>
+            </trans-unit>
+            <trans-unit id="itemActions.delete" xml:space="preserve" approved="yes">
+                <source>Delete asset</source>
+            </trans-unit>
+            <trans-unit id="itemActions.delete.disabled" xml:space="preserve" approved="yes">
+                <source>Cannot delete an asset that is in use</source>
+            </trans-unit>
+            <trans-unit id="itemActions.download" xml:space="preserve" approved="yes">
+                <source>Download asset</source>
+            </trans-unit>
+            <trans-unit id="itemActions.copyToClipboard" xml:space="preserve" approved="yes">
+                <source>Copy to clipboard</source>
+            </trans-unit>
+
+            <!-- asset collection list -->
+
+            <trans-unit id="assetCollectionList.viewMode.collections" xml:space="preserve" approved="yes">
+                <source>Collections</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.viewMode.favourites" xml:space="preserve" approved="yes">
+                <source>Favourites</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionTree.toolbar.createAssetCollection" xml:space="preserve" approved="yes">
+                <source>Create new asset collection</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionTree.toolbar.createTag" xml:space="preserve" approved="yes">
+                <source>Create new tag</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionTree.toolbar.delete" xml:space="preserve" approved="yes">
+                <source>Delete</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionTree.toolbar.favourite" xml:space="preserve" approved="yes">
+                <source>Toggle favourite</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.showAll" xml:space="preserve" approved="yes">
+                <source>All</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.showAll.title" xml:space="preserve" approved="yes">
+                <source>Show assets for all collections</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.unassigned" xml:space="preserve" approved="yes">
+                <source>Unassigned</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.unassigned.title" xml:space="preserve" approved="yes">
+                <source>Show assets which are not assigned to any collection</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.untagged" xml:space="preserve" approved="yes">
+                <source>Untagged</source>
+            </trans-unit>
+
+            <!-- search box -->
+
+            <trans-unit id="searchBox.placeholder" xml:space="preserve" approved="yes">
+                <source>Search</source>
+            </trans-unit>
+
+            <!-- filtering -->
+
+            <trans-unit id="assetsFilter.title" xml:space="preserve" approved="yes">
+                <source>Toggle asset filters</source>
+            </trans-unit>
+            <trans-unit id="assetsFilter.filter" xml:space="preserve" approved="yes">
+                <source>Filter</source>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.video" xml:space="preserve" approved="yes">
+                <source>Video</source>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.audio" xml:space="preserve" approved="yes">
+                <source>Audio</source>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.image" xml:space="preserve" approved="yes">
+                <source>Image</source>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.document" xml:space="preserve" approved="yes">
+                <source>Document</source>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.unused" xml:space="preserve" approved="yes">
+                <source>Unused</source>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.all" xml:space="preserve" approved="yes">
+                <source>All</source>
+            </trans-unit>
+
+            <!-- sorting -->
+
+            <trans-unit id="sortingState.sortBy.values.lastModified" xml:space="preserve" approved="yes">
+                <source>Last Modified</source>
+            </trans-unit>
+            <trans-unit id="sortingState.sortBy.values.name" xml:space="preserve" approved="yes">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="sortingState.sortBy.values.lastModified" xml:space="preserve" approved="yes">
+                <source>Last Modified</source>
+            </trans-unit>
+            <trans-unit id="sortingState.sortBy.values.size" xml:space="preserve" approved="yes">
+                <source>Size</source>
+            </trans-unit>
+            <trans-unit id="sortingState.sortOrder.value.ASC" xml:space="preserve" approved="yes">
+                <source>Ascending</source>
+            </trans-unit>
+            <trans-unit id="sortingState.sortOrder.value.DESC" xml:space="preserve" approved="yes">
+                <source>Descending</source>
+            </trans-unit>
+            <trans-unit id="sortingState.sortOrder.switchSortDirection" xml:space="preserve" approved="yes">
+                <source>Switch sort direction</source>
+            </trans-unit>
+
+            <!-- view mode -->
+
+            <trans-unit id="viewModeSelector.viewMode" xml:space="preserve" approved="yes">
+                <source>Switch view</source>
+            </trans-unit>
+            <trans-unit id="viewModeSelector.viewMode.list" xml:space="preserve" approved="yes">
+                <source>List</source>
+            </trans-unit>
+            <trans-unit id="viewModeSelector.viewMode.thumbnails" xml:space="preserve" approved="yes">
+                <source>Thumbnails</source>
+            </trans-unit>
+
+            <!-- asset list -->
+
+            <trans-unit id="assetList.loading" xml:space="preserve" approved="yes">
+                <source>Loading assets</source>
+            </trans-unit>
+            <trans-unit id="assetList.emptyForSearchTerm" xml:space="preserve" approved="yes">
+                <source>No assets found for "{searchTerm}"</source>
+            </trans-unit>
+            <trans-unit id="assetList.empty" xml:space="preserve" approved="yes">
+                <source>No assets found</source>
+            </trans-unit>
+
+            <!-- property panel -->
+
+            <trans-unit id="currentSelection.assetCollection.headline" xml:space="preserve" approved="yes">
+                <source>Selected collection</source>
+            </trans-unit>
+            <trans-unit id="currentSelection.tag.headline" xml:space="preserve" approved="yes">
+                <source>Selected tag</source>
+            </trans-unit>
+            <trans-unit id="currentSelection.path.headline" xml:space="preserve" approved="yes">
+                <source>Path</source>
+            </trans-unit>
+
+            <trans-unit id="propertyPanel.header" xml:space="preserve" approved="yes">
+                <source>Properties</source>
+            </trans-unit>
+            <trans-unit id="inspector.title" xml:space="preserve" approved="yes">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="inspector.caption" xml:space="preserve" approved="yes">
+                <source>Caption</source>
+            </trans-unit>
+            <trans-unit id="inspector.copyrightNotice" xml:space="preserve" approved="yes">
+                <source>Copyright notice</source>
+            </trans-unit>
+            <trans-unit id="inspector.actions.discard" xml:space="preserve" approved="yes">
+                <source>Discard</source>
+            </trans-unit>
+            <trans-unit id="inspector.actions.apply" xml:space="preserve" approved="yes">
+                <source>Apply</source>
+            </trans-unit>
+            <trans-unit id="inspector.assetCollection" xml:space="preserve" approved="yes">
+                <source>Collection</source>
+            </trans-unit>
+            <trans-unit id="inspector.assetCollections" xml:space="preserve" approved="yes">
+                <source>Collections</source>
+            </trans-unit>
+            <trans-unit id="inspector.collections.placeholder" xml:space="preserve" approved="yes">
+                <source>Select a collection</source>
+            </trans-unit>
+            <trans-unit id="inspector.tags" xml:space="preserve" approved="yes">
+                <source>Tags</source>
+            </trans-unit>
+            <trans-unit id="inspector.tags.placeholder" xml:space="preserve" approved="yes">
+                <source>Select a tag</source>
+            </trans-unit>
+            <trans-unit id="inspector.actions" xml:space="preserve" approved="yes">
+                <source>Tasks</source>
+            </trans-unit>
+            <trans-unit id="openAssetEditDialogButton.open" xml:space="preserve" approved="yes">
+                <source>Rename asset</source>
+            </trans-unit>
+            <trans-unit id="inspector.metadata" xml:space="preserve" approved="yes">
+                <source>Metadata</source>
+            </trans-unit>
+            <trans-unit id="inspector.property.dimensions" xml:space="preserve" approved="yes">
+                <source>Dimensions</source>
+            </trans-unit>
+            <trans-unit id="inspector.property.fileSize" xml:space="preserve" approved="yes">
+                <source>Size</source>
+            </trans-unit>
+            <trans-unit id="inspector.property.filename" xml:space="preserve" approved="yes">
+                <source>Filename</source>
+            </trans-unit>
+            <trans-unit id="inspector.property.lastModified" xml:space="preserve" approved="yes">
+                <source>Last modified</source>
+            </trans-unit>
+            <trans-unit id="inspector.property.mediaType" xml:space="preserve" approved="yes">
+                <source>MIME type</source>
+            </trans-unit>
+
+            <!-- asset replacement dialog -->
+
+            <trans-unit id="assetReplacement.toggle" xml:space="preserve" approved="yes">
+                <source>Replace asset</source>
+            </trans-unit>
+
+            <!-- asset edit dialog -->
+
+            <trans-unit id="editAssetDialog.title" xml:space="preserve" approved="yes">
+                <source>Rename asset</source>
+            </trans-unit>
+            <trans-unit id="editAssetDialog.filename" xml:space="preserve" approved="yes">
+                <source>Filename</source>
+            </trans-unit>
+            <trans-unit id="editAssetDialog.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+            </trans-unit>
+            <trans-unit id="editAssetDialog.update" xml:space="preserve" approved="yes">
+                <source>Update</source>
             </trans-unit>
 
             <!-- Labels for the asset-usage package -->
@@ -67,6 +352,25 @@
             <trans-unit id="assetUsageList.toggle" xml:space="preserve" approved="yes">
                 <source>Show usages</source>
             </trans-unit>
+
+            <!-- pagination -->
+
+            <trans-unit id="pagination.previousPageTitle" xml:space="preserve" approved="yes">
+                <source>Go to previous page</source>
+            </trans-unit>
+            <trans-unit id="pagination.firstPageTitle" xml:space="preserve" approved="yes">
+                <source>Go to first page</source>
+            </trans-unit>
+            <trans-unit id="pagination.page" xml:space="preserve" approved="yes">
+                <source>Go to page {page}</source>
+            </trans-unit>
+            <trans-unit id="pagination.lastPageTitle" xml:space="preserve" approved="yes">
+                <source>Go to last page</source>
+            </trans-unit>
+            <trans-unit id="pagination.nextPageTitle" xml:space="preserve" approved="yes">
+                <source>Go to next page</source>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

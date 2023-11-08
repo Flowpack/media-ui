@@ -36,8 +36,8 @@ const AssetsFilter: React.FC = () => {
             ref={detailsRef}
             className={cx(classes.assetsFilter, (assetTypeFilter || mediaTypeFilter) && classes.active)}
         >
-            <summary title={translate('AssetsFilter.title', 'Toggle asset filters')}>
-                <IconLabel icon="filter" label="Filter" />
+            <summary title={translate('assetsFilter.title', 'Toggle asset filters')}>
+                <IconLabel icon="filter" label={translate('assetsFilter.filter', 'Filter')} />
             </summary>
             <div className={classes.filterList}>
                 {components.map((Component, index) => (

@@ -67,21 +67,21 @@ const EditAssetDialog: React.FC = () => {
     return (
         <Dialog
             isOpen={dialogVisible}
-            title={translate('EditAssetDialog.title', 'Rename asset')}
+            title={translate('editAssetDialog.title', 'Rename asset')}
             onRequestClose={() => setDialogVisible(false)}
             actions={[
                 <Button key="cancel" style="neutral" hoverStyle="darken" onClick={closeDialog}>
-                    {translate('EditAssetDialog.cancel', 'Cancel')}
+                    {translate('editAssetDialog.cancel', 'Cancel')}
                 </Button>,
                 <Button key="upload" style="success" hoverStyle="success" disabled={!canUpdate} onClick={handleUpdate}>
-                    {translate('EditAssetDialog.update', 'Update')}
+                    {translate('editAssetDialog.update', 'Update')}
                 </Button>,
             ]}
             style="wide"
         >
             <section className={classes.editArea}>
                 <Label className={classes.label}>
-                    {translate('EditAssetDialog.filename', 'Filename')}
+                    {translate('editAssetDialog.filename', 'Filename')}
                     <input
                         className={classes.filenameInput}
                         type="text"

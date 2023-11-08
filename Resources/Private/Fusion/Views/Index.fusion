@@ -14,7 +14,7 @@ Flowpack.Media.Ui.MediaController {
 
         renderer = afx`
             <div id="media-ui-app" {...props}>
-                Loading media ui...
+                {I18n.translate('module.loadingMediaModuleUi', 'Loading media module UI...', [], 'Main', 'Flowpack.Media.Ui')}
             </div>
         `
     }
