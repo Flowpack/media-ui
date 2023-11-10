@@ -3,17 +3,18 @@ import React from 'react';
 import { useIntl } from '@media-ui/core';
 
 import FilePreview from './FilePreview';
-import { UploadDialogState } from '../hooks/useUploadDialogState';
 import { SetStateAction, Dispatch } from 'react';
 import { SetterOrUpdater } from 'recoil';
 
 import classes from './PreviewSection.module.css';
+import { FileUploadResult, FilesUploadState } from '../../typings';
+import { UploadDialogStateWithFiles } from '../state/uploadDialogState';
 
 interface PreviewSectionProps {
     files: FilesUploadState;
     loading: boolean;
     uploadState: FileUploadResult[];
-    dialogState: UploadDialogState;
+    dialogState: UploadDialogStateWithFiles;
     setFiles: Dispatch<SetStateAction<FilesUploadState>>;
     setUploadPossible: SetterOrUpdater<boolean>;
 }

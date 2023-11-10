@@ -12,15 +12,15 @@ import UploadSection from '../UploadSection';
 import PreviewSection from '../PreviewSection';
 import { useUploadDialogState } from '../../hooks';
 import useReplaceAsset, { AssetReplacementOptions } from '../../hooks/useReplaceAsset';
-import { UploadedFile } from '../../interfaces';
 import { useSetRecoilState } from 'recoil';
+
+import classes from './ReplaceAssetDialog.module.css';
+import { UploadedFile } from '../../../typings';
 import {
     selectedAssetLabelState,
     selectedAssetCaptionState,
     selectedAssetCopyrightNoticeState,
 } from '@media-ui/media-module/src/state';
-
-import classes from './ReplaceAssetDialog.module.css';
 
 const ReplaceAssetDialog: React.FC = () => {
     const { translate } = useIntl();
@@ -37,11 +37,9 @@ const ReplaceAssetDialog: React.FC = () => {
         keepOriginalFilename: false,
         generateRedirects: false,
     });
-    const classes = useStyles();
     const setLabel = useSetRecoilState(selectedAssetLabelState);
     const setCaption = useSetRecoilState(selectedAssetCaptionState);
     const setCopyrightNotice = useSetRecoilState(selectedAssetCopyrightNoticeState);
-    const uploadPossible = !loading && dialogState.files.selected.length > 0;
     const acceptedFileTypes = useMemo(() => {
         // TODO: Extract this into a helper function
         const completeMediaType = selectedAsset?.file.mediaType;

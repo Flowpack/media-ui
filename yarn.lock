@@ -1920,6 +1920,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@media-ui/asset-upload-screen@workspace:*, @media-ui/asset-upload-screen@workspace:Resources/Private/JavaScript/asset-upload-screen":
+  version: 0.0.0-use.local
+  resolution: "@media-ui/asset-upload-screen@workspace:Resources/Private/JavaScript/asset-upload-screen"
+  dependencies:
+    "@apollo/client": ^3.3.13
+    "@media-ui/core": "workspace:*"
+    "@media-ui/feature-asset-upload": "workspace:*"
+    "@media-ui/media-module": "workspace:*"
+    apollo-upload-client: ^14.1.3
+    react: ^17.0.2
+    react-redux: ^5.1.2
+    recoil: ^0.7.7
+  languageName: unknown
+  linkType: soft
+
 "@media-ui/core@workspace:*, @media-ui/core@workspace:Resources/Private/JavaScript/core":
   version: 0.0.0-use.local
   resolution: "@media-ui/core@workspace:Resources/Private/JavaScript/core"
@@ -1985,6 +2000,7 @@ __metadata:
   resolution: "@media-ui/feature-asset-upload@workspace:Resources/Private/JavaScript/asset-upload"
   dependencies:
     "@media-ui/core": "workspace:*"
+    "@media-ui/media-module": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -2110,6 +2126,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@media-ui/neos-ui-plugin@workspace:Resources/Private/JavaScript/neos-ui-plugin"
   dependencies:
+    "@media-ui/asset-upload-screen": "workspace:*"
     "@media-ui/media-details-screen": "workspace:*"
     "@media-ui/media-selection-screen": "workspace:*"
     "@neos-project/neos-ui-extensibility": ^8.3.0

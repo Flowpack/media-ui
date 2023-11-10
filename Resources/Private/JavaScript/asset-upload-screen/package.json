@@ -8,20 +8,18 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.13",
-    "@media-ui/core": "*",
-    "@media-ui/feature-asset-upload": "*",
-    "@media-ui/media-module": "*",
+    "@media-ui/core": "workspace:*",
+    "@media-ui/feature-asset-upload": "workspace:*",
+    "@media-ui/media-module": "workspace:*",
     "apollo-upload-client": "^14.1.3",
-    "plow-js": "^2.2.0",
+    "react": "^17.0.2",
     "react-redux": "^5.1.2",
-    "react": "^17.0.1",
-    "recoil": "^0.2.0"
-  },
-  "devDependencies": {
-    "webpack": "^4.44.2",
-    "webpack-graphql-loader": "^1.0.2"
+    "recoil": "^0.7.7"
   },
   "browserslist": [
-    "defaults and > 1% and not ie <= 11"
+    "> 0.5%",
+    "last 2 versions",
+    "not dead",
+    "supports async-functions"
   ]
 }

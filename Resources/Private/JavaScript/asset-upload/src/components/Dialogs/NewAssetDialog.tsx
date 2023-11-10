@@ -11,13 +11,13 @@ import { useUploadDialogState, useUploadFiles } from '../../hooks';
 import { useAssetsQuery } from '@media-ui/core/src/hooks';
 
 import classes from './NewAssetDialog.module.css';
+import { FilesUploadState, UploadedFile } from '../../../typings';
 
 const NewAssetDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
     const { state: dialogState, closeDialog, setFiles, setUploadPossible } = useUploadDialogState();
-    const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
     const { refetch } = useAssetsQuery();
 
     const handleUpload = useCallback(() => {
@@ -68,7 +68,16 @@ const NewAssetDialog: React.FC = () => {
             .catch((error) => {
                 Notify.error(translate('fileUpload.error', 'Upload failed'), error);
             });
-    }, [uploadFiles, dialogState.files.selected, setFiles, Notify, translate, refetch]);
+    }, [
+        dialogState.files.selected,
+        dialogState.files.finished,
+        uploadFiles,
+        setFiles,
+        setUploadPossible,
+        Notify,
+        translate,
+        refetch,
+    ]);
 
     const handleSetFiles = useCallback(
         (files: UploadedFile[]) => {

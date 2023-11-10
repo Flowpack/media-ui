@@ -446,13 +446,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: var(--theme-spacing-GoldenUnit);
+    padding: var(--theme-spacing-GoldenUnit, 40px);
     border-width: 2px;
     border-radius: 2px;
-    border-color: var(--theme-colors-disabled);
+    border-color: var(--theme-colors-disabled, #3f3f3f);
     border-style: dashed;
-    background-color: var(--theme-colors-alternatingBackground);
-    color: var(--theme-colors-text);
+    background-color: var(--theme-colors-alternatingBackground, #3f3f3f);
+    color: var(--theme-colors-text, #999);
     outline: none;
     cursor: pointer;
     user-select: none;
@@ -465,39 +465,34 @@
 }
 
 .UploadSection-module__dropzone--active___1t1U7 {
-    border-color: var(--theme-colors-PrimaryBlue);
+    border-color: var(--theme-colors-PrimaryBlue, #00adee);
 }
 
 .UploadSection-module__dropzone--accept___1MkQv {
-    border-color: var(--theme-colors-Success);
+    border-color: var(--theme-colors-Success, #00a338);
 }
 
 .UploadSection-module__dropzone--reject___2CZXy {
-    border-color: var(--theme-colors-Error);
+    border-color: var(--theme-colors-Error, #ff460d);
 }
 
-.FilePreview-module__fileList___2Idje {
-    margin-top: var(--theme-spacing-Full);
+.FilePreview-module__preview___1gsEP {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.FilePreview-module__fileListHeader___30V9N {
-    flex: 1 1 100%;
-    margin-bottom: var(--theme-spacing-Full);
-    font-size: var(--theme-fontSize-base);
+    column-gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #3f3f3f;
 }
 
 .FilePreview-module__thumb___3Pr8a {
     display: inline-flex;
     border-radius: 2px;
     border: 1px solid #eaeaea;
-    margin-bottom: var(--theme-spacing-Half);
-    margin-right: var(--theme-spacing-Half);
-    width: 100px;
-    height: 100px;
-    padding: var(--theme-spacing-Quarter);
+    margin-bottom: var(--theme-spacing-Half, 8px);
+    margin-right: var(--theme-spacing-Half, 8px);
+    width: 270px;
+    height: 200px;
+    padding: var(--theme-spacing-Quarter, 4px);
     box-sizing: border-box;
 }
 
@@ -508,11 +503,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    isolation: isolate;
 }
 
 .FilePreview-module__thumbInner___IvQdB span {
-    margin-left: var(--theme-spacing-Half);
+    margin-left: var(--theme-spacing-Half, 8px);
     user-select: none;
+}
+
+.FilePreview-module__properties___6i1VB {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+}
+
+.FilePreview-module__properties___6i1VB label {
+    margin-bottom: .5rem;
 }
 
 .FilePreview-module__img___8ejzf {
@@ -534,13 +541,13 @@
     top: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--theme-colors-alternatingBackground);
+    background-color: var(--theme-colors-alternatingBackground, #3f3f3f);
     opacity: 0.3;
     z-index: -1;
 }
 
 .FilePreview-module__loading___1237G {
-    border-color: var(--theme-colors-border);
+    border-color: var(--theme-colors-border, #3f3f3f);
 }
 
 .FilePreview-module__loading___1237G .FilePreview-module__thumbInner___IvQdB:after {
@@ -548,25 +555,29 @@
 }
 
 .FilePreview-module__success___3O3RF {
-    border-color: var(--theme-colors-Success);
+    border-color: var(--theme-colors-Success, #00a338);
 }
 
 .FilePreview-module__success___3O3RF .FilePreview-module__thumbInner___IvQdB:after {
     display: block;
-    background-color: var(--theme-colors-Success);
+    background-color: var(--theme-colors-Success, #00a338);
 }
 
 .FilePreview-module__error___2Vwak {
-    border-color: var(--theme-colors-Error);
+    border-color: var(--theme-colors-Error, #ff460d);
 }
 
 .FilePreview-module__error___2Vwak .FilePreview-module__thumbInner___IvQdB:after {
     display: block;
-    background-color: var(--theme-colors-Error);
+    background-color: var(--theme-colors-Error, #ff460d);
 }
 
 .FilePreview-module__warning___3LWQm {
-    color: var(--theme-colors-Warn);
+    color: var(--theme-colors-Warn, #ff8700);
+}
+
+.FilePreview-module__neos___1VFW6 textarea.FilePreview-module__textArea___3LgHA {
+    padding: var(--theme-spacing-Half, 8px);
 }
 
 .PreviewSection-module__fileList___2tdk4 {
@@ -580,6 +591,13 @@
     flex: 1 1 100%;
     margin-bottom: var(--theme-spacing-Full);
     font-size: var(--theme-fontSize-base);
+}
+
+.PreviewSection-module__fileListItems___16GdG {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    width: 100%;
 }
 
 .NewAssetDialog-module__uploadArea___cgz2N {
@@ -1864,5 +1882,15 @@ body > [class*="_selectBox__contents_"] {
 
 .MediaSelectionScreen-module__isInNodeCreationDialog___2u1FV {
     padding: 0;
+}
+
+.NewAssetUpload-module__uploadArea___uHYBV {
+    padding: 1rem;
+}
+
+.NewAssetUpload-module__controls___1Bhen {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
 }
 

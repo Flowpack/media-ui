@@ -1,8 +1,6 @@
 import { atom } from 'recoil';
 
-const selectedAssetCopyrightNoticeState = atom({
+export const selectedAssetCopyrightNoticeState = atom({
     key: 'SelectedAssetCopyrightNoticeState',
     default: '',
 });
-
-export default selectedAssetCopyrightNoticeState;

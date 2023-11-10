@@ -2,29 +2,18 @@ import * as React from 'react';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { createUseMediaUiStyles, MediaUiTheme, useIntl, useNotify } from '@media-ui/core/src';
+import { useIntl, useNotify } from '@media-ui/core/src';
 import { useUploadDialogState, useUploadFiles } from '@media-ui/feature-asset-upload/src/hooks';
 import { useCallback } from 'react';
-import { FilesUploadState, UploadedFile } from '@media-ui/feature-asset-upload/src/interfaces';
 import { PreviewSection, UploadSection } from '@media-ui/feature-asset-upload/src/components';
-
-const useStyles = createUseMediaUiStyles((theme: MediaUiTheme) => ({
-    uploadArea: {
-        padding: theme.spacing.full,
-    },
-    controls: {
-        marginTop: '2rem',
-        display: 'flex',
-        justifyContent: 'flex-end',
-    },
-}));
+import { FilesUploadState, UploadedFile } from '@media-ui/feature-asset-upload/typings';
+import classes from './NewAssetUpload.module.css';
 
 const NewAssetUpload = (props: { onComplete: (result: { object: { __identity: string } }) => void }) => {
     const { translate } = useIntl();
     const Notify = useNotify();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
     const { state: dialogState, setFiles, setUploadPossible } = useUploadDialogState();
-    const classes = useStyles();
     const onComplete = props.onComplete;
 
     const handleUpload = useCallback(() => {
@@ -62,6 +51,7 @@ const NewAssetUpload = (props: { onComplete: (result: { object: { __identity: st
                     );
                 } else {
                     Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
+                    console.log(uploadFiles);
                     onComplete({ object: { __identity: uploadFiles[0].assetId } });
                 }
                 setUploadPossible(false);

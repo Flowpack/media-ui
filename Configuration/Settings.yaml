@@ -2,3 +2,15 @@ Flowpack:
   Media:
     Ui:
       maximumFileUploadLimit: 10
+      # Configure which properties in the new upload dialog are show and which are required
+      upload:
+        properties:
+          copyrightNotice:
+            show: true
+            required: false
+          title:
+            show: true
+            required: false
+          caption:
+            show: true
+            required: false

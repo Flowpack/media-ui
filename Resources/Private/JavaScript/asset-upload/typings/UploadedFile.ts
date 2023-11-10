@@ -1,4 +1,4 @@
-interface UploadedFile extends File {
+export interface UploadedFile extends File {
     id?: string;
     path?: string;
     preview?: string;

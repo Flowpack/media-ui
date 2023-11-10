@@ -3,12 +3,8 @@ Neos:
     Ui:
       frontendConfiguration:
         Flowpack.Media.Ui:
-          useNewMediaSelection: true
+          # Use the new upload dialog where the user can add additional information like caption or copy right notice when uploading the asset
           useNewAssetUpload: true
-          queryAssetUsage: false
-          pollForChanges: true
-          showSimilarAssets: false
-          showVariantsEditor: false
           # Allow the user to let the system create redirects when assets are replaced or renamed
           createAssetRedirectsOption: true
           # Only allow a single asset collection selection per asset to treat collection like folders

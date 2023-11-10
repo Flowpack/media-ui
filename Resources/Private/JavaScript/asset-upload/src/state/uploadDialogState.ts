@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { FilesUploadState } from '../../typings';
 
 export enum UPLOAD_TYPE {
     new = 'new',
@@ -17,3 +18,8 @@ export const uploadDialogState = atom<UploadDialogState>({
         uploadType: UPLOAD_TYPE.new,
     },
 });
+
+export interface UploadDialogStateWithFiles extends UploadDialogState {
+    files: FilesUploadState;
+    uploadPossible: boolean;
+}

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
@@ -13,14 +13,10 @@ import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
 import Tasks from './Tasks';
-import { IconLabel } from '../../Presentation';
-import { useRecoilState } from 'recoil';
-import selectedAssetLabelState from '../../../state/selectedAssetLabelState';
-import selectedAssetCopyrightNoticeState from '../../../state/selectedAssetCopyrightNoticeState';
-import selectedAssetCaptionState from '../../../state/selectedAssetCaptionState';
 
 import classes from './PropertyInspector.module.css';
 import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
+import { selectedAssetLabelState, selectedAssetCaptionState, selectedAssetCopyrightNoticeState } from '../../../state';
 
 const PropertyInspector = () => {
     const selectedAsset = useSelectedAsset();

@@ -1,17 +1,8 @@
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { useRecoilState } from 'recoil';
-
-import { uploadDialogVisibleState, uploadPossibleState } from '../state';
-import { UploadDialogVisibleState, UPLOAD_TYPE } from '../state/uploadDialogVisibleState';
-import { FilesUploadState } from '../interfaces';
-import { uploadDialogState } from '../state';
-import type { UploadDialogState } from '../state/uploadDialogState';
-import { UPLOAD_TYPE } from '../state/uploadDialogState';
-export interface UploadDialogState extends UploadDialogVisibleState {
-interface UploadDialogStateWithFiles extends UploadDialogState {
-    files: FilesUploadState;
-    uploadPossible: boolean;
-}
+import { FilesUploadState } from '../../typings';
+import { uploadPossibleState, uploadDialogState } from '../state';
+import { UPLOAD_TYPE, UploadDialogStateWithFiles } from '../state/uploadDialogState';
 
 const useUploadDialogState = (): {
     state: UploadDialogStateWithFiles;
@@ -25,7 +16,7 @@ const useUploadDialogState = (): {
         finished: [],
         rejected: [],
     });
-    const [dialogState, setDialogState] = useRecoilState(uploadDialogVisibleState);
+    const [dialogState, setDialogState] = useRecoilState(uploadDialogState);
     const [uploadPossible, setUploadPossible] = useRecoilState(uploadPossibleState);
 
     const handleClose = useCallback(() => {

@@ -8,6 +8,7 @@ import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import * as Fixtures from './fixtures/index';
+import { FileUploadResult } from '@media-ui/feature-asset-upload/typings';
 
 // FIXME: type annotations are missing as they couldn't be included anymore while making the devserver work again
 // import { AssetChange, AssetChangeQueryResult, AssetChangeType } from '@media-ui/feature-concurrent-editing/src';
