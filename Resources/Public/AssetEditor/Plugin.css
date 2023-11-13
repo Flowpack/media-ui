@@ -850,6 +850,12 @@
     color: var(--theme-colors-inactive);
 }
 
+.TagSelectBox-module__tagSelectBox___H0cU8 input {
+    /* Hack to override Neos backend CSS override */
+    background-color: transparent !important;
+    border: none !important;
+}
+
 .Preview-module__preview___3h-ZY {
     min-width: var(--theme-size-sidebarWidth);
     margin: 0;
