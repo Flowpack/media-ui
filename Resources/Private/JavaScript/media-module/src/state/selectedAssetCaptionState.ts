@@ -4,4 +4,3 @@ export const selectedAssetCaptionState = atom({
     key: 'SelectedAssetCaptionState',
     default: '',
 });
-

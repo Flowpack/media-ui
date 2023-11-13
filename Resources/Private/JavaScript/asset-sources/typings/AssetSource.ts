@@ -2,6 +2,7 @@ type AssetSourceType = 'AssetSource';
 
 type AssetSourceId = string;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface AssetSource extends GraphQlEntity {
     __typename: AssetSourceType;
     readonly id: AssetSourceId;

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface FeatureFlags {
     createAssetRedirectsOption: boolean;
     limitToSingleAssetCollectionPerAsset: boolean;
