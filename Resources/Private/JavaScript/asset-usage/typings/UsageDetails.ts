@@ -17,6 +17,7 @@ interface UsageDetailsMetadata {
     value: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface UsageDetailsGroup extends GraphQlEntity {
     __typename: 'UsageDetailsGroup';
     serviceId: string;

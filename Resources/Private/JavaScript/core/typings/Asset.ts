@@ -1,5 +1,6 @@
 type AssetEntityType = 'Asset';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface Asset extends GraphQlEntity {
     __typename: AssetEntityType;
     readonly id: string;

@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 
 import { REPLACE_ASSET } from '../mutations';
+import { FileUploadResult, UploadedFile } from '../../typings';
 
 export interface AssetReplacementOptions {
     generateRedirects: boolean;
@@ -9,7 +10,7 @@ export interface AssetReplacementOptions {
 
 interface ReplaceAssetProps {
     asset: Asset;
-    file: File;
+    file: UploadedFile;
     options: AssetReplacementOptions;
 }
 
@@ -17,12 +18,20 @@ export default function useReplaceAsset() {
     const [action, { error, data, loading }] = useMutation<{ replaceAsset: FileUploadResult }>(REPLACE_ASSET);
 
     const replaceAsset = ({ asset, file, options }: ReplaceAssetProps) => {
+        const uploadProperties = {
+            filename: file.name,
+            copyrightNotice: file?.copyrightNotice,
+            title: file?.title,
+            caption: file?.caption,
+        };
+
         return action({
             variables: {
                 id: asset.id,
                 assetSourceId: asset.assetSource.id,
                 file,
                 options,
+                uploadProperties,
             },
         });
     };

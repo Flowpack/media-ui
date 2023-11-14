@@ -11,6 +11,7 @@ interface AssetChange {
     type: AssetChangeType;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface AssetChangeQueryResult {
     changedAssets: {
         lastModified: Date;

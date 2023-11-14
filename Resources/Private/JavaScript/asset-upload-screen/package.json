@@ -1,0 +1,25 @@
+{
+  "name": "@media-ui/asset-upload-screen",
+  "version": "1.0.0",
+  "license": "GNU GPLv3",
+  "private": true,
+  "engines": {
+    "node": ">=12"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.3.13",
+    "@media-ui/core": "workspace:*",
+    "@media-ui/feature-asset-upload": "workspace:*",
+    "@media-ui/media-module": "workspace:*",
+    "apollo-upload-client": "^14.1.3",
+    "react": "^17.0.2",
+    "react-redux": "^5.1.2",
+    "recoil": "^0.7.7"
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "not dead",
+    "supports async-functions"
+  ]
+}

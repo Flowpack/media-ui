@@ -6,6 +6,11 @@ const CONFIG = gql`
             uploadMaxFileSize
             uploadMaxFileUploadLimit
             currentServerTime
+            uploadProperties {
+                name
+                show
+                required
+            }
         }
     }
 `;

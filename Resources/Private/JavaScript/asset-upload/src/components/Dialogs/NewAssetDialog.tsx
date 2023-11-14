@@ -11,17 +11,18 @@ import { useUploadDialogState, useUploadFiles } from '../../hooks';
 import { useAssetsQuery } from '@media-ui/core/src/hooks';
 
 import classes from './NewAssetDialog.module.css';
+import { FilesUploadState, UploadedFile } from '../../../typings';
 
 const NewAssetDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
     const { uploadFiles, uploadState, loading } = useUploadFiles();
-    const { state: dialogState, closeDialog, setFiles } = useUploadDialogState();
+    const { state: dialogState, closeDialog, setFiles, setUploadPossible } = useUploadDialogState();
     const { refetch } = useAssetsQuery();
-    const uploadPossible = !loading && dialogState.files.selected.length > 0;
 
     const handleUpload = useCallback(() => {
-        uploadFiles(dialogState.files.selected)
+        const filesToUpload = dialogState.files.selected.filter((file) => !dialogState.files.finished.includes(file));
+        uploadFiles(filesToUpload)
             .then(({ data: { uploadFiles } }) => {
                 // FIXME: Mapping the uploadState to the files name is not the best solution as the same filename might be used multiple times
                 // Move uploaded or failed files into separate lists
@@ -31,13 +32,21 @@ const NewAssetDialog: React.FC = () => {
                         finished: [
                             ...prev.finished,
                             ...prev.selected.filter((file) =>
-                                uploadFiles.find((result) => result.success && result.filename === file.name)
+                                uploadFiles.find((result) => {
+                                    return result.success && result.filename === file.name
+                                        ? (file.uploadStateResult = result.result)
+                                        : false;
+                                })
                             ),
                         ],
                         rejected: [
                             ...prev.rejected,
                             ...prev.selected.filter((file) =>
-                                uploadFiles.find((result) => !result.success && result.filename === file.name)
+                                uploadFiles.find((result) => {
+                                    return !result.success && result.filename === file.name
+                                        ? (file.uploadStateResult = result.result)
+                                        : false;
+                                })
                             ),
                         ],
                     } as FilesUploadState;
@@ -54,16 +63,33 @@ const NewAssetDialog: React.FC = () => {
                 if (uploadFiles.some((result) => result.success)) {
                     void refetch();
                 }
+                setUploadPossible(false);
             })
             .catch((error) => {
                 Notify.error(translate('fileUpload.error', 'Upload failed'), error);
             });
-    }, [uploadFiles, dialogState.files.selected, setFiles, Notify, translate, refetch]);
+    }, [
+        dialogState.files.selected,
+        dialogState.files.finished,
+        uploadFiles,
+        setFiles,
+        setUploadPossible,
+        Notify,
+        translate,
+        refetch,
+    ]);
 
     const handleSetFiles = useCallback(
         (files: UploadedFile[]) => {
             setFiles((prev) => {
-                return { ...prev, selected: files };
+                const fileNames = new Set();
+                for (const file of prev.finished.concat(prev.rejected)) {
+                    fileNames.add(file.name);
+                }
+                const newSelectedFiles = files.filter((file) => {
+                    return fileNames.has(file.name) ? false : fileNames.add(file.name);
+                });
+                return { ...prev, selected: newSelectedFiles };
             });
         },
         [setFiles]
@@ -84,7 +110,7 @@ const NewAssetDialog: React.FC = () => {
                     key="upload"
                     style="success"
                     hoverStyle="success"
-                    disabled={!uploadPossible}
+                    disabled={!dialogState.uploadPossible}
                     onClick={handleUpload}
                 >
                     {translate('uploadDialog.upload', 'Upload')}
@@ -94,7 +120,14 @@ const NewAssetDialog: React.FC = () => {
         >
             <section className={classes.uploadArea}>
                 <UploadSection files={dialogState.files.selected} loading={loading} onSetFiles={handleSetFiles} />
-                <PreviewSection files={dialogState.files} loading={loading} uploadState={uploadState} />
+                <PreviewSection
+                    files={dialogState.files}
+                    loading={loading}
+                    uploadState={uploadState}
+                    dialogState={dialogState}
+                    setFiles={setFiles}
+                    setUploadPossible={setUploadPossible}
+                />
             </section>
         </Dialog>
     );

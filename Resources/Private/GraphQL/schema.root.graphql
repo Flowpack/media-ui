@@ -119,6 +119,7 @@ type Mutation {
         assetSourceId: AssetSourceId!
         file: Upload!
         options: AssetReplacementOptionsInput!
+        uploadProperties: UploadProperties
     ): FileUploadResult!
 
     editAsset(
@@ -142,7 +143,7 @@ type Mutation {
 
     uploadFile(file: Upload!, tagId: TagId, assetCollectionId: AssetCollectionId): FileUploadResult!
 
-    uploadFiles(files: [Upload!]!, tagId: TagId, assetCollectionId: AssetCollectionId): [FileUploadResult!]!
+    uploadFiles(files: [Upload!]!, tagId: TagId, assetCollectionId: AssetCollectionId, uploadProperties: [UploadProperties]): [FileUploadResult!]!
 
     importAsset(id: AssetId!, assetSourceId: AssetSourceId!): Asset!
 
@@ -164,6 +165,13 @@ type Config {
     uploadMaxFileSize: FileSize!
     uploadMaxFileUploadLimit: Int!
     currentServerTime: DateTime!
+    uploadProperties: [UploadPropertiesConfig]
+}
+
+type UploadPropertiesConfig {
+    name: String!
+    show: Boolean!
+    required: Boolean!
 }
 
 """
@@ -335,6 +343,7 @@ type FileUploadResult {
     filename: Filename!
     success: Boolean!
     result: String!
+    assetId: AssetId!
 }
 
 """
@@ -516,6 +525,13 @@ scalar VariantPresetIdentifier
 Variant Name
 """
 scalar VariantName
+
+input UploadProperties {
+    filename: String!
+    copyrightNotice: String
+    title: String
+    caption: String
+}
 
 schema {
     query: Query

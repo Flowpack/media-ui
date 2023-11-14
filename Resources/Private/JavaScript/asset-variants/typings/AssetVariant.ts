@@ -1,6 +1,7 @@
 type AssetVariantType = 'AssetVariant';
 type CropInformationType = 'CropInformation';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface AssetVariant extends GraphQlEntity {
     __typename: AssetVariantType;
     readonly id: string;

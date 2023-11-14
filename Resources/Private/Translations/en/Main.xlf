@@ -305,6 +305,9 @@
             <trans-unit id="editAssetDialog.update" xml:space="preserve" approved="yes">
                 <source>Update</source>
             </trans-unit>
+            <trans-unit id="uploadDialog.copyrightNoticeNotNeeded" xml:space="preserve" approved="yes">
+                <source>Copyright notice not needed</source>
+            </trans-unit>
 
             <!-- Labels for the asset-usage package -->
             <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.label" xml:space="preserve" approved="yes">

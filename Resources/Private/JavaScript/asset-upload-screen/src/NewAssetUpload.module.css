@@ -1,0 +1,9 @@
+.uploadArea {
+    padding: 1rem;
+}
+
+.controls {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
