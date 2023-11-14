@@ -51,7 +51,6 @@ const NewAssetUpload = (props: { onComplete: (result: { object: { __identity: st
                     );
                 } else {
                     Notify.ok(translate('uploadDialog.uploadFinished', 'Upload finished'));
-                    console.log(uploadFiles);
                     onComplete({ object: { __identity: uploadFiles[0].assetId } });
                 }
                 setUploadPossible(false);
