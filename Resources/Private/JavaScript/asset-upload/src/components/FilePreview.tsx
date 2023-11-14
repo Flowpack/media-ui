@@ -197,11 +197,13 @@ const FilePreview: React.FC<FilePreviewProps> = ({
                                     'uploadDialog.copyrightNoticeNotNeeded',
                                     'Copyright notice not needed'
                                 )}
+                                className={classes.propertyGroupRow}
                             >
                                 <CheckBox
                                     onChange={setCopyrightNoticeNotNeeded}
                                     disabled={disabled}
                                     isChecked={copyrightNoticeNotNeededChecked}
+                                    className={classes.checkBox}
                                 />
                             </Property>
                         ) : (

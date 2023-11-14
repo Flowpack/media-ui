@@ -98,6 +98,21 @@
     color: var(--theme-colors-Warn, #ff8700);
 }
 
-.neos textarea.textArea {
-    padding: var(--theme-spacing-Half, 8px);
+.properties .textInput,
+.properties .textArea {
+    padding: var(--theme-spacing-Half, 8px) 14px;
+}
+
+.properties .propertyGroupRow {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.properties .propertyGroupRow .checkBox {
+    margin-right: 8px;
+}
+
+.properties .propertyGroupRow label {
+    margin-bottom: 0;
 }
