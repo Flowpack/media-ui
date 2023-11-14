@@ -114,5 +114,6 @@
 }
 
 .properties .propertyGroupRow label {
+    line-height: 20px;
     margin-bottom: 0;
 }
