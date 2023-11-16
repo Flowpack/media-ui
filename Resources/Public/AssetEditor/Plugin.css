@@ -832,6 +832,12 @@
     color: var(--theme-colors-inactive);
 }
 
+.TagSelectBox-module__tagSelectBox___H0cU8 input {
+    /* Hack to override Neos backend CSS override */
+    background-color: transparent !important;
+    border: none !important;
+}
+
 .Preview-module__preview___3h-ZY {
     min-width: var(--theme-size-sidebarWidth);
     margin: 0;
@@ -1842,6 +1848,10 @@
     background-color: #3f3f3f;
 }
 
+#media-ui-app [class*="_dropDown__btn"] {
+    padding-left: 0;
+}
+
 .neos.neos-module-management-mediaui > .neos-module-wrap {
     padding: 3rem 1rem 0;
 }
@@ -1850,10 +1860,6 @@
 
 body > [class*="_selectBox__contents_"] {
     z-index: 99999;
-}
-
-[class*="_dropDown__btn"] {
-    padding-left: 0;
 }
 
 .MediaSelectionScreen-module__mediaSelectionScreen___2qXAm {
