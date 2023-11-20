@@ -9,7 +9,7 @@ import { selectedInspectorViewState } from '@media-ui/core/src/state';
 import { useSelectedTag, useUpdateTag } from '@media-ui/feature-asset-tags';
 
 import Actions from './Actions';
-import Property from './Property';
+import Property from '@media-ui/core/src/components/Property';
 import InspectorContainer from './InspectorContainer';
 
 const TagInspector = () => {

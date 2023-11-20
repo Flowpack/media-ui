@@ -12,10 +12,15 @@
     border: 1px solid #eaeaea;
     margin-bottom: var(--theme-spacing-Half, 8px);
     margin-right: var(--theme-spacing-Half, 8px);
-    width: 270px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     padding: var(--theme-spacing-Quarter, 4px);
     box-sizing: border-box;
+}
+
+.thumbWide {
+    width: 270px;
+    height: 200px;
 }
 
 .thumbInner {
@@ -55,16 +60,16 @@
     z-index: -1;
 }
 
-.thumbInner:after {
+.thumbInner::after {
     display: none;
     position: absolute;
-    content: "";
+    content: '';
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
     background-color: var(--theme-colors-alternatingBackground, #3f3f3f);
-    opacity: 0.3;
+    opacity: .3;
     z-index: -1;
 }
 
@@ -72,7 +77,7 @@
     border-color: var(--theme-colors-border, #3f3f3f);
 }
 
-.loading .thumbInner:after {
+.loading .thumbInner::after {
     display: block;
 }
 
@@ -80,7 +85,7 @@
     border-color: var(--theme-colors-Success, #00a338);
 }
 
-.success .thumbInner:after {
+.success .thumbInner::after {
     display: block;
     background-color: var(--theme-colors-Success, #00a338);
 }
@@ -89,7 +94,7 @@
     border-color: var(--theme-colors-Error, #ff460d);
 }
 
-.error .thumbInner:after {
+.error .thumbInner::after {
     display: block;
     background-color: var(--theme-colors-Error, #ff460d);
 }
@@ -100,20 +105,5 @@
 
 .properties .textInput,
 .properties .textArea {
-    padding: var(--theme-spacing-Half, 8px) 14px;
-}
-
-.properties .propertyGroupRow {
-    display: inline-flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-}
-
-.properties .propertyGroupRow .checkBox {
-    margin-right: 8px;
-}
-
-.properties .propertyGroupRow label {
-    line-height: 20px;
-    margin-bottom: 0;
+    padding: var(--theme-spacing-Half, 8px) 14px !important;
 }

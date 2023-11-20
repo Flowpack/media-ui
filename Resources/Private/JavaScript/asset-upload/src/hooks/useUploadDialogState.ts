@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { FilesUploadState } from '../../typings';
 import { uploadPossibleState, uploadDialogState } from '../state';
 import { UPLOAD_TYPE, UploadDialogStateWithFiles } from '../state/uploadDialogState';
 

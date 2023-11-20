@@ -15,7 +15,6 @@ import useReplaceAsset, { AssetReplacementOptions } from '../../hooks/useReplace
 import { useSetRecoilState } from 'recoil';
 
 import classes from './ReplaceAssetDialog.module.css';
-import { UploadedFile } from '../../../typings';
 import {
     selectedAssetLabelState,
     selectedAssetCaptionState,

@@ -1,4 +1,5 @@
-export interface UploadedFile extends File {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface UploadedFile extends File {
     id?: string;
     path?: string;
     preview?: string;

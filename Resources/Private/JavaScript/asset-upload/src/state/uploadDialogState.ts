@@ -1,5 +1,4 @@
 import { atom } from 'recoil';
-import { FilesUploadState } from '../../typings';
 
 export enum UPLOAD_TYPE {
     new = 'new',

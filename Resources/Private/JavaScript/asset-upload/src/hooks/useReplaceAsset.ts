@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/client';
 
 import { REPLACE_ASSET } from '../mutations';
-import { FileUploadResult, UploadedFile } from '../../typings';
 
 export interface AssetReplacementOptions {
     generateRedirects: boolean;

@@ -6,9 +6,8 @@ import { SetterOrUpdater } from 'recoil';
 import { Icon, TextArea, TextInput, CheckBox } from '@neos-project/react-ui-components';
 
 import classes from './FilePreview.module.css';
-import { FileUploadResult, FilesUploadState, UploadedFile } from '../../typings';
 import { UploadDialogStateWithFiles } from '../state/uploadDialogState';
-import Property from '@media-ui/media-module/src/components/SideBarRight/Inspector/Property';
+import Property from '@media-ui/core/src/components/Property';
 import { useIntl } from '@media-ui/core/src';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 
@@ -134,12 +133,17 @@ const FilePreview: React.FC<FilePreviewProps> = ({
         setUploadPossible(getUploadPossibleValue(files));
     };
 
+    const isWideThumb =
+        uploadPropertiesConfig['title'].show ||
+        uploadPropertiesConfig['caption'].show ||
+        (uploadPropertiesConfig['copyrightNotice'] && uploadPropertiesConfig['copyrightNotice'].show);
     // TODO: Output helpful localised messages for results 'EXISTS', 'ADDED', 'ERROR'
     return (
         <div className={classes.preview}>
             <div
                 className={cx(
                     classes.thumb,
+                    isWideThumb ? classes.thumbWide : '',
                     error ? classes.error : success ? classes.success : loading && classes.loading
                 )}
                 title={file.name}
@@ -197,7 +201,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
                                     'uploadDialog.copyrightNoticeNotNeeded',
                                     'Copyright notice not needed'
                                 )}
-                                className={classes.propertyGroupRow}
+                                isCheckbox={true}
                             >
                                 <CheckBox
                                     onChange={setCopyrightNoticeNotNeeded}

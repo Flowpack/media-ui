@@ -5,7 +5,6 @@ import { selectedTagIdState } from '@media-ui/feature-asset-tags';
 import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 
 import { UPLOAD_FILES } from '../mutations';
-import { FileUploadResult, UploadedFile } from '../../typings';
 
 export default function useUploadFiles() {
     const [action, { error, data, loading }] = useMutation<{ uploadFiles: FileUploadResult[] }>(UPLOAD_FILES);

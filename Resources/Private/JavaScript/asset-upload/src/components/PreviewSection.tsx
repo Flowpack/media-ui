@@ -7,7 +7,6 @@ import { SetStateAction, Dispatch } from 'react';
 import { SetterOrUpdater } from 'recoil';
 
 import classes from './PreviewSection.module.css';
-import { FileUploadResult, FilesUploadState } from '../../typings';
 import { UploadDialogStateWithFiles } from '../state/uploadDialogState';
 
 interface PreviewSectionProps {

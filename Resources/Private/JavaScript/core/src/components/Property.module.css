@@ -1,0 +1,8 @@
+.propertyGroupRow label {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.propertyGroupLabel {
+    line-height: 20px;
+}

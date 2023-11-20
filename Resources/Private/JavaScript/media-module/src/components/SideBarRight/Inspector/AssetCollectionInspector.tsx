@@ -9,7 +9,7 @@ import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/
 
 import { TagSelectBoxAssetCollection } from '.';
 import Actions from './Actions';
-import Property from './Property';
+import Property from '@media-ui/core/src/components/Property';
 import InspectorContainer from './InspectorContainer';
 import ParentCollectionSelectBox from './ParentCollectionSelectBox';
 

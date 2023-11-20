@@ -7,7 +7,6 @@ import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { humanFileSize } from '@media-ui/core/src/helper';
 
 import classes from './UploadSection.module.css';
-import { UploadedFile } from '../../typings';
 
 interface UploadSectionProps {
     files: UploadedFile[];

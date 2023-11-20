@@ -6,7 +6,6 @@ import { useIntl, useNotify } from '@media-ui/core/src';
 import { useUploadDialogState, useUploadFiles } from '@media-ui/feature-asset-upload/src/hooks';
 import { useCallback } from 'react';
 import { PreviewSection, UploadSection } from '@media-ui/feature-asset-upload/src/components';
-import { FilesUploadState, UploadedFile } from '@media-ui/feature-asset-upload/typings';
 import classes from './NewAssetUpload.module.css';
 
 const NewAssetUpload = (props: { onComplete: (result: { object: { __identity: string } }) => void }) => {

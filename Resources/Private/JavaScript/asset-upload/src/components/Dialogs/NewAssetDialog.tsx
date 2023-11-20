@@ -11,7 +11,6 @@ import { useUploadDialogState, useUploadFiles } from '../../hooks';
 import { useAssetsQuery } from '@media-ui/core/src/hooks';
 
 import classes from './NewAssetDialog.module.css';
-import { FilesUploadState, UploadedFile } from '../../../typings';
 
 const NewAssetDialog: React.FC = () => {
     const { translate } = useIntl();
