@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 
 interface PropertyListItemProps {
     label: string;
@@ -6,10 +6,17 @@ interface PropertyListItemProps {
 }
 
 const PropertyListItem: React.FC<PropertyListItemProps> = ({ label, value }: PropertyListItemProps) => {
+    const ref = useRef<HTMLElement>(null);
+    const handleClick = useCallback(() => {
+        ref.current && window.getSelection().selectAllChildren(ref.current);
+    }, [ref]);
+
     return (
         <>
             <dt>{label}</dt>
-            <dd title={value}>{value}</dd>
+            <dd title={value} ref={ref} onClick={handleClick}>
+                {value}
+            </dd>
         </>
     );
 };
