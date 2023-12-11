@@ -18,7 +18,6 @@
     color: var(--theme-colors-inactive);
     margin: 0 0 1px;
     padding: var(--theme-spacing-Half);
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-    white-space: nowrap;
+    white-space: break-spaces;
+    word-break: break-word;
 }
