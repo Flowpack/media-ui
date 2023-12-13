@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useSetRecoilState, useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
@@ -7,6 +7,7 @@ import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useDeleteAsset, useImportAsset } from '@media-ui/core/src/hooks';
 import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview';
 import { clipboardItemState } from '@media-ui/feature-clipboard';
+import { VIEW_MODES, viewModeState } from '../../state';
 
 interface ItemActionsProps {
     asset: Asset;
@@ -22,6 +23,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
     const [isInClipboard, toggleClipboardState] = useRecoilState(
         clipboardItemState({ assetId: asset.id, assetSourceId: asset.assetSource.id })
     );
+    const [viewModeSelection] = useRecoilState(viewModeState);
 
     // TODO: Optimize rendering this component when hooks change, as it takes quite a bit of time
     const onImportAsset = useCallback(() => {
@@ -65,7 +67,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                 title={translate('itemActions.preview', 'Preview asset')}
                 icon="expand-alt"
                 size="regular"
-                style="transparent"
+                style={viewModeSelection === VIEW_MODES.List ? 'transparent' : 'neutral'}
                 hoverStyle="brand"
                 onClick={() => setSelectedAssetForPreview({ assetId: asset.id, assetSourceId: asset.assetSource.id })}
             />
@@ -74,7 +76,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     title={translate('itemActions.import', 'Import asset')}
                     icon="cloud-download-alt"
                     size="regular"
-                    style="transparent"
+                    style={viewModeSelection === VIEW_MODES.List ? 'transparent' : 'neutral'}
                     hoverStyle="brand"
                     onClick={onImportAsset}
                 />
@@ -89,14 +91,19 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     disabled={asset.isInUse}
                     icon="trash"
                     size="regular"
-                    style="transparent"
+                    style={viewModeSelection === VIEW_MODES.List ? 'transparent' : 'neutral'}
                     hoverStyle="error"
                     onClick={() => onDeleteAsset(asset)}
                 />
             )}
             {asset.file?.url && (
                 <a href={asset.file.url} download title={translate('itemActions.download', 'Download asset')}>
-                    <IconButton icon="download" size="regular" style="transparent" hoverStyle="success" />
+                    <IconButton
+                        icon="download"
+                        size="regular"
+                        style={viewModeSelection === VIEW_MODES.List ? 'transparent' : 'neutral'}
+                        hoverStyle="success"
+                    />
                 </a>
             )}
             {asset.localId && (
@@ -104,7 +111,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}
                     icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
                     size="regular"
-                    style="transparent"
+                    style={viewModeSelection === VIEW_MODES.List ? 'transparent' : 'neutral'}
                     hoverStyle="brand"
                     className={isInClipboard ? 'button--active' : ''}
                     onClick={toggleClipboardState}
