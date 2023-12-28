@@ -42,9 +42,14 @@ class AssetCollectionService
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('c', 'count', 'integer');
 
+        // Optimised query with a subselect which is about 3x faster than a JOIN query to check the `dtype` of the asset
         $queryString = "
             SELECT collectionmm.media_assetcollection id, count(*) c
                 FROM neos_media_domain_model_assetcollection_assets_join collectionmm
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM neos_media_domain_model_imagevariant variant
+                    WHERE collectionmm.media_asset = variant.persistence_object_identifier
+                )
                 GROUP BY collectionmm.media_assetcollection;
         ";
 
