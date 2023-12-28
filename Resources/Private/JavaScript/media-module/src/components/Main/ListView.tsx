@@ -39,7 +39,7 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
                         <th className={classes.tableHeader} />
                         <th className={classes.tableHeader}>{translate('thumbnailView.header.name', 'Name')}</th>
                         <th className={classes.tableHeader}>
-                            {translate('thumbnailView.header.lastModified', 'Last Modified')}
+                            {translate('thumbnailView.header.lastModified', 'Last modified')}
                         </th>
                         <th className={classes.tableHeader}>
                             {translate('thumbnailView.header.fileSize', 'File size')}

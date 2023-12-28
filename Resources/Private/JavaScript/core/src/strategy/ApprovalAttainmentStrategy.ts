@@ -43,7 +43,7 @@ export const DefaultApprovalAttainmentStrategyFactory: ApprovalAttainmentStrateg
             title: deps.intl.translate('actions.deleteAsset.confirm.title', 'Delete Asset', [asset.label]),
             message: deps.intl.translate(
                 'action.deleteAsset.confirm.message',
-                `Do you really want to delete the asset "${asset.label}"`,
+                `Do you really want to delete the asset "${asset.label}"?`,
                 [asset.label]
             ),
             buttonLabel: deps.intl.translate(
@@ -57,7 +57,7 @@ export const DefaultApprovalAttainmentStrategyFactory: ApprovalAttainmentStrateg
             title: deps.intl.translate('actions.deleteAssets.confirm.title', 'Delete Assets', [assets.length]),
             message: deps.intl.translate(
                 'action.deleteAssets.confirm.message',
-                `Do you really want to delete ${assets.length} assets`,
+                `Do you really want to delete ${assets.length} assets?`,
                 [assets.length]
             ),
             buttonLabel: deps.intl.translate(
@@ -73,7 +73,7 @@ export const DefaultApprovalAttainmentStrategyFactory: ApprovalAttainmentStrateg
             ]),
             message: deps.intl.translate(
                 'action.deleteAssetCollection.confirm.message',
-                `Do you really want to delete the collection "${assetCollection.title}"`,
+                `Do you really want to delete the collection "${assetCollection.title}"?`,
                 [assetCollection.title]
             ),
             buttonLabel: deps.intl.translate(
@@ -87,7 +87,7 @@ export const DefaultApprovalAttainmentStrategyFactory: ApprovalAttainmentStrateg
             title: deps.intl.translate('actions.deleteTag.confirm.title', 'Delete tag', [tag.label]),
             message: deps.intl.translate(
                 'action.deleteTag.confirm.message',
-                `Do you really want to delete the tag "${tag.label}"`,
+                `Do you really want to delete the tag "${tag.label}"?`,
                 [tag.label]
             ),
             buttonLabel: deps.intl.translate(

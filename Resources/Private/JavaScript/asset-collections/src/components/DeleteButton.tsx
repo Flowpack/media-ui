@@ -28,7 +28,7 @@ const DeleteButton: React.FC = () => {
             if (!canDeleteTag) return;
             // TODO: Implement `obtainApprovalToDeleteCollection` for deleting
             const confirm = window.confirm(
-                translate('action.deleteTag.confirm', 'Do you really want to delete the tag ' + selectedTag.label, [
+                translate('action.deleteTag.confirm', `Do you really want to delete the tag "${selectedTag.label}"?`, [
                     selectedTag.label,
                 ])
             );

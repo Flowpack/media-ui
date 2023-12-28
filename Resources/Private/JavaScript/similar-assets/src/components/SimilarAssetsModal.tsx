@@ -26,7 +26,7 @@ const SimilarAssetsModal: React.FC = () => {
     return (
         <Dialog
             isOpen={isOpen}
-            title={translate('similarAssetsModal.title', `Similar assets to ${asset.label}`, { asset: asset.label })}
+            title={translate('similarAssetsModal.title', `Similar assets to "${asset.label}"`, { asset: asset.label })}
             onRequestClose={handleRequestClose}
             style="wide"
             actions={[
@@ -41,7 +41,7 @@ const SimilarAssetsModal: React.FC = () => {
                 ) : (
                     <span>
                         {loading
-                            ? translate('similarAssetsModal.loading', 'Loading...')
+                            ? translate('similarAssetsModal.loading', 'Loading…')
                             : translate('similarAssetsModal.noResults', 'No results')}
                     </span>
                 )}

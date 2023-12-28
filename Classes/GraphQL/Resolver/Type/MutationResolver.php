@@ -22,6 +22,7 @@ use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
@@ -101,6 +102,12 @@ class MutationResolver implements ResolverInterface
      * @var AssetService
      */
     protected $assetService;
+
+    /**
+     * @Flow\Inject
+     * @var Translator
+     */
+    protected $translator;
 
     /**
      * @throws Exception
@@ -379,7 +386,7 @@ class MutationResolver implements ResolverInterface
             $resource->setMediaType($file->getClientMediaType());
 
             if ($this->assetRepository->findOneByResourceSha1($resource->getSha1())) {
-                $result = 'EXISTS';
+                $result = $this->translateById('uploadDialog.fileList.exists');
             } else {
                 try {
                     $className = $this->mappingStrategy->map($resource);
@@ -403,10 +410,10 @@ class MutationResolver implements ResolverInterface
                         }
 
                         $this->assetRepository->add($asset);
-                        $result = 'ADDED';
+                        $result = $this->translateById('uploadDialog.fileList.added');
                         $success = true;
                     } else {
-                        $result = 'EXISTS';
+                        $result = $this->translateById('uploadDialog.fileList.exists');
                     }
                 } catch (IllegalObjectTypeException $e) {
                     $this->systemLogger->error('Type of uploaded file cannot be stored');
@@ -806,4 +813,10 @@ class MutationResolver implements ResolverInterface
 
         return true;
     }
+
+    protected function translateById(string $id): ?string
+    {
+        return $this->translator->translateById($id, [], null, null, 'Main', 'Flowpack.Media.Ui') ?? $id;
+    }
+
 }
