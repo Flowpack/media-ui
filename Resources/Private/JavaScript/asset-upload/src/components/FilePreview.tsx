@@ -4,6 +4,7 @@ import cx from 'classnames';
 import { Icon } from '@neos-project/react-ui-components';
 
 import classes from './FilePreview.module.css';
+import { useIntl } from '@media-ui/core';
 
 interface FilePreviewProps {
     file: UploadedFile;
@@ -12,10 +13,10 @@ interface FilePreviewProps {
 }
 
 const FilePreview: React.FC<FilePreviewProps> = ({ file, loading = false, fileState }: FilePreviewProps) => {
+    const { translate } = useIntl();
     const success = fileState?.success;
     const error = fileState && !success;
 
-    // TODO: Output helpful localised messages for results 'EXISTS', 'ADDED', 'ERROR'
     return (
         <div
             className={cx(
@@ -29,7 +30,9 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file, loading = false, fileSt
                 {loading && <Icon icon="spinner" spin={true} />}
                 {success && <Icon icon="check" />}
                 {error && <Icon icon="exclamation-circle" />}
-                {fileState?.result && <span>{fileState.result}</span>}
+                {fileState?.result && (
+                    <span>{translate(`uploadDialog.fileList.${fileState.result.toLowerCase()}`)}</span>
+                )}
             </div>
         </div>
     );

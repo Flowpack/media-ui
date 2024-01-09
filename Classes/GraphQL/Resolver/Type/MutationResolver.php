@@ -48,6 +48,10 @@ use t3n\GraphQL\ResolverInterface;
  */
 class MutationResolver implements ResolverInterface
 {
+    protected const STATE_ADDED = 'ADDED';
+    protected const STATE_EXISTS = 'EXISTS';
+    protected const STATE_ERROR = 'ERROR';
+
     /**
      * @Flow\Inject
      * @var AssetRepository
@@ -102,12 +106,6 @@ class MutationResolver implements ResolverInterface
      * @var AssetService
      */
     protected $assetService;
-
-    /**
-     * @Flow\Inject
-     * @var Translator
-     */
-    protected $translator;
 
     /**
      * @throws Exception
@@ -371,7 +369,7 @@ class MutationResolver implements ResolverInterface
         $assetCollectionId = $variables['assetCollectionId'] ?? null;
 
         $success = false;
-        $result = 'ERROR';
+        $result = self::STATE_ERROR;
 
         $filename = $file->getClientFilename();
         try {
@@ -386,7 +384,7 @@ class MutationResolver implements ResolverInterface
             $resource->setMediaType($file->getClientMediaType());
 
             if ($this->assetRepository->findOneByResourceSha1($resource->getSha1())) {
-                $result = $this->translateById('uploadDialog.fileList.exists');
+                $result = self::STATE_EXISTS;
             } else {
                 try {
                     $className = $this->mappingStrategy->map($resource);
@@ -410,10 +408,10 @@ class MutationResolver implements ResolverInterface
                         }
 
                         $this->assetRepository->add($asset);
-                        $result = $this->translateById('uploadDialog.fileList.added');
+                        $result = self::STATE_ADDED;
                         $success = true;
                     } else {
-                        $result = $this->translateById('uploadDialog.fileList.exists');
+                        $result = self::STATE_EXISTS;
                     }
                 } catch (IllegalObjectTypeException $e) {
                     $this->systemLogger->error('Type of uploaded file cannot be stored');
@@ -486,7 +484,7 @@ class MutationResolver implements ResolverInterface
         }
 
         $success = false;
-        $result = 'ERROR';
+        $result = self::STATE_ERROR;
         $sourceMediaType = MediaTypes::parseMediaType($asset->getMediaType());
         $replacementMediaType = MediaTypes::parseMediaType($file->getClientMediaType());
         $filename = $file->getClientFilename();
@@ -812,11 +810,6 @@ class MutationResolver implements ResolverInterface
         $this->tagRepository->remove($tag);
 
         return true;
-    }
-
-    protected function translateById(string $id): ?string
-    {
-        return $this->translator->translateById($id, [], null, null, 'Main', 'Flowpack.Media.Ui') ?? $id;
     }
 
 }
