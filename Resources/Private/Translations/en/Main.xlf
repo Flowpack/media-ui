@@ -173,6 +173,18 @@
                 <source>Yes, proceed with deleting the asset</source>
             </trans-unit>
 
+            <!-- asset preview -->
+
+            <trans-unit id="previewActions.download" xml:space="preserve" approved="yes">
+                <source>Download asset</source>
+            </trans-unit>
+            <trans-unit id="previewActions.openInNewTab" xml:space="preserve" approved="yes">
+                <source>Open asset in a new browser tab</source>
+            </trans-unit>
+            <trans-unit id="previewActions.openInMediaModule" xml:space="preserve" approved="yes">
+                <source>Open asset in media module</source>
+            </trans-unit>
+
             <!-- asset collection list -->
 
             <trans-unit id="assetCollectionList.viewMode.collections" xml:space="preserve" approved="yes">

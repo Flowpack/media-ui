@@ -227,6 +227,21 @@
                 <target>Ja, mit dem Löschen fortfahren</target>
             </trans-unit>
 
+            <!-- asset preview -->
+
+            <trans-unit id="previewActions.download" xml:space="preserve" approved="yes">
+                <source>Download asset</source>
+                <target>Asset herunterladen</target>
+            </trans-unit>
+            <trans-unit id="previewActions.openInNewTab" xml:space="preserve" approved="yes">
+                <source>Open asset in a new browser tab</source>
+                <target>Asset in einem neuen Browser-Tab öffnen</target>
+            </trans-unit>
+            <trans-unit id="previewActions.openInMediaModule" xml:space="preserve" approved="yes">
+                <source>Open asset in media module</source>
+                <target>Asset in Medienmodul öffnen</target>
+            </trans-unit>
+
             <!-- asset collection list -->
 
             <trans-unit id="assetCollectionList.viewMode.collections" xml:space="preserve" approved="yes">
