@@ -3,10 +3,10 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    gap: var(--theme-spacing-Full);
 }
 
 .fileListHeader {
     flex: 1 1 100%;
-    margin-bottom: var(--theme-spacing-Full);
     font-size: var(--theme-fontSize-base);
 }
