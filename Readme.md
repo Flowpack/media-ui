@@ -1,11 +1,10 @@
 Neos Media UI
 -------------
 
-This package contains the new interface to manage media in Neos CMS (7.3+).
+This package contains the new interface to manage media in Neos CMS (7.3 - 8.3).
 
 During the initial development the package will be in the Flowpack namespace and will
-later replace `neos/media-browser`. Having two modules allows us to currently install
-them both and be able to test them without losing features.
+later replace `neos/media-browser`.
 
 If you want to use Neos, please have a look at the [Neos documentation](http://neos.readthedocs.org/en/stable/).
 
@@ -158,18 +157,15 @@ The API is open and can be reused for custom apps. A valid Neos backend user is 
 but you can define custom policies and an authentication provider to allow access without a user 
 and f.e. use a token based authentication.
 
-The API is public and will be stable with the 1.0.0 release.
-Until then, changes might still happen.
-
 #### Schema
 
 The GraphQL schema can be found [here](Resources/Private/GraphQL/schema.root.graphql). 
 
 ### Interface
 
-This module uses React for the implementation of the UI. Currently, all components are built with hooks and
-integrate with other plugins via hooks.
-This gives a lot of flexibility for future extensions and during the current prototype phase of this package.
+This module uses React for the implementation of the UI. Currently, most parts of the application are implemented
+as feature based packages in the `Resources/Private/JavaScript` folder.
+In future releases the code will be further split into smaller packages.
 
 ### State management
 
@@ -190,7 +186,7 @@ Component state should be stored with React hooks.
 
 #### Shared component states
 
-The shared component states are current implemented via React Recoil atoms and selectors.
+The shared component states are current implemented via React [Recoil](https://recoiljs.org) atoms and selectors.
 See the `state` folders in the various modules in `Resources/Private/JavaScript` for examples.
 
 Those should be used every time multiple components share a state that is not relevant for
