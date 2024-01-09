@@ -143,9 +143,8 @@
     color: var(--theme-colors-inactive);
     margin: 0 0 1px;
     padding: var(--theme-spacing-Half);
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-    white-space: nowrap;
+    white-space: break-spaces;
+    word-break: break-word;
 }
 
 .IconStack-module__iconStack___19OCl {
@@ -476,25 +475,10 @@
     border-color: var(--theme-colors-Error);
 }
 
-.FilePreview-module__fileList___2Idje {
-    margin-top: var(--theme-spacing-Full);
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.FilePreview-module__fileListHeader___30V9N {
-    flex: 1 1 100%;
-    margin-bottom: var(--theme-spacing-Full);
-    font-size: var(--theme-fontSize-base);
-}
-
 .FilePreview-module__thumb___3Pr8a {
     display: inline-flex;
     border-radius: 2px;
     border: 1px solid #eaeaea;
-    margin-bottom: var(--theme-spacing-Half);
-    margin-right: var(--theme-spacing-Half);
     width: 100px;
     height: 100px;
     padding: var(--theme-spacing-Quarter);
@@ -513,6 +497,7 @@
 .FilePreview-module__thumbInner___IvQdB span {
     margin-left: var(--theme-spacing-Half);
     user-select: none;
+    word-break: break-all;
 }
 
 .FilePreview-module__img___8ejzf {
@@ -574,11 +559,11 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    gap: var(--theme-spacing-Full);
 }
 
 .PreviewSection-module__fileListHeader___1ztkM {
     flex: 1 1 100%;
-    margin-bottom: var(--theme-spacing-Full);
     font-size: var(--theme-fontSize-base);
 }
 
@@ -1847,6 +1832,8 @@
 #media-ui-app > div ::-webkit-scrollbar-corner {
     background-color: #3f3f3f;
 }
+
+/* Hack to prevent module styles from adding a larger padding to the dropdown buttons than the components itself defines */
 
 #media-ui-app [class*="_dropDown__btn"] {
     padding-left: 0;
