@@ -61,6 +61,7 @@ import { faGlobe } from '@fortawesome/free-solid-svg-icons/faGlobe';
 import { faWeightHanging } from '@fortawesome/free-solid-svg-icons/faWeightHanging';
 import { faFilter } from '@fortawesome/free-solid-svg-icons/faFilter';
 import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
+import { faBroom } from '@fortawesome/free-solid-svg-icons/faBroom';
 
 import { faNeos } from '@fortawesome/free-brands-svg-icons/faNeos';
 import { faCreativeCommonsZero } from '@fortawesome/free-brands-svg-icons/faCreativeCommonsZero';
@@ -127,6 +128,7 @@ export default function loadIconLibrary() {
         faGlobe,
         faWeightHanging,
         faFilter,
-        faSearch
+        faSearch,
+        faBroom,
     );
 }

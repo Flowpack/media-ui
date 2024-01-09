@@ -57,7 +57,7 @@ const ClipboardActions: React.FC = () => {
             />
             <IconButton
                 title={translate('clipboard.flush', 'Flush clipboard')}
-                icon="clipboard"
+                icon="broom"
                 size="regular"
                 style="transparent"
                 hoverStyle="warn"
