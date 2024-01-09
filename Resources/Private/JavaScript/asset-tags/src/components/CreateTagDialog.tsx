@@ -26,10 +26,10 @@ const CreateTagDialog: React.FC = () => {
         setDialogState((state) => ({ ...state, visible: false }));
         createTag(dialogState.label, selectedAssetCollection?.id)
             .then(() => {
-                Notify.ok(translate('assetCollectionActions.create.success', 'Tag was created'));
+                Notify.ok(translate('tagActions.create.success', 'Tag was created'));
             })
             .catch((error) => {
-                Notify.error(translate('assetCollectionActions.create.error', 'Failed to create tag'), error.message);
+                Notify.error(translate('tagActions.create.error', 'Failed to create tag'), error.message);
             });
     }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetCollection]);
     const setLabel = useCallback((label) => setDialogState((state) => ({ ...state, label })), [setDialogState]);

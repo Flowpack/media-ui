@@ -12,21 +12,623 @@
                 <target>Mit dem Medienmodul können alle Dateien, einschließlich Bilder, Dokumente, Videos und Audiodateien, verwaltet werden.</target>
             </trans-unit>
 
-            <trans-unit id="uploadDialog.maxFileSize" xml:space="preserve" approved="yes">
-                <source>Maximum file size is {size} and file limit is {limit}</source>
-                <target>Maximale Dateigröße ist {size} und Dateilimit ist {limit}</target>
+            <trans-unit id="module.loadingMediaModuleUi" xml:space="preserve" approved="yes">
+                <source>Loading media module UI…</source>
+                <target>Medienmodul wird geladen…</target>
             </trans-unit>
 
+            <trans-unit id="uploadButton.label" xml:space="preserve" approved="yes">
+                <source>Upload</source>
+                <target>Hochladen</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.dropzone.caption" xml:space="preserve" approved="yes">
+                <source>Drag 'n' drop some files here, or click to select files.</source>
+                <target>Dateien hier ablegen oder klicken, um Datei hochzuladen.</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.maxFileSize" xml:space="preserve" approved="yes">
+                <source>Maximum file size is {size} and file limit is {limit}</source>
+                <target>Die maximale Dateigröße beträgt {size}. Es können maximal {limit} Dateien ausgewählt werden.</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.title" xml:space="preserve" approved="yes">
+                <source>Upload assets</source>
+                <target>Assets hochladen</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.fileList.header" xml:space="preserve" approved="yes">
+                <source>Selected files</source>
+                <target>Ausgewählte Dateien</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.upload" xml:space="preserve" approved="yes">
+                <source>Upload</source>
+                <target>Hochladen</target>
+            </trans-unit>
             <trans-unit id="uploadDialog.label.uploading" xml:space="preserve" approved="yes">
                 <source>Uploading…</source>
                 <target>Hochladen…</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.fileList.successfulUploadsHeader" xml:space="preserve" approved="yes">
+                <source>Successful uploads</source>
+                <target>Erfolgreiche Uploads</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.fileList.failedUploadsHeader" xml:space="preserve" approved="yes">
+                <source>Failed uploads</source>
+                <target>Fehlgeschlagene Uploads</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.fileList.added" xml:space="preserve" approved="yes">
+                <source>ADDED</source>
+                <target>OK</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.fileList.exists" xml:space="preserve" approved="yes">
+                <source>EXISTS</source>
+                <target>EXISTIERT</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.replaceAsset" xml:space="preserve" approved="yes">
+                <source>Replace asset</source>
+                <target>Asset ersetzen</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.generateRedirects" xml:space="preserve" approved="yes">
+                <source>Generate redirects</source>
+                <target>Weiterleitungen erstellen</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.keepOriginalFilename" xml:space="preserve" approved="yes">
+                <source>Keep original filename</source>
+                <target>Ursprünglichen Dateinamen beibehalten</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.replace" xml:space="preserve" approved="yes">
+                <source>Replace</source>
+                <target>Ersetzen</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.replacementFinished" xml:space="preserve" approved="yes">
+                <source>Replacement finished</source>
+                <target>Das Asset wurde ersetzt</target>
+            </trans-unit>
+            <trans-unit id="assetReplacement.error" xml:space="preserve" approved="yes">
+                <source>Replacement failed</source>
+                <target>Ersetzen des Assets fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.close" xml:space="preserve" approved="yes">
+                <source>Close</source>
+                <target>Schließen</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+                <target>Abbrechen</target>
             </trans-unit>
 
             <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
                 <source>You can only select any of the following types: {types}</source>
                 <target>Sie können nur einen der folgenden Typen auswählen: {types}</target>
             </trans-unit>
+            <trans-unit id="actions.replaceAsset.confirm.title" xml:space="preserve" approved="yes">
+                <source>Replace asset</source>
+                <target>Asset ersetzen</target>
+            </trans-unit>
 
+            <trans-unit id="general.title" xml:space="preserve" approved="yes">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="general.label" xml:space="preserve" approved="yes">
+                <source>Label</source>
+                <target>Bezeichnung</target>
+            </trans-unit>
+            <trans-unit id="general.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
+            <trans-unit id="general.create" xml:space="preserve" approved="yes">
+                <source>Create</source>
+                <target>Erstellen</target>
+            </trans-unit>
+            <trans-unit id="general.noMatchesFound" xml:space="preserve" approved="yes">
+                <source>No matches found</source>
+                <target>Keine Treffer gefunden</target>
+            </trans-unit>
+            <trans-unit id="pagination.assetCount" xml:space="preserve" approved="yes">
+                <source>assets</source>
+                <target>Assets</target>
+            </trans-unit>
+            <trans-unit id="clipboard.toggle" xml:space="preserve" approved="yes">
+                <source>Clipboard</source>
+                <target>Zwischenablage</target>
+            </trans-unit>
+            <trans-unit id="clipboard.close" xml:space="preserve" approved="yes">
+                <source>Close clipboard</source>
+                <target>Zwischenablage schließen</target>
+            </trans-unit>
+            <trans-unit id="clipboard.deleteAsset" xml:space="preserve" approved="yes">
+                <source>Delete all assets in clipboard</source>
+                <target>Alle Assets in der Zwischenablage löschen</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.confirm.title" xml:space="preserve" approved="yes">
+                <source>Delete Assets</source>
+                <target>Assets löschen</target>
+            </trans-unit>
+            <trans-unit id="action.deleteAssets.confirm.message" xml:space="preserve" approved="yes">
+                <source>Do you really want to delete {0} assets?</source>
+                <target>Wollen Sie wirklich {0} Assets löschen?</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, proceed with deleting the assets</source>
+                <target>Ja, mit dem Löschen fortfahren</target>
+            </trans-unit>
+            <trans-unit id="clipboard.deleteAssets.success" xml:space="preserve" approved="yes">
+                <source>The assets have been deleted</source>
+                <target>Die Assets wurden gelöscht</target>
+            </trans-unit>
+            <trans-unit id="clipboard.deleteAssets.error" xml:space="preserve" approved="yes">
+                <source>Error while trying to delete the assets</source>
+                <target>Fehler beim Löschen der Assets</target>
+            </trans-unit>
+            <trans-unit id="clipboard.flush" xml:space="preserve" approved="yes">
+                <source>Flush clipboard</source>
+                <target>Zwischenablage leeren</target>
+            </trans-unit>
+            <trans-unit id="actions.flushClipboard.confirm.title" xml:space="preserve" approved="yes">
+                <source>Flush clipboard</source>
+                <target>Zwischenablage leeren</target>
+            </trans-unit>
+            <trans-unit id="action.flushClipboard.confirm.message" xml:space="preserve" approved="yes">
+                <source>Do you really want to remove all assets from the clipboard?</source>
+                <target>Wollen Sie die Zwischenablage wirklich leeren?</target>
+            </trans-unit>
+            <trans-unit id="actions.flushClipboard.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, proceed with flushing the clipboard</source>
+                <target>Ja, Zwischenablage leeren</target>
+            </trans-unit>
+
+            <!-- asset actions -->
+
+            <trans-unit id="assetActions.import.success" xml:space="preserve" approved="yes">
+                <source>Asset was successfully imported</source>
+                <target>Das Asset wurde erfolgreich importiert</target>
+            </trans-unit>
+            <trans-unit id="assetActions.import.error" xml:space="preserve" approved="yes">
+                <source>Failed to import asset</source>
+                <target>Das Asset konnte nicht importiert werden</target>
+            </trans-unit>
+            <trans-unit id="action.deleteAsset.success" xml:space="preserve" approved="yes">
+                <source>The asset has been deleted</source>
+                <target>Das Asset wurde gelöscht</target>
+            </trans-unit>
+            <trans-unit id="itemActions.preview" xml:space="preserve" approved="yes">
+                <source>Preview asset</source>
+                <target>Vorschau</target>
+            </trans-unit>
+            <trans-unit id="itemActions.import" xml:space="preserve" approved="yes">
+                <source>Import asset</source>
+                <target>Asset importieren</target>
+            </trans-unit>
+            <trans-unit id="itemActions.delete" xml:space="preserve" approved="yes">
+                <source>Delete asset</source>
+                <target>Asset löschen</target>
+            </trans-unit>
+            <trans-unit id="itemActions.delete.disabled" xml:space="preserve" approved="yes">
+                <source>Cannot delete an asset that is in use</source>
+                <target>Ein Asset, das verwendet wird, kann nicht gelöscht werden</target>
+            </trans-unit>
+            <trans-unit id="itemActions.download" xml:space="preserve" approved="yes">
+                <source>Download asset</source>
+                <target>Asset herunterladen</target>
+            </trans-unit>
+            <trans-unit id="itemActions.copyToClipboard" xml:space="preserve" approved="yes">
+                <source>Copy to clipboard</source>
+                <target>In die Zwischenablage kopieren</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAsset.confirm.title" xml:space="preserve" approved="yes">
+                <source>Delete Asset</source>
+                <target>Asset löschen</target>
+            </trans-unit>
+            <trans-unit id="action.deleteAsset.confirm.message" xml:space="preserve" approved="yes">
+                <source>Do you really want to delete the asset "{0}"?</source>
+                <target>Wollen Sie das Asset "{0}" wirklich löschen?</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAsset.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, proceed with deleting the asset</source>
+                <target>Ja, mit dem Löschen fortfahren</target>
+            </trans-unit>
+
+            <!-- asset collection list -->
+
+            <trans-unit id="assetCollectionList.viewMode.collections" xml:space="preserve" approved="yes">
+                <source>Collections</source>
+                <target>Sammlungen</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.viewMode.favourites" xml:space="preserve" approved="yes">
+                <source>Favourites</source>
+                <target>Favoriten</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionTree.toolbar.createAssetCollection" xml:space="preserve" approved="yes">
+                <source>Create new asset collection</source>
+                <target>Neue Sammlung erstellen</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionTree.toolbar.createTag" xml:space="preserve" approved="yes">
+                <source>Create new tag</source>
+                <target>Neuen Tag erstellen</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionTree.toolbar.delete" xml:space="preserve" approved="yes">
+                <source>Delete</source>
+                <target>Löschen</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionTree.toolbar.favourite" xml:space="preserve" approved="yes">
+                <source>Toggle favourite</source>
+                <target>Als Favorit (ent-)markieren</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.showAll" xml:space="preserve" approved="yes">
+                <source>All</source>
+                <target>Alle</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.showAll.title" xml:space="preserve" approved="yes">
+                <source>Show assets for all collections</source>
+                <target>Zeige Assets aller Sammlungen</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.unassigned" xml:space="preserve" approved="yes">
+                <source>Unassigned</source>
+                <target>Nicht zugewiesen</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.unassigned.title" xml:space="preserve" approved="yes">
+                <source>Show assets which are not assigned to any collection</source>
+                <target>Zeige Assets, die keiner Sammlung zugewiesen sind</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionList.untagged" xml:space="preserve" approved="yes">
+                <source>Untagged</source>
+                <target>Nicht getaggt</target>
+            </trans-unit>
+
+            <!-- asset collection/tag actions -->
+
+            <trans-unit id="createAssetCollectionDialog.title" xml:space="preserve" approved="yes">
+                <source>Create Asset Collection in "{location}"</source>
+                <target>Sammlung erstellen in "{location}"</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionActions.create.success" xml:space="preserve" approved="yes">
+                <source>Asset collection was created</source>
+                <target>Sammlung wurde erstellt</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionActions.create.error" xml:space="preserve" approved="yes">
+                <source>Failed to create asset collection</source>
+                <target>Fehler beim Erstellen der Sammlung</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssetCollection.confirm.title" xml:space="preserve" approved="yes">
+                <source>Delete collection</source>
+                <target>Sammlung löschen</target>
+            </trans-unit>
+            <trans-unit id="action.deleteAssetCollection.confirm.message" xml:space="preserve" approved="yes">
+                <source>Do you really want to delete the collection "{0}"?</source>
+                <target>Wollen Sie die Sammlung "{0}" wirklich löschen?</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssetCollection.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, proceed with deleting the collection</source>
+                <target>Ja, mit dem Löschen fortfahren</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionActions.delete.success" xml:space="preserve" approved="yes">
+                <source>Asset collection was successfully deleted</source>
+                <target>Die Sammlung wurde gelöscht</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionActions.delete.error" xml:space="preserve" approved="yes">
+                <source>Failed to delete asset collection</source>
+                <target>Fehler beim Löschen der Sammlung</target>
+            </trans-unit>
+            <trans-unit id="createTagDialog.title" xml:space="preserve" approved="yes">
+                <source>Create tag</source>
+                <target>Tag erstellen</target>
+            </trans-unit>
+            <trans-unit id="tagActions.create.success" xml:space="preserve" approved="yes">
+                <source>Tag was created</source>
+                <target>Tag wurde erstellt</target>
+            </trans-unit>
+            <trans-unit id="tagActions.create.error" xml:space="preserve" approved="yes">
+                <source>Failed to create tag</source>
+                <target>Fehler beim Erstellen des Tags</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteTag.confirm.title" xml:space="preserve" approved="yes">
+                <source>Delete tag</source>
+                <target>Tag löschen</target>
+            </trans-unit>
+            <trans-unit id="action.deleteTag.confirm" xml:space="preserve" approved="yes">
+                <source>Do you really want to delete the tag "{0}"?</source>
+                <target>Wollen Sie den Tag "{0}" wirklich löschen?</target>
+            </trans-unit>
+            <trans-unit id="action.deleteTag.confirm.message" xml:space="preserve" approved="yes">
+                <source>Do you really want to delete the tag "{0}"?</source>
+                <target>Wollen Sie den Tag "{0}" wirklich löschen?</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteTag.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, proceed with deleting the tag</source>
+                <target>Ja, mit dem Löschen fortfahren</target>
+            </trans-unit>
+            <trans-unit id="action.deleteTag.success" xml:space="preserve" approved="yes">
+                <source>The tag has been deleted</source>
+                <target>Der Tag wurde gelöscht</target>
+            </trans-unit>
+            <trans-unit id="action.deleteTag.error" xml:space="preserve" approved="yes">
+                <source>Error while trying to delete the tag</source>
+                <target>Fehler beim Löschen des Tags</target>
+            </trans-unit>
+
+            <!-- asset sources -->
+
+            <trans-unit id="assetSourceDescription.header" xml:space="preserve" approved="yes">
+                <source>Media source description</source>
+                <target>Medienquellen-Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="assetSourceList.header" xml:space="preserve" approved="yes">
+                <source>Media sources</source>
+                <target>Medienquellen</target>
+            </trans-unit>
+            <trans-unit id="assetSource.local" xml:space="preserve" approved="yes">
+                <source>Local</source>
+                <target>Lokal</target>
+            </trans-unit>
+
+            <!-- search box -->
+
+            <trans-unit id="searchBox.placeholder" xml:space="preserve" approved="yes">
+                <source>Search</source>
+                <target>Suche</target>
+            </trans-unit>
+
+            <!-- filtering -->
+
+            <trans-unit id="assetsFilter.title" xml:space="preserve" approved="yes">
+                <source>Toggle asset filters</source>
+                <target>Filteroptionen anzeigen</target>
+            </trans-unit>
+            <trans-unit id="assetsFilter.filter" xml:space="preserve" approved="yes">
+                <source>Filter</source>
+                <target>Filter</target>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.video" xml:space="preserve" approved="yes">
+                <source>Video</source>
+                <target>Video</target>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.audio" xml:space="preserve" approved="yes">
+                <source>Audio</source>
+                <target>Audio</target>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.image" xml:space="preserve" approved="yes">
+                <source>Image</source>
+                <target>Bilder</target>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.document" xml:space="preserve" approved="yes">
+                <source>Document</source>
+                <target>Dokumente</target>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.unused" xml:space="preserve" approved="yes">
+                <source>Unused</source>
+                <target>Nicht verwendet</target>
+            </trans-unit>
+            <trans-unit id="typeFilter.assetType.values.all" xml:space="preserve" approved="yes">
+                <source>All</source>
+                <target>Alle</target>
+            </trans-unit>
+
+            <!-- sorting -->
+
+            <trans-unit id="sortingState.sortBy.values.lastModified" xml:space="preserve" approved="yes">
+                <source>Last Modified</source>
+                <target>Zuletzt geändert</target>
+            </trans-unit>
+            <trans-unit id="sortingState.sortBy.values.name" xml:space="preserve" approved="yes">
+                <source>Name</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="sortingState.sortBy.values.size" xml:space="preserve" approved="yes">
+                <source>Size</source>
+                <target>Größe</target>
+            </trans-unit>
+            <trans-unit id="sortingState.sortOrder.value.ASC" xml:space="preserve" approved="yes">
+                <source>Ascending</source>
+                <target>Aufsteigend</target>
+            </trans-unit>
+            <trans-unit id="sortingState.sortOrder.value.DESC" xml:space="preserve" approved="yes">
+                <source>Descending</source>
+                <target>Absteigend</target>
+            </trans-unit>
+            <trans-unit id="sortingState.sortOrder.switchSortDirection" xml:space="preserve" approved="yes">
+                <source>Switch sort direction</source>
+                <target>Sortierrichtung wechseln</target>
+            </trans-unit>
+
+            <!-- view mode -->
+
+            <trans-unit id="viewModeSelector.viewMode" xml:space="preserve" approved="yes">
+                <source>Switch view</source>
+                <target>Ansicht wechseln</target>
+            </trans-unit>
+            <trans-unit id="viewModeSelector.viewMode.list" xml:space="preserve" approved="yes">
+                <source>List</source>
+                <target>Listenansicht</target>
+            </trans-unit>
+            <trans-unit id="viewModeSelector.viewMode.thumbnails" xml:space="preserve" approved="yes">
+                <source>Thumbnails</source>
+                <target>Miniaturansicht</target>
+            </trans-unit>
+
+            <!-- asset list -->
+
+            <trans-unit id="assetList.loading" xml:space="preserve" approved="yes">
+                <source>Loading assets</source>
+                <target>Assets werden geladen</target>
+            </trans-unit>
+            <trans-unit id="assetList.emptyForSearchTerm" xml:space="preserve" approved="yes">
+                <source>No assets found for "{searchTerm}"</source>
+                <target>Keine Assets gefunden für "{searchTerm}"</target>
+            </trans-unit>
+            <trans-unit id="assetList.empty" xml:space="preserve" approved="yes">
+                <source>No assets found</source>
+                <target>Keine Assets gefunden</target>
+            </trans-unit>
+            <trans-unit id="thumbnailView.header.name" xml:space="preserve" approved="yes">
+                <source>Name</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="thumbnailView.header.lastModified" xml:space="preserve" approved="yes">
+                <source>Last modified</source>
+                <target>Zuletzt geändert</target>
+            </trans-unit>
+            <trans-unit id="thumbnailView.header.fileSize" xml:space="preserve" approved="yes">
+                <source>File size</source>
+                <target>Dateigröße</target>
+            </trans-unit>
+            <trans-unit id="thumbnailView.header.mediaType" xml:space="preserve" approved="yes">
+                <source>Type</source>
+                <target>Typ</target>
+            </trans-unit>
+
+            <!-- property panel -->
+
+            <trans-unit id="currentSelection.assetCollection.headline" xml:space="preserve" approved="yes">
+                <source>Selected collection</source>
+                <target>Ausgewählte Sammlung</target>
+            </trans-unit>
+            <trans-unit id="currentSelection.tag.headline" xml:space="preserve" approved="yes">
+                <source>Selected tag</source>
+                <target>Ausgewählter Tag</target>
+            </trans-unit>
+            <trans-unit id="currentSelection.path.headline" xml:space="preserve" approved="yes">
+                <source>Path</source>
+                <target>Pfad</target>
+            </trans-unit>
+
+            <trans-unit id="propertyPanel.header" xml:space="preserve" approved="yes">
+                <source>Properties</source>
+                <target>Eigenschaften</target>
+            </trans-unit>
+            <trans-unit id="inspector.title" xml:space="preserve" approved="yes">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="inspector.label" xml:space="preserve" approved="yes">
+                <source>Label</source>
+                <target>Bezeichnung</target>
+            </trans-unit>
+            <trans-unit id="inspector.caption" xml:space="preserve" approved="yes">
+                <source>Caption</source>
+                <target>Beschriftung</target>
+            </trans-unit>
+            <trans-unit id="inspector.copyrightNotice" xml:space="preserve" approved="yes">
+                <source>Copyright notice</source>
+                <target>Urheberrechtshinweis</target>
+            </trans-unit>
+            <trans-unit id="inspector.actions.discard" xml:space="preserve" approved="yes">
+                <source>Discard</source>
+                <target>Verwerfen</target>
+            </trans-unit>
+            <trans-unit id="inspector.actions.apply" xml:space="preserve" approved="yes">
+                <source>Apply</source>
+                <target>Anwenden</target>
+            </trans-unit>
+            <trans-unit id="inspector.assetCollection" xml:space="preserve" approved="yes">
+                <source>Collection</source>
+                <target>Sammlung</target>
+            </trans-unit>
+            <trans-unit id="inspector.assetCollections" xml:space="preserve" approved="yes">
+                <source>Collections</source>
+                <target>Sammlungen</target>
+            </trans-unit>
+            <trans-unit id="inspector.collections.placeholder" xml:space="preserve" approved="yes">
+                <source>Select a collection</source>
+                <target>Sammlung auswählen</target>
+            </trans-unit>
+            <trans-unit id="inspector.tags" xml:space="preserve" approved="yes">
+                <source>Tags</source>
+                <target>Tags</target>
+            </trans-unit>
+            <trans-unit id="inspector.tags.placeholder" xml:space="preserve" approved="yes">
+                <source>Select a tag</source>
+                <target>Tag auswählen</target>
+            </trans-unit>
+            <trans-unit id="inspector.actions" xml:space="preserve" approved="yes">
+                <source>Tasks</source>
+                <target>Aktionen</target>
+            </trans-unit>
+            <trans-unit id="openAssetEditDialogButton.open" xml:space="preserve" approved="yes">
+                <source>Rename asset</source>
+                <target>Asset umbenennen</target>
+            </trans-unit>
+            <trans-unit id="inspector.metadata" xml:space="preserve" approved="yes">
+                <source>Metadata</source>
+                <target>Metadaten</target>
+            </trans-unit>
+            <trans-unit id="inspector.property.dimensions" xml:space="preserve" approved="yes">
+                <source>Dimensions</source>
+                <target>Dimensionen</target>
+            </trans-unit>
+            <trans-unit id="inspector.property.fileSize" xml:space="preserve" approved="yes">
+                <source>Size</source>
+                <target>Größe</target>
+            </trans-unit>
+            <trans-unit id="inspector.property.filename" xml:space="preserve" approved="yes">
+                <source>Filename</source>
+                <target>Dateinamen</target>
+            </trans-unit>
+            <trans-unit id="inspector.property.lastModified" xml:space="preserve" approved="yes">
+                <source>Last modified</source>
+                <target>Zuletzt geändert</target>
+            </trans-unit>
+            <trans-unit id="inspector.property.mediaType" xml:space="preserve" approved="yes">
+                <source>MIME type</source>
+                <target>MIME-Type</target>
+            </trans-unit>
+            <trans-unit id="inspector.iptcMetadata" xml:space="preserve" approved="yes">
+                <source>IPTC Metadata</source>
+                <target>IPTC-Metadaten</target>
+            </trans-unit>
+
+            <!-- similar assets dialog -->
+
+            <trans-unit id="similarAssetsModal.show" xml:space="preserve" approved="yes">
+                <source>Show similar assets</source>
+                <target>Ähnliche Assets anzeigen</target>
+            </trans-unit>
+            <trans-unit id="similarAssetsModal.title" xml:space="preserve" approved="yes">
+                <source>Similar assets to "{asset}"</source>
+                <target>Ähnliche Assets wie "{asset}"</target>
+            </trans-unit>
+            <trans-unit id="similarAssetsModal.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
+            <trans-unit id="similarAssetsModal.loading" xml:space="preserve" approved="yes">
+                <source>Loading…</source>
+                <target>Wird geladen…</target>
+            </trans-unit>
+            <trans-unit id="similarAssetsModal.noResults" xml:space="preserve" approved="yes">
+                <source>No results</source>
+                <target>Keine Resultate</target>
+            </trans-unit>
+
+            <!-- asset replacement dialog -->
+
+            <trans-unit id="assetReplacement.toggle" xml:space="preserve" approved="yes">
+                <source>Replace asset</source>
+                <target>Asset ersetzen</target>
+            </trans-unit>
+
+            <!-- asset edit dialog -->
+
+            <trans-unit id="editAssetDialog.title" xml:space="preserve" approved="yes">
+                <source>Rename asset</source>
+                <target>Asset umbenennen</target>
+            </trans-unit>
+            <trans-unit id="editAssetDialog.filename" xml:space="preserve" approved="yes">
+                <source>Filename</source>
+                <target>Dateiname</target>
+            </trans-unit>
+            <trans-unit id="editAssetDialog.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
+            <trans-unit id="editAssetDialog.update" xml:space="preserve" approved="yes">
+                <source>Update</source>
+                <target>Ändern</target>
+            </trans-unit>
+            <trans-unit id="editAssetDialog.updating" xml:space="preserve" approved="yes">
+                <source>Updating…</source>
+                <target>Wird geändert…</target>
+            </trans-unit>
+
+            <!-- Labels for the asset-usage package -->
             <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.label" xml:space="preserve" approved="yes">
                 <source>Neos documents and content</source>
                 <target>Neos Dokumente und Inhalte</target>
@@ -37,7 +639,7 @@
             </trans-unit>
             <trans-unit id="assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable" xml:space="preserve" approved="yes">
                 <source>n/a</source>
-                <target>k.A.</target>
+                <target>n. v.</target>
             </trans-unit>
             <trans-unit id="assetUsage.header" xml:space="preserve" approved="yes">
                 <source>Usage details for "{asset}"</source>
@@ -87,6 +689,44 @@
                 <source>Show usages</source>
                 <target>Verwendungen anzeigen</target>
             </trans-unit>
+
+            <!-- asset variants panel -->
+            <trans-unit id="assetVariants.title" xml:space="preserve" approved="yes">
+                <source>Image Variants</source>
+                <target>Bildvarianten</target>
+            </trans-unit>
+            <trans-unit id="assetVariants.loadingVariants" xml:space="preserve" approved="yes">
+                <source>Loading Variants</source>
+                <target>Bildvarianten werden geladen…</target>
+            </trans-unit>
+            <trans-unit id="assetVariants.noVariantsFound" xml:space="preserve" approved="yes">
+                <source>No variants found</source>
+                <target>Keine Bildvarianten gefunden</target>
+            </trans-unit>
+
+            <!-- pagination -->
+
+            <trans-unit id="pagination.previousPageTitle" xml:space="preserve" approved="yes">
+                <source>Go to previous page</source>
+                <target>Gehe zu vorheriger Seite</target>
+            </trans-unit>
+            <trans-unit id="pagination.firstPageTitle" xml:space="preserve" approved="yes">
+                <source>Go to first page</source>
+                <target>Gehe zu erster Seite</target>
+            </trans-unit>
+            <trans-unit id="pagination.page" xml:space="preserve" approved="yes">
+                <source>Go to page {page}</source>
+                <target>Gehe zu Seite {page}</target>
+            </trans-unit>
+            <trans-unit id="pagination.lastPageTitle" xml:space="preserve" approved="yes">
+                <source>Go to last page</source>
+                <target>Gehe zu letzter Seite</target>
+            </trans-unit>
+            <trans-unit id="pagination.nextPageTitle" xml:space="preserve" approved="yes">
+                <source>Go to next page</source>
+                <target>Gehe zu nächster Seite</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

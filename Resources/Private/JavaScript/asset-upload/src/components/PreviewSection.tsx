@@ -37,7 +37,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({ files, loading, uploadS
             {files.rejected.length > 0 && (
                 <>
                     <h4 className={classes.fileListHeader}>
-                        {translate('uploadDialog.fileList.uploadedHeader', 'Failed uploads')}
+                        {translate('uploadDialog.fileList.failedUploadsHeader', 'Failed uploads')}
                     </h4>
                     {files.rejected.map((file) => (
                         <FilePreview
@@ -51,7 +51,7 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({ files, loading, uploadS
             {files.finished.length > 0 && (
                 <>
                     <h4 className={classes.fileListHeader}>
-                        {translate('uploadDialog.fileList.uploadedHeader', 'Successful uploads')}
+                        {translate('uploadDialog.fileList.successfulUploadsHeader', 'Successful uploads')}
                     </h4>
                     {files.finished.map((file) => (
                         <FilePreview

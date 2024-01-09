@@ -19,10 +19,10 @@ const VariantsInspector = () => {
     return (
         <div className={classes.variantsContainer}>
             {result.loading ? (
-                <div>Loading Variants</div>
+                <div>{translate('assetVariants.loadingVariants', 'Loading Variants…')}</div>
             ) : (
                 <>
-                    <h1>Image Variants</h1>
+                    <h1>{translate('assetVariants.title', 'Image Variants')}</h1>
                     <ul>
                         {result.variants?.length > 0 ? (
                             result.variants?.map((variant) => (

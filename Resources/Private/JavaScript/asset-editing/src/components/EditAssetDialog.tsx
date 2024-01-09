@@ -101,7 +101,7 @@ const EditAssetDialog: React.FC = () => {
                         <span>{translate('uploadDialog.generateRedirects', 'Generate redirects')}</span>
                     </Label>
                 )}
-                {loading && <p>{translate('EditAssetDialog.updating', 'Updating…')}</p>}
+                {loading && <p>{translate('editAssetDialog.updating', 'Updating…')}</p>}
             </section>
         </Dialog>
     );

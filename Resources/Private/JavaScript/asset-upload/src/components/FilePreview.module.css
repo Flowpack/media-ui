@@ -1,22 +1,7 @@
-.fileList {
-    margin-top: var(--theme-spacing-Full);
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-.fileListHeader {
-    flex: 1 1 100%;
-    margin-bottom: var(--theme-spacing-Full);
-    font-size: var(--theme-fontSize-base);
-}
-
 .thumb {
     display: inline-flex;
     border-radius: 2px;
     border: 1px solid #eaeaea;
-    margin-bottom: var(--theme-spacing-Half);
-    margin-right: var(--theme-spacing-Half);
     width: 100px;
     height: 100px;
     padding: var(--theme-spacing-Quarter);
@@ -35,6 +20,7 @@
 .thumbInner span {
     margin-left: var(--theme-spacing-Half);
     user-select: none;
+    word-break: break-all;
 }
 
 .img {
