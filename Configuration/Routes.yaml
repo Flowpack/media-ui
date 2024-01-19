@@ -5,3 +5,12 @@
       package: 't3n.GraphQL'
       variables:
         'endpoint': 'media-assets'
+
+- name: 'Media GraphQL API'
+  uriPattern: 'neos/graphql2'
+  defaults:
+    '@package': 'Flowpack.Media.Ui'
+    '@controller': 'Media'
+    '@format': 'json'
+    '@action': 'query'
+  httpMethods: ['GET', 'POST']
