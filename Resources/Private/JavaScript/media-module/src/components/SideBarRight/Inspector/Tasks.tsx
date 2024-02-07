@@ -12,6 +12,9 @@ import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { applicationContextState, featureFlagsState } from '@media-ui/core/src/state';
 
+import DownloadAssetButton from '../../Actions/DownloadAssetButton';
+import DeleteAssetButton from '../../Actions/DeleteAssetButton';
+
 import classes from './Tasks.module.css';
 
 const Tasks: React.FC = () => {
@@ -27,10 +30,18 @@ const Tasks: React.FC = () => {
             <Headline type="h2">
                 <IconLabel icon="tasks" label={translate('inspector.actions', 'Tasks')} />
             </Headline>
-            <AssetUsagesToggleButton />
-            {showSimilarAssets && <SimilarAssetsToggleButton />}
-            {!selectedAsset.assetSource.readOnly && applicationContext !== 'details' && <AssetReplacementButton />}
-            {!selectedAsset.assetSource.readOnly && applicationContext !== 'details' && <OpenAssetEditDialogButton />}
+            <div className={classes.buttonWrapper}>
+                <AssetUsagesToggleButton />
+                {showSimilarAssets && <SimilarAssetsToggleButton />}
+                <DownloadAssetButton asset={selectedAsset} style="lighter" />
+                {!selectedAsset.assetSource.readOnly && applicationContext !== 'details' && (
+                    <>
+                        <OpenAssetEditDialogButton />
+                        <AssetReplacementButton />
+                    </>
+                )}
+                <DeleteAssetButton asset={selectedAsset} style="lighter" />
+            </div>
         </div>
     );
 };

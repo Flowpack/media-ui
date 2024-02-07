@@ -3,10 +3,12 @@ import { useSetRecoilState, useRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
-import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
-import { useDeleteAsset, useImportAsset } from '@media-ui/core/src/hooks';
+import { useIntl, useNotify } from '@media-ui/core';
+import { useImportAsset } from '@media-ui/core/src/hooks';
 import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview';
 import { clipboardItemState } from '@media-ui/feature-clipboard';
+import DownloadAssetButton from '../Actions/DownloadAssetButton';
+import DeleteAssetButton from '../Actions/DeleteAssetButton';
 
 interface ItemActionsProps {
     asset: Asset;
@@ -15,10 +17,8 @@ interface ItemActionsProps {
 const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) => {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const { approvalAttainmentStrategy } = useMediaUi();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const { importAsset } = useImportAsset();
-    const { deleteAsset } = useDeleteAsset();
     const [isInClipboard, toggleClipboardState] = useRecoilState(
         clipboardItemState({ assetId: asset.id, assetSourceId: asset.assetSource.id })
     );
@@ -33,29 +33,6 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                 Notify.error(translate('assetActions.import.error', 'Failed to import asset'), error.message);
             });
     }, [importAsset, asset, Notify, translate]);
-
-    const onDeleteAsset = useCallback(
-        async (asset: Asset): Promise<boolean> => {
-            const canDeleteAsset = await approvalAttainmentStrategy.obtainApprovalToDeleteAsset({
-                asset,
-            });
-
-            if (canDeleteAsset) {
-                try {
-                    await deleteAsset({ assetId: asset.id, assetSourceId: asset.assetSource.id });
-
-                    Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
-
-                    return true;
-                } catch ({ message }) {
-                    Notify.error(message);
-                }
-            }
-
-            return false;
-        },
-        [Notify, translate, deleteAsset, approvalAttainmentStrategy]
-    );
 
     if (!asset) return null;
 
@@ -79,26 +56,8 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                     onClick={onImportAsset}
                 />
             )}
-            {!asset.assetSource.readOnly && (
-                <IconButton
-                    title={
-                        asset.isInUse
-                            ? translate('itemActions.delete.disabled', 'Cannot delete an asset that is in use')
-                            : translate('itemActions.delete', 'Delete asset')
-                    }
-                    disabled={asset.isInUse}
-                    icon="trash"
-                    size="regular"
-                    style="transparent"
-                    hoverStyle="error"
-                    onClick={() => onDeleteAsset(asset)}
-                />
-            )}
-            {asset.file?.url && (
-                <a href={asset.file.url} download title={translate('itemActions.download', 'Download asset')}>
-                    <IconButton icon="download" size="regular" style="transparent" hoverStyle="success" />
-                </a>
-            )}
+            <DeleteAssetButton asset={asset} />
+            <DownloadAssetButton asset={asset} />
             {asset.localId && (
                 <IconButton
                     title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}

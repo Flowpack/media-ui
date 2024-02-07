@@ -20,9 +20,9 @@ const AssetUsagesToggleButton: React.FC = () => {
             style={assetUsagesModalOpen ? 'brand' : 'lighter'}
             hoverStyle="brand"
             onClick={() => setAssetUsagesModalOpen(true)}
+            title={translate('assetUsageList.toggle', 'Show usages')}
         >
             <Icon icon="link" />
-            {translate('assetUsageList.toggle', 'Show usages')}
         </Button>
     );
 };

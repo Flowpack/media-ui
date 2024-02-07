@@ -17,9 +17,9 @@ const OpenAssetEditDialogButton: React.FC = () => {
             style={dialogVisible ? 'brand' : 'lighter'}
             hoverStyle="brand"
             onClick={() => setDialogVisible(true)}
+            title={translate('openAssetEditDialogButton.open', 'Rename asset')}
         >
             <Icon icon="edit" />
-            {translate('openAssetEditDialogButton.open', 'Rename asset')}
         </Button>
     );
 };

@@ -17,9 +17,9 @@ const SimilarAssetsToggleButton: React.FC = () => {
             style={similarAssetsModalOpen ? 'brand' : 'lighter'}
             hoverStyle="brand"
             onClick={() => setSimilarAssetsModalOpen(true)}
+            title={translate('similarAssetsModal.show', 'Show similar assets')}
         >
             <Icon icon="equals" />
-            {translate('similarAssetsModal.show', 'Show similar assets')}
         </Button>
     );
 };

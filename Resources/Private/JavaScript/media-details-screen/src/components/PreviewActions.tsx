@@ -5,6 +5,7 @@ import { IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { clipboardItemState } from '@media-ui/feature-clipboard';
+import DownloadAssetButton from 'Resources/Private/JavaScript/media-module/src/components/Actions/DownloadAssetButton';
 
 interface PreviewActionsProps {
     asset: Asset;
@@ -37,11 +38,7 @@ const PreviewActions: React.FC<PreviewActionsProps> = ({ asset, buildLinkToMedia
                     <IconButton icon="external-link-alt" size="regular" style="transparent" hoverStyle="brand" />
                 </a>
             )}
-            {asset.file?.url && (
-                <a href={asset.file.url} download title={translate('previewActions.download', 'Download asset')}>
-                    <IconButton icon="download" size="regular" style="transparent" hoverStyle="warn" />
-                </a>
-            )}
+            <DownloadAssetButton asset={asset} />
             {asset.localId && (
                 <IconButton
                     title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}
