@@ -1,8 +1,10 @@
 type AssetCollectionType = 'AssetCollection';
 
+type AssetCollectionId = string;
+
 interface AssetCollection extends GraphQlEntity {
     __typename: AssetCollectionType;
-    readonly id: string;
+    readonly id: AssetCollectionId;
     readonly title: string;
     parent: {
         readonly id: string;

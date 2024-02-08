@@ -14,9 +14,10 @@ import { assetCollectionFavouriteState } from '../state/assetCollectionFavourite
 import { assetCollectionTreeCollapsedItemState } from '../state/assetCollectionTreeCollapsedState';
 import { assetCollectionFocusedState } from '../state/assetCollectionFocusedState';
 import { assetCollectionActiveState } from '../state/assetCollectionActiveState';
+import { useAssetCollectionDnd } from '../provider/AssetCollectionTreeDndProvider';
 
 export interface AssetCollectionTreeNodeProps extends TreeNodeProps {
-    assetCollectionId: string | null;
+    assetCollectionId?: AssetCollectionId;
     renderChildCollections?: boolean;
     children?: React.ReactNode;
 }
@@ -37,10 +38,24 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     const isFavourite = useRecoilValue(assetCollectionFavouriteState(assetCollectionId));
     const isActive = useRecoilValue(assetCollectionActiveState(assetCollectionId));
 
+    const { currentlyDraggedNodes, handeEndDrag, handleDrag, handleDrop, acceptsDraggedNode } = useAssetCollectionDnd();
+
     const handleClick = useCallback(() => {
         selectAssetCollectionAndTag({ assetCollectionId, tagId: null });
         setCollapsed(false);
     }, [assetCollectionId, selectAssetCollectionAndTag, setCollapsed]);
+
+    // Drag & drop specifics
+    const accepts = useCallback(
+        (mode) => acceptsDraggedNode(assetCollectionId, mode),
+        [assetCollectionId, acceptsDraggedNode]
+    );
+    const handleNodeDrag = useCallback(() => handleDrag(assetCollectionId), [assetCollectionId, handleDrag]);
+    const handleNodeEndDrag = useCallback(() => handeEndDrag(), [handeEndDrag]);
+    const handleNodeDrop = useCallback(
+        (position) => handleDrop(assetCollectionId, position),
+        [assetCollectionId, handleDrop]
+    );
 
     const childCollectionIds = useMemo(() => {
         return (
@@ -66,6 +81,9 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
             />
         );
 
+    // TODO: Also check assetSource.readonly
+    const dragForbidden = !assetCollectionId || assetCollectionId === UNASSIGNED_COLLECTION_ID;
+
     return (
         <Tree.Node>
             <Tree.Node.Header
@@ -81,6 +99,14 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
                 isHiddenInIndex={assetCollection?.assetCount === 0}
                 customIconComponent={CollectionIcon}
                 nodeDndType={dndTypes.COLLECTION}
+                isDragging={currentlyDraggedNodes.includes(assetCollectionId)}
+                dragAndDropContext={{
+                    onDrag: handleNodeDrag,
+                    onEndDrag: handleNodeEndDrag,
+                    onDrop: handleNodeDrop,
+                    accepts,
+                }}
+                dragForbidden={dragForbidden}
                 level={level}
                 onToggle={() => setCollapsed(!collapsed)}
                 onClick={handleClick}

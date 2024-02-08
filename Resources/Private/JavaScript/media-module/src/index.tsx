@@ -16,6 +16,7 @@ import { CacheFactory, createErrorHandler } from './core';
 import App from './components/App';
 import ErrorBoundary from './components/ErrorBoundary';
 import loadIconLibrary from './lib/FontAwesome';
+import { AssetCollectionTreeDndProvider } from '@media-ui/feature-asset-collections/src/provider/AssetCollectionTreeDndProvider';
 
 loadIconLibrary();
 
@@ -73,7 +74,9 @@ window.onload = async (): Promise<void> => {
             <ErrorBoundary>
                 <MediaUiProvider dummyImage={dummyImage} containerRef={containerRef}>
                     <DndProvider backend={HTML5Backend}>
-                        <App />
+                        <AssetCollectionTreeDndProvider>
+                            <App />
+                        </AssetCollectionTreeDndProvider>
                     </DndProvider>
                 </MediaUiProvider>
             </ErrorBoundary>

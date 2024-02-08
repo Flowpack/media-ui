@@ -50,6 +50,7 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
                 icon={icon}
                 customIconComponent={customIconComponent}
                 nodeDndType={dndTypes.TAG}
+                dragForbidden={true}
                 level={level}
                 onClick={() => selectAssetCollectionAndTag({ tagId, assetCollectionId })}
                 hasChildren={false}
