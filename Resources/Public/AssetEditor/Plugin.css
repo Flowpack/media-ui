@@ -754,10 +754,19 @@
     gap: var(--theme-spacing-Half);
 }
 
-.Tasks-module__tasks___1KEX6 button {
+.Tasks-module__buttonWrapper___1YuSx {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1px;
+}
+
+.Tasks-module__buttonWrapper___1YuSx button {
     display: flex;
     align-items: center;
-    gap: 0.5em;
+    justify-content: center;
+    gap: var(--theme-spacing-Half);
+    max-width: var(--theme-unit);
 }
 
 .PropertyInspector-module__textArea___3V9M7 {
