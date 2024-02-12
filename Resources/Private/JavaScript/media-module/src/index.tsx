@@ -1,8 +1,6 @@
 import React, { createRef } from 'react';
 import { render } from 'react-dom';
 import Modal from 'react-modal';
-import { DndProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 import { ApolloClient, ApolloLink } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 
@@ -10,13 +8,13 @@ import { createUploadLink } from 'apollo-upload-client';
 import { MediaUiProvider, typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
 import MediaApplicationWrapper from '@media-ui/core/src/components/MediaApplicationWrapper';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
+import { AssetCollectionTreeDndProvider } from '@media-ui/feature-asset-collections/src/provider/AssetCollectionTreeDndProvider';
 
 // Internal dependencies
 import { CacheFactory, createErrorHandler } from './core';
 import App from './components/App';
 import ErrorBoundary from './components/ErrorBoundary';
 import loadIconLibrary from './lib/FontAwesome';
-import { AssetCollectionTreeDndProvider } from '@media-ui/feature-asset-collections/src/provider/AssetCollectionTreeDndProvider';
 
 loadIconLibrary();
 
@@ -73,11 +71,9 @@ window.onload = async (): Promise<void> => {
         >
             <ErrorBoundary>
                 <MediaUiProvider dummyImage={dummyImage} containerRef={containerRef}>
-                    <DndProvider backend={HTML5Backend}>
-                        <AssetCollectionTreeDndProvider>
-                            <App />
-                        </AssetCollectionTreeDndProvider>
-                    </DndProvider>
+                    <AssetCollectionTreeDndProvider>
+                        <App />
+                    </AssetCollectionTreeDndProvider>
                 </MediaUiProvider>
             </ErrorBoundary>
         </MediaApplicationWrapper>,

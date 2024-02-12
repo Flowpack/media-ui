@@ -1,4 +1,6 @@
 import React, { useCallback, useState, createContext, useContext } from 'react';
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 import { useIntl, useNotify } from '@media-ui/core';
 
@@ -103,16 +105,18 @@ export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTree
     );
 
     return (
-        <AssetCollectionDndContext.Provider
-            value={{
-                currentlyDraggedNodes,
-                handleDrag,
-                handeEndDrag,
-                handleDrop,
-                acceptsDraggedNode,
-            }}
-        >
-            {children}
-        </AssetCollectionDndContext.Provider>
+        <DndProvider backend={HTML5Backend}>
+            <AssetCollectionDndContext.Provider
+                value={{
+                    currentlyDraggedNodes,
+                    handleDrag,
+                    handeEndDrag,
+                    handleDrop,
+                    acceptsDraggedNode,
+                }}
+            >
+                {children}
+            </AssetCollectionDndContext.Provider>
+        </DndProvider>
     );
 }

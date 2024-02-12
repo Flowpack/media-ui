@@ -10,14 +10,14 @@ import { neos } from '@neos-project/neos-ui-decorators';
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
-// GraphQL type definitions
-import { MediaUiProvider, typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
 import MediaApplicationWrapper from '@media-ui/core/src/components/MediaApplicationWrapper';
+import { AssetCollectionTreeDndProvider } from '@media-ui/feature-asset-collections/src/provider/AssetCollectionTreeDndProvider';
+import { MediaUiProvider, typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
 import { CacheFactory, createErrorHandler } from '@media-ui/media-module/src/core';
-import { Details } from './components';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
-// GraphQL local resolvers
+// Package local dependencies
+import { Details } from './components';
 import { MediaDetailsScreenApprovalAttainmentStrategyFactory } from './strategy';
 
 import classes from './MediaDetailsScreen.module.css';
@@ -147,7 +147,9 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                         containerRef={containerRef}
                         approvalAttainmentStrategyFactory={MediaDetailsScreenApprovalAttainmentStrategyFactory}
                     >
-                        <Details buildLinkToMediaUi={buildLinkToMediaUi} />
+                        <AssetCollectionTreeDndProvider>
+                            <Details buildLinkToMediaUi={buildLinkToMediaUi} />
+                        </AssetCollectionTreeDndProvider>
                     </MediaUiProvider>
                 </MediaApplicationWrapper>
             </div>
