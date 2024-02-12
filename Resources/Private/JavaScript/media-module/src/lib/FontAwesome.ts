@@ -129,6 +129,6 @@ export default function loadIconLibrary() {
         faWeightHanging,
         faFilter,
         faSearch,
-        faBroom,
+        faBroom
     );
 }

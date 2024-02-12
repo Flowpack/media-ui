@@ -5,7 +5,7 @@ import { IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { clipboardItemState } from '@media-ui/feature-clipboard';
-import DownloadAssetButton from 'Resources/Private/JavaScript/media-module/src/components/Actions/DownloadAssetButton';
+import DownloadAssetButton from '@media-ui/media-module/src/components/Actions/DownloadAssetButton';
 
 interface PreviewActionsProps {
     asset: Asset;

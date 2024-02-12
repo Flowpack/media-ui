@@ -5,8 +5,6 @@ import cx from 'classnames';
 import { InteractionDialogRenderer, useMediaUi } from '@media-ui/core';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
-import { ClipboardWatcher } from '@media-ui/feature-clipboard';
-import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
 import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets';
 import { uploadDialogState } from '@media-ui/feature-asset-upload/src/state';
 import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';

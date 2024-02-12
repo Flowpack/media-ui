@@ -19,6 +19,7 @@ import MediaApplicationWrapper from '@media-ui/core/src/components/MediaApplicat
 import { CacheFactory, createErrorHandler } from '@media-ui/media-module/src/core';
 import App from '@media-ui/media-module/src/components/App';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
+import { AssetCollectionTreeDndProvider } from '@media-ui/feature-asset-collections/src/provider/AssetCollectionTreeDndProvider';
 
 import classes from './MediaSelectionScreen.module.css';
 
@@ -161,7 +162,9 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                         isInNodeCreationDialog={isInNodeCreationDialog}
                         containerRef={containerRef}
                     >
-                        <App />
+                        <AssetCollectionTreeDndProvider>
+                            <App />
+                        </AssetCollectionTreeDndProvider>
                     </MediaUiProvider>
                 </MediaApplicationWrapper>
             </div>

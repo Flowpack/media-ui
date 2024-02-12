@@ -4,6 +4,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { Tree, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
+import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { IconStack } from '@media-ui/core/src/components';
 import useAssetCountQuery from '@media-ui/core/src/hooks/useAssetCountQuery';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
@@ -21,6 +22,17 @@ import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';
 import { UNASSIGNED_COLLECTION_ID } from '../hooks/useAssetCollectionQuery';
 
 import classes from './AssetCollectionTree.module.css';
+import { useAssetCollectionDnd } from '../provider/AssetCollectionTreeDndProvider';
+
+const DraggedNodeRenderer: React.FC<{
+    node: { contextPath: AssetCollectionId };
+    nodeDndType: string;
+    level: number;
+}> = ({ node, level }) => {
+    return (
+        <AssetCollectionTreeNode assetCollectionId={node.contextPath} level={level} renderChildCollections={false} />
+    );
+};
 
 const AssetCollectionTree = () => {
     const { translate } = useIntl();
@@ -30,6 +42,7 @@ const AssetCollectionTree = () => {
     const { assetCount: totalAssetCount } = useAssetCountQuery(true);
     const [assetCollectionTreeView, setAssetCollectionTreeViewState] = useRecoilState(assetCollectionTreeViewState);
     const favourites = useRecoilValue(assetCollectionFavouritesState);
+    const { currentlyDraggedNodes } = useAssetCollectionDnd();
 
     const assetCollectionsIdWithoutParent = useMemo(() => {
         return assetCollections.filter((assetCollection) => !assetCollection.parent).map(({ id }) => id);
@@ -76,6 +89,11 @@ const AssetCollectionTree = () => {
             </div>
 
             <Tree className={classes.tree}>
+                <Tree.DragLayer
+                    nodeDndType={dndTypes.COLLECTION}
+                    ChildRenderer={DraggedNodeRenderer}
+                    currentlyDraggedNodes={currentlyDraggedNodes.map((contextPath) => ({ contextPath }))}
+                />
                 {assetCollectionTreeView === 'favourites' ? (
                     favouriteAssetCollections.map((assetCollection) => (
                         <AssetCollectionTreeNode
