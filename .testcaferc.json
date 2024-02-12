@@ -12,5 +12,8 @@
   "hostname": "localhost",
   "retryTestPages": true,
   "pageLoadTimeout": 10000,
-  "pageRequestTimeout": 60000
+  "pageRequestTimeout": 60000,
+  "skipJsErrors": {
+    "stack": "/.*chrome-extension.*/ig"
+  }
 }

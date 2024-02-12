@@ -17,8 +17,7 @@ test('Tagging works', async (t) => {
         .click(page.firstThumbnail)
         .scrollIntoView(page.tagSelection)
         .click(page.tagSelection)
-        .click(ReactSelector('ListPreviewElement').withText('Example tag 1'))
-        .click(page.inspectorActions.findReact('Button').withText('Apply'));
+        .click(ReactSelector('ListPreviewElement').withText('Example tag 1'));
 }).after(async (t) => {
     const { log } = await t.getBrowserConsoleMessages();
     await t
