@@ -7,6 +7,8 @@ import { useUploadDialogState, useUploadFiles } from '@media-ui/feature-asset-up
 import { useCallback } from 'react';
 import { PreviewSection, UploadSection } from '@media-ui/feature-asset-upload/src/components';
 import classes from './NewAssetUpload.module.css';
+import cx from 'classnames';
+import theme from '@media-ui/core/src/Theme.module.css';
 
 const NewAssetUpload = (props: { onComplete: (result: { object: { __identity: string } }) => void }) => {
     const { translate } = useIntl();
@@ -76,7 +78,7 @@ const NewAssetUpload = (props: { onComplete: (result: { object: { __identity: st
     );
 
     return (
-        <section className={classes.uploadArea}>
+        <section className={cx(classes.uploadArea, theme.mediaModuleTheme)}>
             <UploadSection
                 files={dialogState.files.selected}
                 loading={loading}

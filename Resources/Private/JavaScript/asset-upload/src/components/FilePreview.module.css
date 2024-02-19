@@ -3,18 +3,18 @@
     flex-direction: row;
     column-gap: 1rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #3f3f3f;
+    border-bottom: 1px solid var(--theme-colors-border);
 }
 
 .thumb {
     display: inline-flex;
     border-radius: 2px;
     border: 1px solid #eaeaea;
-    margin-bottom: var(--theme-spacing-Half, 8px);
-    margin-right: var(--theme-spacing-Half, 8px);
+    margin-bottom: var(--theme-spacing-Half);
+    margin-right: var(--theme-spacing-Half);
     width: 100px;
     height: 100px;
-    padding: var(--theme-spacing-Quarter, 4px);
+    padding: var(--theme-spacing-Quarter);
     box-sizing: border-box;
 }
 
@@ -34,7 +34,7 @@
 }
 
 .thumbInner span {
-    margin-left: var(--theme-spacing-Half, 8px);
+    margin-left: var(--theme-spacing-Half);
     user-select: none;
 }
 
@@ -68,13 +68,13 @@
     top: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--theme-colors-alternatingBackground, #3f3f3f);
+    background-color: var(--theme-colors-alternatingBackground);
     opacity: .3;
     z-index: -1;
 }
 
 .loading {
-    border-color: var(--theme-colors-border, #3f3f3f);
+    border-color: var(--theme-colors-border);
 }
 
 .loading .thumbInner::after {
@@ -82,28 +82,28 @@
 }
 
 .success {
-    border-color: var(--theme-colors-Success, #00a338);
+    border-color: var(--theme-colors-Success);
 }
 
 .success .thumbInner::after {
     display: block;
-    background-color: var(--theme-colors-Success, #00a338);
+    background-color: var(--theme-colors-Success);
 }
 
 .error {
-    border-color: var(--theme-colors-Error, #ff460d);
+    border-color: var(--theme-colors-Error);
 }
 
 .error .thumbInner::after {
     display: block;
-    background-color: var(--theme-colors-Error, #ff460d);
+    background-color: var(--theme-colors-Error);
 }
 
 .warning {
-    color: var(--theme-colors-Warn, #ff8700);
+    color: var(--theme-colors-Warn);
 }
 
 .properties .textInput,
 .properties .textArea {
-    padding: var(--theme-spacing-Half, 8px) 14px !important;
+    padding: var(--theme-spacing-Half) 14px !important;
 }

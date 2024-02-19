@@ -134,9 +134,9 @@ const FilePreview: React.FC<FilePreviewProps> = ({
     };
 
     const isWideThumb =
-        uploadPropertiesConfig['title'].show ||
-        uploadPropertiesConfig['caption'].show ||
-        (uploadPropertiesConfig['copyrightNotice'] && uploadPropertiesConfig['copyrightNotice'].show);
+        uploadPropertiesConfig.title.show ||
+        uploadPropertiesConfig.caption.show ||
+        uploadPropertiesConfig.copyrightNotice?.show;
     // TODO: Output helpful localised messages for results 'EXISTS', 'ADDED', 'ERROR'
     return (
         <div className={classes.preview}>

@@ -27,6 +27,7 @@ const PropertyInspector = () => {
         approvalAttainmentStrategy: { obtainApprovalToUpdateAsset },
     } = useMediaUi();
     const featureFlags = useRecoilValue(featureFlagsState);
+    // One must adjust the state of the label, caption and copyright notice manually, because the refresh function only updates the image preview and not the content of the right sidebar when updates via e.g. the replace image dialog are made.
     const [label, setLabel] = useRecoilState(selectedAssetLabelState);
     const [caption, setCaption] = useRecoilState(selectedAssetCaptionState);
     const [copyrightNotice, setCopyrightNotice] = useRecoilState(selectedAssetCopyrightNoticeState);
