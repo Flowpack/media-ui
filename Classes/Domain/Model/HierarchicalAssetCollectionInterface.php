@@ -54,4 +54,14 @@ interface HierarchicalAssetCollectionInterface
      * @return bool
      */
     public function hasParent();
+
+    /**
+     * @return string|null
+     */
+    public function getPath();
+
+    /**
+     * @return void
+     */
+    public function setPath(?string $path);
 }

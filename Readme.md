@@ -8,11 +8,35 @@ later replace `neos/media-browser`.
 
 If you want to use Neos, please have a look at the [Neos documentation](http://neos.readthedocs.org/en/stable/).
 
+## Screenshots
+
+### Asset management
+
+### Asset selection
+
+### Asset details
+
 ## Installation
 
 Run the following command to install it:
 
-    composer require flowpack/media-ui 
+```console
+composer require flowpack/media-ui
+``` 
+
+Afterward you should execute doctrine migrations, as the package adds new columns to the database:
+
+```console
+./flow doctrine:migrate
+```
+
+Then you should update the paths of existing asset collections:
+
+```console
+./flow assetcollections:updatepaths
+```
+
+This is only necessary once after the installation. Afterward the paths will be updated automatically.
     
 ### What changes?
 
@@ -62,6 +86,19 @@ this way create a structure comparable with folders in your computer's file syst
 
 It is recommended to enable the feature flag `limitToSingleAssetCollectionPerAsset` (see below) for a better experience - 
 see below. 
+
+The package also provides the `\Flowpack\Media\Ui\Security\Authorization\Privilege\ReadHierarchicalAssetCollectionPrivilege` 
+with the additional method `isInPath(<string>)`, which can be used to control access to the collections.
+
+```yaml
+privilegeTargets:
+  'Flowpack\Media\Ui\Security\Authorization\Privilege\ReadHierarchicalAssetCollectionPrivilege':
+    'Some.Package:ReadSpecialAssetCollectionAndSubCollections':
+      matcher: 'isInPath("/important-collections")'
+  'Flowpack\Media\Ui\Security\Authorization\Privilege\ReadAssetPrivilege':
+    'Some.Package:ReadSpecialAssets':
+      matcher: 'isInCollectionPath("/important-collections")'
+```
 
 ## Optional features
 
@@ -320,7 +357,7 @@ This way the bundle size is kept to a minimum.
 
 #### Patches
 
-Several [patches](patches) are applied during installation via [patch-package](https://github.com/ds300/patch-package).
+Several [patches](.yarn/patches) are applied during installation via [patch-package](https://github.com/ds300/patch-package).
 Additional patches can be generated and stored there with the same tool if necessary.
 
 #### Connection between the backend module and UI plugin

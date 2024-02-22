@@ -6,8 +6,11 @@ namespace Flowpack\Media\Ui\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
+use Flowpack\Media\Ui\Utility\AssetCollectionUtility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
+use Neos\Media\Domain\Repository\AssetCollectionRepository;
 
 /**
  * @Flow\Scope("singleton")
@@ -26,7 +29,13 @@ class AssetCollectionService
      */
     protected $objectManager;
 
-    protected $assetCollectAssetCountCache = [];
+    protected array $assetCollectAssetCountCache = [];
+
+    /**
+     * @Flow\Inject
+     * @var AssetCollectionRepository
+     */
+    protected $assetCollectionRepository;
 
     /**
      * Queries the asset count for all asset collections once and caches the result.
@@ -64,5 +73,16 @@ class AssetCollectionService
         } catch (\Exception $e) {}
 
         return $this->assetCollectAssetCountCache[$assetCollectionId] ?? 0;
+    }
+
+    public function updatePathForNestedAssetCollections(HierarchicalAssetCollectionInterface $parentCollection): void
+    {
+        $childCollections = $this->assetCollectionRepository->findByParent($parentCollection);
+
+        foreach ($childCollections as $childCollection) {
+            $childCollection->setPath(AssetCollectionUtility::renderValidPath($childCollection));
+            $this->assetCollectionRepository->update($childCollection);
+            $this->updatePathForNestedAssetCollections($childCollection);
+        }
     }
 }

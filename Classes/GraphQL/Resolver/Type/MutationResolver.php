@@ -21,6 +21,8 @@ use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
+use Flowpack\Media\Ui\Service\AssetCollectionService;
+use Flowpack\Media\Ui\Utility\AssetCollectionUtility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
@@ -106,6 +108,12 @@ class MutationResolver implements ResolverInterface
      * @var AssetService
      */
     protected $assetService;
+
+    /**
+     * @Flow\Inject
+     * @var AssetCollectionService
+     */
+    protected $assetCollectionService;
 
     /**
      * @throws Exception
@@ -680,6 +688,8 @@ class MutationResolver implements ResolverInterface
 
         if (is_string($title) && trim($title)) {
             $assetCollection->setTitle(trim($title));
+            /** @var HierarchicalAssetCollectionInterface $assetCollection */
+            $assetCollection->setPath(AssetCollectionUtility::renderValidPath($assetCollection));
         }
 
         if ($tagIds !== null) {
@@ -695,6 +705,7 @@ class MutationResolver implements ResolverInterface
         }
 
         $this->assetCollectionRepository->update($assetCollection);
+        $this->assetCollectionService->updatePathForNestedAssetCollections($assetCollection);
 
         return true;
     }
@@ -727,6 +738,7 @@ class MutationResolver implements ResolverInterface
             $assetCollection->setParent(null);
         }
         $this->assetCollectionRepository->update($assetCollection);
+        $this->assetCollectionService->updatePathForNestedAssetCollections($assetCollection);
         return true;
     }
 
