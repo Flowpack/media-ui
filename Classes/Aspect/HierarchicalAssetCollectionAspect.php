@@ -45,8 +45,7 @@ class HierarchicalAssetCollectionAspect
 
     /**
      * @var string
-     * @ORM\Column(length=1000)
-     * @ORM\Column(nullable=true)
+     * @ORM\Column(length=1000,nullable=true)
      * @Flow\Introduce("class(Neos\Media\Domain\Model\AssetCollection)")
      */
     protected $path = null;
@@ -105,6 +104,18 @@ class HierarchicalAssetCollectionAspect
     }
 
     /**
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->__construct())")
+     */
+    public function updatePathAfterConstruct(JoinPointInterface $joinPoint): void
+    {
+        $joinPoint->getAdviceChain()->proceed($joinPoint);
+
+        /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        $assetCollection = $joinPoint->getProxy();
+        $assetCollection->setPath(AssetCollectionUtility::renderValidPath($assetCollection));
+    }
+
+    /**
      * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->hasParent())")
      */
     public function hasParent(JoinPointInterface $joinPoint): bool
@@ -122,6 +133,18 @@ class HierarchicalAssetCollectionAspect
         /** @var AssetCollection $assetCollection */
         $assetCollection = $joinPoint->getProxy();
         return $assetCollection->getTitle();
+    }
+
+    /**
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->setTitle())")
+     */
+    public function setTitle(JoinPointInterface $joinPoint): void
+    {
+        $joinPoint->getAdviceChain()->proceed($joinPoint);
+
+        /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        $assetCollection = $joinPoint->getProxy();
+        $assetCollection->setPath(AssetCollectionUtility::renderValidPath($assetCollection));
     }
 
     /**

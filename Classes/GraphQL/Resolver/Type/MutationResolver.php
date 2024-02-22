@@ -22,17 +22,15 @@ use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
-use Flowpack\Media\Ui\Utility\AssetCollectionUtility;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\Asset;
-use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
@@ -688,8 +686,6 @@ class MutationResolver implements ResolverInterface
 
         if (is_string($title) && trim($title)) {
             $assetCollection->setTitle(trim($title));
-            /** @var HierarchicalAssetCollectionInterface $assetCollection */
-            $assetCollection->setPath(AssetCollectionUtility::renderValidPath($assetCollection));
         }
 
         if ($tagIds !== null) {
