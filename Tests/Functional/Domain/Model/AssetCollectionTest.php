@@ -14,6 +14,7 @@ namespace Flowpack\Media\Ui\Tests\Functional\Domain\Model;
  */
 
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
+use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Flowpack\Media\Ui\Tests\Functional\AbstractTest;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Media\Domain\Model\AssetCollection;
@@ -31,6 +32,11 @@ class AssetCollectionTest extends AbstractTest
      */
     protected $assetCollectionRepository;
 
+    /**
+     * @var AssetCollectionService
+     */
+    protected $assetCollectionService;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -39,6 +45,7 @@ class AssetCollectionTest extends AbstractTest
         }
 
         $this->assetCollectionRepository = $this->objectManager->get(AssetCollectionRepository::class);
+        $this->assetCollectionService = $this->objectManager->get(AssetCollectionService::class);
     }
 
     /**
@@ -174,5 +181,90 @@ class AssetCollectionTest extends AbstractTest
 
         self::assertTrue($persistedChild->hasParent());
         self::assertFalse($persistedParent->hasParent());
+    }
+
+    /**
+     * @test
+     */
+    public function newCollectionHasPathBasedOnTitle(): void
+    {
+        $collection = new AssetCollection('My Collection');
+        $this->assetCollectionRepository->add($collection);
+        $this->persistenceManager->persistAll();
+        $this->persistenceManager->clearState();
+
+        $persistedCollection = $this->assetCollectionRepository->findOneByTitle('My Collection');
+        self::assertEquals('/my-collection', $persistedCollection->getPath());
+    }
+
+    /**
+     * @test
+     */
+    public function updatingTitleUpdatesPathOfCollection(): void
+    {
+        $collection = new AssetCollection('My Collection');
+        $this->assetCollectionRepository->add($collection);
+        $this->persistenceManager->persistAll();
+        $this->persistenceManager->clearState();
+
+        $persistedCollection = $this->assetCollectionRepository->findOneByTitle('My Collection');
+        $persistedCollection->setTitle('New Title');
+        $this->assetCollectionRepository->update($persistedCollection);
+        $this->persistenceManager->persistAll();
+        $this->persistenceManager->clearState();
+
+        $persistedCollection = $this->assetCollectionRepository->findOneByTitle('New Title');
+        self::assertEquals('/new-title', $persistedCollection->getPath());
+    }
+
+    /**
+     * @test
+     */
+    public function pathOfSubCollectionContainsPathOfParentCollection(): void
+    {
+        $parent = new AssetCollection('Parent');
+        $child = new AssetCollection('Child');
+        $child->setParent($parent);
+
+        $this->assetCollectionRepository->add($parent);
+        $this->assetCollectionRepository->add($child);
+        $this->persistenceManager->persistAll();
+        $this->persistenceManager->clearState();
+
+        $persistedParent = $this->assetCollectionRepository->findOneByTitle('Parent');
+        $persistedChild = $this->assetCollectionRepository->findOneByTitle('Child');
+
+        self::assertEquals('/parent', $persistedParent->getPath());
+        self::assertEquals('/parent/child', $persistedChild->getPath());
+    }
+
+    /**
+     * @test
+     */
+    public function pathOfSubCollectionUpdatesWhenParentIsRenamed(): void
+    {
+        $parent = new AssetCollection('Parent');
+        $child = new AssetCollection('Child');
+        $child->setParent($parent);
+
+        $this->assetCollectionRepository->add($parent);
+        $this->assetCollectionRepository->add($child);
+        $this->persistenceManager->persistAll();
+        $this->persistenceManager->clearState();
+
+        $persistedParent = $this->assetCollectionRepository->findOneByTitle('Parent');
+
+        $persistedParent->setTitle('New Parent Title');
+        $this->assetCollectionService->updatePathForNestedAssetCollections($persistedParent);
+
+        $this->assetCollectionRepository->update($persistedParent);
+        $this->persistenceManager->persistAll();
+        $this->persistenceManager->clearState();
+
+        $persistedParent = $this->assetCollectionRepository->findOneByTitle('New Parent Title');
+        $persistedChild = $this->assetCollectionRepository->findOneByTitle('Child');
+
+        self::assertEquals('/new-parent-title', $persistedParent->getPath());
+        self::assertEquals('/new-parent-title/child', $persistedChild->getPath());
     }
 }
