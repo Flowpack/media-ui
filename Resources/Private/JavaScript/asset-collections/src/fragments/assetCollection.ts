@@ -13,6 +13,7 @@ export const ASSET_COLLECTION_FRAGMENT = gql`
             ...TagProps
         }
         assetCount
+        path
     }
     ${TAG_FRAGMENT}
 `;

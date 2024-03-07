@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
+use Flowpack\Media\Ui\Utility\AssetCollectionUtility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Media\Domain\Model\AssetCollection;
@@ -43,6 +44,13 @@ class HierarchicalAssetCollectionAspect
     protected $parent;
 
     /**
+     * @var string
+     * @ORM\Column(length=1000,nullable=true)
+     * @Flow\Introduce("class(Neos\Media\Domain\Model\AssetCollection)")
+     */
+    protected $path = null;
+
+    /**
      * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->getParent())")
      */
     public function getParent(JoinPointInterface $joinPoint): ?HierarchicalAssetCollectionInterface
@@ -64,6 +72,7 @@ class HierarchicalAssetCollectionAspect
         if (!$parentAssetCollection instanceof AssetCollection && $parentAssetCollection !== null) {
             throw new \InvalidArgumentException('Parent must be an AssetCollection', 1678330583);
         }
+
         ObjectAccess::setProperty($assetCollection, 'parent', $parentAssetCollection, true);
 
         // Throws an error if a circular dependency has been detected
@@ -77,6 +86,9 @@ class HierarchicalAssetCollectionAspect
                 ), 1678330856);
             }
         }
+
+        $path = AssetCollectionUtility::renderValidPath($assetCollection);
+        ObjectAccess::setProperty($assetCollection, 'path', $path, true);
     }
 
     /**
@@ -86,7 +98,21 @@ class HierarchicalAssetCollectionAspect
     {
         /** @var HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $joinPoint->getProxy();
+        $path = AssetCollectionUtility::renderValidPath($assetCollection);
         ObjectAccess::setProperty($assetCollection, 'parent', null, true);
+        ObjectAccess::setProperty($assetCollection, 'path', $path, true);
+    }
+
+    /**
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->__construct())")
+     */
+    public function updatePathAfterConstruct(JoinPointInterface $joinPoint): void
+    {
+        $joinPoint->getAdviceChain()->proceed($joinPoint);
+
+        /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        $assetCollection = $joinPoint->getProxy();
+        $assetCollection->setPath(AssetCollectionUtility::renderValidPath($assetCollection));
     }
 
     /**
@@ -110,6 +136,18 @@ class HierarchicalAssetCollectionAspect
     }
 
     /**
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->setTitle())")
+     */
+    public function setTitle(JoinPointInterface $joinPoint): void
+    {
+        $joinPoint->getAdviceChain()->proceed($joinPoint);
+
+        /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        $assetCollection = $joinPoint->getProxy();
+        $assetCollection->setPath(AssetCollectionUtility::renderValidPath($assetCollection));
+    }
+
+    /**
      * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->getTags())")
      */
     public function getTags(JoinPointInterface $joinPoint): Collection
@@ -118,4 +156,27 @@ class HierarchicalAssetCollectionAspect
         $assetCollection = $joinPoint->getProxy();
         return $assetCollection->getTags();
     }
+
+    /**
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->getPath())")
+     */
+    public function getPath(JoinPointInterface $joinPoint): ?string
+    {
+        /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        $assetCollection = $joinPoint->getProxy();
+        return ObjectAccess::getProperty($assetCollection, 'path', true);
+    }
+
+    /**
+     * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->setPath())")
+     */
+    public function setPath(JoinPointInterface $joinPoint): void
+    {
+        /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        $assetCollection = $joinPoint->getProxy();
+        /** @var string $path */
+        $path = $joinPoint->getMethodArgument('path');
+        ObjectAccess::setProperty($assetCollection, 'path', $path, true);
+    }
+
 }

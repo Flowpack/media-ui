@@ -275,6 +275,7 @@ type AssetCollection {
     parent: AssetCollection
     tags: [Tag!]!
     assetCount: Int!
+    path: AssetCollectionPath
 }
 
 """
@@ -437,6 +438,11 @@ scalar AssetSourceId
 Unique identifier of an Asset collection (e.g. "neos")
 """
 scalar AssetCollectionId
+
+"""
+Absolute path of an Asset collection (e.g. "/photos/trees")
+"""
+scalar AssetCollectionPath
 
 """
 Headers for asset usage metadata
