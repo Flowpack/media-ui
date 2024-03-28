@@ -26,8 +26,10 @@ use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\ContentRepository\Exception\NodeConfigurationException;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Exception as FlowException;
 use Neos\Flow\Http\Exception as HttpException;
+use Neos\Flow\Http\HttpRequestHandlerInterface;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Routing\Exception\MissingActionNameException;
@@ -56,6 +58,12 @@ class UsageDetailsService
 {
     use CreateContentContextTrait;
     use BackendUserTranslationTrait;
+
+    /**
+     * @Flow\Inject
+     * @var Bootstrap
+     */
+    protected $bootstrap;
 
     /**
      * @Flow\Inject
@@ -326,7 +334,14 @@ class UsageDetailsService
      */
     protected function buildNodeUri(?Site $site, NodeInterface $node): string
     {
-        $serverRequest = ServerRequest::fromGlobals();
+        $requestHandler = $this->bootstrap->getActiveRequestHandler();
+
+        if ($requestHandler instanceof HttpRequestHandlerInterface) {
+            $serverRequest = $requestHandler->getHttpRequest();
+        } else {
+            $serverRequest = ServerRequest::fromGlobals();
+        }
+
         $domain = $site ? $site->getPrimaryDomain() : null;
 
         // Build the URI with the correct scheme and hostname for the node in the given site
