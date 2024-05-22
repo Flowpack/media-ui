@@ -30,6 +30,12 @@ Afterward you should execute doctrine migrations, as the package adds new column
 ./flow doctrine:migrate
 ```
 
+In some rare cases it's necessary to flush the caches to prevent errors PHP errors, as the package extends some core classes:
+
+```console
+./flow flow:cache:flush
+```
+
 Then you should update the paths of existing asset collections:
 
 ```console
