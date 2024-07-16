@@ -3,8 +3,9 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { Button } from '@neos-project/react-ui-components';
 
-import { useIntl } from '@media-ui/core';
+import { useIntl, useNotify } from '@media-ui/core';
 import { availableAssetIdentitiesState, searchTermState } from '@media-ui/core/src/state';
+import useAssetsQuery from '@media-ui/core/src/hooks/useAssetsQuery';
 import { clipboardState, clipboardVisibleState } from '@media-ui/feature-clipboard';
 import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage';
 
@@ -17,11 +18,14 @@ import classes from './Main.module.css';
 const Main: React.FC = () => {
     const viewModeSelection = useRecoilValue(viewModeState);
     const { assets: unusedAssets } = useUnusedAssetsQuery();
+    // The useAssetsQuery should always be registered here to ensure that the assets are loaded
+    const { error: assetsLoadingError } = useAssetsQuery();
     const clipboard = useRecoilValue(clipboardState);
     const mainView = useRecoilValue(mainViewState);
     const setClipboardVisible = useSetRecoilState(clipboardVisibleState);
     const searchTerm = useRecoilValue(searchTermState);
     const { translate } = useIntl();
+    const Notify = useNotify();
     const availableAssetIdentities = useRecoilValue(availableAssetIdentitiesState);
     const [visibleAssetIdentities, setVisibleAssetIdentities] = useState<AssetIdentity[]>(availableAssetIdentities);
 
@@ -42,6 +46,13 @@ const Main: React.FC = () => {
             setVisibleAssetIdentities(availableAssetIdentities);
         }
     }, [mainView, availableAssetIdentities, queriedUnusedAssets, clipboard]);
+
+    // Output loading errors to the console
+    useEffect(() => {
+        if (assetsLoadingError) {
+            Notify.error('Error loading assets', assetsLoadingError.message);
+        }
+    }, [Notify, assetsLoadingError]);
 
     return visibleAssetIdentities.length > 0 ? (
         viewModeSelection === VIEW_MODES.List ? (
