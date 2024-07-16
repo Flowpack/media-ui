@@ -15,6 +15,10 @@ const ConcurrentChangeMonitor: React.FC = () => {
     const { refetch: refetchAssets } = useAssetsQuery();
 
     useEffect(() => {
+        // Prevent errors when the queries are not yet initialized
+        if (!refetchAssets || !refetchAsset) {
+            return;
+        }
         changedAssets?.forEach((change) => {
             switch (change.type) {
                 case 'ASSET_REPLACED':

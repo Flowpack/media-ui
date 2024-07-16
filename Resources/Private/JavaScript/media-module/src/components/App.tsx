@@ -101,7 +101,7 @@ const App = () => {
 
             <InteractionDialogRenderer />
             <ClipboardWatcher />
-            <ConcurrentChangeMonitor />
+            {!selectionMode && <ConcurrentChangeMonitor />}
         </div>
     );
 };
