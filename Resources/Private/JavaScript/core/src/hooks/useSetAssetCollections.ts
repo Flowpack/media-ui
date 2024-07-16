@@ -37,7 +37,7 @@ export default function useSetAssetCollections() {
                         id: asset.id,
                     }),
                     fields: {
-                        assetCollections: () =>
+                        collections: () =>
                             assetCollections?.map((collection) => ({
                                 __ref: cache.identify({
                                     __typename: 'AssetCollection',
