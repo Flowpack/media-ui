@@ -20,9 +20,11 @@
     background-color: #3f3f3f;
 }
 
-/* Hack to prevent module styles from adding a larger padding to the dropdown buttons than the components itself defines */
 :global(#media-ui-app [class*="_dropDown__btn"]) {
+    /* Hack to prevent module styles from adding a larger padding to the dropdown buttons than the components itself defines */
     padding-left: 0;
+    /* Prevent cutting off collection breadcrumb in collection selection */
+    height: auto;
 }
 
 :global(.neos.neos-module-management-mediaui > .neos-module-wrap) {
