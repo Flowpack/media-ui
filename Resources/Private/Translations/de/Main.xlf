@@ -31,7 +31,7 @@
             </trans-unit>
             <trans-unit id="uploadDialog.title" xml:space="preserve" approved="yes">
                 <source>Upload assets</source>
-                <target>Assets hochladen</target>
+                <target>Dateien hochladen</target>
             </trans-unit>
             <trans-unit id="uploadDialog.fileList.header" xml:space="preserve" approved="yes">
                 <source>Selected files</source>
@@ -63,7 +63,7 @@
             </trans-unit>
             <trans-unit id="uploadDialog.replaceAsset" xml:space="preserve" approved="yes">
                 <source>Replace asset</source>
-                <target>Asset ersetzen</target>
+                <target>Datei ersetzen</target>
             </trans-unit>
             <trans-unit id="uploadDialog.generateRedirects" xml:space="preserve" approved="yes">
                 <source>Generate redirects</source>
@@ -79,11 +79,11 @@
             </trans-unit>
             <trans-unit id="uploadDialog.replacementFinished" xml:space="preserve" approved="yes">
                 <source>Replacement finished</source>
-                <target>Das Asset wurde ersetzt</target>
+                <target>Die Datei wurde ersetzt</target>
             </trans-unit>
             <trans-unit id="assetReplacement.error" xml:space="preserve" approved="yes">
                 <source>Replacement failed</source>
-                <target>Ersetzen des Assets fehlgeschlagen</target>
+                <target>Ersetzen der Datei fehlgeschlagen</target>
             </trans-unit>
             <trans-unit id="uploadDialog.close" xml:space="preserve" approved="yes">
                 <source>Close</source>
@@ -100,7 +100,7 @@
             </trans-unit>
             <trans-unit id="actions.replaceAsset.confirm.title" xml:space="preserve" approved="yes">
                 <source>Replace asset</source>
-                <target>Asset ersetzen</target>
+                <target>Datei ersetzen</target>
             </trans-unit>
 
             <trans-unit id="general.title" xml:space="preserve" approved="yes">
@@ -125,7 +125,7 @@
             </trans-unit>
             <trans-unit id="pagination.assetCount" xml:space="preserve" approved="yes">
                 <source>assets</source>
-                <target>Assets</target>
+                <target>Dateien</target>
             </trans-unit>
             <trans-unit id="clipboard.toggle" xml:space="preserve" approved="yes">
                 <source>Clipboard</source>
@@ -137,15 +137,15 @@
             </trans-unit>
             <trans-unit id="clipboard.deleteAsset" xml:space="preserve" approved="yes">
                 <source>Delete all assets in clipboard</source>
-                <target>Alle Assets in der Zwischenablage löschen</target>
+                <target>Alle Dateien in der Zwischenablage löschen</target>
             </trans-unit>
             <trans-unit id="actions.deleteAssets.confirm.title" xml:space="preserve" approved="yes">
                 <source>Delete Assets</source>
-                <target>Assets löschen</target>
+                <target>Dateien löschen</target>
             </trans-unit>
             <trans-unit id="action.deleteAssets.confirm.message" xml:space="preserve" approved="yes">
                 <source>Do you really want to delete {0} assets?</source>
-                <target>Wollen Sie wirklich {0} Assets löschen?</target>
+                <target>Wollen Sie wirklich {0} Dateien löschen?</target>
             </trans-unit>
             <trans-unit id="actions.deleteAssets.confirm.buttonLabel" xml:space="preserve" approved="yes">
                 <source>Yes, proceed with deleting the assets</source>
@@ -153,11 +153,11 @@
             </trans-unit>
             <trans-unit id="clipboard.deleteAssets.success" xml:space="preserve" approved="yes">
                 <source>The assets have been deleted</source>
-                <target>Die Assets wurden gelöscht</target>
+                <target>Die Dateien wurden gelöscht</target>
             </trans-unit>
             <trans-unit id="clipboard.deleteAssets.error" xml:space="preserve" approved="yes">
                 <source>Error while trying to delete the assets</source>
-                <target>Fehler beim Löschen der Assets</target>
+                <target>Fehler beim Löschen der Dateien</target>
             </trans-unit>
             <trans-unit id="clipboard.flush" xml:space="preserve" approved="yes">
                 <source>Flush clipboard</source>
@@ -192,15 +192,15 @@
 
             <trans-unit id="assetActions.import.success" xml:space="preserve" approved="yes">
                 <source>Asset was successfully imported</source>
-                <target>Das Asset wurde erfolgreich importiert</target>
+                <target>Die Datei wurde erfolgreich importiert</target>
             </trans-unit>
             <trans-unit id="assetActions.import.error" xml:space="preserve" approved="yes">
                 <source>Failed to import asset</source>
-                <target>Das Asset konnte nicht importiert werden</target>
+                <target>Die Datei konnte nicht importiert werden</target>
             </trans-unit>
             <trans-unit id="action.deleteAsset.success" xml:space="preserve" approved="yes">
                 <source>The asset has been deleted</source>
-                <target>Das Asset wurde gelöscht</target>
+                <target>Die Datei wurde gelöscht</target>
             </trans-unit>
             <trans-unit id="itemActions.preview" xml:space="preserve" approved="yes">
                 <source>Preview asset</source>
@@ -208,19 +208,19 @@
             </trans-unit>
             <trans-unit id="itemActions.import" xml:space="preserve" approved="yes">
                 <source>Import asset</source>
-                <target>Asset importieren</target>
+                <target>Datei importieren</target>
             </trans-unit>
             <trans-unit id="itemActions.delete" xml:space="preserve" approved="yes">
                 <source>Delete asset</source>
-                <target>Asset löschen</target>
+                <target>Datei löschen</target>
             </trans-unit>
             <trans-unit id="itemActions.delete.disabled" xml:space="preserve" approved="yes">
                 <source>Cannot delete an asset that is in use</source>
-                <target>Ein Asset, das verwendet wird, kann nicht gelöscht werden</target>
+                <target>Eine Datei, die verwendet wird, kann nicht gelöscht werden</target>
             </trans-unit>
             <trans-unit id="itemActions.download" xml:space="preserve" approved="yes">
                 <source>Download asset</source>
-                <target>Asset herunterladen</target>
+                <target>Datei herunterladen</target>
             </trans-unit>
             <trans-unit id="itemActions.copyToClipboard" xml:space="preserve" approved="yes">
                 <source>Copy to clipboard</source>
@@ -228,11 +228,11 @@
             </trans-unit>
             <trans-unit id="actions.deleteAsset.confirm.title" xml:space="preserve" approved="yes">
                 <source>Delete Asset</source>
-                <target>Asset löschen</target>
+                <target>Datei löschen</target>
             </trans-unit>
             <trans-unit id="action.deleteAsset.confirm.message" xml:space="preserve" approved="yes">
                 <source>Do you really want to delete the asset "{0}"?</source>
-                <target>Wollen Sie das Asset "{0}" wirklich löschen?</target>
+                <target>Wollen Sie die Datei "{0}" wirklich löschen?</target>
             </trans-unit>
             <trans-unit id="actions.deleteAsset.confirm.buttonLabel" xml:space="preserve" approved="yes">
                 <source>Yes, proceed with deleting the asset</source>
@@ -243,15 +243,15 @@
 
             <trans-unit id="previewActions.download" xml:space="preserve" approved="yes">
                 <source>Download asset</source>
-                <target>Asset herunterladen</target>
+                <target>Datei herunterladen</target>
             </trans-unit>
             <trans-unit id="previewActions.openInNewTab" xml:space="preserve" approved="yes">
                 <source>Open asset in a new browser tab</source>
-                <target>Asset in einem neuen Browser-Tab öffnen</target>
+                <target>Datei in einem neuen Browser-Tab öffnen</target>
             </trans-unit>
             <trans-unit id="previewActions.openInMediaModule" xml:space="preserve" approved="yes">
                 <source>Open asset in media module</source>
-                <target>Asset in Medienmodul öffnen</target>
+                <target>Datei in Medienmodul öffnen</target>
             </trans-unit>
 
             <!-- asset collection list -->
@@ -286,7 +286,7 @@
             </trans-unit>
             <trans-unit id="assetCollectionList.showAll.title" xml:space="preserve" approved="yes">
                 <source>Show assets for all collections</source>
-                <target>Zeige Assets aller Sammlungen</target>
+                <target>Zeige Dateien aller Sammlungen</target>
             </trans-unit>
             <trans-unit id="assetCollectionList.unassigned" xml:space="preserve" approved="yes">
                 <source>Unassigned</source>
@@ -294,7 +294,7 @@
             </trans-unit>
             <trans-unit id="assetCollectionList.unassigned.title" xml:space="preserve" approved="yes">
                 <source>Show assets which are not assigned to any collection</source>
-                <target>Zeige Assets, die keiner Sammlung zugewiesen sind</target>
+                <target>Zeige Dateien, die keiner Sammlung zugewiesen sind</target>
             </trans-unit>
             <trans-unit id="assetCollectionList.untagged" xml:space="preserve" approved="yes">
                 <source>Untagged</source>
@@ -475,15 +475,15 @@
 
             <trans-unit id="assetList.loading" xml:space="preserve" approved="yes">
                 <source>Loading assets</source>
-                <target>Assets werden geladen</target>
+                <target>Dateien werden geladen</target>
             </trans-unit>
             <trans-unit id="assetList.emptyForSearchTerm" xml:space="preserve" approved="yes">
                 <source>No assets found for "{searchTerm}"</source>
-                <target>Keine Assets gefunden für "{searchTerm}"</target>
+                <target>Keine Dateien gefunden für "{searchTerm}"</target>
             </trans-unit>
             <trans-unit id="assetList.empty" xml:space="preserve" approved="yes">
                 <source>No assets found</source>
-                <target>Keine Assets gefunden</target>
+                <target>Keine Dateien gefunden</target>
             </trans-unit>
             <trans-unit id="thumbnailView.header.name" xml:space="preserve" approved="yes">
                 <source>Name</source>
@@ -575,7 +575,7 @@
             </trans-unit>
             <trans-unit id="openAssetEditDialogButton.open" xml:space="preserve" approved="yes">
                 <source>Rename asset</source>
-                <target>Asset umbenennen</target>
+                <target>Datei umbenennen</target>
             </trans-unit>
             <trans-unit id="inspector.metadata" xml:space="preserve" approved="yes">
                 <source>Metadata</source>
@@ -610,11 +610,11 @@
 
             <trans-unit id="similarAssetsModal.show" xml:space="preserve" approved="yes">
                 <source>Show similar assets</source>
-                <target>Ähnliche Assets anzeigen</target>
+                <target>Ähnliche Dateien anzeigen</target>
             </trans-unit>
             <trans-unit id="similarAssetsModal.title" xml:space="preserve" approved="yes">
                 <source>Similar assets to "{asset}"</source>
-                <target>Ähnliche Assets wie "{asset}"</target>
+                <target>Ähnliche Dateien wie "{asset}"</target>
             </trans-unit>
             <trans-unit id="similarAssetsModal.cancel" xml:space="preserve" approved="yes">
                 <source>Cancel</source>
@@ -633,14 +633,14 @@
 
             <trans-unit id="assetReplacement.toggle" xml:space="preserve" approved="yes">
                 <source>Replace asset</source>
-                <target>Asset ersetzen</target>
+                <target>Datei ersetzen</target>
             </trans-unit>
 
             <!-- asset edit dialog -->
 
             <trans-unit id="editAssetDialog.title" xml:space="preserve" approved="yes">
                 <source>Rename asset</source>
-                <target>Asset umbenennen</target>
+                <target>Datei umbenennen</target>
             </trans-unit>
             <trans-unit id="editAssetDialog.filename" xml:space="preserve" approved="yes">
                 <source>Filename</source>
