@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify } from '@media-ui/core';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
 import {
     collectionPath,
@@ -18,6 +18,7 @@ import * as classes from './ParentCollectionSelectBox.module.css';
 const ParentCollectionSelectBox = () => {
     const Notify = useNotify();
     const { translate } = useIntl();
+    const { approvalAttainmentStrategy } = useMediaUi();
     const { assetCollections } = useAssetCollectionsQuery();
     const selectedAssetCollection = useSelectedAssetCollection();
     const { setAssetCollectionParent, loading } = useSetAssetCollectionParent();
@@ -47,7 +48,10 @@ const ParentCollectionSelectBox = () => {
 
     const handleChange = useCallback(
         async (parentCollectionId: string) => {
-            if (parentCollectionId !== selectedAssetCollection.parent?.id) {
+            const canMoveCollection = await approvalAttainmentStrategy.obtainApprovalToMoveAssetCollection({
+                assetCollection: selectedAssetCollection,
+            });
+            if (canMoveCollection && parentCollectionId !== selectedAssetCollection.parent?.id) {
                 setAssetCollectionParent({
                     assetCollection: selectedAssetCollection,
                     parent: parentCollectionId ? assetCollections.find((c) => c.id === parentCollectionId) : null,
@@ -71,7 +75,14 @@ const ParentCollectionSelectBox = () => {
                     });
             }
         },
-        [selectedAssetCollection, setAssetCollectionParent, assetCollections, Notify, translate]
+        [
+            approvalAttainmentStrategy,
+            selectedAssetCollection,
+            setAssetCollectionParent,
+            assetCollections,
+            Notify,
+            translate,
+        ]
     );
 
     const handleSearchTermChange = useCallback((searchTerm) => {
@@ -81,7 +92,7 @@ const ParentCollectionSelectBox = () => {
     return (
         <div>
             <Headline type="h2">
-                <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Parent collection')} />
+                <IconLabel icon="folder" label={translate('inspector.parentCollection', 'Parent collection')} />
             </Headline>
             <SelectBox
                 className={classes.collectionSelectBox}

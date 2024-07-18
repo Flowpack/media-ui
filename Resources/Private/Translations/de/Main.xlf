@@ -167,13 +167,25 @@
                 <source>Flush clipboard</source>
                 <target>Zwischenablage leeren</target>
             </trans-unit>
-            <trans-unit id="action.flushClipboard.confirm.message" xml:space="preserve" approved="yes">
+            <trans-unit id="actions.flushClipboard.confirm.message" xml:space="preserve" approved="yes">
                 <source>Do you really want to remove all assets from the clipboard?</source>
                 <target>Wollen Sie die Zwischenablage wirklich leeren?</target>
             </trans-unit>
             <trans-unit id="actions.flushClipboard.confirm.buttonLabel" xml:space="preserve" approved="yes">
                 <source>Yes, proceed with flushing the clipboard</source>
                 <target>Ja, Zwischenablage leeren</target>
+            </trans-unit>
+            <trans-unit id="actions.moveAssetCollection.confirm.title" xml:space="preserve" approved="yes">
+                <source>Move collection</source>
+                <target>Sammlung verschieben</target>
+            </trans-unit>
+            <trans-unit id="actions.moveAssetCollection.confirm.message" xml:space="preserve" approved="yes">
+                <source>Do you really want to move the collection "{0}" and its assets?</source>
+                <target>Wollen Sie die Sammlung "{0}" und ihre Dateien wirklich verschieben?</target>
+            </trans-unit>
+            <trans-unit id="actions.moveAssetCollection.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, proceed with moving the collection</source>
+                <target>Ja, Sammlung verschieben</target>
             </trans-unit>
 
             <!-- asset actions -->
@@ -540,6 +552,10 @@
             <trans-unit id="inspector.assetCollections" xml:space="preserve" approved="yes">
                 <source>Collections</source>
                 <target>Sammlungen</target>
+            </trans-unit>
+            <trans-unit id="inspector.parentCollection" xml:space="preserve" approved="yes">
+                <source>Parent collection</source>
+                <target>Übergeordnete Sammlung</target>
             </trans-unit>
             <trans-unit id="inspector.collections.placeholder" xml:space="preserve" approved="yes">
                 <source>Select a collection</source>

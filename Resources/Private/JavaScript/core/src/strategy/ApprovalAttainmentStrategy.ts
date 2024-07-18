@@ -15,6 +15,7 @@ export interface ApprovalAttainmentStrategy {
     obtainApprovalToReplaceAsset: (given: { asset: Asset }) => Promise<boolean>;
     obtainApprovalToEditAsset: (given: { asset: Asset }) => Promise<boolean>;
     obtainApprovalToFlushClipboard: () => Promise<boolean>;
+    obtainApprovalToMoveAssetCollection: (given: { assetCollection: AssetCollection }) => Promise<boolean>;
 }
 
 const assumeApproval = () => Promise.resolve(true);
@@ -30,6 +31,7 @@ export const AssumeApprovalForEveryAction: ApprovalAttainmentStrategy = {
     obtainApprovalToReplaceAsset: assumeApproval,
     obtainApprovalToEditAsset: assumeApproval,
     obtainApprovalToFlushClipboard: assumeApproval,
+    obtainApprovalToMoveAssetCollection: assumeApproval,
 };
 
 export interface ApprovalAttainmentStrategyFactory {
@@ -100,12 +102,28 @@ export const DefaultApprovalAttainmentStrategyFactory: ApprovalAttainmentStrateg
         deps.interaction.confirm({
             title: deps.intl.translate('actions.flushClipboard.confirm.title', 'Flush clipboard'),
             message: deps.intl.translate(
-                'action.flushClipboard.confirm.message',
+                'actions.flushClipboard.confirm.message',
                 `Do you really want to remove all assets from the clipboard?`
             ),
             buttonLabel: deps.intl.translate(
                 'actions.flushClipboard.confirm.buttonLabel',
                 'Yes, proceed with flushing the clipboard'
+            ),
+        }),
+    obtainApprovalToMoveAssetCollection: ({ assetCollection }) =>
+        deps.interaction.confirm({
+            title: deps.intl.translate('actions.moveAssetCollection.confirm.title', 'Move collection', [
+                assetCollection.title,
+            ]),
+            message: deps.intl.translate(
+                'action.moveAssetCollection.confirm.message',
+                `Do you really want to move the collection "${assetCollection.title}" and its assets?`,
+                [assetCollection.title]
+            ),
+            buttonLabel: deps.intl.translate(
+                'actions.moveAssetCollection.confirm.buttonLabel',
+                'Yes, proceed with moving the collection',
+                [assetCollection.title]
             ),
         }),
 });

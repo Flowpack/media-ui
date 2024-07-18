@@ -127,11 +127,20 @@
             <trans-unit id="actions.flushClipboard.confirm.title" xml:space="preserve" approved="yes">
                 <source>Flush clipboard</source>
             </trans-unit>
-            <trans-unit id="action.flushClipboard.confirm.message" xml:space="preserve" approved="yes">
+            <trans-unit id="actions.flushClipboard.confirm.message" xml:space="preserve" approved="yes">
                 <source>Do you really want to remove all assets from the clipboard?</source>
             </trans-unit>
             <trans-unit id="actions.flushClipboard.confirm.buttonLabel" xml:space="preserve" approved="yes">
                 <source>Yes, proceed with flushing the clipboard</source>
+            </trans-unit>
+            <trans-unit id="actions.moveAssetCollection.confirm.title" xml:space="preserve" approved="yes">
+                <source>Move collection</source>
+            </trans-unit>
+            <trans-unit id="actions.moveAssetCollection.confirm.message" xml:space="preserve" approved="yes">
+                <source>Do you really want to move the collection"{0}" and its assets?</source>
+            </trans-unit>
+            <trans-unit id="actions.moveAssetCollection.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, proceed with moving the collection</source>
             </trans-unit>
 
             <!-- asset actions -->
@@ -415,6 +424,9 @@
             </trans-unit>
             <trans-unit id="inspector.assetCollections" xml:space="preserve" approved="yes">
                 <source>Collections</source>
+            </trans-unit>
+            <trans-unit id="inspector.parentCollection" xml:space="preserve" approved="yes">
+                <source>Parent collection</source>
             </trans-unit>
             <trans-unit id="inspector.collections.placeholder" xml:space="preserve" approved="yes">
                 <source>Select a collection</source>
