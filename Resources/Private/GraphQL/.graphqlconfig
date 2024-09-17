@@ -1,0 +1,16 @@
+{
+    "name": "Untitled GraphQL Schema",
+    "schemaPath": "schema.graphql",
+    "extensions": {
+        "endpoints": {
+            "Default GraphQL Endpoint": {
+                "url": "http://helzle.it.test/neos/graphql2",
+                "headers": {
+                    "user-agent": "JS GraphQL",
+                    "Cookie": "Neos_Session=KfhWNQJBRfO4keZGYpr7Tpf209gXXffT"
+                },
+                "introspect": false
+            }
+        }
+    }
+}
