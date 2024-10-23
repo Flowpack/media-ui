@@ -586,6 +586,21 @@
                 <source>Go to next page</source>
             </trans-unit>
 
+            <!-- error handling -->
+
+            <trans-unit id="errors.internal.title" xml:space="preserve" approved="yes">
+                <source>Internal server error</source>
+            </trans-unit>
+            <trans-unit id="errors.graphql.title" xml:space="preserve" approved="yes">
+                <source>Communication error</source>
+            </trans-unit>
+            <trans-unit id="errors.1603921233.title" xml:space="preserve" approved="yes">
+                <source>Failed to create tag</source>
+            </trans-unit>
+            <trans-unit id="errors.1603921233.message" xml:space="preserve" approved="yes">
+                <source>This tag is already exists. Please choose a different one.</source>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

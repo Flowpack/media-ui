@@ -4,6 +4,7 @@ t3n:
       'media-assets':
         logRequests: false
         context: 'Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext'
+        errorTransform: 'Flowpack\Media\Ui\Transform\FlowErrorTransform'
         schemas:
           root:
             typeDefs: 'resource://Flowpack.Media.Ui/Private/GraphQL/schema.root.graphql'
