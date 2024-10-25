@@ -605,6 +605,10 @@
                 <source>IPTC Metadata</source>
                 <target>IPTC-Metadaten</target>
             </trans-unit>
+            <trans-unit id="inspector.property.identifier" xml:space="preserve" approved="yes">
+                <source>Identifier</source>
+                <target>Bezeichner</target>
+            </trans-unit>
 
             <!-- similar assets dialog -->
 

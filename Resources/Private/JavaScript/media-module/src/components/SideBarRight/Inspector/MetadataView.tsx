@@ -41,6 +41,10 @@ const MetadataView: React.FC = () => {
                     label={translate('inspector.property.mediaType', 'MIME type')}
                     value={selectedAsset.file.mediaType}
                 />
+                <PropertyListItem
+                    label={translate('inspector.property.identifier', 'Identifier')}
+                    value={selectedAsset.id}
+                />
             </PropertyList>
         </div>
     );

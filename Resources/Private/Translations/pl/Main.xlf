@@ -368,6 +368,10 @@
                 <source>MIME type</source>
                 <target>Typ MIME</target>
             </trans-unit>
+            <trans-unit id="inspector.property.identifier" xml:space="preserve" approved="yes">
+                <source>Identifier</source>
+                <target>Identyfikator</target>
+            </trans-unit>
 
             <!-- asset replacement dialog -->
 
