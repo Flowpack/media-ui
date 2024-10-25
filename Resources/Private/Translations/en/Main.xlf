@@ -461,6 +461,9 @@
             <trans-unit id="inspector.property.mediaType" xml:space="preserve" approved="yes">
                 <source>MIME type</source>
             </trans-unit>
+            <trans-unit id="inspector.property.identifier" xml:space="preserve" approved="yes">
+                <source>Identifier</source>
+            </trans-unit>
             <trans-unit id="inspector.iptcMetadata" xml:space="preserve" approved="yes">
                 <source>IPTC Metadata</source>
             </trans-unit>
