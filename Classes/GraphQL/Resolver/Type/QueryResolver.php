@@ -23,6 +23,7 @@ use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
+use Neos\Flow\Security\Authorization\PrivilegeManagerInterface;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
@@ -108,6 +109,12 @@ class QueryResolver implements ResolverInterface
     protected $assetProxyIteratorBuilder;
 
     /**
+     * @Flow\Inject
+     * @var PrivilegeManagerInterface
+     */
+    protected $privilegeManager;
+
+    /**
      * Returns total count of asset proxies in the given asset source
      * @noinspection PhpUnusedParameterInspection
      */
@@ -182,6 +189,9 @@ class QueryResolver implements ResolverInterface
             'uploadMaxFileSize' => $this->getMaximumFileUploadSize(),
             'uploadMaxFileUploadLimit' => $this->getMaximumFileUploadLimit(),
             'currentServerTime' => (new \DateTime())->format(DATE_W3C),
+            'canManageTags' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageTags'),
+            'canManageAssetCollections' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageAssetCollections'),
+            'canManageAssets' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageAssets'),
         ];
     }
 

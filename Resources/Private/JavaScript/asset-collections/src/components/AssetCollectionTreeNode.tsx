@@ -6,6 +6,7 @@ import { Tree } from '@neos-project/react-ui-components';
 import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { IconStack } from '@media-ui/core/src/components';
+import { useConfigQuery } from '@media-ui/core/src/hooks';
 
 import TagTreeNode from './TagTreeNode';
 import { useAssetCollectionQuery, UNASSIGNED_COLLECTION_ID } from '../hooks/useAssetCollectionQuery';
@@ -30,6 +31,7 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     children = null,
     renderChildCollections = true,
 }) => {
+    const { config } = useConfigQuery();
     const { assetCollection } = useAssetCollectionQuery(assetCollectionId);
     const { assetCollections } = useAssetCollectionsQuery();
     const [collapsed, setCollapsed] = useRecoilState(assetCollectionTreeCollapsedItemState(assetCollectionId));
@@ -82,7 +84,8 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
         );
 
     // TODO: Also check assetSource.readonly
-    const dragForbidden = !assetCollectionId || assetCollectionId === UNASSIGNED_COLLECTION_ID;
+    const dragForbidden =
+        !config.canManageAssetCollections || !assetCollectionId || assetCollectionId === UNASSIGNED_COLLECTION_ID;
 
     return (
         <Tree.Node>

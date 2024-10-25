@@ -4,6 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Button, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
+import { useConfigQuery } from '@media-ui/core/src/hooks';
 
 import { createAssetCollectionDialogVisibleState } from '../state/createAssetCollectionDialogVisibleState';
 import { assetCollectionTreeViewState } from '../state/assetCollectionTreeViewState';
@@ -12,6 +13,7 @@ import classes from './AddAssetCollectionButton.module.css';
 
 const AddAssetCollectionButton: React.FC = () => {
     const { translate } = useIntl();
+    const { config } = useConfigQuery();
     const setCreateAssetCollectionDialogState = useSetRecoilState(createAssetCollectionDialogVisibleState);
     const assetCollectionTreeView = useRecoilValue(assetCollectionTreeViewState);
 
@@ -22,7 +24,7 @@ const AddAssetCollectionButton: React.FC = () => {
             hoverStyle="brand"
             title={translate('assetCollectionTree.toolbar.createAssetCollection', 'Create new asset collection')}
             onClick={() => setCreateAssetCollectionDialogState(true)}
-            disabled={assetCollectionTreeView !== 'collections'}
+            disabled={!config.canManageAssetCollections || assetCollectionTreeView !== 'collections'}
         >
             <span className="fa-layers fa-fw">
                 <Icon icon="folder" />

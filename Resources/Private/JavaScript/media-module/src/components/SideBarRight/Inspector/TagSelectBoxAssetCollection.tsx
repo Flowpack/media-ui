@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { useIntl, useNotify } from '@media-ui/core';
+import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
 import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/feature-asset-collections';
 
@@ -21,6 +22,7 @@ const tagsMatchAssetCollection = (tags: Tag[], assetCollection: AssetCollection)
 
 const TagSelectBoxAssetCollection = () => {
     const Notify = useNotify();
+    const { config } = useConfigQuery();
     const { translate } = useIntl();
     const { tags: allTags } = useTagsQuery();
     const { updateAssetCollection } = useUpdateAssetCollection();
@@ -56,7 +58,14 @@ const TagSelectBoxAssetCollection = () => {
 
     if (!selectedAssetCollection) return null;
 
-    return <TagSelectBox values={tagIds} options={allTags} onChange={handleChange} />;
+    return (
+        <TagSelectBox
+            disabled={!config.canManageAssetCollections}
+            values={tagIds}
+            options={allTags}
+            onChange={handleChange}
+        />
+    );
 };
 
 export default React.memo(TagSelectBoxAssetCollection);

@@ -4,6 +4,7 @@ import { useSetRecoilState } from 'recoil';
 import { IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
+import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { useDeleteTag, useSelectedTag } from '@media-ui/feature-asset-tags';
 
@@ -12,6 +13,7 @@ import useSelectedAssetCollection from '../hooks/useSelectedAssetCollection';
 
 const DeleteButton: React.FC = () => {
     const { translate } = useIntl();
+    const { config } = useConfigQuery();
     const Notify = useNotify();
     const { approvalAttainmentStrategy } = useMediaUi();
     const selectedAssetCollection = useSelectedAssetCollection();
@@ -71,7 +73,10 @@ const DeleteButton: React.FC = () => {
             size="regular"
             style="transparent"
             hoverStyle="error"
-            disabled={!selectedAssetCollection && !selectedTag}
+            disabled={
+                (!selectedAssetCollection || !config.canManageAssetCollections) &&
+                (!selectedTag || !config.canManageTags)
+            }
             title={translate('assetCollectionTree.toolbar.delete', 'Delete')}
             onClick={onClickDelete}
         />
