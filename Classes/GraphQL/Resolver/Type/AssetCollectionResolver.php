@@ -17,6 +17,8 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Repository\AssetRepository;
+use Neos\Neos\Domain\Model\Site;
+use Neos\Neos\Domain\Repository\SiteRepository;
 use t3n\GraphQL\ResolverInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
@@ -44,6 +46,14 @@ class AssetCollectionResolver implements ResolverInterface
      */
     protected $assetCollectionService;
 
+    /**
+     * @Flow\Inject
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
+    protected array|null $siteDefaultAssetCollections = null;
+
     public function id(AssetCollection $assetCollection): string
     {
         return $this->persistenceManager->getIdentifierByObject($assetCollection);
@@ -52,5 +62,26 @@ class AssetCollectionResolver implements ResolverInterface
     public function assetCount(AssetCollection $assetCollection): int
     {
         return $this->assetCollectionService->getAssetCollectionAssetCount($this->id($assetCollection));
+    }
+
+    /**
+     * Returns true if the asset collection is empty and is not assigned as default collection for a site
+     */
+    public function canDelete(AssetCollection $assetCollection): bool
+    {
+        if ($this->siteDefaultAssetCollections === null) {
+            $this->siteDefaultAssetCollections = [];
+            /** @var Site $site */
+            foreach ($this->siteRepository->findAll() as $site) {
+                $siteAssetCollection = $site->getAssetCollection();
+                if (!$siteAssetCollection) {
+                    continue;
+                }
+                $this->siteDefaultAssetCollections[$this->id($site->getAssetCollection())] = true;
+            }
+        }
+
+        return !array_key_exists($this->id($assetCollection), $this->siteDefaultAssetCollections)
+            && $this->assetCount($assetCollection) === 0;
     }
 }

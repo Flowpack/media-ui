@@ -14,6 +14,7 @@ export const ASSET_COLLECTION_FRAGMENT = gql`
         }
         assetCount
         path
+        canDelete
     }
     ${TAG_FRAGMENT}
 `;
