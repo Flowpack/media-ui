@@ -6,6 +6,9 @@ const CONFIG = gql`
             uploadMaxFileSize
             uploadMaxFileUploadLimit
             currentServerTime
+            canManageAssetCollections
+            canManageTags
+            canManageAssets
         }
     }
 `;

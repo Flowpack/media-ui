@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { TextInput } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify } from '@media-ui/core';
+import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
 import { useSelectedTag, useUpdateTag } from '@media-ui/feature-asset-tags';
 
@@ -16,6 +17,7 @@ const TagInspector = () => {
     const selectedTag = useSelectedTag();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();
+    const { config } = useConfigQuery();
     const { translate } = useIntl();
     const [label, setLabel] = useState<string>(null);
 
@@ -54,14 +56,22 @@ const TagInspector = () => {
     return (
         <InspectorContainer>
             <Property label={translate('inspector.label', 'Label')}>
-                <TextInput type="text" value={label || ''} onChange={setLabel} onEnterKey={handleApply} />
+                <TextInput
+                    type="text"
+                    value={label || ''}
+                    onChange={setLabel}
+                    onEnterKey={handleApply}
+                    disabled={!config.canManageTags}
+                />
             </Property>
 
-            <Actions
-                handleApply={handleApply}
-                handleDiscard={handleDiscard}
-                hasUnpublishedChanges={hasUnpublishedChanges}
-            />
+            {config.canManageTags && (
+                <Actions
+                    handleApply={handleApply}
+                    handleDiscard={handleDiscard}
+                    hasUnpublishedChanges={hasUnpublishedChanges}
+                />
+            )}
         </InspectorContainer>
     );
 };

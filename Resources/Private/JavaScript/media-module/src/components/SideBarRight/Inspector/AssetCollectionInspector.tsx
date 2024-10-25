@@ -5,6 +5,7 @@ import { TextInput } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify } from '@media-ui/core';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
+import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/feature-asset-collections';
 
 import { TagSelectBoxAssetCollection } from '.';
@@ -15,6 +16,7 @@ import ParentCollectionSelectBox from './ParentCollectionSelectBox';
 
 // TASK: Move into media module package
 const AssetCollectionInspector = () => {
+    const { config } = useConfigQuery();
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();
@@ -65,15 +67,23 @@ const AssetCollectionInspector = () => {
     return (
         <InspectorContainer>
             <Property label={translate('inspector.title', 'Title')}>
-                <TextInput type="text" value={title} onChange={handleChange} onEnterKey={handleApply} />
+                <TextInput
+                    type="text"
+                    value={title}
+                    onChange={handleChange}
+                    onEnterKey={handleApply}
+                    disabled={!config.canManageAssetCollections}
+                />
             </Property>
 
-            <Actions
-                handleApply={handleApply}
-                handleDiscard={handleDiscard}
-                hasUnpublishedChanges={hasUnpublishedChanges}
-                inputValid={!!title}
-            />
+            {config.canManageAssetCollections && (
+                <Actions
+                    handleApply={handleApply}
+                    handleDiscard={handleDiscard}
+                    hasUnpublishedChanges={hasUnpublishedChanges}
+                    inputValid={!!title}
+                />
+            )}
 
             <TagSelectBoxAssetCollection />
             <ParentCollectionSelectBox />

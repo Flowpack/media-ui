@@ -84,6 +84,21 @@ Neos:
           useNewMediaSelection: false
 ``` 
 
+#### Privileges
+
+By default any editor (Neos.Neos:AbstractEditor) can access the new media module and manage assets, tags and collections.
+
+To adjust the privileges you can use the following privilege targets for any role:
+
+```yaml
+- privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
+  permission: GRANT
+- privilegeTarget: 'Flowpack.Media.Ui:ManageTags'
+  permission: GRANT
+- privilegeTarget: 'Flowpack.Media.Ui:ManageAssetCollections'
+  permission: GRANT
+```
+
 #### Hierarchical asset collections
 
 This package will enable a hierarchical asset collection structure via AOP (until the feature is in the Neos core).
