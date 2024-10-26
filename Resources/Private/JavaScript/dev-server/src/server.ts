@@ -164,6 +164,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 uploadMaxFileSize: 1024 * 1024,
                 uploadMaxFileUploadLimit: 2,
                 currentServerTime: new Date(),
+                canManageAssetCollections: true,
+                canManageTags: true,
+                canManageAssets: true,
             }),
         },
         Mutation: {
