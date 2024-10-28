@@ -56,7 +56,6 @@
     "@types/react-dom": "^17.0.20",
     "@types/react-dropzone": "^5.1.0",
     "apollo-server-express": "^2.26.1",
-    "node-sass": "^8.0.0",
     "parcel": "^2.9.1"
   }
 }
