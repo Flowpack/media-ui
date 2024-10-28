@@ -19,6 +19,7 @@ const DEFAULT_CONFIG: ConfigQueryResult = {
         uploadMaxFileSize: 0,
         uploadMaxFileUploadLimit: 0,
         currentServerTime: new Date(),
+        defaultAssetCollectionId: null,
         canManageAssetCollections: false,
         canManageTags: false,
         canManageAssets: false,
