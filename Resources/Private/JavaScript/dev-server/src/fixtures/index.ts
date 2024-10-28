@@ -77,6 +77,7 @@ const assetCollections: AssetCollection[] = range(3).map((index) => ({
             : null,
     // TODO: Recalculate assetCount of assetCollections after generation of assets
     assetCount: 0,
+    canDelete: true,
 }));
 
 const getUsageDetailsForAsset = (assetId: string): UsageDetailsGroup[] => {
@@ -154,6 +155,17 @@ const assets = range(150).map((index) => {
     const isCloud = index > 120;
     const filename = getExampleFilename(index);
 
+    const collectionsForAsset = range(index % 2).map(
+        (i) => assetCollections[(i * 2 + index) % assetCollections.length]
+    );
+
+    collectionsForAsset.forEach((collection) => {
+        collection.assetCount++;
+        collection.canDelete = false;
+    });
+
+    const tagsForAsset = range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]);
+
     return {
         __typename: 'Asset',
         id: index.toString(),
@@ -163,8 +175,8 @@ const assets = range(150).map((index) => {
         label: `Example asset ${index + 1}`,
         caption: `The caption for example asset ${index + 1}`,
         filename: 'example1.jpg',
-        tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
-        collections: range(index % 2).map((i) => assetCollections[(i * 2 + index) % assetCollections.length]),
+        tags: tagsForAsset,
+        collections: collectionsForAsset,
         copyrightNotice: 'The Neos team',
         lastModified: new Date(`2020-06-16 15:${Math.floor((150 - index) / 60)}:${(150 - index) % 60}`),
         iptcProperties: index % 5 === 0 ? getIptcProperties(index) : [],
