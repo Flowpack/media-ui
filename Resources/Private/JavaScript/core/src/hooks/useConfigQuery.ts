@@ -7,6 +7,7 @@ interface ConfigQueryResult {
         uploadMaxFileSize: number;
         uploadMaxFileUploadLimit: number;
         currentServerTime: Date;
+        defaultAssetCollectionId: AssetCollectionId | null;
         canManageAssetCollections: boolean;
         canManageTags: boolean;
         canManageAssets: boolean;

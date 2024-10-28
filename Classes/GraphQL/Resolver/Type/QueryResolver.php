@@ -19,6 +19,7 @@ use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyIteratorBuilder;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
+use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
@@ -115,6 +116,12 @@ class QueryResolver implements ResolverInterface
     protected $privilegeManager;
 
     /**
+     * @Flow\Inject
+     * @var AssetCollectionService
+     */
+    protected $assetCollectionService;
+
+    /**
      * Returns total count of asset proxies in the given asset source
      * @noinspection PhpUnusedParameterInspection
      */
@@ -185,10 +192,13 @@ class QueryResolver implements ResolverInterface
      */
     public function config($_): array
     {
+        $defaultAssetCollection = $this->assetCollectionService->getDefaultCollectionForCurrentSite();
+
         return [
             'uploadMaxFileSize' => $this->getMaximumFileUploadSize(),
             'uploadMaxFileUploadLimit' => $this->getMaximumFileUploadLimit(),
             'currentServerTime' => (new \DateTime())->format(DATE_W3C),
+            'defaultAssetCollectionId' => $defaultAssetCollection ? $this->persistenceManager->getIdentifierByObject($defaultAssetCollection) : null,
             'canManageTags' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageTags'),
             'canManageAssetCollections' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageAssetCollections'),
             'canManageAssets' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageAssets'),
