@@ -3,7 +3,7 @@
     "description": "This module allows managing media assets including pictures, videos, audio and documents.",
     "type": "neos-package",
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.1",
         "neos/media": "^7.3 || ~8.0",
         "neos/neos": "^7.3 || ~8.0",
         "neos/neos-ui": "^7.3 || ~8.0",
