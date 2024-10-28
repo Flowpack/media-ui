@@ -35,6 +35,9 @@
             <trans-unit id="uploadDialog.label.uploading" xml:space="preserve" approved="yes">
                 <source>Uploading…</source>
             </trans-unit>
+            <trans-unit id="uploadDialog.uploadFinished" xml:space="preserve" approved="yes">
+                <source>Upload finished</source>
+            </trans-unit>
             <trans-unit id="uploadDialog.fileList.successfulUploadsHeader" xml:space="preserve" approved="yes">
                 <source>Successful uploads</source>
             </trans-unit>
@@ -114,6 +117,15 @@
             </trans-unit>
             <trans-unit id="actions.deleteAssets.confirm.buttonLabel" xml:space="preserve" approved="yes">
                 <source>Yes, proceed with deleting the assets</source>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.noProxy" xml:space="preserve" approved="yes">
+                <source>Asset could not be resolved</source>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.noImportExists" xml:space="preserve" approved="yes">
+                <source>Cannot delete asset that was never imported</source>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.success" xml:space="preserve" approved="yes">
+                <source>Asset deleted</source>
             </trans-unit>
             <trans-unit id="clipboard.deleteAssets.success" xml:space="preserve" approved="yes">
                 <source>The assets have been deleted</source>
@@ -715,7 +727,10 @@
                 <source>Not supported: AssetProxyQueryInterface::setLimit does not accept `null`.</source>
             </trans-unit>
             <trans-unit id="errors.1619178077.message" xml:space="preserve" approved="yes">
-                <source>This method requires "flowpack/entity-usage-databasestorage" to be installed.'</source>
+                <source>This method requires "flowpack/entity-usage-databasestorage" to be installed.</source>
+            </trans-unit>
+            <trans-unit id="errors.1462196420.message" xml:space="preserve" approved="yes">
+                <source>Asset could not be deleted, because it is still in use.</source>
             </trans-unit>
         </body>
     </file>

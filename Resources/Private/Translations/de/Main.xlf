@@ -45,6 +45,10 @@
                 <source>Uploading…</source>
                 <target>Hochladen…</target>
             </trans-unit>
+            <trans-unit id="uploadDialog.uploadFinished" xml:space="preserve" approved="yes">
+                <source>Upload finished</source>
+                <target>Der Upload wurde abgeschlossen</target>
+            </trans-unit>
             <trans-unit id="uploadDialog.fileList.successfulUploadsHeader" xml:space="preserve" approved="yes">
                 <source>Successful uploads</source>
                 <target>Erfolgreiche Uploads</target>
@@ -158,6 +162,18 @@
             <trans-unit id="clipboard.deleteAssets.error" xml:space="preserve" approved="yes">
                 <source>Error while trying to delete the assets</source>
                 <target>Fehler beim Löschen der Dateien</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.noProxy" xml:space="preserve" approved="yes">
+                <source>Asset could not be resolved</source>
+                <target>Datei konnte nicht gefunden werden</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.noImportExists" xml:space="preserve" approved="yes">
+                <source>Cannot delete asset that was never imported</source>
+                <target>Die Datei kann nicht gelöscht werden, da sie nie importiert wurde.</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.success" xml:space="preserve" approved="yes">
+                <source>Asset deleted</source>
+                <target>Datei gelöscht</target>
             </trans-unit>
             <trans-unit id="clipboard.flush" xml:space="preserve" approved="yes">
                 <source>Flush clipboard</source>
@@ -935,6 +951,10 @@
             <trans-unit id="errors.1619178077.message" xml:space="preserve" approved="yes">
                 <source>This method requires "flowpack/entity-usage-databasestorage" to be installed.'</source>
                 <target>Diese Methode erfordert die Installation von "flowpack/entity-usage-databasestorage".</target>
+            </trans-unit>
+            <trans-unit id="errors.1462196420.message" xml:space="preserve" approved="yes">
+                <source>Asset could not be deleted, because it is still in use.</source>
+                <target>Die Asset konnte nicht gelöscht werden, da sie noch verwendet wird.</target>
             </trans-unit>
         </body>
     </file>
