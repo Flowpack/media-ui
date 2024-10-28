@@ -408,9 +408,12 @@ class MutationResolver implements ResolverInterface
                         if ($assetCollectionId) {
                             /** @var AssetCollection $assetCollection */
                             $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
-                            if ($assetCollection) {
-                                $asset->setAssetCollections(new ArrayCollection([$assetCollection]));
-                            }
+                        } else {
+                            // Assign the asset to the asset collection of the site it has been uploaded to
+                            $assetCollection = $this->assetCollectionService->getDefaultCollectionForCurrentSite();
+                        }
+                        if ($assetCollection) {
+                            $asset->setAssetCollections(new ArrayCollection([$assetCollection]));
                         }
 
                         $this->assetRepository->add($asset);
