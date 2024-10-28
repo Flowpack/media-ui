@@ -279,7 +279,7 @@ type AssetCollection {
     tags: [Tag!]!
     assetCount: Int!
     path: AssetCollectionPath
-    canEdit: Boolean!
+    canDelete: Boolean!
 }
 
 """

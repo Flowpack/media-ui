@@ -13,4 +13,5 @@ interface AssetCollection extends GraphQlEntity {
     tags?: Tag[];
     assetCount: number;
     path?: string;
+    canDelete: boolean;
 }

@@ -652,10 +652,13 @@ class MutationResolver implements ResolverInterface
             throw new Exception('Asset collection not found', 1591972269);
         }
 
+        if ($this->assetCollectionService->getAssetCollectionAssetCount($id) > 0) {
+            throw new Exception('Asset collection is not empty', 1730102095);
+        }
+
         /** @noinspection PhpUndefinedMethodInspection */
-        foreach ($this->siteRepository->findByAssetCollection($assetCollection) as $site) {
-            $site->setAssetCollection(null);
-            $this->siteRepository->update($site);
+        if ($this->siteRepository->findOneByAssetCollection($assetCollection)) {
+            throw new Exception('Asset collection is referenced as default collection of a site', 1730101671);
         }
 
         $this->assetCollectionRepository->remove($assetCollection);
