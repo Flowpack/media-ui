@@ -4,6 +4,7 @@ import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
+import { useConfigQuery } from '@media-ui/core/src/hooks';
 import {
     collectionPath,
     useAssetCollectionsQuery,
@@ -17,6 +18,7 @@ import * as classes from './ParentCollectionSelectBox.module.css';
 
 const ParentCollectionSelectBox = () => {
     const Notify = useNotify();
+    const { config } = useConfigQuery();
     const { translate } = useIntl();
     const { approvalAttainmentStrategy } = useMediaUi();
     const { assetCollections } = useAssetCollectionsQuery();
@@ -96,7 +98,7 @@ const ParentCollectionSelectBox = () => {
             </Headline>
             <SelectBox
                 className={classes.collectionSelectBox}
-                disabled={loading || filteredSelectBoxOptions.length === 0}
+                disabled={!config.canManageAssetCollections || loading || filteredSelectBoxOptions.length === 0}
                 placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
                 value={selectedAssetCollection.parent?.id}
                 optionValueField="id"
