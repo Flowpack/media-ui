@@ -9,15 +9,18 @@ const createErrorHandler = (notify: NeosNotification) => {
         if (graphQLErrors) {
             graphQLErrors.map((data) => {
                 const isInternalError = data.extensions.category === 'internal';
-                let errorTitleLabel = isInternalError ? 'errors.internal.title' : 'errors.graphql.title';
+                const defaultErrorTitle = isInternalError
+                    ? translate('errors.internal.title', 'Internal server error')
+                    : translate('errors.graphql.title', 'Communication error');
                 let errorMessageLabel = '';
+                let errorTitleLabel = '';
                 if (data.extensions.errorCode) {
                     errorTitleLabel = `errors.${data.extensions.errorCode}.title`;
                     errorMessageLabel = `errors.${data.extensions.errorCode}.message`;
                 }
 
                 notify.error(
-                    translate(errorTitleLabel),
+                    translate(errorTitleLabel, defaultErrorTitle),
                     errorMessageLabel.length ? translate(errorMessageLabel) : data.message
                 );
             });

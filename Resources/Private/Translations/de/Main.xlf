@@ -45,6 +45,10 @@
                 <source>Uploading…</source>
                 <target>Hochladen…</target>
             </trans-unit>
+            <trans-unit id="uploadDialog.uploadFinished" xml:space="preserve" approved="yes">
+                <source>Upload finished</source>
+                <target>Der Upload wurde abgeschlossen</target>
+            </trans-unit>
             <trans-unit id="uploadDialog.fileList.successfulUploadsHeader" xml:space="preserve" approved="yes">
                 <source>Successful uploads</source>
                 <target>Erfolgreiche Uploads</target>
@@ -92,6 +96,18 @@
             <trans-unit id="uploadDialog.cancel" xml:space="preserve" approved="yes">
                 <source>Cancel</source>
                 <target>Abbrechen</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.uploadFinishedWithErrors" xml:space="preserve" approved="yes">
+                <source>Some files could not be uploaded</source>
+                <target>Einige Dateien konnten nicht hochgeladen werden</target>
+            </trans-unit>
+            <trans-unit id="uploadDialog.warning.fileRejected" xml:space="preserve" approved="yes">
+                <source>The given file cannot be uploaded.</source>
+                <target>Die Datei kann nicht hochgeladen werden.</target>
+            </trans-unit>
+            <trans-unit id="fileUpload.error" xml:space="preserve" approved="yes">
+                <source>Upload failed</source>
+                <target>Upload fehlgeschlagen</target>
             </trans-unit>
 
             <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
@@ -159,9 +175,25 @@
                 <source>Error while trying to delete the assets</source>
                 <target>Fehler beim Löschen der Dateien</target>
             </trans-unit>
+            <trans-unit id="actions.deleteAssets.noProxy" xml:space="preserve" approved="yes">
+                <source>Asset could not be resolved</source>
+                <target>Datei konnte nicht gefunden werden</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.noImportExists" xml:space="preserve" approved="yes">
+                <source>Cannot delete asset that was never imported</source>
+                <target>Die Datei kann nicht gelöscht werden, da sie nie importiert wurde.</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssets.success" xml:space="preserve" approved="yes">
+                <source>Asset deleted</source>
+                <target>Datei gelöscht</target>
+            </trans-unit>
             <trans-unit id="clipboard.flush" xml:space="preserve" approved="yes">
                 <source>Flush clipboard</source>
                 <target>Zwischenablage leeren</target>
+            </trans-unit>
+            <trans-unit id="clipboard.assetNotLoaded" xml:space="preserve" approved="yes">
+                <source>Cannot select asset as it couldn't be loaded</source>
+                <target>Die Datei konnte nicht geladen werden und kann daher nicht ausgewählt werden</target>
             </trans-unit>
             <trans-unit id="actions.flushClipboard.confirm.title" xml:space="preserve" approved="yes">
                 <source>Flush clipboard</source>
@@ -238,6 +270,38 @@
                 <source>Yes, proceed with deleting the asset</source>
                 <target>Ja, mit dem Löschen fortfahren</target>
             </trans-unit>
+            <trans-unit id="actions.updateAsset.success" xml:space="preserve" approved="yes">
+                <source>The asset has been updated</source>
+                <target>Die Datei wurde aktualisiert</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAsset.error" xml:space="preserve" approved="yes">
+                <source>Error while updating the asset</source>
+                <target>Fehler beim Aktualisieren der Datei</target>
+            </trans-unit>
+            <trans-unit id="actions.updateTag.success" xml:space="preserve" approved="yes">
+                <source>The tag has been updated</source>
+                <target>Der Tag wurde aktualisiert</target>
+            </trans-unit>
+            <trans-unit id="actions.updateTag.error" xml:space="preserve" approved="yes">
+                <source>Error while updating the tag</source>
+                <target>Fehler beim Aktualisieren des Tags</target>
+            </trans-unit>
+            <trans-unit id="actions.setAssetTags.success" xml:space="preserve" approved="yes">
+                <source>The asset has been tagged</source>
+                <target>Die Tags der Datei wurde aktualisiert</target>
+            </trans-unit>
+            <trans-unit id="actions.setAssetTags.error" xml:space="preserve" approved="yes">
+                <source>Error while tagging the asset</source>
+                <target>Fehler beim Taggen der Datei</target>
+            </trans-unit>
+            <trans-unit id="actions.updateAssetCollection.success" xml:space="preserve" approved="yes">
+                <source>The asset collection has been updated</source>
+                <target>Die Sammlung wurde aktualisiert</target>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssetCollection.error" xml:space="preserve" approved="yes">
+                <source>Error while updating the asset collection</source>
+                <target>Fehler beim Aktualisieren der Sammlung</target>
+            </trans-unit>
 
             <!-- asset preview -->
 
@@ -300,6 +364,15 @@
                 <source>Untagged</source>
                 <target>Nicht getaggt</target>
             </trans-unit>
+            <trans-unit id="ParentCollectionSelectBox.setParent.success" xml:space="preserve" approved="yes">
+                <source>The parent collection has been set</source>
+                <target>Die übergeordnete Sammlung wurde gesetzt</target>
+            </trans-unit>
+            <trans-unit id="ParentCollectionSelectBox.setParent.error" xml:space="preserve" approved="yes">
+                <source>Error while setting the parent collection</source>
+                <target>Fehler beim Setzen der übergeordneten Sammlung</target>
+            </trans-unit>
+
 
             <!-- asset collection/tag actions -->
 
@@ -371,6 +444,15 @@
                 <source>Error while trying to delete the tag</source>
                 <target>Fehler beim Löschen des Tags</target>
             </trans-unit>
+            <trans-unit id="actions.tagAssetCollection.error" xml:space="preserve" approved="yes">
+                <source>Error while tagging the asset collection</source>
+                <target>Fehler beim Taggen der Sammlung</target>
+            </trans-unit>
+            <trans-unit id="actions.tagAssetCollection.success" xml:space="preserve" approved="yes">
+                <source>The asset collection has been tagged</source>
+                <target>Die Sammlung wurde getaggt</target>
+            </trans-unit>
+
 
             <!-- asset sources -->
 
@@ -609,6 +691,15 @@
                 <source>Identifier</source>
                 <target>Bezeichner</target>
             </trans-unit>
+            <trans-unit id="actions.setAssetCollections.success" xml:space="preserve" approved="yes">
+                <source>The collections for the asset have been set</source>
+                <target>Die Sammlungen für die Datei wurden angepasst</target>
+            </trans-unit>
+            <trans-unit id="actions.setAssetCollections.error" xml:space="preserve" approved="yes">
+                <source>Error while setting the collections for the asset</source>
+                <target>Fehler beim Anpassen der Sammlungen für die Datei</target>
+            </trans-unit>
+
 
             <!-- similar assets dialog -->
 
@@ -661,6 +752,14 @@
             <trans-unit id="editAssetDialog.updating" xml:space="preserve" approved="yes">
                 <source>Updating…</source>
                 <target>Wird geändert…</target>
+            </trans-unit>
+            <trans-unit id="EditAssetDialog.updateFinished" xml:space="preserve" approved="yes">
+                <source>Update finished</source>
+                <target>Änderung abgeschlossen</target>
+            </trans-unit>
+            <trans-unit id="EditAssetDialog.updateError" xml:space="preserve" approved="yes">
+                <source>Update failed</source>
+                <target>Änderung fehlgeschlagen</target>
             </trans-unit>
 
             <!-- Labels for the asset-usage package -->
@@ -762,6 +861,184 @@
                 <target>Gehe zu nächster Seite</target>
             </trans-unit>
 
+            <!-- error handling -->
+
+            <trans-unit id="errors.internal.title" xml:space="preserve" approved="yes">
+                <source>Internal server error</source>
+                <target>Interner Serverfehler</target>
+            </trans-unit>
+            <trans-unit id="errors.graphql.title" xml:space="preserve" approved="yes">
+                <source>Communication error</source>
+                <target>Kommunikationsfehler</target>
+            </trans-unit>
+            <trans-unit id="errors.1603921233w.title" xml:space="preserve" approved="yes">
+                <source>Failed to create tag</source>
+                <target>Tag-Erstellung fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="errors.1603921233.message" xml:space="preserve" approved="yes">
+                <source>This tag is already exists. Please choose a different one.</source>
+                <target>Dieser Tag existiert bereits. Bitte wählen Sie einen anderen aus.</target>
+            </trans-unit>
+            <trans-unit id="errors.1509632861.message" xml:space="preserve" approved="yes">
+                <source>The specified asset was not found.</source>
+                <target>Die angegebene Datei wurde nicht gefunden.</target>
+            </trans-unit>
+            <trans-unit id="errors.1678330583.message" xml:space="preserve" approved="yes">
+                <source>Parent must be an AssetCollection</source>
+                <target>Übergeordnetes Element muss eine Sammlung sein</target>
+            </trans-unit>
+            <trans-unit id="errors.1678085489.message" xml:space="preserve" approved="yes">
+                <source>Invalid metadata definition</source>
+                <target>Ungültige Metadaten-Definition</target>
+            </trans-unit>
+            <trans-unit id="errors.1591537315.message" xml:space="preserve" approved="yes">
+                <source>Failed to delete asset</source>
+                <target>Datei-Löschung fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="errors.1590659044.message" xml:space="preserve" approved="yes">
+                <source>Cannot update asset that was never imported</source>
+                <target>Die Datei kann nicht aktualisiert werden, da sie nie importiert wurde</target>
+            </trans-unit>
+            <trans-unit id="errors.1590659063.message" xml:space="preserve" approved="yes">
+                <source>Failed to update asset</source>
+                <target>Datei-Aktualisierung fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="errors.1591561758.message" xml:space="preserve" approved="yes">
+                <source>Cannot tag asset that was never imported</source>
+                <target>Die Datei kann nicht getaggt werden, da sie nie importiert wurde</target>
+            </trans-unit>
+            <trans-unit id="errors.1619081662.message" xml:space="preserve" approved="yes">
+                <source>Asset type does not support tagging</source>
+                <target>Datei-Typ unterstützt keine Tags</target>
+            </trans-unit>
+            <trans-unit id="errors.1591561845.message" xml:space="preserve" approved="yes">
+                <source>Cannot tag asset with tag that does not exist</source>
+                <target>Die Datei kann nicht mit einem nicht existierenden Tag versehen werden</target>
+            </trans-unit>
+            <trans-unit id="errors.1591561868.message" xml:space="preserve" approved="yes">
+                <source>Failed to update asset</source>
+                <target>Datei-Aktualisierung fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="errors.1594621322.message" xml:space="preserve" approved="yes">
+                <source>Cannot tag asset that was never imported</source>
+                <target>Die Datei kann nicht getaggt werden, da sie nie importiert wurde</target>
+            </trans-unit>
+            <trans-unit id="errors.1619081714.message" xml:space="preserve" approved="yes">
+                <source>Asset type does not support tagging</source>
+                <target>Datei-Typ unterstützt keine Tags</target>
+            </trans-unit>
+            <trans-unit id="errors.1594621318.message" xml:space="preserve" approved="yes">
+                <source>Cannot tag asset with tag that does not exist</source>
+                <target>Die Datei kann nicht mit einem nicht existierenden Tag versehen werden</target>
+            </trans-unit>
+            <trans-unit id="errors.1594621296.message" xml:space="preserve" approved="yes">
+                <source>Failed to set asset tags</source>
+                <target>Setzen der Datei-Tags fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="errors.1594621322.message" xml:space="preserve" approved="yes">
+                <source>Cannot assign collections to asset that was never imported</source>
+                <target>Sammlungen können nicht zu einer Datei zugewiesen werden, das nie importiert wurde</target>
+            </trans-unit>
+            <trans-unit id="errors.1619081722.message" xml:space="preserve" approved="yes">
+                <source>Asset type does not support collections</source>
+                <target>Datei-Typ unterstützt keine Sammlungen</target>
+            </trans-unit>
+            <trans-unit id="errors.1594621318.message" xml:space="preserve" approved="yes">
+                <source>Cannot assign non existing assign collection to asset</source>
+                <target>Nicht existierende Sammlung kann nicht zugewiesen werden</target>
+            </trans-unit>
+            <trans-unit id="errors.1594621296.message" xml:space="preserve" approved="yes">
+                <source>Failed to assign asset collections</source>
+                <target>Zuweisung der Datei-Sammlungen fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="errors.1591561930.message" xml:space="preserve" approved="yes">
+                <source>Cannot untag asset that was never imported</source>
+                <target>Das Tag der Datei kann nicht entfernt werden, da sie nie importiert wurde</target>
+            </trans-unit>
+            <trans-unit id="errors.1619081740.message" xml:space="preserve" approved="yes">
+                <source>Asset type does not support tagging</source>
+                <target>Datei-Typ unterstützt keine Tags</target>
+            </trans-unit>
+            <trans-unit id="errors.1591561934.message" xml:space="preserve" approved="yes">
+                <source>Cannot untag asset from tag that does not exist</source>
+                <target>Datei kann nicht von einem nicht existierenden Tag entfernt werden</target>
+            </trans-unit>
+            <trans-unit id="errors.1591561938.message" xml:space="preserve" approved="yes">
+                <source>Failed to update asset</source>
+                <target>Datei-Aktualisierung fehlgeschlagen</target>
+            </trans-unit>
+            <trans-unit id="errors.1678113903.message" xml:space="preserve" approved="yes">
+                <source>No proxy found for asset</source>
+                <target>Kein Proxy für diese Datei gefunden</target>
+            </trans-unit>
+            <trans-unit id="errors.1648046173.message" xml:space="preserve" approved="yes">
+                <source>Cannot replace asset that was never imported</source>
+                <target>Datei kann nicht ersetzt werden, da sie nie importiert wurde</target>
+            </trans-unit>
+            <trans-unit id="errors.1648046186.message" xml:space="preserve" approved="yes">
+                <source>Asset type does not support replacing</source>
+                <target>Datei-Typ unterstützt kein Ersetzen</target>
+            </trans-unit>
+            <trans-unit id="errors.1678156902.message" xml:space="preserve" approved="yes">
+                <source>Filename was empty</source>
+                <target>Dateiname war leer</target>
+            </trans-unit>
+            <trans-unit id="errors.1678113903.message" xml:space="preserve" approved="yes">
+                <source>No proxy found for asset</source>
+                <target>Kein Proxy für die Datei gefunden</target>
+            </trans-unit>
+            <trans-unit id="errors.1678155884.message" xml:space="preserve" approved="yes">
+                <source>Cannot rename asset that was never imported</source>
+                <target>Datei kann nicht umbenannt werden, da sie nie importiert wurde</target>
+            </trans-unit>
+            <trans-unit id="errors.1678155887.message" xml:space="preserve" approved="yes">
+                <source>Asset type does not support renaming</source>
+                <target>Datei-Typ unterstützt kein Umbenennen</target>
+            </trans-unit>
+            <trans-unit id="errors.1591972264.message" xml:space="preserve" approved="yes">
+                <source>Could not import asset</source>
+                <target>Datei konnte nicht importiert werden</target>
+            </trans-unit>
+            <trans-unit id="errors.1591972269.message" xml:space="preserve" approved="yes">
+                <source>Asset collection not found</source>
+                <target>Datei-Sammlung nicht gefunden</target>
+            </trans-unit>
+            <trans-unit id="errors.1590659045.message" xml:space="preserve" approved="yes">
+                <source>Asset collection not found</source>
+                <target>Datei-Sammlung nicht gefunden</target>
+            </trans-unit>
+            <trans-unit id="errors.1594621319.message" xml:space="preserve" approved="yes">
+                <source>Cannot tag asset collection with tag that does not exist</source>
+                <target>Die Datei-Sammlung kann nicht mit einem nicht existierenden Tag versehen werden</target>
+            </trans-unit>
+            <trans-unit id="errors.1681999816.message" xml:space="preserve" approved="yes">
+                <source>Asset collection not found</source>
+                <target>Datei-Sammlung nicht gefunden</target>
+            </trans-unit>
+            <trans-unit id="errors.1681999836.message" xml:space="preserve" approved="yes">
+                <source>Parent asset collection not found</source>
+                <target>Übergeordnete Datei-Sammlung nicht gefunden</target>
+            </trans-unit>
+            <trans-unit id="errors.1590659046.message" xml:space="preserve" approved="yes">
+                <source>Tag not found</source>
+                <target>Tag nicht gefunden</target>
+            </trans-unit>
+            <trans-unit id="errors.1591553709.message" xml:space="preserve" approved="yes">
+                <source>Tag not found</source>
+                <target>Tag nicht gefunden</target>
+            </trans-unit>
+            <trans-unit id="errors.1669221347.message" xml:space="preserve" approved="yes">
+                <source>Not supported: AssetProxyQueryInterface::setLimit does not accept `null`.</source>
+                <target>Nicht unterstützt: AssetProxyQueryInterface::setLimit akzeptiert kein `null`.</target>
+            </trans-unit>
+            <trans-unit id="errors.1619178077.message" xml:space="preserve" approved="yes">
+                <source>This method requires "flowpack/entity-usage-databasestorage" to be installed.'</source>
+                <target>Diese Methode erfordert die Installation von "flowpack/entity-usage-databasestorage".</target>
+            </trans-unit>
+            <trans-unit id="errors.1462196420.message" xml:space="preserve" approved="yes">
+                <source>Asset could not be deleted, because it is still in use.</source>
+                <target>Die Datei konnte nicht gelöscht werden, da sie noch verwendet wird.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
