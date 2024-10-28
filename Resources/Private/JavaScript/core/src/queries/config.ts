@@ -6,6 +6,7 @@ const CONFIG = gql`
             uploadMaxFileSize
             uploadMaxFileUploadLimit
             currentServerTime
+            defaultAssetCollectionId
             canManageAssetCollections
             canManageTags
             canManageAssets
