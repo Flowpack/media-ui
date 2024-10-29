@@ -164,6 +164,9 @@ type Config {
     uploadMaxFileSize: FileSize!
     uploadMaxFileUploadLimit: Int!
     currentServerTime: DateTime!
+    canManageAssetCollections: Boolean!
+    canManageTags: Boolean!
+    canManageAssets: Boolean!
 }
 
 """

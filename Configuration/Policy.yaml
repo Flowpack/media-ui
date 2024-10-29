@@ -1,12 +1,21 @@
 privilegeTargets:
   'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
     'Flowpack.Media.Ui:ManageAssets':
+      label: 'Manage anything related to assets'
       matcher: 'method(Flowpack\Media\Ui\GraphQL\Resolver\Type\MutationResolver->.*())'
+    'Flowpack.Media.Ui:ManageTags':
+      label: 'Manage tags'
+      matcher: 'method(Flowpack\Media\Ui\GraphQL\Resolver\Type\MutationResolver->(create|delete|update)Tag())'
+    'Flowpack.Media.Ui:ManageAssetCollections':
+      label: 'Manage asset collections'
+      matcher: 'method(Flowpack\Media\Ui\GraphQL\Resolver\Type\MutationResolver->(create|delete|update)AssetCollection())'
     'Flowpack.Media.Ui:Queries':
+      label: 'Query asset data'
       matcher: 'method(public Flowpack\Media\Ui\GraphQL\Resolver\(.*)Resolver->.*()) || method(t3n\GraphQL\Controller\GraphQLController->queryAction())'
 
   'Neos\Neos\Security\Authorization\Privilege\ModulePrivilege':
     'Flowpack.Media.Ui:Backend.Module.Management.Media':
+      label: 'Access to the media management module'
       matcher: 'management/mediaui'
 
 roles:
@@ -15,6 +24,10 @@ roles:
       - privilegeTarget: 'Flowpack.Media.Ui:Backend.Module.Management.Media'
         permission: GRANT
       - privilegeTarget: 'Flowpack.Media.Ui:ManageAssets'
+        permission: GRANT
+      - privilegeTarget: 'Flowpack.Media.Ui:ManageTags'
+        permission: GRANT
+      - privilegeTarget: 'Flowpack.Media.Ui:ManageAssetCollections'
         permission: GRANT
       - privilegeTarget: 'Flowpack.Media.Ui:Queries'
         permission: GRANT
