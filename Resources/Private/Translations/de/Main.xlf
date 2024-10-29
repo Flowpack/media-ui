@@ -341,11 +341,11 @@
             </trans-unit>
             <trans-unit id="tagActions.validation.emtpyTagLabl" xml:space="preserve" approved="yes">
                 <source>Please provide a tag label</source>
-                <target>Bitte geben Sie ein Tag-Title an</target>
+                <target>Bitte geben Sie einen Tag-Namen ein</target>
             </trans-unit>
             <trans-unit id="tagActions.validation.tagExists" xml:space="preserve" approved="yes">
                 <source>This tag is already exists. Please choose a different one.</source>
-                <target>Dieses Tag existiert bereits. Bitte wählen Sie eine andere aus.</target>
+                <target>Dieser Tag existiert bereits. Bitte wählen Sie einen anderen aus.</target>
             </trans-unit>
             <trans-unit id="tagActions.create.success" xml:space="preserve" approved="yes">
                 <source>Tag was created</source>
