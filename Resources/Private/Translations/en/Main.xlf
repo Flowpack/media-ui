@@ -74,6 +74,15 @@
             <trans-unit id="uploadDialog.cancel" xml:space="preserve" approved="yes">
                 <source>Cancel</source>
             </trans-unit>
+            <trans-unit id="uploadDialog.uploadFinishedWithErrors" xml:space="preserve" approved="yes">
+                <source>Some files could not be uploaded</source>
+            </trans-unit>
+            <trans-unit id="uploadDialog.warning.fileRejected" xml:space="preserve" approved="yes">
+                <source>The given file cannot be uploaded.</source>
+            </trans-unit>
+            <trans-unit id="fileUpload.error" xml:space="preserve" approved="yes">
+                <source>Upload failed</source>
+            </trans-unit>
 
             <trans-unit id="action.selectAsset.invalidType.message" xml:space="preserve" approved="yes">
                 <source>You can only select any of the following types: {types}</source>
@@ -136,6 +145,9 @@
             <trans-unit id="clipboard.flush" xml:space="preserve" approved="yes">
                 <source>Flush clipboard</source>
             </trans-unit>
+            <trans-unit id="clipboard.assetNotLoaded" xml:space="preserve" approved="yes">
+                <source>Cannot select asset as it couldn't be loaded</source>
+            </trans-unit>
             <trans-unit id="actions.flushClipboard.confirm.title" xml:space="preserve" approved="yes">
                 <source>Flush clipboard</source>
             </trans-unit>
@@ -193,6 +205,30 @@
             <trans-unit id="actions.deleteAsset.confirm.buttonLabel" xml:space="preserve" approved="yes">
                 <source>Yes, proceed with deleting the asset</source>
             </trans-unit>
+            <trans-unit id="actions.updateAsset.success" xml:space="preserve" approved="yes">
+                <source>The asset has been updated</source>
+            </trans-unit>
+            <trans-unit id="actions.deleteAsset.error" xml:space="preserve" approved="yes">
+                <source>Error while updating the asset</source>
+            </trans-unit>
+            <trans-unit id="actions.updateTag.success" xml:space="preserve" approved="yes">
+                <source>The tag has been updated</source>
+            </trans-unit>
+            <trans-unit id="actions.updateTag.error" xml:space="preserve" approved="yes">
+                <source>Error while updating the tag</source>
+            </trans-unit>
+            <trans-unit id="actions.setAssetTags.success" xml:space="preserve" approved="yes">
+                <source>The asset has been tagged</source>
+            </trans-unit>
+            <trans-unit id="actions.setAssetTags.error" xml:space="preserve" approved="yes">
+                <source>Error while tagging the asset</source>
+            </trans-unit>
+            <trans-unit id="actions.updateAssetCollection.success" xml:space="preserve" approved="yes">
+                <source>The asset collection has been updated</source>
+            </trans-unit>
+            <trans-unit id="actions.deleteAssetCollection.error" xml:space="preserve" approved="yes">
+                <source>Error while updating the asset collection</source>
+            </trans-unit>
 
             <!-- asset preview -->
 
@@ -240,6 +276,12 @@
             </trans-unit>
             <trans-unit id="assetCollectionList.untagged" xml:space="preserve" approved="yes">
                 <source>Untagged</source>
+            </trans-unit>
+            <trans-unit id="ParentCollectionSelectBox.setParent.success" xml:space="preserve" approved="yes">
+                <source>The parent collection has been set</source>
+            </trans-unit>
+            <trans-unit id="ParentCollectionSelectBox.setParent.error" xml:space="preserve" approved="yes">
+                <source>Error while setting the parent collection</source>
             </trans-unit>
 
             <!-- asset collection/tag actions -->
@@ -294,6 +336,12 @@
             </trans-unit>
             <trans-unit id="action.deleteTag.error" xml:space="preserve" approved="yes">
                 <source>Error while trying to delete the tag</source>
+            </trans-unit>
+            <trans-unit id="actions.tagAssetCollection.error" xml:space="preserve" approved="yes">
+                <source>Error while tagging the asset collection</source>
+            </trans-unit>
+            <trans-unit id="actions.tagAssetCollection.success" xml:space="preserve" approved="yes">
+                <source>The asset collection has been tagged</source>
             </trans-unit>
 
             <!-- asset sources -->
@@ -479,6 +527,12 @@
             <trans-unit id="inspector.iptcMetadata" xml:space="preserve" approved="yes">
                 <source>IPTC Metadata</source>
             </trans-unit>
+            <trans-unit id="actions.setAssetCollections.success" xml:space="preserve" approved="yes">
+                <source>The collections for the asset have been set</source>
+            </trans-unit>
+            <trans-unit id="actions.setAssetCollections.error" xml:space="preserve" approved="yes">
+                <source>Error while setting the collections for the asset</source>
+            </trans-unit>
 
             <!-- similar assets dialog -->
 
@@ -520,6 +574,12 @@
             </trans-unit>
             <trans-unit id="editAssetDialog.updating" xml:space="preserve" approved="yes">
                 <source>Updating…</source>
+            </trans-unit>
+            <trans-unit id="EditAssetDialog.updateFinished" xml:space="preserve" approved="yes">
+                <source>Update finished</source>
+            </trans-unit>
+            <trans-unit id="EditAssetDialog.updateError" xml:space="preserve" approved="yes">
+                <source>Update failed</source>
             </trans-unit>
 
             <!-- Labels for the asset-usage package -->
