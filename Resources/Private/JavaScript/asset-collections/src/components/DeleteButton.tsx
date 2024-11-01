@@ -74,7 +74,7 @@ const DeleteButton: React.FC = () => {
             style="transparent"
             hoverStyle="error"
             disabled={
-                (!selectedAssetCollection || !config.canManageAssetCollections) &&
+                (!selectedAssetCollection || !config.canManageAssetCollections || !selectedAssetCollection.canDelete) &&
                 (!selectedTag || !config.canManageTags)
             }
             title={translate('assetCollectionTree.toolbar.delete', 'Delete')}

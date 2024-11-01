@@ -217,6 +217,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             deleteAssetCollection: ($_, { id }: { id: string }): boolean => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
                 if (!assetCollection) return false;
+                if (assetCollection.assetCount > 0) return false;
                 assetCollections = assetCollections.filter((assetCollection) => assetCollection.id !== id);
                 return true;
             },
@@ -236,6 +237,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                         : null,
                     tags: [],
                     assetCount: 0,
+                    canDelete: true,
                 };
                 assetCollections.push(newCollection);
                 return newCollection;
