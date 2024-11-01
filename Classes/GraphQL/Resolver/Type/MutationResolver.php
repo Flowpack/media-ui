@@ -23,6 +23,7 @@ use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
@@ -114,6 +115,23 @@ class MutationResolver implements ResolverInterface
     protected $assetCollectionService;
 
     /**
+     * @Flow\Inject
+     * @var Translator
+     */
+    protected $translator;
+
+    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
+    {
+        return $this->translator->translateById($id, [], null, null, 'Main', 'Flowpack.Media.Ui') ?? $fallback;
+    }
+
+    protected function localizedMessageFromException(\Exception $exception): string
+    {
+        $labelIdentifier = 'errors.' . $exception->getCode() . '.message';
+        return $this->localizedMessage($labelIdentifier, $exception->getMessage());
+    }
+
+    /**
      * @throws Exception
      */
     public function deleteAsset($_, array $variables, AssetSourceContext $assetSourceContext): MutationResult
@@ -125,23 +143,45 @@ class MutationResolver implements ResolverInterface
 
         $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
-            return new MutationResult(false, ['Asset could not be resolved']);
+            return new MutationResult(
+                false,
+                [$this->localizedMessage(
+                    'actions.deleteAssets.noProxy',
+                    'Asset could not be resolved')
+                ]
+            );
         }
         $asset = $assetSourceContext->getAssetForProxy($assetProxy);
 
         if (!$asset) {
-            return new MutationResult(false, ['Cannot delete asset that was never imported']);
+            return new MutationResult(
+                false,
+                [
+                    $this->localizedMessage(
+                        'actions.deleteAssets.noImportExists',
+                        'Cannot delete asset that was never imported'
+                    )
+                ]
+            );
         }
 
         try {
             $this->assetRepository->remove($asset);
         } catch (AssetServiceException $e) {
-            return new MutationResult(false, [$e->getMessage()]);
+            return new MutationResult(false, [$this->localizedMessageFromException($e)]);
         } catch (\Exception $e) {
             throw new Exception('Failed to delete asset', 1591537315);
         }
 
-        return new MutationResult(true, ['Asset deleted']);
+        return new MutationResult(
+            true,
+            [
+                $this->localizedMessage(
+                    'actions.deleteAssets.success',
+                    'Asset deleted'
+                )
+            ]
+        );
     }
 
     /**
