@@ -296,11 +296,11 @@
             </trans-unit>
             <trans-unit id="actions.updateAssetCollection.success" xml:space="preserve" approved="yes">
                 <source>The asset collection has been updated</source>
-                <target>Die Collection wurde aktualisiert</target>
+                <target>Die Sammlung wurde aktualisiert</target>
             </trans-unit>
             <trans-unit id="actions.deleteAssetCollection.error" xml:space="preserve" approved="yes">
                 <source>Error while updating the asset collection</source>
-                <target>Fehler beim Aktualisieren der Collection</target>
+                <target>Fehler beim Aktualisieren der Sammlung</target>
             </trans-unit>
 
             <!-- asset preview -->
