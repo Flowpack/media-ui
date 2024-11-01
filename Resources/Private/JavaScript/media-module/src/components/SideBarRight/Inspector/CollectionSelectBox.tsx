@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil';
 import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
+import { useConfigQuery, useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState } from '@media-ui/core/src/state';
 import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
@@ -19,6 +19,7 @@ const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
 const CollectionSelectBox: React.FC = () => {
     const Notify = useNotify();
     const { translate } = useIntl();
+    const { config } = useConfigQuery();
     const {
         approvalAttainmentStrategy: { obtainApprovalToSetAssetCollections },
     } = useMediaUi();
@@ -136,7 +137,7 @@ const CollectionSelectBox: React.FC = () => {
                         onSearchTermChange={handleSearchTermChange}
                         ListPreviewElement={AssetCollectionOptionPreviewElement}
                         displaySearchBox
-                        allowEmpty
+                        allowEmpty={false}
                         threshold={0}
                     />
                 </>
@@ -158,7 +159,7 @@ const CollectionSelectBox: React.FC = () => {
                         onSearchTermChange={handleSearchTermChange}
                         ListPreviewElement={AssetCollectionOptionPreviewElement}
                         displaySearchBox
-                        allowEmpty
+                        allowEmpty={!config.defaultAssetCollectionId}
                         threshold={0}
                     />
                 </>
