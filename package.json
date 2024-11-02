@@ -18,7 +18,7 @@
     "build:no-cache": "yarn build:module --no-cache && yarn build:plugin --no-cache",
     "build:module": "yarn workspace @media-ui/media-module run build",
     "build:plugin": "yarn workspace @media-ui/neos-ui-plugin run build",
-    "test:github-actions": "xvfb-run --server-args=\"-screen 0 1280x720x24\" yarn testcafe chrome"
+    "test:github-actions": "xvfb-run --server-args=\"-screen 0 1280x720x24\" yarn testcafe firefox"
   },
   "workspaces": [
     "Resources/Private/JavaScript/*"
@@ -43,7 +43,7 @@
     "mocha": "^10.2.0",
     "node-gyp": "^9.3.1",
     "prettier": "^2.8.8",
-    "testcafe": "^3.5.0",
+    "testcafe": "^3.6.0",
     "testcafe-react-selectors": "^5.0.3",
     "ts-loader": "^8.4.0",
     "ts-node": "^10.9.1",
