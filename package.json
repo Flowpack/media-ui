@@ -43,7 +43,7 @@
     "mocha": "^10.2.0",
     "node-gyp": "^9.3.1",
     "prettier": "^2.8.8",
-    "testcafe": "^3.5.0",
+    "testcafe": "3.7.0-rc.4",
     "testcafe-react-selectors": "^5.0.3",
     "ts-loader": "^8.4.0",
     "ts-node": "^10.9.1",
