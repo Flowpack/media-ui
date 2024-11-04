@@ -19,7 +19,6 @@ const AddTagButton: React.FC = () => {
         setCreateTagDialogState({
             visible: true,
             label: '',
-            tags: [],
             validation: {
                 valid: false,
                 errors: [],

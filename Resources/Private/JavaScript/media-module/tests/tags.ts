@@ -45,7 +45,7 @@ test('Create a new tag and test validation', async (t) => {
         .expect(ReactSelector('CreateTagDialog').findReact('Button').withProps({ disabled: false }).exists)
         .ok('Create button should be enabled');
 
-    subSection('Check emtpy tag label validation');
+    subSection('Check empty tag label validation');
     await t
         .typeText(ReactSelector('CreateTagDialog').findReact('TextInput'), ' ', { replace: true })
         .expect(ReactSelector('CreateTagDialog').findReact('Button').withProps({ disabled: true }).exists)

@@ -316,11 +316,11 @@
             <trans-unit id="tagActions.create.success" xml:space="preserve" approved="yes">
                 <source>Tag was created</source>
             </trans-unit>
-            <trans-unit id="tagActions.validation.emtpyTagLabl" xml:space="preserve" approved="yes">
+            <trans-unit id="tagActions.validation.emptyTagLabel" xml:space="preserve" approved="yes">
                 <source>Please provide a tag label</source>
             </trans-unit>
             <trans-unit id="tagActions.validation.tagExists" xml:space="preserve" approved="yes">
-                <source>This tag is already exists. Please choose a different one.</source>
+                <source>This tag already exists. Please choose a different one.</source>
             </trans-unit>
             <trans-unit id="tagActions.create.error" xml:space="preserve" approved="yes">
                 <source>Failed to create tag</source>
@@ -676,7 +676,7 @@
                 <source>Failed to create tag</source>
             </trans-unit>
             <trans-unit id="errors.1603921233.message" xml:space="preserve" approved="yes">
-                <source>This tag is already exists. Please choose a different one.</source>
+                <source>This tag already exists. Please choose a different one.</source>
             </trans-unit>
             <trans-unit id="errors.1509632861.message" xml:space="preserve" approved="yes">
                 <source>The specified asset was not found.</source>

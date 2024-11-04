@@ -4,8 +4,6 @@ import { useRecoilState } from 'recoil';
 
 import { Button, Label, TextInput, Tooltip } from '@neos-project/react-ui-components';
 
-import TAGS from '../queries/tags';
-import { useQuery } from '@apollo/client';
 import { useIntl, useNotify } from '@media-ui/core';
 import { useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
 import { useCreateTag, useTagsQuery } from '@media-ui/feature-asset-tags';
@@ -28,7 +26,6 @@ const CreateTagDialog: React.FC = () => {
             setDialogState({
                 visible: false,
                 label: '',
-                tags: [],
                 validation: {
                     valid: false,
                     errors: [],
@@ -52,7 +49,7 @@ const CreateTagDialog: React.FC = () => {
         const tagWithLabelExist = tags?.some((tag) => tag.label === trimmedLabel);
 
         if (trimmedLabel.length === 0) {
-            validationErrors.push(translate('tagActions.validation.emtpyTagLabl', 'Please provide a tag label'));
+            validationErrors.push(translate('tagActions.validation.emptyTagLabel', 'Please provide a tag label'));
         }
 
         if (tagWithLabelExist) {
