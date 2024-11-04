@@ -5,6 +5,10 @@ const createTagDialogState = atom({
     default: {
         visible: false,
         label: '',
+        validation: {
+            valid: false,
+            errors: [],
+        },
     },
 });
 

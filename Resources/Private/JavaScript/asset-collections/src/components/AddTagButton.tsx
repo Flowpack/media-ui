@@ -16,7 +16,14 @@ const AddTagButton: React.FC = () => {
     const selectedTagId = useRecoilValue(selectedTagIdState);
 
     const onClickCreate = useCallback(() => {
-        setCreateTagDialogState({ label: '', visible: true });
+        setCreateTagDialogState({
+            visible: true,
+            label: '',
+            validation: {
+                valid: false,
+                errors: [],
+            },
+        });
     }, [setCreateTagDialogState]);
 
     return (
