@@ -29,8 +29,8 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             .then(() => {
                 Notify.ok(translate('assetActions.import.success', 'Asset was successfully imported'));
             })
-            .catch((error) => {
-                Notify.error(translate('assetActions.import.error', 'Failed to import asset'), error.message);
+            .catch(() => {
+                return;
             });
     }, [importAsset, asset, Notify, translate]);
 

@@ -28,8 +28,8 @@ const CreateTagDialog: React.FC = () => {
             .then(() => {
                 Notify.ok(translate('tagActions.create.success', 'Tag was created'));
             })
-            .catch((error) => {
-                Notify.error(translate('tagActions.create.error', 'Failed to create tag'), error.message);
+            .catch(() => {
+                return;
             });
     }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetCollection]);
     const setLabel = useCallback((label) => setDialogState((state) => ({ ...state, label })), [setDialogState]);

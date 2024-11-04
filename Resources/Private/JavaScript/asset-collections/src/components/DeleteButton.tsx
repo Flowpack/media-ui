@@ -49,11 +49,8 @@ const DeleteButton: React.FC = () => {
                     );
                     setSelectedAssetCollectionAndTag({ tagId: null, assetCollectionId: null });
                 })
-                .catch((error) => {
-                    Notify.error(
-                        translate('assetCollectionActions.delete.error', 'Failed to delete asset collection'),
-                        error.message
-                    );
+                .catch(() => {
+                    return;
                 });
         }
     }, [
