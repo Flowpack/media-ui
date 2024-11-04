@@ -55,8 +55,8 @@ const NewAssetDialog: React.FC = () => {
                     void refetch();
                 }
             })
-            .catch((error) => {
-                Notify.error(translate('fileUpload.error', 'Upload failed'), error);
+            .catch(() => {
+                return;
             });
     }, [uploadFiles, dialogState.files.selected, setFiles, Notify, translate, refetch]);
 

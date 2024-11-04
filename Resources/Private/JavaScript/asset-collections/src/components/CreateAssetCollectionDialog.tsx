@@ -31,11 +31,8 @@ const CreateAssetCollectionDialog = () => {
             .then(() => {
                 Notify.ok(translate('assetCollectionActions.create.success', 'Asset collection was created'));
             })
-            .catch((error) => {
-                Notify.error(
-                    translate('assetCollectionActions.create.error', 'Failed to create asset collection'),
-                    error.message
-                );
+            .catch(() => {
+                return;
             });
     }, [setDialogVisible, createAssetCollection, title, selectedAssetCollection?.id, Notify, translate]);
 
