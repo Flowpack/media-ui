@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
@@ -19,9 +20,7 @@ use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
 use t3n\GraphQL\ResolverInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class AssetSourceResolver implements ResolverInterface
 {
     public function id(AssetSourceInterface $assetSource): string

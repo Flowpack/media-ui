@@ -44,81 +44,54 @@ use Neos\Utility\MediaTypes;
 use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class MutationResolver implements ResolverInterface
 {
     protected const STATE_ADDED = 'ADDED';
     protected const STATE_EXISTS = 'EXISTS';
     protected const STATE_ERROR = 'ERROR';
 
-    /**
-     * @Flow\Inject
-     * @var AssetRepository
-     */
-    protected $assetRepository;
+    #[Flow\Inject]
+    protected AssetRepository $assetRepository;
+
+    #[Flow\Inject]
+    protected TagRepository $tagRepository;
+
+    #[Flow\Inject]
+    protected ResourceManager $resourceManager;
 
     /**
-     * @Flow\Inject
-     * @var TagRepository
-     */
-    protected $tagRepository;
-
-    /**
-     * @Flow\Inject
-     * @var ResourceManager
-     */
-    protected $resourceManager;
-
-    /**
-     * @Flow\Inject
      * @var AssetModelMappingStrategyInterface
      */
+    #[Flow\Inject]
     protected $mappingStrategy;
 
     /**
-     * @Flow\Inject
      * @var PersistenceManagerInterface
      */
+    #[Flow\Inject]
     protected $persistenceManager;
 
     /**
-     * @Flow\Inject
      * @var LoggerInterface
      */
+    #[Flow\Inject]
     protected $systemLogger;
 
-    /**
-     * @Flow\Inject
-     * @var AssetCollectionRepository
-     */
-    protected $assetCollectionRepository;
+    #[Flow\Inject]
+    protected AssetCollectionRepository $assetCollectionRepository;
 
+    #[Flow\Inject]
+    protected SiteRepository $siteRepository;
 
-    /**
-     * @Flow\Inject
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    #[Flow\Inject]
+    protected AssetService $assetService;
 
-    /**
-     * @Flow\Inject
-     * @var AssetService
-     */
-    protected $assetService;
+    #[Flow\Inject]
+    protected AssetCollectionService $assetCollectionService;
 
-    /**
-     * @Flow\Inject
-     * @var AssetCollectionService
-     */
-    protected $assetCollectionService;
-
-    /**
-     * @Flow\Inject
-     * @var Translator
-     */
-    protected $translator;
+    #[Flow\Inject]
+    protected Translator $translator;
 
     protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
     {
@@ -145,9 +118,10 @@ class MutationResolver implements ResolverInterface
         if (!$assetProxy) {
             return new MutationResult(
                 false,
-                [$this->localizedMessage(
-                    'actions.deleteAssets.noProxy',
-                    'Asset could not be resolved')
+                [
+                    $this->localizedMessage(
+                        'actions.deleteAssets.noProxy',
+                        'Asset could not be resolved')
                 ]
             );
         }
@@ -539,8 +513,10 @@ class MutationResolver implements ResolverInterface
         $filename = $file->getClientFilename();
 
         // Prevent replacement of image, audio and video by a different mimetype because of possible rendering issues.
-        if ($sourceMediaType['type'] !== $replacementMediaType['type'] && in_array($sourceMediaType['type'], ['image', 'audio', 'video'])) {
-            $this->systemLogger->error(sprintf('Cannot replace asset of mimetype %s with mimetype %s', $sourceMediaType['type'], $replacementMediaType['type']));
+        if ($sourceMediaType['type'] !== $replacementMediaType['type'] && in_array($sourceMediaType['type'],
+                ['image', 'audio', 'video'])) {
+            $this->systemLogger->error(sprintf('Cannot replace asset of mimetype %s with mimetype %s',
+                $sourceMediaType['type'], $replacementMediaType['type']));
             return [
                 'filename' => $filename,
                 'success' => false,
@@ -567,7 +543,8 @@ class MutationResolver implements ResolverInterface
                 $success = true;
                 $result = 'REPLACED';
             } catch (\Exception $exception) {
-                $this->systemLogger->error(sprintf('Asset %s could not be replaced', $asset->getIdentifier()), [$exception]);
+                $this->systemLogger->error(sprintf('Asset %s could not be replaced', $asset->getIdentifier()),
+                    [$exception]);
             }
         }
 
@@ -621,7 +598,8 @@ class MutationResolver implements ResolverInterface
         // Copy the resource to a new one with the new filename
         $originalResource = $asset->getResource();
         $originalResourceStream = $originalResource->getStream();
-        $resource = $this->resourceManager->importResource($originalResourceStream, $originalResource->getCollectionName());
+        $resource = $this->resourceManager->importResource($originalResourceStream,
+            $originalResource->getCollectionName());
         fclose($originalResourceStream);
         $resource->setFilename($filename);
         $resource->setMediaType($originalResource->getMediaType());
@@ -632,7 +610,8 @@ class MutationResolver implements ResolverInterface
             ]);
             $success = true;
         } catch (\Exception $exception) {
-            $this->systemLogger->error(sprintf('Asset %s could not be replace with the renamed copy', $asset->getIdentifier()), [$exception]);
+            $this->systemLogger->error(sprintf('Asset %s could not be replace with the renamed copy',
+                $asset->getIdentifier()), [$exception]);
         }
 
         return $success;

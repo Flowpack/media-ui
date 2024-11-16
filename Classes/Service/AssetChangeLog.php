@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\Service;
@@ -22,10 +23,9 @@ use Neos\Flow\Annotations as Flow;
 /**
  * Logs changes to assets
  * TODO: Make more generic to also capture changes to tags & collections
- *
- * @Flow\Scope("singleton")
  */
-final class AssetChangeLog
+#[Flow\Scope('singleton')]
+class AssetChangeLog
 {
 
     /**

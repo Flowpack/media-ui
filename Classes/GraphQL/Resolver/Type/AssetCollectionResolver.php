@@ -16,41 +16,30 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
 
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use t3n\GraphQL\ResolverInterface;
-use Neos\Media\Domain\Model\AssetCollection;
-use Neos\Flow\Persistence\PersistenceManagerInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class AssetCollectionResolver implements ResolverInterface
 {
     /**
-     * @Flow\Inject
      * @var PersistenceManagerInterface
      */
+    #[Flow\Inject]
     protected $persistenceManager;
 
-    /**
-     * @Flow\Inject
-     * @var AssetRepository
-     */
-    protected $assetRepository;
+    #[Flow\Inject]
+    protected AssetRepository $assetRepository;
 
-    /**
-     * @Flow\Inject
-     * @var AssetCollectionService
-     */
-    protected $assetCollectionService;
+    #[Flow\Inject]
+    protected AssetCollectionService $assetCollectionService;
 
-    /**
-     * @Flow\Inject
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    #[Flow\Inject]
+    protected SiteRepository $siteRepository;
 
     protected array|null $siteDefaultAssetCollections = null;
 

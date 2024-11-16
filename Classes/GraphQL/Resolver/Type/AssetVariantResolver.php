@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection PhpUnusedParameterInspection */
 declare(strict_types=1);
 
@@ -19,27 +20,17 @@ use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Adjustment\CropImageAdjustment;
 use Neos\Media\Domain\Model\ImageVariant;
-
 use t3n\GraphQL\ResolverInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class AssetVariantResolver implements ResolverInterface
 {
 
-    /**
-     * @Flow\Inject
-     * @var PersistenceManager
-     */
-    public $persistenceManager;
+    #[Flow\Inject]
+    public PersistenceManager $persistenceManager;
 
-    /**
-     * @Flow\Inject
-     * @var ResourceManager
-     */
-    protected $resourceManager;
-
+    #[Flow\Inject]
+    protected ResourceManager $resourceManager;
 
     public function id(ImageVariant $assetVariant): ?string
     {
@@ -95,7 +86,13 @@ class AssetVariantResolver implements ResolverInterface
                 ];
                 $aspectRatio = $adjustment->getAspectRatio();
                 if ($aspectRatio !== null) {
-                    [$x, $y, $width, $height] = CropImageAdjustment::calculateDimensionsByAspectRatio($assetVariant->getOriginalAsset()->getWidth(), $assetVariant->getOriginalAsset()->getHeight(), $aspectRatio);
+                    [
+                        $x,
+                        $y,
+                        $width,
+                        $height
+                    ] = CropImageAdjustment::calculateDimensionsByAspectRatio($assetVariant->getOriginalAsset()->getWidth(),
+                        $assetVariant->getOriginalAsset()->getHeight(), $aspectRatio);
                     $cropInformation = [
                         'width' => $width,
                         'height' => $height,
@@ -104,7 +101,6 @@ class AssetVariantResolver implements ResolverInterface
                     ];
                 }
             }
-
         }
 
         return $cropInformation;

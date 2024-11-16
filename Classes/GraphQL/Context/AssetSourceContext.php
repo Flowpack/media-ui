@@ -28,55 +28,41 @@ use t3n\GraphQL\Context as BaseContext;
 class AssetSourceContext extends BaseContext
 {
 
-    /**
-     * @Flow\Inject
-     * @var AssetRepository
-     */
-    protected $assetRepository;
+    #[Flow\Inject]
+    protected AssetRepository $assetRepository;
+
+    #[Flow\Inject]
+    protected AssetSourceService $assetSourceService;
 
     /**
-     * @Flow\Inject
-     * @var AssetSourceService
-     */
-    protected $assetSourceService;
-
-    /**
-     * @Flow\Inject
      * @var PersistenceManagerInterface
      */
+    #[Flow\Inject]
     protected $persistenceManager;
 
     /**
-     * @var array<AssetSourceInterface>
+     * @var AssetSourceInterface[]
      */
     protected $assetSources;
 
     /**
-     * @var array<AssetInterface>
+     * @var AssetInterface[]
      */
     protected $localAssetData = [];
 
-    /**
-     * @return void
-     */
     public function initializeObject(): void
     {
         $this->assetSources = $this->assetSourceService->getAssetSources();
     }
 
     /**
-     * @return array<AssetSourceInterface>
+     * @return AssetSourceInterface[]
      */
     public function getAssetSources(): array
     {
         return $this->assetSources;
     }
 
-    /**
-     * @param string $id
-     * @param string $assetSourceIdentifier
-     * @return AssetProxyInterface|null
-     */
     public function getAssetProxy(string $id, string $assetSourceIdentifier): ?AssetProxyInterface
     {
         $activeAssetSource = $this->getAssetSource($assetSourceIdentifier);
@@ -92,10 +78,6 @@ class AssetSourceContext extends BaseContext
         }
     }
 
-    /**
-     * @param AssetProxyInterface $assetProxy
-     * @return AssetInterface|null
-     */
     public function getAssetForProxy(AssetProxyInterface $assetProxy): ?AssetInterface
     {
         $assetIdentifier = $assetProxy->getLocalAssetIdentifier();
@@ -114,20 +96,11 @@ class AssetSourceContext extends BaseContext
         return $this->localAssetData[$assetIdentifier] = $asset;
     }
 
-    /**
-     * @param string $assetSourceName
-     * @return AssetSourceInterface|null
-     */
     public function getAssetSource(string $assetSourceName): ?AssetSourceInterface
     {
         return $this->assetSources[$assetSourceName] ?? null;
     }
 
-    /**
-     * @param string $assetSourceIdentifier
-     * @param string $assetIdentifier
-     * @return AssetProxyInterface|null
-     */
     public function importAsset(string $assetSourceIdentifier, string $assetIdentifier): ?AssetProxyInterface
     {
         try {

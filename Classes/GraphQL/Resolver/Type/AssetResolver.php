@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection PhpUnusedParameterInspection */
 declare(strict_types=1);
 
@@ -28,34 +29,20 @@ use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Service\FileTypeIconService;
 use t3n\GraphQL\ResolverInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class AssetResolver implements ResolverInterface
 {
-    /**
-     * @Flow\Inject
-     * @var AssetRepository
-     */
-    protected $assetRepository;
+    #[Flow\Inject]
+    protected AssetRepository $assetRepository;
 
-    /**
-     * @Flow\Inject
-     * @var FileTypeIconService
-     */
-    protected $fileTypeIconService;
+    #[Flow\Inject]
+    protected FileTypeIconService $fileTypeIconService;
 
-    /**
-     * @Flow\Inject
-     * @var ResourceManager
-     */
-    protected $resourceManager;
+    #[Flow\Inject]
+    protected ResourceManager $resourceManager;
 
-    /**
-     * @Flow\Inject
-     * @var AssetService
-     */
-    protected $assetService;
+    #[Flow\Inject]
+    protected AssetService $assetService;
 
     public function id(AssetProxyInterface $assetProxy): ?string
     {
@@ -70,8 +57,11 @@ class AssetResolver implements ResolverInterface
     /**
      * Returns the title of the associated local asset data or the label of the proxy as fallback
      */
-    public function label(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
-    {
+    public function label(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?string {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         if ($localAssetData && $localAssetData->getTitle()) {
             return $localAssetData->getTitle();
@@ -82,8 +72,11 @@ class AssetResolver implements ResolverInterface
     /**
      * Returns true if the asset is at least used once
      */
-    public function isInUse(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?bool
-    {
+    public function isInUse(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?bool {
         if (!$assetProxy->getLocalAssetIdentifier()) {
             return false;
         }
@@ -93,8 +86,11 @@ class AssetResolver implements ResolverInterface
     /**
      * Returns the caption of the associated local asset data
      */
-    public function caption(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
-    {
+    public function caption(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?string {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         return $localAssetData instanceof Asset ? $localAssetData->getCaption() : null;
     }
@@ -169,22 +165,31 @@ class AssetResolver implements ResolverInterface
         return [];
     }
 
-    public function copyrightNotice(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
-    {
+    public function copyrightNotice(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?string {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         return $localAssetData instanceof Asset ? $localAssetData->getCopyrightNotice() : null;
     }
 
-    public function lastModified(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
-    {
+    public function lastModified(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): ?string {
         return $assetProxy->getLastModified() ? $assetProxy->getLastModified()->format(DATE_W3C) : null;
     }
 
     /**
      * @return Tag[]
      */
-    public function tags(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): array
-    {
+    public function tags(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): array {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         return $localAssetData instanceof Asset ? $localAssetData->getTags()->toArray() : [];
     }
@@ -192,8 +197,11 @@ class AssetResolver implements ResolverInterface
     /**
      * @return AssetCollection[]
      */
-    public function collections(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): array
-    {
+    public function collections(
+        AssetProxyInterface $assetProxy,
+        array $variables,
+        AssetSourceContext $assetSourceContext
+    ): array {
         $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
         return $localAssetData instanceof Asset ? $localAssetData->getAssetCollections()->toArray() : [];
     }

@@ -43,83 +43,54 @@ use Neos\Utility\Files;
 use Psr\Log\LoggerInterface;
 use t3n\GraphQL\ResolverInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class QueryResolver implements ResolverInterface
 {
 
-    /**
-     * @Flow\Inject
-     * @var TagRepository
-     */
-    protected $tagRepository;
+    #[Flow\Inject]
+    protected TagRepository $tagRepository;
+
+    #[Flow\Inject]
+    protected AssetCollectionRepository $assetCollectionRepository;
+
+    #[Flow\Inject]
+    protected AssetService $assetService;
 
     /**
-     * @Flow\Inject
-     * @var AssetCollectionRepository
-     */
-    protected $assetCollectionRepository;
-
-    /**
-     * @Flow\Inject
-     * @var AssetService
-     */
-    protected $assetService;
-
-    /**
-     * @Flow\Inject
      * @var LoggerInterface
      */
+    #[Flow\Inject]
     protected $systemLogger;
 
-    /**
-     * @Flow\Inject
-     * @var UsageDetailsService
-     */
-    protected $assetUsageService;
+    #[Flow\Inject]
+    protected UsageDetailsService $assetUsageService;
+
+    #[Flow\Inject]
+    protected AssetChangeLog $assetChangeLog;
+
+    #[Flow\Inject]
+    protected SimilarityService $similarityService;
+
+    #[Flow\Inject]
+    protected PersistenceManager $persistenceManager;
 
     /**
-     * @Flow\Inject
-     * @var AssetChangeLog
-     */
-    protected $assetChangeLog;
-
-    /**
-     * @Flow\Inject
-     * @var SimilarityService
-     */
-    protected $similarityService;
-
-    /**
-     * @Flow\Inject
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
-
-    /**
-     * @Flow\InjectConfiguration(package="Flowpack.Media.Ui")
      * @var array
      */
+    #[Flow\InjectConfiguration(null, 'Flowpack.Media.Ui')]
     protected $settings;
 
-    /**
-     * @Flow\Inject
-     * @var AssetProxyIteratorBuilder
-     */
-    protected $assetProxyIteratorBuilder;
+    #[Flow\Inject]
+    protected AssetProxyIteratorBuilder $assetProxyIteratorBuilder;
 
     /**
-     * @Flow\Inject
      * @var PrivilegeManagerInterface
      */
+    #[Flow\Inject]
     protected $privilegeManager;
 
-    /**
-     * @Flow\Inject
-     * @var AssetCollectionService
-     */
-    protected $assetCollectionService;
+    #[Flow\Inject]
+    protected AssetCollectionService $assetCollectionService;
 
     /**
      * Returns total count of asset proxies in the given asset source

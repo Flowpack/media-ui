@@ -15,19 +15,17 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  */
 
 use Neos\Flow\Annotations as Flow;
-use t3n\GraphQL\ResolverInterface;
-use Neos\Media\Domain\Model\Tag;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Media\Domain\Model\Tag;
+use t3n\GraphQL\ResolverInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class TagResolver implements ResolverInterface
 {
     /**
-     * @Flow\Inject
      * @var PersistenceManagerInterface
      */
+    #[Flow\Inject]
     protected $persistenceManager;
 
     public function id(Tag $tag): string
