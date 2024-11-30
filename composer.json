@@ -8,7 +8,8 @@
         "neos/neos": "^7.3 || ~8.0",
         "neos/neos-ui": "^7.3 || ~8.0",
         "t3n/graphql": "^2.1 || ^3.0.2",
-        "t3n/graphql-upload": "^1.0 || ^2.0"
+        "t3n/graphql-upload": "^1.0 || ^2.0",
+        "webonyx/graphql-php": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"

@@ -2,3 +2,5 @@ Flowpack:
   Media:
     Ui:
       maximumFileUploadLimit: 10
+      graphql:
+        schema: 'resource://Flowpack.Media.Ui/Private/GraphQL/schema.root.graphql'
