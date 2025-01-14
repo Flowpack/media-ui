@@ -10,3 +10,67 @@
     2:
       # cache lifetime
       value: 10
+
+'Flowpack\Media\Ui\GraphQL\Middleware\GraphQLMiddlewareFactory':
+  arguments:
+    1:
+      setting: Flowpack.Media.Ui.GraphQL.debugMode
+    2:
+      setting: Flowpack.Media.Ui.GraphQL.corsOrigin
+    3:
+      object:
+        factoryObjectName: 'Neos\Flow\Cache\CacheManager'
+        factoryMethodName: 'getCache'
+        arguments:
+          1:
+            value: 'Flowpack_Media_Ui_GraphQLSchemaCache'
+
+'Flowpack.Media.Ui:GraphQLMiddleware':
+  className: 'Flowpack\Media\Ui\GraphQL\Middleware\GraphQLMiddleware'
+  scope: singleton
+  factoryObjectName: 'Flowpack\Media\Ui\GraphQL\Middleware\GraphQLMiddlewareFactory'
+  arguments:
+    1:
+      # GraphQL URL
+      value: '/neos/graphql/media-assets'
+    2:
+      # PHP Class with the Query/Mutation attributed methods
+      value: 'Flowpack\Media\Ui\GraphQL\MediaApi'
+    3:
+      # Look for classes in the following namespaces when resolving types:
+      value:
+        - 'Flowpack\Media\Ui\GraphQL\Types'
+    4:
+      # Simulate a request to the Neos NodeController in order to initialize the security context and trigger the default Neos backend authentication provider
+      value: 'Neos\Neos\Controller\Frontend\NodeController'
+    5:
+      # Custom resolvers
+      value:
+        Asset:
+          file: &assetResolver
+            resolverClassName: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetResolver'
+          imported: *assetResolver
+          iptcProperties: *assetResolver
+          label: *assetResolver
+          caption: *assetResolver
+          copyrightNotice: *assetResolver
+          lastModified: *assetResolver
+          tags: *assetResolver
+          collections: *assetResolver
+          thumbnailUrl: *assetResolver
+          previewUrl: *assetResolver
+          isInUse:
+            <<: *assetResolver
+            description: 'Check if the asset is used as reported by registered AssetUsageStrategies'
+        AssetCollection:
+          assetCount: &assetCollectionResolver
+            resolverClassName: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetCollectionResolver'
+          canDelete: *assetCollectionResolver
+          tags: *assetCollectionResolver
+#          assets: *assetCollectionResolver
+#          parent: *assetCollectionResolver
+        AssetVariant:
+          previewUrl: &assetVariantResolver
+            resolverClassName: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetVariantResolver'
+          hasCrop: *assetVariantResolver
+          cropInformation: *assetVariantResolver

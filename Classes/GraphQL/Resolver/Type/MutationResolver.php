@@ -42,12 +42,12 @@ use Neos\Media\Exception\AssetServiceException;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use Neos\Utility\MediaTypes;
 use Psr\Log\LoggerInterface;
-use t3n\GraphQL\ResolverInterface;
+//use t3n\GraphQL\ResolverInterface;
 
 /**
  * @Flow\Scope("singleton")
  */
-class MutationResolver implements ResolverInterface
+class MutationResolver
 {
     protected const STATE_ADDED = 'ADDED';
     protected const STATE_EXISTS = 'EXISTS';

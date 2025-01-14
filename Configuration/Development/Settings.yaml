@@ -1,0 +1,5 @@
+Flowpack:
+  Media:
+    Ui:
+      GraphQL:
+        debugMode: true

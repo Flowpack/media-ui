@@ -1,3 +1,10 @@
 Flowpack_Media_Ui_PollingCache:
   frontend: Neos\Cache\Frontend\StringFrontend
   backend: Neos\Cache\Backend\FileBackend
+
+Flowpack_Media_Ui_GraphQLSchemaCache:
+  frontend: Neos\Cache\Frontend\VariableFrontend
+  backend: Neos\Cache\Backend\SimpleFileBackend
+  backendOptions:
+    # 0 = don't expire
+    defaultLifetime: 0

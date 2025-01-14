@@ -24,6 +24,9 @@ final class AssetUsageDetails implements \JsonSerializable
 {
 
     private string $label;
+    /**
+     * @var array<string, string>
+     */
     private array $metadata;
     private string $url;
 
@@ -39,6 +42,9 @@ final class AssetUsageDetails implements \JsonSerializable
         return $this->label;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getMetadata(): array
     {
         return $this->metadata;

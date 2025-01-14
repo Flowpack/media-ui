@@ -8,6 +8,7 @@ use Flowpack\Media\Ui\Domain\Model\AssetProxyIteratorAggregate;
 use Flowpack\Media\Ui\Domain\Model\AssetSource\NeosAssetProxyRepository;
 use Flowpack\Media\Ui\Domain\Model\SearchTerm;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
+use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
@@ -22,56 +23,31 @@ use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Psr\Log\LoggerInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class AssetProxyIteratorBuilder
 {
 
-    /**
-     * @Flow\Inject
-     * @var LoggerInterface
-     */
-    protected $systemLogger;
-
-    /**
-     * @Flow\Inject
-     * @var TagRepository
-     */
-    protected $tagRepository;
-
-    /**
-     * @Flow\Inject
-     * @var AssetCollectionRepository
-     */
-    protected $assetCollectionRepository;
+    public function __construct(
+        protected readonly AssetSourceContext $assetSourceContext,
+        protected AssetCollectionRepository $assetCollectionRepository,
+        protected TagRepository $tagRepository,
+        protected LoggerInterface $logger,
+    ) {
+    }
 
     public function build(
-        AssetSourceContext $assetSourceContext,
-        array $variables
-    ): ?AssetProxyIteratorAggregate
-    {
-        [
-            'assetSourceId' => $assetSourceId,
-            'tagId' => $tagId,
-            'assetCollectionId' => $assetCollectionId,
-            'mediaType' => $mediaType,
-            'assetType' => $assetType,
-            'searchTerm' => $searchTerm,
-            'sortBy' => $sortBy,
-            'sortDirection' => $sortDirection
-        ] = $variables + [
-            'assetSourceId' => 'neos',
-            'tagId' => null,
-            'assetCollectionId' => null,
-            'mediaType' => null,
-            'assetType' => null,
-            'searchTerm' => null,
-            'sortBy' => null,
-            'sortDirection' => null,
-        ];
+        Types\AssetSourceId $assetSourceId = null,
+        Types\TagId $tagId = null,
+        Types\AssetCollectionId $assetCollectionId = null,
+        Types\MediaType $mediaType = null,
+        Types\AssetType $assetType = null,
+        SearchTerm $searchTerm = null,
+        Types\SortBy $sortBy = null,
+        Types\SortDirection $sortDirection = null,
+    ): ?AssetProxyIteratorAggregate {
+        $assetSourceId = $assetSourceId ?: Types\AssetSourceId::default();
 
-        $activeAssetSource = $assetSourceContext->getAssetSource($assetSourceId);
+        $activeAssetSource = $this->assetSourceContext->getAssetSource($assetSourceId);
         if (!$activeAssetSource) {
             return null;
         }
@@ -96,7 +72,7 @@ class AssetProxyIteratorBuilder
             return AssetProxyQueryIterator::from($queryResult);
         }
 
-        if ($searchTerm = SearchTerm::from($searchTerm)) {
+        if ($searchTerm) {
             return $this->applySearchTerm($searchTerm, $assetProxyRepository);
         }
 
@@ -105,37 +81,43 @@ class AssetProxyIteratorBuilder
         );
     }
 
-    protected function filterByAssetType(?string $assetType, AssetProxyRepositoryInterface $assetProxyRepository): void
-    {
-        if (is_string($assetType) && !empty($assetType)) {
+    protected function filterByAssetType(
+        ?Types\AssetType $assetType,
+        AssetProxyRepositoryInterface $assetProxyRepository
+    ): void {
+        if ($assetType) {
             try {
-                $assetTypeFilter = new AssetTypeFilter(ucfirst($assetType));
+                $assetTypeFilter = new AssetTypeFilter(ucfirst((string)$assetType));
                 $assetProxyRepository->filterByType($assetTypeFilter);
-            } catch (\InvalidArgumentException $e) {
-                $this->systemLogger->warning('Ignoring invalid asset type when filtering assets ' . $assetType);
+            } catch (\InvalidArgumentException) {
+                $this->logger->warning('Ignoring invalid asset type when filtering assets ' . $assetType);
             }
         }
     }
 
-    protected function filterByMediaType($mediaType, AssetProxyRepositoryInterface $assetProxyRepository): void
-    {
-        if (is_string($mediaType) && !empty($mediaType) && $assetProxyRepository instanceof NeosAssetProxyRepository) {
+    protected function filterByMediaType(
+        ?Types\MediaType $mediaType,
+        AssetProxyRepositoryInterface $assetProxyRepository
+    ): void {
+        if ($mediaType && $assetProxyRepository instanceof NeosAssetProxyRepository) {
             try {
-                $assetProxyRepository->filterByMediaType($mediaType);
-            } catch (\InvalidArgumentException $e) {
-                $this->systemLogger->warning('Ignoring invalid media-type when filtering assets ' . $mediaType);
+                $assetProxyRepository->filterByMediaType((string)$mediaType);
+            } catch (\InvalidArgumentException) {
+                $this->logger->warning('Ignoring invalid media-type when filtering assets ' . $mediaType);
             }
         }
     }
 
-    protected function filterByAssetCollection($assetCollectionId, AssetProxyRepositoryInterface $assetProxyRepository): void
-    {
+    protected function filterByAssetCollection(
+        ?Types\AssetCollectionId $assetCollectionId,
+        AssetProxyRepositoryInterface $assetProxyRepository
+    ): void {
         if ($assetCollectionId && $assetProxyRepository instanceof SupportsCollectionsInterface) {
-            if ($assetProxyRepository instanceof NeosAssetProxyRepository && $assetCollectionId === 'UNASSIGNED') {
+            if ($assetProxyRepository instanceof NeosAssetProxyRepository && $assetCollectionId->isUnassigned()) {
                 $assetProxyRepository->filterUnassigned();
             } else {
                 /** @var AssetCollection $assetCollection */
-                $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId);
+                $assetCollection = $this->assetCollectionRepository->findByIdentifier((string)$assetCollectionId);
                 if ($assetCollection) {
                     $assetProxyRepository->filterByCollection($assetCollection);
                 }
@@ -143,10 +125,14 @@ class AssetProxyIteratorBuilder
         }
     }
 
-    protected function sort(?string $sortBy, AssetProxyRepositoryInterface $assetProxyRepository, ?string $sortDirection): void
-    {
+    protected function sort(
+        ?Types\SortBy $sortBy,
+        AssetProxyRepositoryInterface $assetProxyRepository,
+        ?Types\SortDirection $sortDirection
+    ): void {
         if ($sortBy && $assetProxyRepository instanceof SupportsSortingInterface) {
-            switch ($sortBy) {
+            // TODO: Refactor when sortBy is a proper enum
+            switch ($sortBy->value) {
                 case 'name':
                     $assetProxyRepository->orderBy(['resource.filename' => $sortDirection]);
                     break;
@@ -166,15 +152,17 @@ class AssetProxyIteratorBuilder
      * but returns a new query in case of other AssetProxyRepositories as their interface does not allow
      * combining all filters.
      */
-    protected function filterByTag(?string $tagId, AssetProxyRepositoryInterface $assetProxyRepository): ?AssetProxyQueryInterface
-    {
+    protected function filterByTag(
+        ?Types\TagId $tagId,
+        AssetProxyRepositoryInterface $assetProxyRepository
+    ): ?AssetProxyQueryInterface {
         if (!$tagId || !$assetProxyRepository instanceof SupportsTaggingInterface) {
             return null;
         }
 
         if ($assetProxyRepository instanceof NeosAssetProxyRepository) {
             // Add our custom filter
-            if ($tagId === 'UNTAGGED') {
+            if ($tagId->isUntagged()) {
                 $assetProxyRepository->filterUntagged();
             } else {
                 /** @var Tag $tag */
@@ -185,7 +173,7 @@ class AssetProxyIteratorBuilder
             }
         } else {
             // Return a new query for other AssetProxyRepositories
-            if ($tagId === 'UNTAGGED') {
+            if ($tagId->isUntagged()) {
                 return $assetProxyRepository->findUntagged()->getQuery();
             }
 
@@ -198,8 +186,10 @@ class AssetProxyIteratorBuilder
         return null;
     }
 
-    protected function applySearchTerm(SearchTerm $searchTerm, AssetProxyRepositoryInterface $assetProxyRepository): AssetProxyIteratorAggregate
-    {
+    protected function applySearchTerm(
+        SearchTerm $searchTerm,
+        AssetProxyRepositoryInterface $assetProxyRepository
+    ): AssetProxyIteratorAggregate {
         if ($identifier = $searchTerm->getAssetIdentifierIfPresent()) {
             // Reset the type filter as it prevents the asset from being found if it is not of the same type
             $assetProxyRepository->filterByType(null);

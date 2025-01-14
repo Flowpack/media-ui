@@ -174,32 +174,32 @@ type Config {
 An asset (Image, Document, Video or Audio)
 """
 type Asset {
-    id: AssetId!
-    localId: LocalAssetId
-    assetSource: AssetSource!
-    imported: Boolean!
-    isInUse: Boolean!
+    id: AssetId! #✅
+    localId: LocalAssetId #✅
+    assetSource: AssetSource! #✅
+    imported: Boolean! #✅
+    isInUse: Boolean! #✅
 
-    label: String!
-    caption: String
-    filename: Filename!
+    label: String! #✅
+    caption: String #✅
+    filename: Filename! #✅
 
-    tags: [Tag!]!
-    collections: [AssetCollection!]!
+    tags: [Tag!]! #✅
+    collections: [AssetCollection!]! # WIP
 
-    copyrightNotice: String
+    copyrightNotice: String #✅
     iptcProperty(property: IptcPropertyName): IptcProperty
-    lastModified: DateTime
-    iptcProperties: [IptcProperty!]
+    lastModified: DateTime #✅
+    iptcProperties: [IptcProperty!] #✅
 
     # width in pixels (only for Images and Videos)
-    width: Int
+    width: Int #✅
     # height in pixels (only for Images and Videos)
-    height: Int
+    height: Int #✅
 
-    file: File!
-    thumbnailUrl: Url
-    previewUrl: Url
+    file: File! #✅
+    thumbnailUrl: Url #✅
+    previewUrl: Url #✅
     thumbnail(maximumWidth: Int, maximumHeight: Int, ratioMode: RatioMode, allowUpScaling: Boolean): Image
 }
 
@@ -273,14 +273,14 @@ type Tag {
 A collection of assets. One asset can belong to multiple collections
 """
 type AssetCollection {
-    id: AssetCollectionId
-    title: AssetCollectionTitle!
+    id: AssetCollectionId #/
+    title: AssetCollectionTitle! #/
     assets: [Asset!]!
-    parent: AssetCollection
-    tags: [Tag!]!
-    assetCount: Int!
-    path: AssetCollectionPath
-    canDelete: Boolean!
+    parent: AssetCollection #/
+    tags: [Tag!]! #/
+    assetCount: Int! #/
+    path: AssetCollectionPath #/
+    canDelete: Boolean! #/
 }
 
 """
