@@ -20,11 +20,12 @@ use Flowpack\Media\Ui\Domain\Model\Dto\UsageMetadataSchema;
 use Flowpack\Media\Ui\Exception;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
-use Neos\ContentRepository\Domain\Model\Node;
-use Neos\ContentRepository\Domain\Model\NodeInterface;
-use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
-use Neos\ContentRepository\Domain\Service\NodeTypeManager;
-use Neos\ContentRepository\Exception\NodeConfigurationException;
+use Neos\ContentRepository\Core\NodeType\NodeTypeNames;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindAncestorNodesFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\NodeType\NodeTypeCriteria;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
+use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Exception as FlowException;
@@ -37,18 +38,21 @@ use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\Package\PackageManager;
 use Neos\Flow\Reflection\ReflectionService;
+use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetUsageStrategyInterface;
+use Neos\Neos\AssetUsage\AssetUsageStrategy;
+use Neos\Neos\AssetUsage\Dto\AssetUsageReference;
 use Neos\Neos\Controller\BackendUserTranslationTrait;
-use Neos\Neos\Controller\CreateContentContextTrait;
-use Neos\Neos\Domain\Model\Dto\AssetUsageInNodeProperties;
 use Neos\Neos\Domain\Model\Site;
+use Neos\Neos\Domain\Model\SiteNodeName;
+use Neos\Neos\Domain\NodeLabel\NodeLabelGeneratorInterface;
 use Neos\Neos\Domain\Repository\SiteRepository;
-use Neos\Neos\Domain\Service\UserService as DomainUserService;
-use Neos\Neos\Domain\Strategy\AssetUsageInNodePropertiesStrategy;
-use Neos\Neos\Service\LinkingService;
+use Neos\Neos\Domain\Repository\WorkspaceMetadataAndRoleRepository;
+use Neos\Neos\Domain\Service\NodeTypeNameFactory;
+use Neos\Neos\Security\Authorization\ContentRepositoryAuthorizationService;
 use Neos\Neos\Service\UserService;
 
 /**
@@ -56,92 +60,49 @@ use Neos\Neos\Service\UserService;
  */
 class UsageDetailsService
 {
-    use CreateContentContextTrait;
     use BackendUserTranslationTrait;
 
-    /**
-     * @Flow\Inject
-     * @var Bootstrap
-     */
-    protected $bootstrap;
+    #[Flow\Inject]
+    protected Bootstrap $bootstrap;
 
-    /**
-     * @Flow\Inject
-     * @var UserService
-     */
-    protected $userService;
+    #[Flow\Inject]
+    protected UserService $userService;
 
-    /**
-     * @Flow\Inject
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    #[Flow\Inject]
+    protected SiteRepository $siteRepository;
 
-    /**
-     * @Flow\Inject
-     * @var NodeTypeManager
-     */
-    protected $nodeTypeManager;
+    #[Flow\Inject]
+    protected AssetService $assetService;
 
-    /**
-     * @Flow\Inject
-     * @var WorkspaceRepository
-     */
-    protected $workspaceRepository;
+    #[Flow\Inject]
+    protected ObjectManagerInterface $objectManager;
 
-    /**
-     * @Flow\Inject
-     * @var AssetService
-     */
-    protected $assetService;
+    #[Flow\Inject]
+    protected ReflectionService $reflectionService;
 
-    /**
-     * @Flow\Inject
-     * @var DomainUserService
-     */
-    protected $domainUserService;
+    #[Flow\Inject]
+    protected EntityManagerInterface $entityManager;
 
-    /**
-     * @Flow\Inject
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
+    #[Flow\Inject]
+    protected PackageManager $packageManager;
 
-    /**
-     * @Flow\Inject
-     * @var LinkingService
-     */
-    protected $linkingService;
+    #[Flow\Inject]
+    protected Translator $translator;
 
-    /**
-     * @Flow\Inject
-     * @var ReflectionService
-     */
-    protected $reflectionService;
+    #[Flow\Inject]
+    protected ContentRepositoryRegistry $contentRepositoryRegistry;
 
-    /**
-     * @Flow\Inject
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
+    #[Flow\Inject]
+    protected NodeLabelGeneratorInterface $nodeLabelGenerator;
 
-    /**
-     * @Flow\Inject
-     * @var PackageManager
-     */
-    protected $packageManager;
+    #[Flow\Inject()]
+    protected WorkspaceMetadataAndRoleRepository $workspaceMetadataAndRoleRepository;
 
-    /**
-     * @Flow\InjectConfiguration(path="contentDimensions", package="Neos.ContentRepository")
-     * @var array
-     */
-    protected $contentDimensionsConfiguration;
+    #[Flow\Inject()]
+    protected SecurityContext $securityContext;
 
-    /**
-     * @Flow\Inject
-     * @var Translator
-     */
-    protected $translator;
+    #[Flow\Inject()]
+    protected ContentRepositoryAuthorizationService $contentRepositoryAuthorizationService;
 
     private array $accessibleWorkspaces = [];
 
@@ -151,9 +112,7 @@ class UsageDetailsService
     public function resolveUsagesForAsset(AssetInterface $asset): array
     {
         $includeSites = $this->siteRepository->countAll() > 1;
-        $includeDimensions = count($this->contentDimensionsConfiguration) > 0;
-
-        return array_filter(array_map(function ($strategy) use ($asset, $includeSites, $includeDimensions) {
+        return array_filter(array_map(function ($strategy) use ($asset, $includeSites) {
             $usageByStrategy = [
                 'serviceId' => get_class($strategy),
                 'label' => get_class($strategy),
@@ -168,7 +127,7 @@ class UsageDetailsService
             // Should be solved via an interface in the future
             if (method_exists($strategy, 'getLabel')) {
                 $usageByStrategy['label'] = $strategy->getLabel();
-            } elseif ($strategy instanceof AssetUsageInNodePropertiesStrategy) {
+            } elseif ($strategy instanceof AssetUsageStrategy) {
                 $usageByStrategy['label'] = $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.label');
             }
 
@@ -177,20 +136,16 @@ class UsageDetailsService
                 $usageByStrategy['usages'] = $strategy->getUsageDetails($asset);
             } else {
                 // If the strategy does not implement the UsageDetailsProviderInterface, we provide some default usage data
-                try {
-                    $usageReferences = $strategy->getUsageReferences($asset);
-                    if (count($usageReferences) && $usageReferences[0] instanceof AssetUsageInNodeProperties) {
-                        $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema($includeSites,
-                            $includeDimensions)->toArray();
-                        $usageByStrategy['usages'] = array_map(function (AssetUsageInNodeProperties $usage) use (
-                            $includeSites,
-                            $includeDimensions
-                        ) {
-                            return $this->getNodePropertiesUsageDetails($usage, $includeSites, $includeDimensions);
-                        }, $usageReferences);
-                    }
-                } catch (NodeConfigurationException $e) {
-                    // TODO: Handle error
+                $usageReferences = $strategy->getUsageReferences($asset);
+                if (count($usageReferences) && $usageReferences[0] instanceof AssetUsageReference) {
+                    $includeDimensions = $this->containtsContentReporitoryWithDimensions($usageReferences);
+                    $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema(
+                        $includeSites,
+                        $includeDimensions
+                    )->toArray();
+                    $usageByStrategy['usages'] = array_map(function (AssetUsageReference $usage) use ($includeSites, $includeDimensions) {
+                        return $this->getNodePropertiesUsageDetails($usage, $includeSites, $includeDimensions);
+                    }, $usageReferences);
                 }
             }
             return $usageByStrategy;
@@ -202,7 +157,8 @@ class UsageDetailsService
     protected function getNodePropertiesUsageMetadataSchema(
         bool $includeSites,
         bool $includeDimensions
-    ): UsageMetadataSchema {
+    ): UsageMetadataSchema
+    {
         $schema = new UsageMetadataSchema();
 
         if ($includeSites) {
@@ -226,33 +182,39 @@ class UsageDetailsService
     }
 
     protected function getNodePropertiesUsageDetails(
-        AssetUsageInNodeProperties $usage,
+        AssetUsageReference $usage,
         bool $includeSites,
         bool $includeDimensions
-    ): AssetUsageDetails {
+    ): AssetUsageDetails
+    {
         /** @var Node $node */
         $node = $this->getNodeFrom($usage);
         $siteNode = $this->getSiteNodeFrom($node);
-        $site = $siteNode ? $this->siteRepository->findOneByNodeName($siteNode->getName()) : null;
+        $site = $siteNode ? $this->siteRepository->findOneByNodeName(SiteNodeName::fromNodeName($siteNode->name)) : null;
         $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
-        $accessible = $this->usageIsAccessible($usage->getWorkspaceName());
-        $workspace = $this->workspaceRepository->findByIdentifier($usage->getWorkspaceName());
-        $label = $accessible && $node ? $node->getLabel() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode');
+        $accessible = $this->usageIsAccessible($usage);
+        $label = $accessible && $node ? $this->nodeLabelGenerator->getLabel($node) : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode');
 
         $url = $accessible && $closestDocumentNode ? $this->buildNodeUri($site, $closestDocumentNode) : '';
+
+        $workspaceMetadata = $this->workspaceMetadataAndRoleRepository->loadWorkspaceMetadata($usage->getContentRepositoryId(), $usage->getWorkspaceName());
 
         $metadata = [
             [
                 'name' => 'workspace',
-                'value' => $workspace ? $workspace->getTitle() : $usage->getWorkspaceName(),
+                'value' => $workspaceMetadata ? $workspaceMetadata->title->value : $usage->getWorkspaceName(),
             ],
             [
                 'name' => 'document',
-                'value' => $closestDocumentNode ? $closestDocumentNode->getLabel() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable'),
+                'value' => $closestDocumentNode ? $this->nodeLabelGenerator->getLabel($closestDocumentNode) : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable'),
+            ],
+            [
+                'name' => 'nodeExists',
+                'value' => $node?->name->value,
             ],
             [
                 'name' => 'lastModified',
-                'value' => $node && $node->getLastPublicationDateTime() ? $node->getLastModificationDateTime()->format(DATE_W3C) : null,
+                'value' => $node?->timestamps->lastModified?->format(DATE_W3C) ?? $node?->timestamps->created?->format(DATE_W3C),
             ]
         ];
 
@@ -276,51 +238,59 @@ class UsageDetailsService
         return new AssetUsageDetails($label, $url, $metadata);
     }
 
-    protected function resolveDimensionValuesForNode(NodeInterface $node): array
+    protected function resolveDimensionValuesForNode(Node $node): array
     {
         $dimensionValues = [];
-        foreach ($node->getDimensions() as $dimensionName => $dimensionValuesForName) {
-            $dimensionValues[$this->contentDimensionsConfiguration[$dimensionName]['label'] ?? $dimensionName] = array_map(function (
-                $dimensionValue
-            ) use ($dimensionName) {
-                return $this->contentDimensionsConfiguration[$dimensionName]['presets'][$dimensionValue]['label'] ?? $dimensionValue;
-            }, $dimensionValuesForName);
+        $contentDimensions = $this->contentRepositoryRegistry->get($node->contentRepositoryId)->getContentDimensionSource()->getContentDimensionsOrderedByPriority();
+
+        foreach ($node->originDimensionSpacePoint->coordinates as $nodeDimensionName => $nodeDimensionValue) {
+            foreach ($contentDimensions as $contentDimensionName => $contentDimension) {
+                if ($contentDimensionName === $nodeDimensionName) {
+                    foreach ($contentDimension->values as $presetKey => $preset) {
+                         if ($presetKey === $nodeDimensionValue) {
+                             $dimensionValues[$contentDimension->getConfigurationValue('label')][] = $preset->getConfigurationValue('label');
+                         }
+                    }
+                }
+            }
         }
+
         return $dimensionValues;
     }
 
-    protected function getNodeFrom(AssetUsageInNodeProperties $assetUsage): ?NodeInterface
+    protected function getNodeFrom(AssetUsageReference $assetUsage): ?Node
     {
-        $context = $this->_contextFactory->create(
-            [
-                'workspaceName' => $assetUsage->getWorkspaceName(),
-                'dimensions' => $assetUsage->getDimensionValues(),
-                'targetDimensions' => [],
-                'invisibleContentShown' => true,
-                'removedContentShown' => true
-            ]
-        );
-        return $context->getNodeByIdentifier($assetUsage->getNodeIdentifier());
+        return $this->contentRepositoryRegistry
+            ->get($assetUsage->getContentRepositoryId())
+            ->getContentGraph($assetUsage->getWorkspaceName())
+            ->getSubgraph(
+                $assetUsage
+                    ->getOriginDimensionSpacePoint()
+                    ->toDimensionSpacePoint(), VisibilityConstraints::withoutRestrictions())
+            ->findNodeById($assetUsage->getNodeAggregateId());
     }
 
-    protected function getClosestDocumentNode(NodeInterface $node): ?NodeInterface
+    protected function getClosestDocumentNode(Node $node): ?Node
     {
         $parentNode = $node;
-        while ($parentNode && !$parentNode->getNodeType()->isOfType('Neos.Neos:Document')) {
-            $parentNode = $parentNode->getParent();
+        $contentRepository = $this->contentRepositoryRegistry->get($parentNode->contentRepositoryId);
+        while ($parentNode && !$contentRepository->getNodeTypeManager()->getNodeType($parentNode->nodeTypeName)->isOfType('Neos.Neos:Document')) {
+            $subgraph = $this->contentRepositoryRegistry->subgraphForNode($parentNode);
+            $parentNode = $subgraph->findParentNode($parentNode->aggregateId);
         }
         return $parentNode;
     }
 
-    protected function usageIsAccessible(string $workspaceName): bool
+    protected function usageIsAccessible(AssetUsageReference $usage): bool
     {
-        if (array_key_exists($workspaceName, $this->accessibleWorkspaces)) {
-            return $this->accessibleWorkspaces[$workspaceName];
+        $cacheKey = $usage->getWorkspaceName()->value;
+        if (array_key_exists($cacheKey, $this->accessibleWorkspaces)) {
+            return $this->accessibleWorkspaces[$cacheKey];
         }
-        $workspace = $this->workspaceRepository->findByIdentifier($workspaceName);
-        $accessible = $this->domainUserService->currentUserCanReadWorkspace($workspace);
-        $this->accessibleWorkspaces[$workspaceName] = $accessible;
-        return $accessible;
+        $workspacePermissions = $this->contentRepositoryAuthorizationService->getWorkspacePermissions($usage->getContentRepositoryId(), $usage->getWorkspaceName(), $this->securityContext->getRoles(), $this->userService->getBackendUser()?->getId());
+
+        $this->accessibleWorkspaces[$cacheKey] = $workspacePermissions->read;
+        return $workspacePermissions->read;
     }
 
     /**
@@ -332,7 +302,7 @@ class UsageDetailsService
      *
      * @throws HttpException|MissingActionNameException
      */
-    protected function buildNodeUri(?Site $site, NodeInterface $node): string
+    protected function buildNodeUri(?Site $site, Node $node): string
     {
         $requestHandler = $this->bootstrap->getActiveRequestHandler();
 
@@ -479,10 +449,31 @@ class UsageDetailsService
     /**
      * Resolve the site node in the context of the given node
      */
-    protected function getSiteNodeFrom(NodeInterface $node): ?NodeInterface
+    protected function getSiteNodeFrom(Node $node): ?Node
     {
-        // Take the first two path segments of the node path
-        $sitePath = implode('/', array_slice(explode('/', $node->getPath(), 4), 0, 3));
-        return $node->getContext()->getNode($sitePath);
+        $subgraph = $this->contentRepositoryRegistry->subgraphForNode($node);
+        $ancestorNodes = $subgraph->findAncestorNodes($node->aggregateId, FindAncestorNodesFilter::create(
+            NodeTypeCriteria::createWithAllowedNodeTypeNames(
+                NodeTypeNames::with(
+                    NodeTypeNameFactory::forSite()
+                )
+            )
+        ));
+
+        return $ancestorNodes->first();
+    }
+
+    /**
+     * @param array<AssetUsageReference> $usageReferences
+     * @return bool
+     */
+    protected function containtsContentReporitoryWithDimensions(array $usageReferences): bool
+    {
+        foreach ($usageReferences as $usageReference) {
+            if ($this->contentRepositoryRegistry->get($usageReference->getContentRepositoryId())->getContentDimensionSource()->getContentDimensionsOrderedByPriority()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

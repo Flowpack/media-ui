@@ -8,12 +8,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Utility\AssetCollectionUtility;
-use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
-use Neos\Neos\Domain\Service\ContentContext;
+use Neos\Neos\Domain\Repository\DomainRepository;
 
 /**
  * @Flow\Scope("singleton")
@@ -42,9 +41,9 @@ class AssetCollectionService
 
     /**
      * @Flow\Inject
-     * @var ContextFactoryInterface
+     * @var DomainRepository
      */
-    protected $contextFactory;
+    protected $domainRepository;
 
     /**
      * Queries the asset count for all asset collections once and caches the result.
@@ -100,11 +99,11 @@ class AssetCollectionService
      */
     public function getDefaultCollectionForCurrentSite(): ?AssetCollection
     {
-        /** @var ContentContext $context */
-        $context = $this->contextFactory->create([
-            'workspaceName' => 'live',
-        ]);
+        $domain = $this->domainRepository->findOneByActiveRequest();
+        if ($domain !== null) {
+            return $domain->getSite()->getAssetCollection();
+        }
 
-        return $context->getCurrentSite()?->getAssetCollection();
+        return null;
     }
 }
