@@ -25,6 +25,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Core\NodeType\NodeTypeNames;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindAncestorNodesFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindClosestNodeFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\NodeType\NodeTypeCriteria;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
@@ -215,12 +216,19 @@ final class UsageDetailsService
         bool $includeDimensions
     ): AssetUsageDetails
     {
-        /** @var Node $node */
-        $node = $this->getNodeFrom($usage);
-        $siteNode = $this->getSiteNodeFrom($node);
-        $site = $siteNode ? $this->siteRepository->findOneByNodeName(SiteNodeName::fromNodeName($siteNode->name)) : null;
-        $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
         $accessible = $this->usageIsAccessible($usage);
+
+        $node = null;
+        $site = null;
+        $closestDocumentNode = null;
+        if ($accessible) {
+            /** @var Node $node */
+            $node = $this->getNodeFrom($usage);
+            $siteNode = $this->getSiteNodeFrom($node);
+            $site = $siteNode ? $this->siteRepository->findSiteBySiteNode($siteNode) : null;
+            $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
+        }
+
         $label = $accessible && $node ? $this->nodeLabelGenerator->getLabel($node) : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode');
 
         $url = $accessible && $closestDocumentNode ? $this->buildNodeUri($site, $closestDocumentNode) : '';
@@ -246,21 +254,19 @@ final class UsageDetailsService
             ]
         ];
 
-        if ($node) {
-            if ($includeSites) {
-                $metadata[] = [
-                    'name' => 'site',
-                    'value' => $site ? $site->getName() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable'),
-                ];
-            }
+        if ($includeSites) {
+            $metadata[] = [
+                'name' => 'site',
+                'value' => $site ? $site->getName() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.metadataNotAvailable'),
+            ];
+        }
 
-            // Only add content dimensions if they are configured
-            if ($includeDimensions) {
-                $metadata[] = [
-                    'name' => 'contentDimensions',
-                    'value' => json_encode($this->resolveDimensionValuesForNode($node)),
-                ];
-            }
+        // Only add content dimensions if they are configured
+        if ($includeDimensions) {
+            $metadata[] = [
+                'name' => 'contentDimensions',
+                'value' => json_encode($node ? ($this->resolveDimensionValuesForNode($node)) : []),
+            ];
         }
 
         return new AssetUsageDetails($label, $url, $metadata);
@@ -482,7 +488,7 @@ final class UsageDetailsService
     protected function getSiteNodeFrom(Node $node): ?Node
     {
         $subgraph = $this->contentRepositoryRegistry->subgraphForNode($node);
-        $ancestorNodes = $subgraph->findAncestorNodes($node->aggregateId, FindAncestorNodesFilter::create(
+        $siteNode = $subgraph->findClosestNode($node->aggregateId, FindClosestNodeFilter::create(
             NodeTypeCriteria::createWithAllowedNodeTypeNames(
                 NodeTypeNames::with(
                     NodeTypeNameFactory::forSite()
@@ -490,7 +496,7 @@ final class UsageDetailsService
             )
         ));
 
-        return $ancestorNodes->first();
+        return $siteNode;
     }
 
     /**
