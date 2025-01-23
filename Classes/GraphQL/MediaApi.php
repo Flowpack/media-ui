@@ -114,12 +114,7 @@ final class MediaApi
 
         $iterator->setOffset($offset);
         $iterator->setLimit($limit);
-
-        $assets = [];
-        foreach ($iterator as $assetProxy) {
-            $assets[] = Types\Asset::fromAssetProxy($assetProxy);
-        }
-        return instantiate(Types\Assets::class, $assets);
+        return Types\Assets::fromAssetProxies($iterator);
     }
 
     #[Description('All asset collections')]
@@ -192,7 +187,7 @@ final class MediaApi
     public function assetCollection(?Types\AssetCollectionId $id): ?Types\AssetCollection
     {
         /** @var HierarchicalAssetCollectionInterface $assetCollection */
-        $assetCollection = $id ? $this->assetCollectionRepository->findByIdentifier($id) : null;
+        $assetCollection = $id ? $this->assetCollectionRepository->findByIdentifier($id->value) : null;
         return $assetCollection ? instantiate(Types\AssetCollection::class, [
             'id' => $id,
             'title' => $assetCollection->getTitle(),
@@ -289,42 +284,23 @@ final class MediaApi
     public function unusedAssets(int $limit = 20, int $offset = 0): Types\Assets
     {
         /** @var AssetInterface[] $assetProxies */
-        $assetProxies = [];
+        $assets = [];
         try {
-            $assetProxies = $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
+            $assets = $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
         } catch (MediaUiException $e) {
             $this->logger->error('Could not retrieve unused assets', ['exception' => $e]);
         }
-
-        $assets = [];
-        foreach ($assetProxies as $assetProxy) {
-            $assets[] = Types\Asset::fromAssetProxy($assetProxy->getAssetProxy());
-        }
-        return instantiate(Types\Assets::class, $assets);
+        return Types\Assets::fromAssets($assets);
     }
 
     #[Description('Provides a list of changes to assets since a given timestamp')]
     #[Query]
-    public function changedAssets(\DateTime $since = null): Types\ChangedAssetsResult
+    public function changedAssets(Types\DateTime $since = null): Types\ChangedAssetsResult
     {
-        $changes = $this->assetChangeLog->getChanges();
-
-        # TODO: Move this filter functionality into the changelog service for optimisation?
-        $filteredChanges = [];
-        $lastModified = null;
-        foreach ($changes->changes as $change) {
-            if ($since !== null && $change->lastModified <= $since) {
-                continue;
-            }
-            if ($lastModified === null || $change->lastModified > $lastModified) {
-                $lastModified = $change->lastModified;
-            }
-            $filteredChanges[] = $change;
-        }
-
+        $changes = $this->assetChangeLog->getChanges($since);
         return instantiate(Types\ChangedAssetsResult::class, [
-            'lastModified' => $lastModified,
-            'changes' => instantiate(Types\AssetChanges::class, $filteredChanges),
+            'lastModified' => $changes->getLastModified(),
+            'changes' => instantiate(Types\AssetChanges::class, $changes),
         ]);
     }
 

@@ -89,14 +89,18 @@ class AssetCollectionResolver
         ) : Types\Tags::empty();
     }
 
-    public function parent(Types\AssetCollection $assetCollection): ?Types\AssetCollection
+    public function parent(Types\AssetCollection $assetCollection): ?Types\AssetCollectionParent
     {
         /** @var HierarchicalAssetCollectionInterface $originalAssetCollection */
         $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
-        return $originalAssetCollection ? instantiate(
-            Types\AssetCollection::class,
-            $originalAssetCollection->getParent()
-        ) : null;
+        if (!$originalAssetCollection) {
+            return null;
+        }
+        $parent = $originalAssetCollection->getParent();
+        return $parent ? instantiate(Types\AssetCollectionParent::class, [
+            'id' => $this->persistenceManager->getIdentifierByObject($parent),
+            'title' => $parent->getTitle(),
+        ]) : null;
     }
 
     public function assets(Types\AssetCollection $assetCollection): Types\Assets

@@ -29,4 +29,15 @@ final class AssetChanges implements \IteratorAggregate
     {
         yield from $this->changes;
     }
+
+    public function getLastModified(): ?DateTime
+    {
+        $lastModified = null;
+        foreach ($this->changes as $change) {
+            if ($lastModified === null || $change->lastModified > $lastModified) {
+                $lastModified = $change->lastModified;
+            }
+        }
+        return $lastModified;
+    }
 }

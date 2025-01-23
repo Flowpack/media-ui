@@ -52,14 +52,6 @@ class AssetResolver
     #[Flow\Inject]
     protected $persistenceManager;
 
-//    public function __construct(
-//        protected readonly FileTypeIconService $fileTypeIconService,
-//        protected readonly ResourceManager $resourceManager,
-//        protected readonly AssetService $assetService,
-//        protected readonly AssetSourceContext $assetSourceContext
-//    ) {
-//    }
-
     /**
      * Returns the title of the associated local asset data or the label of the proxy as fallback
      */

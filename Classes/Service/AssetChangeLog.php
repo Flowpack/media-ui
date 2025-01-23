@@ -61,20 +61,30 @@ final class AssetChangeLog
         );
     }
 
-    public function getChanges(): Types\AssetChanges
+    /**
+     * Returns all changes since the given timestamp in ascending order
+     */
+    public function getChanges(Types\DateTime $since = null): Types\AssetChanges
     {
         try {
             $cachedChanges = $this->cache->getByTag('changedAssets');
         } catch (NotSupportedByBackendException) {
             return Types\AssetChanges::empty();
         }
-        return array_map(static function (array $entry) {
+        $changes = [];
+        foreach ($cachedChanges as $change) {
             try {
-                $changeData = json_decode($entry, true, 512, JSON_THROW_ON_ERROR);
+                /** @var array{assetId: string, lastModified: string, type: string} $changeData */
+                $changeData = json_decode($change, true, 512, JSON_THROW_ON_ERROR);
             } catch (\JsonException) {
-                return null;
+                continue;
             }
-            return instantiate(Types\AssetChange::class, $changeData);
-        }, array_filter(array_values($cachedChanges)));
+            if ($since !== null && $change['lastModified'] <= $since) {
+                continue;
+            }
+            $changes[]= instantiate(Types\AssetChange::class, $changeData);
+        }
+        usort($changes, static fn(Types\AssetChange $a, Types\AssetChange $b) => $a->lastModified <=> $b->lastModified);
+        return instantiate(Types\AssetChanges::class, $changes);
     }
 }

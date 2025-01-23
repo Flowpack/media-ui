@@ -25,13 +25,13 @@ use Neos\Media\Domain\Repository\ImageVariantRepository;
 use function Wwwision\Types\instantiate;
 
 #[Flow\Scope('singleton')]
-final class AssetVariantResolver
+class AssetVariantResolver
 {
-    public function __construct(
-        protected readonly ResourceManager $resourceManager,
-        protected readonly ImageVariantRepository $imageVariantRepository,
-    ) {
-    }
+    #[Flow\Inject]
+    protected ResourceManager $resourceManager;
+
+    #[Flow\Inject]
+    protected ImageVariantRepository $imageVariantRepository;
 
     /**
      * Returns a preview url for image variants

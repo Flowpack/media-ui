@@ -41,8 +41,8 @@
       value:
         - 'Flowpack\Media\Ui\GraphQL\Types'
     4:
-      # Simulate a request to the Neos NodeController in order to initialize the security context and trigger the default Neos backend authentication provider
-      value: 'Neos\Neos\Controller\Frontend\NodeController'
+      # Simulate a request to the module controller to check if the current user has access to the requested resource
+      value: 'Flowpack\Media\Ui\Controller\MediaController'
     5:
       # Custom resolvers
       value:
@@ -68,7 +68,7 @@
           canDelete: *assetCollectionResolver
           tags: *assetCollectionResolver
 #          assets: *assetCollectionResolver
-#          parent: *assetCollectionResolver
+          parent: *assetCollectionResolver
         AssetVariant:
           previewUrl: &assetVariantResolver
             resolverClassName: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetVariantResolver'

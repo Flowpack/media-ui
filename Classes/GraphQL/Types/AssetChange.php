@@ -15,7 +15,7 @@ use Wwwision\Types\Attributes\Description;
 final class AssetChange
 {
     private function __construct(
-        public readonly \DateTime $lastModified,
+        public readonly DateTime $lastModified,
         public readonly AssetId $assetId,
         public readonly AssetChangeType $type,
     ) {

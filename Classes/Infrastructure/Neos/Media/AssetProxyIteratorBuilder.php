@@ -166,7 +166,7 @@ class AssetProxyIteratorBuilder
                 $assetProxyRepository->filterUntagged();
             } else {
                 /** @var Tag $tag */
-                $tag = $this->tagRepository->findByIdentifier($tagId);
+                $tag = $this->tagRepository->findByIdentifier($tagId->value);
                 if ($tag) {
                     $assetProxyRepository->filterByTag($tag);
                 }
@@ -178,7 +178,7 @@ class AssetProxyIteratorBuilder
             }
 
             /** @var Tag $tag */
-            $tag = $this->tagRepository->findByIdentifier($tagId);
+            $tag = $this->tagRepository->findByIdentifier($tagId->value);
             if ($tag) {
                 return $assetProxyRepository->findByTag($tag)->getQuery();
             }
