@@ -72,6 +72,12 @@ class AssetSourceContext
         }
     }
 
+    public function getAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceIdentifier): ?AssetInterface
+    {
+        $assetProxy = $this->getAssetProxy($id, $assetSourceIdentifier);
+        return $assetProxy ? $this->getAssetForProxy($assetProxy) : null;
+    }
+
     public function getAssetForProxy(AssetProxyInterface $assetProxy): ?AssetInterface
     {
         $localAssetId = Types\LocalAssetId::fromAssetProxy($assetProxy);

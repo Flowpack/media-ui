@@ -42,7 +42,6 @@ use Neos\Media\Exception\AssetServiceException;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use Neos\Utility\MediaTypes;
 use Psr\Log\LoggerInterface;
-//use t3n\GraphQL\ResolverInterface;
 
 /**
  * @Flow\Scope("singleton")
@@ -182,52 +181,6 @@ class MutationResolver
                 )
             ]
         );
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function updateAsset($_, array $variables, AssetSourceContext $assetSourceContext): ?AssetProxyInterface
-    {
-        [
-            'id' => $id,
-            'assetSourceId' => $assetSourceId,
-            'label' => $label,
-            'caption' => $caption,
-            'copyrightNotice' => $copyrightNotice
-        ] = $variables + ['label' => null, 'caption' => null, 'copyrightNotice' => 'nix'];
-
-        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
-        if (!$assetProxy) {
-            return null;
-        }
-        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
-
-        if (!$asset) {
-            throw new Exception('Cannot update asset that was never imported', 1590659044);
-        }
-
-        if ($label !== null) {
-            $asset->setTitle($label);
-        }
-
-        if ($asset instanceof Asset) {
-            if ($caption !== null) {
-                $asset->setCaption($caption);
-            }
-
-            if ($copyrightNotice !== null) {
-                $asset->setCopyrightNotice($copyrightNotice);
-            }
-        }
-
-        try {
-            $this->assetRepository->update($asset);
-        } catch (IllegalObjectTypeException $e) {
-            throw new Exception('Failed to update asset', 1590659063);
-        }
-
-        return $assetProxy;
     }
 
     /**

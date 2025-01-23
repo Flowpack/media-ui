@@ -4,8 +4,19 @@ declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL;
 
+/*
+ * This file is part of the Flowpack.Media.Ui package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Domain\Model\SearchTerm;
+use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types\AssetSource;
@@ -15,8 +26,10 @@ use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Authorization\PrivilegeManagerInterface;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
@@ -24,12 +37,14 @@ use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Model\VariantSupportInterface;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
+use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
 use Psr\Log\LoggerInterface;
 use Wwwision\Types\Attributes\Description;
+use Wwwision\TypesGraphQL\Attributes\Mutation;
 use Wwwision\TypesGraphQL\Attributes\Query;
 
 use function Wwwision\Types\instantiate;
@@ -53,6 +68,7 @@ final class MediaApi
         private readonly AssetService $assetService,
         private readonly AssetChangeLog $assetChangeLog,
         private readonly SimilarityService $similarityService,
+        private readonly AssetRepository $assetRepository,
     ) {
     }
 
@@ -249,36 +265,17 @@ final class MediaApi
     #[QUERY]
     public function assetUsageDetails(Types\AssetId $id, Types\AssetSourceId $assetSourceId): Types\UsageDetailsGroups
     {
-        $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
-
-        if (!$assetProxy || !$assetProxy->getLocalAssetIdentifier()) {
-            return Types\UsageDetailsGroups::empty();
-        }
-
-        $asset = $this->assetSourceContext->getAssetForProxy($assetProxy);
-
-        if (!$asset) {
-            return Types\UsageDetailsGroups::empty();
-        }
-
-        return $this->usageDetailsService->resolveUsagesForAsset($asset);
+        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
+        return $asset ?
+            $this->usageDetailsService->resolveUsagesForAsset($asset) : Types\UsageDetailsGroups::empty();
     }
 
     #[Description('Returns the total usage count for the given asset')]
     #[Query]
     public function assetUsageCount(Types\AssetId $id, Types\AssetSourceId $assetSourceId): int
     {
-        $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
-        if (!$assetProxy || !$assetProxy->getLocalAssetIdentifier()) {
-            return 0;
-        }
-
-        $asset = $this->assetSourceContext->getAssetForProxy($assetProxy);
-        if (!$asset) {
-            return 0;
-        }
-
-        return $this->assetService->getUsageCount($asset);
+        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
+        return $asset ? $this->assetService->getUsageCount($asset) : 0;
     }
 
     #[Description('Provides a list of all unused assets in local asset source')]
@@ -301,8 +298,8 @@ final class MediaApi
     {
         $changes = $this->assetChangeLog->getChanges($since);
         return instantiate(Types\ChangedAssetsResult::class, [
-            'lastModified' => $changes->getLastModified(),
             'changes' => instantiate(Types\AssetChanges::class, $changes),
+            'lastModified' => $changes->getLastModified(),
         ]);
     }
 
@@ -328,17 +325,50 @@ final class MediaApi
     #[Query]
     public function similarAssets(Types\AssetId $id, Types\AssetSourceId $assetSourceId): Types\Assets
     {
-        $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
-        if (!$assetProxy) {
-            return Types\Assets::empty();
-        }
-
-        $asset = $this->assetSourceContext->getAssetForProxy($assetProxy);
+        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             return Types\Assets::empty();
         }
-
         $similarAssets = $this->similarityService->getSimilarAssets($asset);
         return Types\Assets::fromAssets($similarAssets);
+    }
+
+    /**
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function updateAsset(
+        Types\AssetId $id,
+        Types\AssetSourceId $assetSourceId,
+        string $label = null,
+        string $caption = null,
+        string $copyrightNotice = null
+    ): ?Types\Asset {
+        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
+        if (!$asset) {
+            throw new Exception('Cannot update asset that was never imported', 1590659044);
+        }
+
+        if ($label !== null) {
+            $asset->setTitle($label);
+        }
+
+        if ($asset instanceof Asset) {
+            if ($caption !== null) {
+                $asset->setCaption($caption);
+            }
+            if ($copyrightNotice !== null) {
+                $asset->setCopyrightNotice($copyrightNotice);
+            }
+        }
+
+        try {
+            $this->assetRepository->update($asset);
+            $this->persistenceManager->persistAll();
+        } catch (IllegalObjectTypeException $e) {
+            throw new Exception('Failed to update asset: ' . $e->getMessage(), 1590659063);
+        }
+
+        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
     }
 }
