@@ -314,14 +314,12 @@ final class MediaApi
         if (!($assetProxy instanceof NeosAssetProxy) || !($assetProxy->getAsset() instanceof VariantSupportInterface)) {
             return Types\AssetVariants::empty();
         }
-        $asset = $this->assetSourceContext->getAssetByLocalIdentifier($assetProxy->getLocalAssetIdentifier());
+        $asset = $assetProxy->getAsset();
 
         /** @var VariantSupportInterface $originalAsset */
         $originalAsset = ($asset instanceof AssetVariantInterface ? $asset->getOriginalAsset() : $asset);
 
-        return instantiate(Types\AssetVariants::class, array_map(static function (AssetVariantInterface $assetVariant) {
-            return Types\AssetVariant::fromAssetVariant($assetVariant);
-        }, $originalAsset->getVariants()));
+        return Types\AssetVariants::fromAssetVariants($originalAsset->getVariants());
     }
 
     /**

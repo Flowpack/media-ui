@@ -17,6 +17,15 @@ final class AssetVariants implements \IteratorAggregate
     {
     }
 
+    public static function fromAssetVariants(iterable $assetVariants): self
+    {
+        $assetVariantList = [];
+        foreach ($assetVariants as $assetVariant) {
+            $assetVariantList[] = AssetVariant::fromAssetVariant($assetVariant);
+        }
+        return instantiate(self::class, $assetVariantList);
+    }
+
     public static function empty(): self
     {
         return instantiate(self::class, []);
