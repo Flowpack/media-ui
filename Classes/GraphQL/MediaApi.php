@@ -12,6 +12,7 @@ use Flowpack\Media\Ui\GraphQL\Types\AssetSource;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyIteratorBuilder;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
+use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
@@ -51,6 +52,7 @@ final class MediaApi
         private readonly PrivilegeManagerInterface $privilegeManager,
         private readonly AssetService $assetService,
         private readonly AssetChangeLog $assetChangeLog,
+        private readonly SimilarityService $similarityService,
     ) {
     }
 
@@ -322,34 +324,23 @@ final class MediaApi
         }, $originalAsset->getVariants()));
     }
 
-//    /**
-//     * Returns a list of similar asset to the given asset
-//     * @return AssetProxyInterface[]
-//     * @throws PropertyNotAccessibleException
-//     */
-//    public function similarAssets($_, array $variables, AssetSourceContext $assetSourceContext): array
-//    {
-//        [
-//            'id' => $id,
-//            'assetSourceId' => $assetSourceId,
-//        ] = $variables + ['id' => null, 'assetSourceId' => null];
-//
-//        $assetProxy = $assetSourceContext->getAssetProxy($id, $assetSourceId);
-//
-//        if (!$assetProxy) {
-//            return [];
-//        }
-//
-//        $asset = $assetSourceContext->getAssetForProxy($assetProxy);
-//
-//        if (!$asset) {
-//            return [];
-//        }
-//
-//        $similarAssets = $this->similarityService->getSimilarAssets($asset);
-//        return array_map(function ($asset) use ($assetSourceContext) {
-//            $assetId = $this->persistenceManager->getIdentifierByObject($asset);
-//            return $assetSourceContext->getAssetProxy($assetId, $asset->getAssetSourceIdentifier());
-//        }, $similarAssets);
-//    }
+    /**
+     * Returns a list of similar asset to the given asset
+     */
+    #[Query]
+    public function similarAssets(Types\AssetId $id, Types\AssetSourceId $assetSourceId): Types\Assets
+    {
+        $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
+        if (!$assetProxy) {
+            return Types\Assets::empty();
+        }
+
+        $asset = $this->assetSourceContext->getAssetForProxy($assetProxy);
+        if (!$asset) {
+            return Types\Assets::empty();
+        }
+
+        $similarAssets = $this->similarityService->getSimilarAssets($asset);
+        return Types\Assets::fromAssets($similarAssets);
+    }
 }
