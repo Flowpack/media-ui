@@ -79,7 +79,7 @@ final class AssetChangeLog
             } catch (\JsonException) {
                 continue;
             }
-            if ($since !== null && $change['lastModified'] <= $since) {
+            if ($since !== null && $changeData['lastModified'] <= $since) {
                 continue;
             }
             $changes[]= instantiate(Types\AssetChange::class, $changeData);
