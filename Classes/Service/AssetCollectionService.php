@@ -7,6 +7,7 @@ namespace Flowpack\Media\Ui\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
+use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Utility\AssetCollectionUtility;
 use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
 use Neos\Flow\Annotations as Flow;
@@ -15,9 +16,7 @@ use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Neos\Domain\Service\ContentContext;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class AssetCollectionService
 {
     /**
@@ -50,10 +49,10 @@ class AssetCollectionService
      * Queries the asset count for all asset collections once and caches the result.
      * This helps to avoid a lot of slow queries when rendering the asset collection list.
      */
-    public function getAssetCollectionAssetCount(string $assetCollectionId): int
+    public function getAssetCollectionAssetCount(Types\AssetCollectionId $assetCollectionId): int
     {
         if (!empty($this->assetCollectAssetCountCache)) {
-            return $this->assetCollectAssetCountCache[$assetCollectionId] ?? 0;
+            return $this->assetCollectAssetCountCache[$assetCollectionId->value] ?? 0;
         }
 
         $rsm = new ResultSetMapping();
@@ -81,7 +80,7 @@ class AssetCollectionService
             }, []);
         } catch (\Exception $e) {}
 
-        return $this->assetCollectAssetCountCache[$assetCollectionId] ?? 0;
+        return $this->assetCollectAssetCountCache[$assetCollectionId->value] ?? 0;
     }
 
     public function updatePathForNestedAssetCollections(HierarchicalAssetCollectionInterface $parentCollection): void

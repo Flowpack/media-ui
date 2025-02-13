@@ -25,6 +25,9 @@ final class AssetChanges implements \IteratorAggregate
         return instantiate(self::class, []);
     }
 
+    /**
+     * @return \Traversable<AssetChange>
+     */
     public function getIterator(): \Traversable
     {
         yield from $this->changes;

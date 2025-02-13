@@ -52,7 +52,7 @@ class AssetCollectionResolver
 
     public function assetCount(Types\AssetCollection $assetCollection): int
     {
-        return $this->assetCollectionService->getAssetCollectionAssetCount((string)$assetCollection->id);
+        return $this->assetCollectionService->getAssetCollectionAssetCount($assetCollection->id);
     }
 
     /**

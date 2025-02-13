@@ -4,6 +4,18 @@ declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL;
 
+/*
+ * This file is part of the Flowpack.Media.Ui package.
+ *
+ * It is based on the wwwision/neos-graphql package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+
 use BackedEnum;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
@@ -17,7 +29,6 @@ use GraphQL\Type\Definition\ResolveInfo;
 use InvalidArgumentException;
 use UnitEnum;
 use Wwwision\Types\Exception\CoerceException;
-use Wwwision\Types\Normalizer\Normalizer;
 use Wwwision\Types\Parser;
 use Wwwision\Types\Schema\EnumCaseSchema;
 use Wwwision\Types\Schema\EnumSchema;

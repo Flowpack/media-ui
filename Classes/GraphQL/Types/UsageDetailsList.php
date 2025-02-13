@@ -20,6 +20,9 @@ final class UsageDetailsList implements \IteratorAggregate
     ) {
     }
 
+    /**
+     * @return \Traversable<UsageDetails>
+     */
     public function getIterator(): \Traversable
     {
         yield from $this->items;

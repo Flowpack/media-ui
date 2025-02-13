@@ -48,6 +48,9 @@ final class Assets implements \IteratorAggregate
         return instantiate(self::class, $assetList);
     }
 
+    /**
+     * @return \Traversable<Asset>
+     */
     public function getIterator(): \Traversable
     {
         yield from $this->assets;

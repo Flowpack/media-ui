@@ -31,6 +31,9 @@ final class AssetVariants implements \IteratorAggregate
         return instantiate(self::class, []);
     }
 
+    /**
+     * @return \Traversable<AssetVariant>
+     */
     public function getIterator(): \Traversable
     {
         yield from $this->assetVariants;

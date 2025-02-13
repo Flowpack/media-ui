@@ -20,6 +20,9 @@ final class UsageDetailsMetadataSchemaList implements \IteratorAggregate
     ) {
     }
 
+    /**
+     * @return \Traversable<UsageDetailsMetadataSchema>
+     */
     public function getIterator(): \Traversable
     {
         yield from $this->schemas;

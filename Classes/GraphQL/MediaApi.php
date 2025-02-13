@@ -14,12 +14,14 @@ namespace Flowpack\Media\Ui\GraphQL;
  * source code.
  */
 
+use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Domain\Model\SearchTerm;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
-use Flowpack\Media\Ui\GraphQL\Types\AssetSource;
+use Flowpack\Media\Ui\GraphQL\Mutator\AssetMutator;
+use Flowpack\Media\Ui\GraphQL\Mutator\TagMutator;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyIteratorBuilder;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
@@ -28,8 +30,9 @@ use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\ResourceManagement\Exception as ResourceManagementException;
 use Neos\Flow\Security\Authorization\PrivilegeManagerInterface;
-use Neos\Media\Domain\Model\Asset;
+use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
@@ -37,7 +40,6 @@ use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Model\VariantSupportInterface;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
-use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Utility\Exception\FilesException;
@@ -56,19 +58,20 @@ final class MediaApi
     protected array $settings = [];
 
     public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly AssetProxyIteratorBuilder $assetProxyIteratorBuilder,
-        private readonly AssetCollectionRepository $assetCollectionRepository,
-        private readonly AssetSourceContext $assetSourceContext,
-        private readonly UsageDetailsService $usageDetailsService,
-        private readonly PersistenceManagerInterface $persistenceManager,
-        private readonly TagRepository $tagRepository,
-        private readonly AssetCollectionService $assetCollectionService,
-        private readonly PrivilegeManagerInterface $privilegeManager,
-        private readonly AssetService $assetService,
         private readonly AssetChangeLog $assetChangeLog,
+        private readonly AssetCollectionRepository $assetCollectionRepository,
+        private readonly AssetCollectionService $assetCollectionService,
+        private readonly AssetMutator $assetMutator,
+        private readonly AssetProxyIteratorBuilder $assetProxyIteratorBuilder,
+        private readonly AssetService $assetService,
+        private readonly AssetSourceContext $assetSourceContext,
+        private readonly LoggerInterface $logger,
+        private readonly PersistenceManagerInterface $persistenceManager,
+        private readonly PrivilegeManagerInterface $privilegeManager,
         private readonly SimilarityService $similarityService,
-        private readonly AssetRepository $assetRepository,
+        private readonly TagMutator $tagMutator,
+        private readonly TagRepository $tagRepository,
+        private readonly UsageDetailsService $usageDetailsService,
     ) {
     }
 
@@ -158,7 +161,7 @@ final class MediaApi
         return instantiate(
             Types\AssetSources::class,
             array_map(static function (AssetSourceInterface $assetSource) {
-                return AssetSource::fromAssetSource($assetSource);
+                return Types\AssetSource::fromAssetSource($assetSource);
             }, $this->assetSourceContext->getAssetSources())
         );
     }
@@ -344,31 +347,133 @@ final class MediaApi
         string $caption = null,
         string $copyrightNotice = null
     ): ?Types\Asset {
-        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
-        if (!$asset) {
-            throw new Exception('Cannot update asset that was never imported', 1590659044);
-        }
+        return $this->assetMutator->updateAsset($id, $assetSourceId, $label, $caption, $copyrightNotice);
+    }
 
-        if ($label !== null) {
-            $asset->setTitle($label);
-        }
+    /**
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function tagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): ?Types\Asset
+    {
+        return $this->assetMutator->tagAsset($id, $assetSourceId, $tagId);
+    }
 
-        if ($asset instanceof Asset) {
-            if ($caption !== null) {
-                $asset->setCaption($caption);
-            }
-            if ($copyrightNotice !== null) {
-                $asset->setCopyrightNotice($copyrightNotice);
-            }
-        }
+    /**
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function untagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): ?Types\Asset
+    {
+        return $this->assetMutator->untagAsset($id, $assetSourceId, $tagId);
+    }
 
-        try {
-            $this->assetRepository->update($asset);
-            $this->persistenceManager->persistAll();
-        } catch (IllegalObjectTypeException $e) {
-            throw new Exception('Failed to update asset: ' . $e->getMessage(), 1590659063);
-        }
+    /**
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function deleteAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId): MutationResult
+    {
+        return $this->assetMutator->deleteAsset($id, $assetSourceId);
+    }
 
-        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
+    /**
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function setAssetTags(
+        Types\AssetId $id,
+        Types\AssetSourceId $assetSourceId,
+        Types\TagIds $tagIds
+    ): ?Types\Asset {
+        return $this->assetMutator->setAssetTags($id, $assetSourceId, $tagIds);
+    }
+
+    /**
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function setAssetCollections(
+        Types\AssetId $id,
+        Types\AssetSourceId $assetSourceId,
+        Types\AssetCollectionIds $assetCollectionIds
+    ): MutationResult {
+        return $this->assetMutator->setAssetCollections($id, $assetSourceId, $assetCollectionIds);
+    }
+
+    /**
+     * Replaces an asset and its usages
+     *
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function replaceAsset(
+        Types\AssetId $id,
+        Types\AssetSourceId $assetSourceId,
+        FlowUploadedFile $file,
+        Types\AssetReplacementOptionsInput $options,
+    ): Types\FileUploadResult {
+        return $this->assetMutator->replaceAsset($id, $assetSourceId, $file, $options);
+    }
+
+    /**
+     * @throws MediaUiException|ResourceManagementException
+     */
+    #[Mutation]
+    public function editAsset(
+        Types\AssetId $id,
+        Types\AssetSourceId $assetSourceId,
+        string $filename,
+        Types\AssetEditOptionsInput $options,
+    ): MutationResult {
+        return $this->assetMutator->editAsset($id, $assetSourceId, $filename, $options);
+    }
+
+    /**
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function importAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId): ?Types\Asset
+    {
+        return $this->assetMutator->importAsset($id, $assetSourceId);
+    }
+
+    /**
+     * Stores all given files and returns an array of results for each upload
+     */
+    #[Mutation]
+    public function uploadFiles(
+        Types\FlowUploadedFiles $files,
+        Types\TagId $tagId = null,
+        Types\AssetCollectionId $assetCollectionId = null
+    ): Types\FileUploadResults {
+        return $this->assetMutator->uploadFiles($files, $tagId, $assetCollectionId);
+    }
+
+    /**
+     * @throws Exception|IllegalObjectTypeException
+     */
+    #[Mutation]
+    public function createTag(string $label, Types\AssetCollectionId $assetCollectionId = null): Types\Tag
+    {
+        return $this->tagMutator->createTag($label, $assetCollectionId);
+    }
+
+    /**
+     * @throws Exception|IllegalObjectTypeException
+     */
+    #[Mutation]
+    public function updateTag(Types\TagId $id, string $label = null): Types\Tag
+    {
+        return $this->tagMutator->updateTag($id, $label);
+    }
+
+    /**
+     * @throws Exception|IllegalObjectTypeException
+     */
+    #[Mutation]
+    public function deleteTag(Types\TagId $id): MutationResult
+    {
+        return $this->tagMutator->deleteTag($id);
     }
 }

@@ -11,7 +11,6 @@ use Wwwision\Types\Attributes\Description;
 
 use function Wwwision\Types\instantiate;
 
-#[Description('An asset variant')]
 #[Flow\Proxy(false)]
 final class CropInformation
 {
