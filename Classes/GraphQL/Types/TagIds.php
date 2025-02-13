@@ -8,23 +8,28 @@ use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\ListBased;
 
 #[Flow\Proxy(false)]
-#[ListBased(itemClassName: Tag::class)]
-final class Tags implements \IteratorAggregate
+#[ListBased(itemClassName: TagId::class)]
+final class TagIds implements \IteratorAggregate, \JsonSerializable
 {
-    private function __construct(public readonly array $tags)
+    private function __construct(public readonly array $values)
     {
     }
 
     /**
-     * @return \Traversable<Tag>
+     * @return \Traversable<TagId>
      */
     public function getIterator(): \Traversable
     {
-        yield from $this->tags;
+        yield from $this->values;
     }
 
     public static function empty(): self
     {
         return new self([]);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->values;
     }
 }

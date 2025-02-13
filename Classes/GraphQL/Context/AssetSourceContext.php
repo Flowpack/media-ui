@@ -14,7 +14,7 @@ namespace Flowpack\Media\Ui\GraphQL\Context;
  * source code.
  */
 
-use Flowpack\Media\Ui\GraphQL\Types as Types;
+use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetInterface;
@@ -23,8 +23,6 @@ use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Service\AssetSourceService;
 use Neos\Media\Exception\AssetSourceServiceException;
-
-use function Wwwision\Types\instantiate;
 
 class AssetSourceContext
 {
@@ -44,8 +42,7 @@ class AssetSourceContext
         protected readonly PersistenceManagerInterface $persistenceManager,
         protected readonly AssetSourceService $assetSourceService,
         protected readonly AssetRepository $assetRepository,
-    )
-    {
+    ) {
         $this->assetSources = $this->assetSourceService->getAssetSources();
     }
 
@@ -99,8 +96,10 @@ class AssetSourceContext
         return $this->assetSources[$assetSourceId->value] ?? null;
     }
 
-    public function importAsset(Types\AssetSourceId $assetSourceIdentifier, Types\AssetId $assetIdentifier): ?AssetProxyInterface
-    {
+    public function importAsset(
+        Types\AssetSourceId $assetSourceIdentifier,
+        Types\AssetId $assetIdentifier
+    ): ?AssetProxyInterface {
         try {
             $this->assetSourceService->importAsset($assetSourceIdentifier->value, $assetIdentifier->value);
             $this->persistenceManager->persistAll();

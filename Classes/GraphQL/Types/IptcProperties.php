@@ -15,6 +15,9 @@ final class IptcProperties implements \IteratorAggregate
     {
     }
 
+    /**
+     * @return \Traversable<IptcProperty>
+     */
     public function getIterator(): \Traversable
     {
         yield from $this->properties;

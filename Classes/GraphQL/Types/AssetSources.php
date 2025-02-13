@@ -19,6 +19,9 @@ final class AssetSources implements \IteratorAggregate
     {
     }
 
+    /**
+     * @return \Traversable<AssetSource>
+     */
     public function getIterator(): \Traversable
     {
         yield from $this->collections;

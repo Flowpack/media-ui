@@ -36,7 +36,7 @@ interface HierarchicalAssetCollectionInterface
     public function getTags();
 
     /**
-     * @return AssetCollection|null
+     * @return HierarchicalAssetCollectionInterface|null
      */
     public function getParent();
 
