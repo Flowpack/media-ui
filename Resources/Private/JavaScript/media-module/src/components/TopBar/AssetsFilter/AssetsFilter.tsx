@@ -11,12 +11,14 @@ import MediaTypeFilter from './MediaTypeFilter';
 import AssetTypeFilter from './AssetTypeFilter';
 
 import classes from './AssetsFilter.module.css';
+import { showUnusedAssetsState } from '@media-ui/feature-asset-usage/src/index';
 
 const AssetsFilter: React.FC = () => {
     const { translate } = useIntl();
     const mainView = useRecoilValue(mainViewState);
     const assetTypeFilter = useRecoilValue(selectedAssetTypeState);
     const mediaTypeFilter = useRecoilValue(selectedMediaTypeState);
+    const showUnusedAssets = useRecoilValue(showUnusedAssetsState);
     const detailsRef = useRef<HTMLDetailsElement>();
 
     // TODO: Implement and use a component registry
@@ -34,7 +36,7 @@ const AssetsFilter: React.FC = () => {
     return (
         <details
             ref={detailsRef}
-            className={cx(classes.assetsFilter, (assetTypeFilter || mediaTypeFilter) && classes.active)}
+            className={cx(classes.assetsFilter, (assetTypeFilter || mediaTypeFilter || showUnusedAssets) && classes.active)}
         >
             <summary title={translate('assetsFilter.title', 'Toggle asset filters')}>
                 <IconLabel icon="filter" label={translate('assetsFilter.filter', 'Filter')} />
