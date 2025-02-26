@@ -73,6 +73,7 @@ const assetCollections: AssetCollection[] = range(3).map((index) => ({
             ? {
                   id: `someId_0`,
                   title: `Example collection 1`,
+                __typename: 'AssetCollectionParent',
               }
             : null,
     // TODO: Recalculate assetCount of assetCollections after generation of assets

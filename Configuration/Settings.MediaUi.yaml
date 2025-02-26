@@ -1,0 +1,8 @@
+Flowpack:
+  Media:
+    Ui:
+      maximumFileUploadLimit: 10
+      GraphQL:
+        debugMode: false
+        # The "Access-Control-Allow-Origin" response header
+        corsOrigin: '*'

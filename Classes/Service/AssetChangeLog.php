@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\Service;
@@ -13,61 +14,77 @@ namespace Flowpack\Media\Ui\Service;
  * source code.
  */
 
+use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Cache\Exception as CacheException;
 use Neos\Cache\Exception\InvalidDataException;
 use Neos\Cache\Exception\NotSupportedByBackendException;
 use Neos\Cache\Frontend\StringFrontend;
 use Neos\Flow\Annotations as Flow;
 
+use function Wwwision\Types\instantiate;
+
 /**
  * Logs changes to assets
  * TODO: Make more generic to also capture changes to tags & collections
- *
- * @Flow\Scope("singleton")
  */
+#[Flow\Scope("singleton")]
 final class AssetChangeLog
 {
 
-    /**
-     * @var StringFrontend
-     */
-    private $cache;
-
-    private int $cacheLifetime;
-
-    public function __construct(StringFrontend $cache, int $cacheLifetime)
-    {
-        $this->cache = $cache;
-        $this->cacheLifetime = $cacheLifetime;
+    public function __construct(
+        private readonly StringFrontend $cache,
+        private readonly int $cacheLifetime,
+    ) {
     }
 
     /**
      * Stores the asset id and the current timestamp in the cache.
      * The hash for the last change is also updated.
      *
-     * @throws CacheException|InvalidDataException
+     * @throws CacheException|InvalidDataException|\JsonException
      */
     public function add(string $assetId, \DateTimeInterface $lastModified, string $type): void
     {
-        $this->cache->set(md5($assetId), json_encode([
-            'assetId' => $assetId,
-            'lastModified' => $lastModified->format(DATE_W3C),
-            'type' => $type,
-        ], JSON_THROW_ON_ERROR), ['changedAssets'], $this->cacheLifetime);
+        $change = instantiate(
+            Types\AssetChange::class,
+            [
+                'assetId' => $assetId,
+                'lastModified' => $lastModified->format(DATE_W3C),
+                'type' => $type,
+            ]
+        );
+        $this->cache->set(
+            md5($assetId),
+            json_encode($change, JSON_THROW_ON_ERROR),
+            ['changedAssets'],
+            $this->cacheLifetime
+        );
     }
 
     /**
-     * @return array[] the assetId and timestamp for each change
+     * Returns all changes since the given timestamp in ascending order
      */
-    public function getChanges(): array
+    public function getChanges(Types\DateTime $since = null): Types\AssetChanges
     {
         try {
             $cachedChanges = $this->cache->getByTag('changedAssets');
-        } catch (NotSupportedByBackendException $e) {
-            return [];
+        } catch (NotSupportedByBackendException) {
+            return Types\AssetChanges::empty();
         }
-        return array_map(static function ($entry) {
-            return json_decode($entry, true);
-        }, array_filter(array_values($cachedChanges)));
+        $changes = [];
+        foreach ($cachedChanges as $change) {
+            try {
+                /** @var array{assetId: string, lastModified: string, type: string} $changeData */
+                $changeData = json_decode($change, true, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException) {
+                continue;
+            }
+            if ($since !== null && $changeData['lastModified'] <= $since) {
+                continue;
+            }
+            $changes[]= instantiate(Types\AssetChange::class, $changeData);
+        }
+        usort($changes, static fn(Types\AssetChange $a, Types\AssetChange $b) => $a->lastModified <=> $b->lastModified);
+        return instantiate(Types\AssetChanges::class, $changes);
     }
 }

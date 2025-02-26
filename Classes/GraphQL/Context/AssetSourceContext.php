@@ -14,7 +14,7 @@ namespace Flowpack\Media\Ui\GraphQL\Context;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
+use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetInterface;
@@ -23,61 +23,38 @@ use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Service\AssetSourceService;
 use Neos\Media\Exception\AssetSourceServiceException;
-use t3n\GraphQL\Context as BaseContext;
 
-class AssetSourceContext extends BaseContext
+class AssetSourceContext
 {
+    /**
+     * @var AssetSourceInterface[]
+     */
+    protected array $assetSources = [];
 
     /**
-     * @Flow\Inject
-     * @var AssetRepository
+     * @var AssetInterface[]
      */
-    protected $assetRepository;
+    protected array $localAssetData = [];
 
     /**
-     * @Flow\Inject
-     * @var AssetSourceService
      */
-    protected $assetSourceService;
-
-    /**
-     * @Flow\Inject
-     * @var PersistenceManagerInterface
-     */
-    protected $persistenceManager;
-
-    /**
-     * @var array<AssetSourceInterface>
-     */
-    protected $assetSources;
-
-    /**
-     * @var array<AssetInterface>
-     */
-    protected $localAssetData = [];
-
-    /**
-     * @return void
-     */
-    public function initializeObject(): void
-    {
+    public function __construct(
+        protected readonly PersistenceManagerInterface $persistenceManager,
+        protected readonly AssetSourceService $assetSourceService,
+        protected readonly AssetRepository $assetRepository,
+    ) {
         $this->assetSources = $this->assetSourceService->getAssetSources();
     }
 
     /**
-     * @return array<AssetSourceInterface>
+     * @return AssetSourceInterface[]
      */
     public function getAssetSources(): array
     {
         return $this->assetSources;
     }
 
-    /**
-     * @param string $id
-     * @param string $assetSourceIdentifier
-     * @return AssetProxyInterface|null
-     */
-    public function getAssetProxy(string $id, string $assetSourceIdentifier): ?AssetProxyInterface
+    public function getAssetProxy(Types\AssetId $id, Types\AssetSourceId $assetSourceIdentifier): ?AssetProxyInterface
     {
         $activeAssetSource = $this->getAssetSource($assetSourceIdentifier);
         if (!$activeAssetSource) {
@@ -85,56 +62,49 @@ class AssetSourceContext extends BaseContext
         }
 
         try {
-            return $activeAssetSource->getAssetProxyRepository()->getAssetProxy($id);
-        } catch (\Exception $e) {
-            // Some assetproxy repositories like the NeosAssetProxyRepository throw exceptions if an asset was not found
+            return $activeAssetSource->getAssetProxyRepository()->getAssetProxy($id->value);
+        } catch (\Exception) {
+            // Some assetProxy repositories like the NeosAssetProxyRepository throw exceptions if an asset was not found
             return null;
         }
     }
 
-    /**
-     * @param AssetProxyInterface $assetProxy
-     * @return AssetInterface|null
-     */
+    public function getAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceIdentifier): ?AssetInterface
+    {
+        $assetProxy = $this->getAssetProxy($id, $assetSourceIdentifier);
+        return $assetProxy ? $this->getAssetForProxy($assetProxy) : null;
+    }
+
     public function getAssetForProxy(AssetProxyInterface $assetProxy): ?AssetInterface
     {
-        $assetIdentifier = $assetProxy->getLocalAssetIdentifier();
+        $localAssetId = Types\LocalAssetId::fromAssetProxy($assetProxy);
+        return $localAssetId ? $this->getAssetByLocalIdentifier($localAssetId) : null;
+    }
 
-        if (!$assetIdentifier) {
-            return null;
+    public function getAssetByLocalIdentifier(Types\LocalAssetId $localAssetIdentifier): ?AssetInterface
+    {
+        if (array_key_exists($localAssetIdentifier->value, $this->localAssetData)) {
+            return $this->localAssetData[$localAssetIdentifier->value];
         }
-
-        if (array_key_exists($assetIdentifier, $this->localAssetData)) {
-            return $this->localAssetData[$assetIdentifier];
-        }
-
         /** @var Asset $asset */
-        $asset = $this->assetRepository->findByIdentifier($assetIdentifier);
-
-        return $this->localAssetData[$assetIdentifier] = $asset;
+        $asset = $this->assetRepository->findByIdentifier($localAssetIdentifier->value);
+        return $this->localAssetData[$localAssetIdentifier->value] = $asset;
     }
 
-    /**
-     * @param string $assetSourceName
-     * @return AssetSourceInterface|null
-     */
-    public function getAssetSource(string $assetSourceName): ?AssetSourceInterface
+    public function getAssetSource(Types\AssetSourceId $assetSourceId): ?AssetSourceInterface
     {
-        return $this->assetSources[$assetSourceName] ?? null;
+        return $this->assetSources[$assetSourceId->value] ?? null;
     }
 
-    /**
-     * @param string $assetSourceIdentifier
-     * @param string $assetIdentifier
-     * @return AssetProxyInterface|null
-     */
-    public function importAsset(string $assetSourceIdentifier, string $assetIdentifier): ?AssetProxyInterface
-    {
+    public function importAsset(
+        Types\AssetSourceId $assetSourceIdentifier,
+        Types\AssetId $assetIdentifier
+    ): ?AssetProxyInterface {
         try {
-            $this->assetSourceService->importAsset($assetSourceIdentifier, $assetIdentifier);
+            $this->assetSourceService->importAsset($assetSourceIdentifier->value, $assetIdentifier->value);
             $this->persistenceManager->persistAll();
             return $this->getAssetProxy($assetIdentifier, $assetSourceIdentifier);
-        } catch (AssetSourceServiceException | \Exception $e) {
+        } catch (AssetSourceServiceException|\Exception $e) {
         }
         return null;
     }

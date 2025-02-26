@@ -2,9 +2,10 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { Button, Dialog } from '@neos-project/react-ui-components';
+import { Button } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
+import { Dialog } from '@media-ui/core/src/components';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 
 import similarAssetsModalState from '../state/similarAssetsModalState';
@@ -35,7 +36,7 @@ const SimilarAssetsModal: React.FC = () => {
                 </Button>,
             ]}
         >
-            <div className={classes.assetUsage}>
+            <div className={classes.similarAssets}>
                 {similarAssets?.length > 0 ? (
                     similarAssets.map((asset, index) => <SimilarAsset key={index} asset={asset} />)
                 ) : (
