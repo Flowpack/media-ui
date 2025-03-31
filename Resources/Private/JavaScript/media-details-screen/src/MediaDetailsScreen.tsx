@@ -13,7 +13,7 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 import MediaApplicationWrapper from '@media-ui/core/src/components/MediaApplicationWrapper';
 import { AssetCollectionTreeDndProvider } from '@media-ui/feature-asset-collections/src/provider/AssetCollectionTreeDndProvider';
 import { MediaUiProvider, typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
-import { CacheFactory, createErrorHandler } from '@media-ui/media-module/src/core';
+import { CacheFactory, createErrorHandler, createRetryHandler } from '@media-ui/media-module/src/core';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 
 // Package local dependencies
@@ -78,6 +78,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                 cache,
                 link: ApolloLink.from([
                     createErrorHandler(this.notificationHandler),
+                    createRetryHandler(),
                     createUploadLink({
                         uri: endpoints.graphql,
                         credentials: 'same-origin',

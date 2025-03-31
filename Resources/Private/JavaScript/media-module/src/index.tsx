@@ -11,7 +11,7 @@ import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage
 import { AssetCollectionTreeDndProvider } from '@media-ui/feature-asset-collections/src/provider/AssetCollectionTreeDndProvider';
 
 // Internal dependencies
-import { CacheFactory, createErrorHandler } from './core';
+import { CacheFactory, createErrorHandler, createRetryHandler } from './core';
 import App from './components/App';
 import ErrorBoundary from './components/ErrorBoundary';
 import loadIconLibrary from './lib/FontAwesome';
@@ -47,6 +47,7 @@ window.onload = async (): Promise<void> => {
         cache,
         link: ApolloLink.from([
             createErrorHandler(Notification),
+            createRetryHandler(),
             createUploadLink({
                 uri: endpoints.graphql,
                 credentials: 'same-origin',

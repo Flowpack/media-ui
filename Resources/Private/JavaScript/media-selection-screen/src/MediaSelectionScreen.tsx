@@ -16,7 +16,7 @@ import { actions } from '@neos-project/neos-ui-redux-store';
 // GraphQL type definitions
 import { MediaUiProvider, typeDefs as TYPE_DEFS_CORE } from '@media-ui/core';
 import MediaApplicationWrapper from '@media-ui/core/src/components/MediaApplicationWrapper';
-import { CacheFactory, createErrorHandler } from '@media-ui/media-module/src/core';
+import { CacheFactory, createErrorHandler, createRetryHandler } from '@media-ui/media-module/src/core';
 import App from '@media-ui/media-module/src/components/App';
 import { typeDefs as TYPE_DEFS_ASSET_USAGE } from '@media-ui/feature-asset-usage';
 import { AssetCollectionTreeDndProvider } from '@media-ui/feature-asset-collections/src/provider/AssetCollectionTreeDndProvider';
@@ -103,6 +103,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                 cache,
                 link: ApolloLink.from([
                     createErrorHandler(this.notificationHandler),
+                    createRetryHandler(),
                     createUploadLink({
                         uri: endpoints.graphql,
                         credentials: 'same-origin',
