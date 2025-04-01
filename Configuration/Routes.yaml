@@ -1,7 +1,0 @@
-#- name: 'Media API'
-#  uriPattern: 'neos/graphql/<GraphQLSubroutes>'
-#  subRoutes:
-#    'GraphQLSubroutes':
-#      package: 't3n.GraphQL'
-#      variables:
-#        'endpoint': 'media-assets'

@@ -18,6 +18,7 @@ namespace Flowpack\Media\Ui\GraphQL;
 
 use BackedEnum;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
+use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Server\RequestError;
@@ -32,6 +33,7 @@ use Wwwision\Types\Exception\CoerceException;
 use Wwwision\Types\Parser;
 use Wwwision\Types\Schema\EnumCaseSchema;
 use Wwwision\Types\Schema\EnumSchema;
+use Wwwision\Types\Schema\ShapeSchema;
 use Wwwision\TypesGraphQL\Types\CustomResolvers;
 
 use function Wwwision\Types\instantiate;
@@ -101,12 +103,22 @@ class Resolver
                 ) => $caseSchema->instantiate(null), $schema->caseSchemas);
             }
         }
+        if ($typeDefinitionNode instanceof InputObjectTypeDefinitionNode) {
+            $className = $this->resolveClassName(rtrim($typeConfig['name'], 'Input'));
+            $schema = Parser::getSchema($className);
+            if ($schema instanceof ShapeSchema) {
+                $typeConfig['parseValue'] = static function(array $values) use ($schema) {
+                    return $schema->instantiate($values);
+                };
+            }
+        }
         return $typeConfig;
     }
 
     /**
      * @param array<string, string|bool|int|array<string, mixed>|null> $arguments
      * @return array<string, string|bool|int|array<string, mixed>|object|null>
+     * @throws RequestError
      */
     private function convertArguments(array $arguments, FieldDefinition $fieldDefinition): array
     {
@@ -133,16 +145,19 @@ class Resolver
         if ($type instanceof NonNull) {
             $type = $type->getWrappedType();
         }
-        $argumentType = $type->name;
         if ($type instanceof ListOfType) {
-            $type = $type->ofType;
+            $type = $type->getWrappedType();
             if ($type instanceof NonNull) {
                 $type = $type->getWrappedType();
             }
             $argumentType = $type->name . 's';
+        } else {
+            $argumentType = $type->name;
         }
         if (str_ends_with($argumentType, 'Input')) {
             $argumentType = substr($argumentType, 0, -5);
+        } elseif (str_ends_with($argumentType, 'Inputs')) {
+            $argumentType = substr($argumentType, 0, -6) . 's';
         }
 
         $className = $this->resolveClassName($argumentType);

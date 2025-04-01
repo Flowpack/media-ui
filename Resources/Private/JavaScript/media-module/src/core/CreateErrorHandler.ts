@@ -8,13 +8,13 @@ const createErrorHandler = (notify: NeosNotification) => {
     return onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors) {
             graphQLErrors.map((data) => {
-                const isInternalError = data.extensions.category === 'internal';
+                const isInternalError = data.extensions?.category === 'internal';
                 const defaultErrorTitle = isInternalError
                     ? translate('errors.internal.title', 'Internal server error')
                     : translate('errors.graphql.title', 'Communication error');
                 let errorMessageLabel = '';
                 let errorTitleLabel = '';
-                if (data.extensions.errorCode) {
+                if (data.extensions?.errorCode) {
                     errorTitleLabel = `errors.${data.extensions.errorCode}.title`;
                     errorMessageLabel = `errors.${data.extensions.errorCode}.message`;
                 }

@@ -28,6 +28,8 @@ use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Core\Bootstrap;
+use Neos\Flow\Http\HttpRequestHandlerInterface;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\Exception as ResourceManagementException;
@@ -72,6 +74,7 @@ final class MediaApi
         private readonly TagMutator $tagMutator,
         private readonly TagRepository $tagRepository,
         private readonly UsageDetailsService $usageDetailsService,
+        private readonly Bootstrap $bootstrap,
     ) {
     }
 
@@ -410,10 +413,22 @@ final class MediaApi
     public function replaceAsset(
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
-        FlowUploadedFile $file,
         Types\AssetReplacementOptionsInput $options,
     ): Types\FileUploadResult {
-        return $this->assetMutator->replaceAsset($id, $assetSourceId, $file, $options);
+        $requestHandler = $this->bootstrap->getActiveRequestHandler();
+        $file = null;
+        if ($requestHandler instanceof HttpRequestHandlerInterface) {
+            $file = $requestHandler->getHttpRequest()->getUploadedFiles()[0] ?? null;
+        }
+        if (!$file) {
+            throw new MediaUiException('No file given for upload', 1743423726);
+        }
+        return $this->assetMutator->replaceAsset(
+            $id,
+            $assetSourceId,
+            $file,
+            $options
+        );
     }
 
     /**
@@ -443,11 +458,15 @@ final class MediaApi
      */
     #[Mutation]
     public function uploadFiles(
-        Types\FlowUploadedFiles $files,
+        Types\UploadedFiles $files = null,
         Types\TagId $tagId = null,
         Types\AssetCollectionId $assetCollectionId = null
     ): Types\FileUploadResults {
-        return $this->assetMutator->uploadFiles($files, $tagId, $assetCollectionId);
+        return $this->assetMutator->uploadFiles(
+            $files,
+            $tagId,
+            $assetCollectionId
+        );
     }
 
     /**

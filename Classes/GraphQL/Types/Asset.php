@@ -19,14 +19,14 @@ final class Asset
 {
     private function __construct(
         public readonly AssetId $id,
-        public readonly LocalAssetId|null $localId,
+        public readonly ?LocalAssetId $localId,
         public readonly Filename $filename,
         public readonly AssetSource $assetSource,
         # TODO: Introduce Type for pixel dimensions
         #[Description('The width in pixels (only for Images and Videos)')]
-        public readonly int $width,
+        public readonly ?int $width = null,
         #[Description('The height in pixels (only for Images and Videos)')]
-        public readonly int $height,
+        public readonly ?int $height = null,
     ) {
     }
 

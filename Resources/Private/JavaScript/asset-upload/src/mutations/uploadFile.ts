@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 const UPLOAD_FILE = gql`
-    mutation UploadFile($file: Upload!, $tagId: TagId, $assetCollectionId: AssetCollectionId) {
+    mutation UploadFile($file: UploadedFileInput!, $tagId: TagId, $assetCollectionId: AssetCollectionId) {
         uploadFile(file: $file, tagId: $tagId, assetCollectionId: $assetCollectionId) {
             filename
             success

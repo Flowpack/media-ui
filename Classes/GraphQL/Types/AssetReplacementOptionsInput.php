@@ -11,6 +11,7 @@ use Wwwision\Types\Attributes\StringBased;
 #[Description('Options for asset replacement')]
 #[Flow\Proxy(false)]
 #[StringBased]
+// FIXME: Should only have the input suffix in the schema
 final class AssetReplacementOptionsInput implements \JsonSerializable
 {
     private function __construct(

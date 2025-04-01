@@ -104,7 +104,6 @@ class AssetMutator
 
         try {
             $this->assetRepository->update($asset);
-            $this->persistenceManager->persistAll();
         } catch (IllegalObjectTypeException $e) {
             throw new MediaUiException('Failed to update asset: ' . $e->getMessage(), 1590659063);
         }
@@ -152,10 +151,12 @@ class AssetMutator
         if (!$assetProxy) {
             return instantiate(MutationResult::class, [
                 'success' => false,
-                'messages' => $this->localizedMessage(
-                    'actions.deleteAssets.noProxy',
-                    'Asset could not be resolved'
-                )
+                'messages' => [
+                    $this->localizedMessage(
+                        'actions.deleteAssets.noProxy',
+                        'Asset could not be resolved'
+                    )
+                ]
             ]);
         }
         $asset = $this->assetSourceContext->getAssetForProxy($assetProxy);
@@ -185,7 +186,7 @@ class AssetMutator
 
         return instantiate(MutationResult::class, [
             'success' => true,
-            [
+            'messages' => [
                 $this->localizedMessage(
                     'actions.deleteAssets.success',
                     'Asset deleted'
@@ -316,8 +317,8 @@ class AssetMutator
         $success = false;
         $result = self::STATE_ERROR;
         $sourceMediaType = MediaTypes::parseMediaType($asset->getMediaType());
-        $replacementMediaType = MediaTypes::parseMediaType($file->file->getClientMediaType());
-        $filename = $file->file->getClientFilename();
+        $replacementMediaType = MediaTypes::parseMediaType($file->clientMediaType);
+        $filename = $file->clientFilename;
 
         // Prevent replacement of image, audio and video by a different mimetype because of possible rendering issues.
         if ($sourceMediaType['type'] !== $replacementMediaType['type'] && in_array($sourceMediaType['type'],
@@ -332,7 +333,7 @@ class AssetMutator
         }
 
         try {
-            $resource = $this->resourceManager->importResource($file->file->getStream()?->detach());
+            $resource = $this->resourceManager->importResource($file->streamOrFile);
         } catch (ResourceManagementException $e) {
             $this->logger->error('Could not import uploaded file: ' . $e->getMessage());
             $resource = null;
@@ -340,7 +341,7 @@ class AssetMutator
 
         if ($resource) {
             $resource->setFilename($filename);
-            $resource->setMediaType($file->file->getClientMediaType());
+            $resource->setMediaType($file->clientMediaType);
 
             try {
                 $this->assetService->replaceAssetResource(
@@ -429,16 +430,19 @@ class AssetMutator
      * Stores the given file and returns an array with the result
      */
     public function uploadFile(
-        FlowUploadedFile $file,
+        Types\UploadedFile $file,
         Types\TagId $tagId = null,
         Types\AssetCollectionId $assetCollectionId = null
     ): Types\FileUploadResult {
         $success = false;
         $result = self::STATE_ERROR;
 
-        $filename = $file->getClientFilename();
+        $filename = $file->clientFilename;
         try {
-            $resource = $this->resourceManager->importResource($file->getStream()?->detach());
+            $resource = $this->resourceManager->importResourceFromContent(
+                $file->streamOrFile,
+                $filename,
+            );
         } catch (ResourceManagementException $e) {
             $this->logger->error('Could not import uploaded file: ' . $e->getMessage());
             $resource = null;
@@ -446,7 +450,7 @@ class AssetMutator
 
         if ($resource) {
             $resource->setFilename($filename);
-            $resource->setMediaType($file->getClientMediaType());
+            $resource->setMediaType($file->clientMediaType);
 
             if ($this->assetRepository->findOneByResourceSha1($resource->getSha1())) {
                 $result = self::STATE_EXISTS;
@@ -487,7 +491,7 @@ class AssetMutator
             }
         }
 
-        // FIXME: The filename is not unique enough for multiple uploads, we need an id instead
+        // FIXME: The filename is not unique enough for multiple uploads, we need an id instead or use the sha1
         return instantiate(Types\FileUploadResult::class, [
             'filename' => $filename,
             'success' => $success,
@@ -499,13 +503,16 @@ class AssetMutator
      * Stores all given files and returns an array of results for each upload
      */
     public function uploadFiles(
-        Types\FlowUploadedFiles $files,
+        Types\UploadedFiles $files = null,
         Types\TagId $tagId = null,
         Types\AssetCollectionId $assetCollectionId = null
     ): Types\FileUploadResults {
+        if (!$files) {
+            return Types\FileUploadResults::empty();
+        }
         $results = [];
         foreach ($files as $file) {
-            $results[$file->getClientFilename()] = $this->uploadFile(
+            $results[$file->clientFilename] = $this->uploadFile(
                 $file,
                 $tagId,
                 $assetCollectionId,

@@ -12,13 +12,10 @@ class MutationResult implements \JsonSerializable
 {
 
     public function __construct(
-        private bool $success,
-        private ?MutationResponseMessages $messages = null,
+        public readonly bool $success,
+        public readonly ?MutationResponseMessages $messages = null,
     )
     {
-        if ($messages === null) {
-            $this->messages = MutationResponseMessages::empty();
-        }
     }
 
     public function isSuccess(): bool
@@ -28,14 +25,14 @@ class MutationResult implements \JsonSerializable
 
     public function getMessages(): ?MutationResponseMessages
     {
-        return $this->messages;
+        return $this->messages ?? MutationResponseMessages::empty();
     }
 
     public function toArray(): array
     {
         return [
             'success' => $this->success,
-            'messages' => $this->messages,
+            'messages' => $this->getMessages(),
         ];
     }
 

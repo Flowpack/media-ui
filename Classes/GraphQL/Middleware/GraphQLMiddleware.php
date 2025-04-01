@@ -31,6 +31,7 @@ use Neos\Cache\Frontend\VariableFrontend;
 use Neos\Flow\Exception as FlowException;
 use Neos\Flow\Log\ThrowableStorageInterface;
 use Neos\Flow\Mvc\ActionRequest;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Context;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -44,13 +45,6 @@ use Throwable;
 use Wwwision\Types\Exception\CoerceException;
 use Wwwision\TypesGraphQL\GraphQLGenerator;
 use Wwwision\TypesGraphQL\Types\CustomResolvers;
-
-use function array_map;
-use function json_decode;
-use function md5;
-use function sprintf;
-
-use const JSON_THROW_ON_ERROR;
 
 /**
  * HTTP Component to implement the GraphQL Endpoint, see Settings Neos.Flow.http.chain
@@ -71,6 +65,7 @@ final class GraphQLMiddleware implements MiddlewareInterface
         private readonly Context $securityContext,
         private readonly ContainerInterface $serviceLocator,
         private readonly CustomResolvers $customResolvers,
+        private readonly PersistenceManagerInterface $persistenceManager,
     ) {
     }
 
@@ -113,14 +108,17 @@ final class GraphQLMiddleware implements MiddlewareInterface
         $server = new StandardServer($config);
         try {
             $request = $this->parseRequestBody($request);
-        } catch (\JsonException $_) {
+        } catch (\JsonException) {
             return new Response(400, [], 'Invalid JSON request');
         }
 
         $bodyStream = $this->streamFactory->createStream();
         $newResponse = $server->processPsrRequest($request, $response, $bodyStream);
-        // For some reason we need to rewind the stream in order to prevent an empty response body
         $bodyStream->rewind();
+
+        // FIXME: We need to manually persist mutations for some reason
+        $this->persistenceManager->persistAll();
+
         return $newResponse;
     }
 
@@ -132,6 +130,7 @@ final class GraphQLMiddleware implements MiddlewareInterface
         if (!empty($request->getParsedBody())) {
             return $request;
         }
+
         $parsedBody = json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         return $request->withParsedBody($parsedBody);
     }

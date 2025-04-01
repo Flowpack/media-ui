@@ -24,3 +24,6 @@ Neos:
         'Flowpack.Media.Ui:GraphQL':
           position: 'before routing'
           middleware: 'Flowpack.Media.Ui:GraphQLMiddleware'
+        'Flowpack.Media.Ui:GraphQLUpload':
+          position: 'before Flowpack.Media.Ui:GraphQL'
+          middleware: 'Flowpack.Media.Ui:GraphQLUploadMiddleware'

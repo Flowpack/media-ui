@@ -19,9 +19,9 @@ final class AssetVariant
         public readonly AssetId $id,
         # TODO: Introduce Type for pixel dimensions
         #[Description('The width in pixels (only for Images and Videos)')]
-        public readonly int $width = 0,
+        public readonly ?int $width = 0,
         #[Description('The height in pixels (only for Images and Videos)')]
-        public readonly int $height = 0,
+        public readonly ?int $height = 0,
         public readonly ?VariantName $variantName = null,
         public readonly ?VariantPresetIdentifier $presetIdentifier = null,
     ) {

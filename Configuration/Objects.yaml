@@ -74,3 +74,7 @@
             resolverClassName: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetVariantResolver'
           hasCrop: *assetVariantResolver
           cropInformation: *assetVariantResolver
+
+'Flowpack.Media.Ui:GraphQLUploadMiddleware':
+  className: 'Flowpack\Media\Ui\GraphQL\Middleware\GraphQLUploadMiddleware'
+  scope: singleton
