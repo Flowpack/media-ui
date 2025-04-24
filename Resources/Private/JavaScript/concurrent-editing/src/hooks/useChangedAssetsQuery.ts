@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 import { useQuery, gql } from '@apollo/client';
 
 import { useConfigQuery } from '@media-ui/core/src/hooks';
+import { featureFlagsState } from '@media-ui/core/src/state';
 
 import CHANGED_ASSETS from '../queries/changedAssets';
 
@@ -18,13 +20,14 @@ export default function useChangedAssetsQuery() {
     const { config } = useConfigQuery();
     const [lastUpdate, setLastUpdate] = useState<Date>(null);
     const [changes, setChanges] = useState<AssetChange[]>([]);
+    const { pollForChanges } = useRecoilValue(featureFlagsState);
 
     // Query will continue to run on its own and poll the api
     const { data, client } = useQuery<AssetChangeQueryResult>(CHANGED_ASSETS, {
         variables: { since: lastUpdate ?? config?.currentServerTime },
         // TODO: slow down or skip requests when errors occur
         pollInterval,
-        skip: !config?.currentServerTime,
+        skip: !pollForChanges || !config?.currentServerTime,
     });
 
     // "onComplete" in the query options cannot be used, as it's only called once, due to the bug described in https://github.com/apollographql/apollo-client/issues/5531
