@@ -1,0 +1,305 @@
+Creating GraphQL schema...
+"""
+Custom constraint directive (see https://www.npmjs.com/package/graphql-constraint-directive)
+"""
+directive @constraint(minLength: Int maxLength: Int pattern: String format: String min: Int max: Int minItems: Int maxItems: Int) on FIELD_DEFINITION | SCALAR | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION
+
+
+type Query {
+  assetCount(assetSourceId: AssetSourceId assetCollectionId: AssetCollectionId mediaType: MediaType assetType: AssetType tagId: TagId searchTerm: String): Int!
+  """ Provides a filterable list of asset proxies. These are the main entities for media management. """
+  assets(assetSourceId: AssetSourceId assetCollectionId: AssetCollectionId mediaType: MediaType assetType: AssetType tagId: TagId sortBy: SortBy sortDirection: SortDirection searchTerm: String limit: Int = 20 offset: Int = 0): [Asset!]
+  """ All asset collections """
+  assetCollections: [AssetCollection!]!
+  """ All configured asset sources (by default only the "neos" source) """
+  assetSources: [AssetSource!]!
+  """ Provides number of unused assets in local asset source """
+  unusedAssetCount: Int!
+  """ Provides a list of all tags """
+  tags: [Tag!]!
+  """ Get tag by id """
+  tag(id: TagId!): Tag
+  """ Returns an asset collection by id """
+  assetCollection(id: AssetCollectionId!): AssetCollection
+  """ Returns an asset by id """
+  asset(id: AssetId! assetSourceId: AssetSourceId!): Asset
+  """ Provides configuration values for interacting with the media API """
+  config: Config!
+  """ Returns a list of accessible and inaccessible relations for the given asset """
+  assetUsageDetails(id: AssetId! assetSourceId: AssetSourceId!): [UsageDetailsGroup!]!
+  """ Returns the total usage count for the given asset """
+  assetUsageCount(id: AssetId! assetSourceId: AssetSourceId!): Int!
+  """ Provides a list of all unused assets in local asset source """
+  unusedAssets(limit: Int = 20 offset: Int = 0): [Asset!]!
+  """ Provides a list of changes to assets since a given timestamp """
+  changedAssets(since: DateTime @constraint(format: "date-time")): ChangedAssetsResult!
+  """ Returns a list of variants for the given asset """
+  assetVariants(id: AssetId! assetSourceId: AssetSourceId!): [AssetVariant!]!
+  similarAssets(id: AssetId! assetSourceId: AssetSourceId!): [Asset!]!
+}
+
+type Mutation {
+  updateAsset(id: AssetId! assetSourceId: AssetSourceId! label: String caption: String copyrightNotice: String): Asset
+  tagAsset(id: AssetId! assetSourceId: AssetSourceId! tagId: TagId!): Asset
+  untagAsset(id: AssetId! assetSourceId: AssetSourceId! tagId: TagId!): Asset
+  deleteAsset(id: AssetId! assetSourceId: AssetSourceId!): MutationResult!
+  setAssetTags(id: AssetId! assetSourceId: AssetSourceId! tagIds: [TagId!]!): Asset
+  setAssetCollections(id: AssetId! assetSourceId: AssetSourceId! assetCollectionIds: [AssetCollectionId!]!): MutationResult!
+  replaceAsset(id: AssetId! assetSourceId: AssetSourceId! file: UploadedFileInput! options: AssetReplacementOptionsInput!): FileUploadResult!
+  editAsset(id: AssetId! assetSourceId: AssetSourceId! filename: String! options: AssetEditOptionsInput!): MutationResult!
+  importAsset(id: AssetId! assetSourceId: AssetSourceId!): Asset
+  uploadFiles(files: [UploadedFileInput!] tagId: TagId assetCollectionId: AssetCollectionId): [FileUploadResult!]!
+  createTag(label: String! assetCollectionId: AssetCollectionId): Tag!
+  updateTag(id: TagId! label: String): Tag!
+  deleteTag(id: TagId!): MutationResult!
+}
+
+"""
+Unique identifier of an Asset source (e.g. "neos")
+"""
+scalar AssetSourceId
+
+"""
+Unique identifier of an Asset collection (e.g. "neos")
+"""
+scalar AssetCollectionId
+
+"""
+IANA media type of an Asset (e.g. "image/jpeg")
+"""
+scalar MediaType
+
+"""
+Neos type of an Asset, can be "All", "Image", "Document", "Video" or "Audio" (see `Neos\Media\Domain\Model\AssetSource\AssetTypeFilter`)
+"""
+scalar AssetType
+
+"""
+The id of a tag
+"""
+scalar TagId
+
+"""
+Fields to sort assets by
+"""
+scalar SortBy
+
+"""
+Direction to sort fields in
+"""
+scalar SortDirection
+
+"""
+Unique identifier (UUID) of an Asset
+"""
+scalar AssetId
+
+"""
+Unique identifier (UUID) of an imported Asset
+"""
+scalar LocalAssetId
+
+"""
+Base file name including extension (e.g. "some-file.pdf")
+"""
+scalar Filename
+
+"""
+An absolute or relative URL
+"""
+scalar Url
+
+type AssetSource {
+  """ Unique identifier of an Asset source (e.g. "neos") """
+  id: AssetSourceId!
+  label: String!
+  description: String!
+  """ An absolute or relative URL """
+  iconUri: Url!
+  readOnly: Boolean!
+  supportsTagging: Boolean!
+  supportsCollections: Boolean!
+}
+
+type Asset {
+  """ Unique identifier (UUID) of an Asset """
+  id: AssetId!
+  """ Unique identifier (UUID) of an imported Asset """
+  localId: LocalAssetId!
+  """ Base file name including extension (e.g. "some-file.pdf") """
+  filename: Filename!
+  """ Asset sources allow to integrate assets from external DAM systems """
+  assetSource: AssetSource!
+  """ The width in pixels (only for Images and Videos) """
+  width: Int
+  """ The height in pixels (only for Images and Videos) """
+  height: Int
+}
+
+"""
+The title of an Asset collection (e.g. "slideshows")
+"""
+scalar AssetCollectionTitle
+
+"""
+Absolute path of an Asset collection (e.g. "/photos/trees")
+"""
+scalar AssetCollectionPath
+
+type AssetCollection {
+  """ Unique identifier of an Asset collection (e.g. "neos") """
+  id: AssetCollectionId!
+  """ The title of an Asset collection (e.g. "slideshows") """
+  title: AssetCollectionTitle!
+  """ Absolute path of an Asset collection (e.g. "/photos/trees") """
+  path: AssetCollectionPath
+}
+
+type Tag {
+  """ The id of a tag """
+  id: TagId!
+  label: String!
+}
+
+"""
+Size of a file in bytes
+
+*Constraints:*
+* Minimum value: `0`
+"""
+scalar FileSize @constraint(min: 0)
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the date-time format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar
+
+*Constraints:*
+* Format: `date-time`
+"""
+scalar DateTime @constraint(format: "date-time")
+
+type Config {
+  """ The lowest configured maximum upload file size """
+  uploadMaxFileSize: FileSize!
+  """ The maximum number of files that can be uploaded """
+  uploadMaxFileUploadLimit: Int!
+  """ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the date-time format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar """
+  currentServerTime: DateTime!
+  canManageTags: Boolean!
+  canManageAssetCollections: Boolean!
+  canManageAssets: Boolean!
+  """ Unique identifier of an Asset collection (e.g. "neos") """
+  defaultAssetCollectionId: AssetCollectionId
+}
+
+scalar ServiceId
+
+scalar MetadataName
+
+"""
+Data types for usage details metadata
+"""
+scalar UsageDetailsMetadataType
+
+type UsageDetailsMetadataSchema {
+  name: MetadataName!
+  label: String!
+  """ Data types for usage details metadata """
+  type: UsageDetailsMetadataType!
+}
+
+type UsageDetailsMetadata {
+  name: MetadataName!
+  value: String!
+}
+
+type UsageDetails {
+  label: String!
+  """ An absolute or relative URL """
+  url: Url!
+  """ A collection of assets. One asset can belong to multiple collections """
+  metadata: [UsageDetailsMetadata!]!
+}
+
+type UsageDetailsGroup {
+  serviceId: ServiceId!
+  label: String!
+  """ A collection of assets. One asset can belong to multiple collections """
+  metadataSchema: [UsageDetailsMetadataSchema!]!
+  """ A collection of assets. One asset can belong to multiple collections """
+  usages: [UsageDetails!]!
+}
+
+"""
+The type of a change to an asset
+"""
+scalar AssetChangeType
+
+type AssetChange {
+  """ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the date-time format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar """
+  lastModified: DateTime!
+  """ Unique identifier (UUID) of an Asset """
+  assetId: AssetId!
+  """ The type of a change to an asset """
+  type: AssetChangeType!
+}
+
+type ChangedAssetsResult {
+  changes: [AssetChange!]!
+  """ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the date-time format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar """
+  lastModified: DateTime
+}
+
+"""
+Variant Name
+"""
+scalar VariantName
+
+"""
+Variant Preset Identifier
+"""
+scalar VariantPresetIdentifier
+
+type AssetVariant {
+  """ Unique identifier (UUID) of an Asset """
+  id: AssetId!
+  """ The width in pixels (only for Images and Videos) """
+  width: Int
+  """ The height in pixels (only for Images and Videos) """
+  height: Int
+  """ Variant Name """
+  variantName: VariantName
+  """ Variant Preset Identifier """
+  presetIdentifier: VariantPresetIdentifier
+}
+
+scalar MutationResponseMessage
+
+type MutationResult {
+  success: Boolean!
+  messages: [MutationResponseMessage!]
+}
+
+input UploadedFileInput {
+  streamOrFile: String!
+  size: Int!
+  errorStatus: Int!
+  clientFilename: String
+  clientMediaType: String
+}
+
+input AssetReplacementOptionsInput {
+  generateRedirects: Boolean!
+  keepOriginalFilename: Boolean!
+}
+
+type FileUploadResult {
+  """ Base file name including extension (e.g. "some-file.pdf") """
+  filename: Filename!
+  success: Boolean!
+  result: String!
+}
+
+"""
+Options for asset editing
+"""
+scalar AssetEditOptionsInput

@@ -304,14 +304,14 @@ class AssetMutator
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
         Types\UploadedFile $file,
-        Types\AssetReplacementOptionsInput $options,
+        Types\AssetReplacementOptions $options,
     ): Types\FileUploadResult {
-        $asset = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
+        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot replace asset that was never imported', 1648046173);
         }
         if (!$asset instanceof Asset) {
-            throw new MediaUiException('Asset type does not support replacing', 1648046186);
+            throw new MediaUiException('Asset type "' . $asset::class . '" does not support replacing', 1648046186);
         }
 
         $success = false;
@@ -333,7 +333,10 @@ class AssetMutator
         }
 
         try {
-            $resource = $this->resourceManager->importResource($file->streamOrFile);
+            $resource = $this->resourceManager->importResourceFromContent(
+                $file->streamOrFile,
+                $filename
+            );
         } catch (ResourceManagementException $e) {
             $this->logger->error('Could not import uploaded file: ' . $e->getMessage());
             $resource = null;

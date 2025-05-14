@@ -28,13 +28,10 @@ use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Core\Bootstrap;
-use Neos\Flow\Http\HttpRequestHandlerInterface;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\Exception as ResourceManagementException;
 use Neos\Flow\Security\Authorization\PrivilegeManagerInterface;
-use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
@@ -74,7 +71,6 @@ final class MediaApi
         private readonly TagMutator $tagMutator,
         private readonly TagRepository $tagRepository,
         private readonly UsageDetailsService $usageDetailsService,
-        private readonly Bootstrap $bootstrap,
     ) {
     }
 
@@ -413,16 +409,9 @@ final class MediaApi
     public function replaceAsset(
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
-        Types\AssetReplacementOptionsInput $options,
+        Types\UploadedFile $file,
+        Types\AssetReplacementOptions $options,
     ): Types\FileUploadResult {
-        $requestHandler = $this->bootstrap->getActiveRequestHandler();
-        $file = null;
-        if ($requestHandler instanceof HttpRequestHandlerInterface) {
-            $file = $requestHandler->getHttpRequest()->getUploadedFiles()[0] ?? null;
-        }
-        if (!$file) {
-            throw new MediaUiException('No file given for upload', 1743423726);
-        }
         return $this->assetMutator->replaceAsset(
             $id,
             $assetSourceId,

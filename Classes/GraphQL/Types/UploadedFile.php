@@ -9,26 +9,18 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Wwwision\Types\Attributes\Description;
 
-use function Wwwision\Types\instantiate;
-
 #[Description('An uploaded file')]
 #[Flow\Proxy(false)]
 final class UploadedFile implements UploadedFileInterface
 {
     private function __construct(
-        public ?string $streamOrFile,
         public int $size,
         public int $errorStatus,
+        public ?string $streamOrFile = null,
         public ?string $clientFilename = null,
         public ?string $clientMediaType = null
     )
     {
-    }
-
-    public function parseValue(array $value): self
-    {
-        die('noo');
-        return instantiate(self::class, $value);
     }
 
     public function getStream(): StreamInterface|string

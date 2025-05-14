@@ -4,7 +4,7 @@ const REPLACE_ASSET = gql`
     mutation ReplaceAsset(
         $id: AssetId!
         $assetSourceId: AssetSourceId!
-        $file: Upload!
+        $file: UploadedFileInput!
         $options: AssetReplacementOptionsInput!
     ) {
         replaceAsset(id: $id, assetSourceId: $assetSourceId, file: $file, options: $options) {

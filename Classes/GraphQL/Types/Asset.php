@@ -19,7 +19,6 @@ final class Asset
 {
     private function __construct(
         public readonly AssetId $id,
-        public readonly ?LocalAssetId $localId,
         public readonly Filename $filename,
         public readonly AssetSource $assetSource,
         # TODO: Introduce Type for pixel dimensions
@@ -27,6 +26,7 @@ final class Asset
         public readonly ?int $width = null,
         #[Description('The height in pixels (only for Images and Videos)')]
         public readonly ?int $height = null,
+        public readonly ?LocalAssetId $localId = null,
     ) {
     }
 

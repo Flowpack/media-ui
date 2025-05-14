@@ -8,8 +8,16 @@ const createRetryHandler = () => {
             jitter: true
         },
         attempts: {
-            max: 5,
-            retryIf: (error, _operation) => !!error
+            max: 2,
+            retryIf: (error, _operation) => {
+                if (error && error.statusCode < 500 || error.statusCode >= 600) {
+                    console.warn('Retrying request due to error:', [
+                        error.name,
+                        error.statusCode,
+                    ]);
+                }
+                return false;
+            }
         }
     });
 };

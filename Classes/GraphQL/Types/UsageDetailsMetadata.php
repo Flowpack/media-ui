@@ -13,7 +13,7 @@ final class UsageDetailsMetadata
 {
     private function __construct(
         public readonly MetadataName $name,
-        public readonly ?string $value,
+        public readonly ?string $value = null,
     ) {
     }
 }

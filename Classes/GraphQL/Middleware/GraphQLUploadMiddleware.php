@@ -18,12 +18,11 @@ namespace Flowpack\Media\Ui\GraphQL\Middleware;
 
 use Neos\Flow\Http\Helper\UploadedFilesHelper;
 use Neos\Http\Factories\FlowUploadedFile;
+use Neos\Utility\Arrays;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
-use function Wwwision\Types\instantiate;
 
 class GraphQLUploadMiddleware implements MiddlewareInterface
 {
@@ -52,11 +51,6 @@ class GraphQLUploadMiddleware implements MiddlewareInterface
         $map = json_decode($arguments['map'], true, 512, JSON_THROW_ON_ERROR);
         $result = json_decode($arguments['operations'], true, 512, JSON_THROW_ON_ERROR);
 
-//        if (isset($result['operationName'])) {
-//            $result['operation'] = $result['operationName'];
-//            unset($result['operationName']);
-//        }
-
         foreach ($map as $fileKey => $locations) {
             foreach ($locations as $location) {
                 /** @var FlowUploadedFile[] $uploadedFiles */
@@ -65,18 +59,16 @@ class GraphQLUploadMiddleware implements MiddlewareInterface
                 if (!$firstFile) {
                     continue;
                 }
-//                $result = Arrays::setValueByPath($result, $location, $uploadedFiles[0]);
 
-                $parts = explode('.', $location);
-                $result[$parts[0]][$parts[1]] = [
-                    [
-                        'streamOrFile' => $firstFile->getStream()?->getContents(),
-                        'size' => $firstFile->getSize(),
-                        'errorStatus' => $firstFile->getError(),
-                        'clientFilename' => $firstFile->getClientFilename(),
-                        'clientMediaType' => $firstFile->getClientMediaType(),
-                    ]
+                $data = [
+                    'streamOrFile' => $firstFile->getStream()?->getContents(),
+                    'size' => $firstFile->getSize(),
+                    'errorStatus' => $firstFile->getError(),
+                    'clientFilename' => $firstFile->getClientFilename(),
+                    'clientMediaType' => $firstFile->getClientMediaType(),
                 ];
+
+                $result = Arrays::setValueByPath($result, $location, $data);
             }
         }
 
@@ -86,8 +78,6 @@ class GraphQLUploadMiddleware implements MiddlewareInterface
 
     protected function isGraphQLRequest(ServerRequestInterface $request): bool
     {
-//        $routingMatchResults = $request->getAttribute('routingResults') ?? [];
-        // FIXME: Properly check if the request is a GraphQL request
-        return true;
+        return $request->getUri()->getPath() === '/neos/graphql/media-assets';
     }
 }

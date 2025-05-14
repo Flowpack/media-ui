@@ -117,7 +117,7 @@ type Mutation {
     replaceAsset(
         id: AssetId!
         assetSourceId: AssetSourceId!
-        file: UploadedFile!
+        file: UploadedFileInput!
         options: AssetReplacementOptionsInput!
     ): FileUploadResult!
 
@@ -140,9 +140,9 @@ type Mutation {
 
     createTag(label: TagLabel!, assetCollectionId: AssetCollectionId): Tag!
 
-    uploadFile(file: UploadedFile!, tagId: TagId, assetCollectionId: AssetCollectionId): FileUploadResult!
+    uploadFile(file: UploadedFileInput!, tagId: TagId, assetCollectionId: AssetCollectionId): FileUploadResult!
 
-    uploadFiles(files: [UploadedFile!]!, tagId: TagId, assetCollectionId: AssetCollectionId): [FileUploadResult!]!
+    uploadFiles(files: [UploadedFileInput!]!, tagId: TagId, assetCollectionId: AssetCollectionId): [FileUploadResult!]!
 
     importAsset(id: AssetId!, assetSourceId: AssetSourceId!): Asset!
 

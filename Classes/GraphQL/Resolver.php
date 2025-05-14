@@ -79,10 +79,6 @@ class Resolver
         if ($objectValue instanceof BackedEnum) {
             $objectValue = $objectValue->value;
         }
-        # TODO: Automatically convert primitive types to their respective PHP types without the need implement JsonSerializable
-//        if (is_object($objectValue)) {
-//            $objectValue = (new Normalizer())->normalize($objectValue->value);
-//        }
         return $objectValue;
     }
 
@@ -103,15 +99,6 @@ class Resolver
                 ) => $caseSchema->instantiate(null), $schema->caseSchemas);
             }
         }
-        if ($typeDefinitionNode instanceof InputObjectTypeDefinitionNode) {
-            $className = $this->resolveClassName(rtrim($typeConfig['name'], 'Input'));
-            $schema = Parser::getSchema($className);
-            if ($schema instanceof ShapeSchema) {
-                $typeConfig['parseValue'] = static function(array $values) use ($schema) {
-                    return $schema->instantiate($values);
-                };
-            }
-        }
         return $typeConfig;
     }
 
@@ -130,10 +117,6 @@ class Resolver
         return $result;
     }
 
-    /**
-     * @param string|bool|int|UnitEnum|array<string, mixed>|null $argument
-     * @return string|bool|int|array<string, mixed>|object|null
-     */
     private function convertArgument(
         string|bool|int|UnitEnum|array|null $argument,
         ?Argument $argumentDefinition
@@ -175,7 +158,6 @@ class Resolver
     }
 
     /**
-     * @param string $argumentType
      * @return class-string|null
      */
     private function resolveClassName(string $argumentType): ?string
