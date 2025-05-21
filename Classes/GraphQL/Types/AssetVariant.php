@@ -35,6 +35,7 @@ final class AssetVariant
             $height = $assetVariant->getHeight();
         }
         return new self(
+            /** @phpstan-ignore method.notFound */
             AssetId::fromString($assetVariant->getIdentifier()),
             $width,
             $height,

@@ -133,8 +133,10 @@ class Resolver
             if ($type instanceof NonNull) {
                 $type = $type->getWrappedType();
             }
+            /** @phpstan-ignore property.notFound */
             $argumentType = $type->name . 's';
         } else {
+            /** @phpstan-ignore property.notFound */
             $argumentType = $type->name;
         }
         if (str_ends_with($argumentType, 'Input')) {

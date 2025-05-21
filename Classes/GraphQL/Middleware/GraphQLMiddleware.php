@@ -166,6 +166,41 @@ final class GraphQLMiddleware implements MiddlewareInterface
         return $formattedError;
     }
 
+//    /**
+//     * This transform is used to convert exceptions to localized errors in the GraphQL response.
+//     * FIXME: This does not work anymore and needs to be adapted to the new custom GraphQL adapter.
+//     */
+//    public function transformError(ExecutionResult $result): ExecutionResult
+//    {
+//        $result->errors = array_map(function (Error $error) {
+//            $previousError = $error->getPrevious();
+//            if (!$previousError instanceof Error) {
+//                $message = $this->throwableStorage->logThrowable($previousError);
+//
+//                if (!$this->includeExceptionMessageInOutput) {
+//                    $message = preg_replace('/.* - See also: (.+)\.txt$/s', 'Internal error ($1)', $message);
+//                }
+//
+//                $errorExtendedInformation = $error->getExtensions();
+//                $errorExtendedInformation['errorCode'] = $previousError->getCode();
+//
+//                return new Error(
+//                    $message,
+//                    $error->getNodes(),
+//                    $error->getSource(),
+//                    $error->getPositions(),
+//                    $error->getPath(),
+//                    $previousError,
+//                    $errorExtendedInformation
+//                );
+//            }
+//
+//            return $error;
+//        }, $result->errors);
+//
+//        return $result;
+//    }
+
     private function getSchema(Resolver $resolver): Schema
     {
         $cacheKey = md5($this->apiObjectName);

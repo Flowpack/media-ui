@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
-use Flowpack\Media\Ui\GraphQl\Types;
+use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
@@ -53,6 +53,7 @@ class AssetCollectionMutator
         if ($parent) {
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
             /** @var HierarchicalAssetCollectionInterface $newAssetCollection */
+            /** @phpstan-ignore varTag.nativeType */
             $newAssetCollection->setParent($parentCollection);
         }
 

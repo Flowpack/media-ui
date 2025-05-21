@@ -279,7 +279,6 @@ final class MediaApi
     #[Query]
     public function unusedAssets(int $limit = 20, int $offset = 0): Types\Assets
     {
-        /** @var AssetInterface[] $assetProxies */
         $assets = [];
         try {
             $assets = $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
