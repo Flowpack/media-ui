@@ -64,10 +64,10 @@ jobs:
       fail-fast: false
       matrix:
         php-versions: ['8.1']
-        flow-versions: ['7.3']
+        flow-versions: ['8.3']
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -78,7 +78,7 @@ jobs:
           ini-values: opcache.fast_shutdown=0
 
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.composer/cache
           key: dependencies-composer-${{ hashFiles('composer.json') }}
@@ -150,7 +150,7 @@ jobs:
 
       - name: Archive failure screenshots
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: e2e-failure-screenshots
           path: screenshots
