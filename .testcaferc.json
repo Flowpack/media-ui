@@ -3,8 +3,8 @@
     "path": "chromium",
     "cmd": "--window-size=1280,720"
   },
-  "src": ["Resources/Private/JavaScript/media-module/tests/**/*.ts"],
-  "appCommand": "yarn ts-node --project Resources/Private/JavaScript/dev-server/tsconfig.json Resources/Private/JavaScript/dev-server/src/server.ts",
+  "src": ["packages/media-module/tests/**/*.ts"],
+  "appCommand": "yarn ts-node --project packages/dev-server/tsconfig.json packages/dev-server/src/server.ts",
   "screenshots": {
     "takeOnFails": true
   },

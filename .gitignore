@@ -14,17 +14,14 @@ node_modules
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-Packages
-vendor
-composer.lock
+yarn-error.log
 /.parcel-cache
+.cache
 
 #
 # Compiled assets.
 #
-.cache
-Resources/Private/JavaScript/dev-server/dist
-yarn-error.log
+/packages/dev-server/dist
 
 #
 # editors / IDEs

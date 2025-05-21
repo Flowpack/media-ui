@@ -2378,9 +2378,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@media-ui/core@workspace:*, @media-ui/core@workspace:Resources/Private/JavaScript/core":
+"@media-ui/core@workspace:*, @media-ui/core@workspace:packages/core":
   version: 0.0.0-use.local
-  resolution: "@media-ui/core@workspace:Resources/Private/JavaScript/core"
+  resolution: "@media-ui/core@workspace:packages/core"
   dependencies:
     "@types/pubsub-js": ^1.8.3
     matcher: ^5.0.0
@@ -2388,9 +2388,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@media-ui/dev-server@workspace:*, @media-ui/dev-server@workspace:Resources/Private/JavaScript/dev-server":
+"@media-ui/dev-server@workspace:*, @media-ui/dev-server@workspace:packages/dev-server":
   version: 0.0.0-use.local
-  resolution: "@media-ui/dev-server@workspace:Resources/Private/JavaScript/dev-server"
+  resolution: "@media-ui/dev-server@workspace:packages/dev-server"
   dependencies:
     "@media-ui/media-module": "workspace:*"
     "@types/node": ^16.18.34
@@ -2400,95 +2400,95 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-asset-collections@workspace:*, @media-ui/feature-asset-collections@workspace:Resources/Private/JavaScript/asset-collections":
+"@media-ui/feature-asset-collections@workspace:*, @media-ui/feature-asset-collections@workspace:packages/asset-collections":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-asset-collections@workspace:Resources/Private/JavaScript/asset-collections"
+  resolution: "@media-ui/feature-asset-collections@workspace:packages/asset-collections"
   dependencies:
     "@media-ui/feature-asset-tags": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-asset-editing@workspace:*, @media-ui/feature-asset-editing@workspace:Resources/Private/JavaScript/asset-editing":
+"@media-ui/feature-asset-editing@workspace:*, @media-ui/feature-asset-editing@workspace:packages/asset-editing":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-asset-editing@workspace:Resources/Private/JavaScript/asset-editing"
+  resolution: "@media-ui/feature-asset-editing@workspace:packages/asset-editing"
   dependencies:
     "@media-ui/core": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-asset-preview@workspace:*, @media-ui/feature-asset-preview@workspace:Resources/Private/JavaScript/asset-preview":
+"@media-ui/feature-asset-preview@workspace:*, @media-ui/feature-asset-preview@workspace:packages/asset-preview":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-asset-preview@workspace:Resources/Private/JavaScript/asset-preview"
+  resolution: "@media-ui/feature-asset-preview@workspace:packages/asset-preview"
   dependencies:
     "@media-ui/core": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-asset-sources@workspace:*, @media-ui/feature-asset-sources@workspace:Resources/Private/JavaScript/asset-sources":
+"@media-ui/feature-asset-sources@workspace:*, @media-ui/feature-asset-sources@workspace:packages/asset-sources":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-asset-sources@workspace:Resources/Private/JavaScript/asset-sources"
+  resolution: "@media-ui/feature-asset-sources@workspace:packages/asset-sources"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-asset-tags@workspace:*, @media-ui/feature-asset-tags@workspace:Resources/Private/JavaScript/asset-tags":
+"@media-ui/feature-asset-tags@workspace:*, @media-ui/feature-asset-tags@workspace:packages/asset-tags":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-asset-tags@workspace:Resources/Private/JavaScript/asset-tags"
+  resolution: "@media-ui/feature-asset-tags@workspace:packages/asset-tags"
   dependencies:
     "@media-ui/feature-asset-collections": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-asset-upload@workspace:*, @media-ui/feature-asset-upload@workspace:Resources/Private/JavaScript/asset-upload":
+"@media-ui/feature-asset-upload@workspace:*, @media-ui/feature-asset-upload@workspace:packages/asset-upload":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-asset-upload@workspace:Resources/Private/JavaScript/asset-upload"
+  resolution: "@media-ui/feature-asset-upload@workspace:packages/asset-upload"
   dependencies:
     "@media-ui/core": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-asset-usage@workspace:*, @media-ui/feature-asset-usage@workspace:Resources/Private/JavaScript/asset-usage":
+"@media-ui/feature-asset-usage@workspace:*, @media-ui/feature-asset-usage@workspace:packages/asset-usage":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-asset-usage@workspace:Resources/Private/JavaScript/asset-usage"
+  resolution: "@media-ui/feature-asset-usage@workspace:packages/asset-usage"
   dependencies:
     "@media-ui/core": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-asset-variants@workspace:*, @media-ui/feature-asset-variants@workspace:Resources/Private/JavaScript/asset-variants":
+"@media-ui/feature-asset-variants@workspace:*, @media-ui/feature-asset-variants@workspace:packages/asset-variants":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-asset-variants@workspace:Resources/Private/JavaScript/asset-variants"
+  resolution: "@media-ui/feature-asset-variants@workspace:packages/asset-variants"
   dependencies:
     "@media-ui/core": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-clipboard@workspace:*, @media-ui/feature-clipboard@workspace:Resources/Private/JavaScript/clipboard":
+"@media-ui/feature-clipboard@workspace:*, @media-ui/feature-clipboard@workspace:packages/clipboard":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-clipboard@workspace:Resources/Private/JavaScript/clipboard"
+  resolution: "@media-ui/feature-clipboard@workspace:packages/clipboard"
   dependencies:
     "@media-ui/core": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-concurrent-editing@workspace:*, @media-ui/feature-concurrent-editing@workspace:Resources/Private/JavaScript/concurrent-editing":
+"@media-ui/feature-concurrent-editing@workspace:*, @media-ui/feature-concurrent-editing@workspace:packages/concurrent-editing":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-concurrent-editing@workspace:Resources/Private/JavaScript/concurrent-editing"
+  resolution: "@media-ui/feature-concurrent-editing@workspace:packages/concurrent-editing"
   dependencies:
     "@media-ui/core": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/feature-similar-assets@workspace:*, @media-ui/feature-similar-assets@workspace:Resources/Private/JavaScript/similar-assets":
+"@media-ui/feature-similar-assets@workspace:*, @media-ui/feature-similar-assets@workspace:packages/similar-assets":
   version: 0.0.0-use.local
-  resolution: "@media-ui/feature-similar-assets@workspace:Resources/Private/JavaScript/similar-assets"
+  resolution: "@media-ui/feature-similar-assets@workspace:packages/similar-assets"
   dependencies:
     "@media-ui/core": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@media-ui/media-details-screen@workspace:*, @media-ui/media-details-screen@workspace:Resources/Private/JavaScript/media-details-screen":
+"@media-ui/media-details-screen@workspace:*, @media-ui/media-details-screen@workspace:packages/media-details-screen":
   version: 0.0.0-use.local
-  resolution: "@media-ui/media-details-screen@workspace:Resources/Private/JavaScript/media-details-screen"
+  resolution: "@media-ui/media-details-screen@workspace:packages/media-details-screen"
   dependencies:
     "@apollo/client": ^3.3.13
     "@media-ui/core": "workspace:*"
@@ -2500,9 +2500,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@media-ui/media-module@workspace:*, @media-ui/media-module@workspace:Resources/Private/JavaScript/media-module":
+"@media-ui/media-module@workspace:*, @media-ui/media-module@workspace:packages/media-module":
   version: 0.0.0-use.local
-  resolution: "@media-ui/media-module@workspace:Resources/Private/JavaScript/media-module"
+  resolution: "@media-ui/media-module@workspace:packages/media-module"
   dependencies:
     "@apollo/client": ^3.3.13
     "@fortawesome/fontawesome-svg-core": ^1.2.36
@@ -2547,9 +2547,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@media-ui/media-selection-screen@workspace:*, @media-ui/media-selection-screen@workspace:Resources/Private/JavaScript/media-selection-screen":
+"@media-ui/media-selection-screen@workspace:*, @media-ui/media-selection-screen@workspace:packages/media-selection-screen":
   version: 0.0.0-use.local
-  resolution: "@media-ui/media-selection-screen@workspace:Resources/Private/JavaScript/media-selection-screen"
+  resolution: "@media-ui/media-selection-screen@workspace:packages/media-selection-screen"
   dependencies:
     "@apollo/client": ^3.3.13
     "@media-ui/core": "workspace:*"
@@ -2563,9 +2563,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@media-ui/neos-ui-plugin@workspace:*, @media-ui/neos-ui-plugin@workspace:Resources/Private/JavaScript/neos-ui-plugin":
+"@media-ui/neos-ui-plugin@workspace:*, @media-ui/neos-ui-plugin@workspace:packages/neos-ui-plugin":
   version: 0.0.0-use.local
-  resolution: "@media-ui/neos-ui-plugin@workspace:Resources/Private/JavaScript/neos-ui-plugin"
+  resolution: "@media-ui/neos-ui-plugin@workspace:packages/neos-ui-plugin"
   dependencies:
     "@media-ui/media-details-screen": "workspace:*"
     "@media-ui/media-selection-screen": "workspace:*"

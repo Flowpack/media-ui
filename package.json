@@ -7,7 +7,7 @@
     "node": "22"
   },
   "scripts": {
-    "lint": "tsc --noemit && eslint 'Resources/Private/JavaScript/**/*.{js,jsx,ts,tsx}'",
+    "lint": "tsc --noemit && eslint 'packages/**/*.{js,jsx,ts,tsx}'",
     "test": "testcafe",
     "test:unit": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' TS_NODE_FILES=true mocha",
     "dev": "yarn workspace @media-ui/dev-server run dev",
@@ -21,7 +21,7 @@
     "test:github-actions": "xvfb-run --server-args=\"-screen 0 1280x720x24\" yarn testcafe firefox"
   },
   "workspaces": [
-    "Resources/Private/JavaScript/*"
+    "packages/*"
   ],
   "dependencies": {
     "@media-ui/dev-server": "workspace:*",

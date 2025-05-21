@@ -222,7 +222,7 @@ The GraphQL schema can be found [here](Resources/Private/GraphQL/schema.root.gra
 ### Interface
 
 This module uses React for the implementation of the UI. Currently, most parts of the application are implemented
-as feature based packages in the `Resources/Private/JavaScript` folder.
+as feature based packages in the `packages` folder.
 In future releases the code will be further split into smaller packages.
 
 ### State management
@@ -245,7 +245,7 @@ Component state should be stored with React hooks.
 #### Shared component states
 
 The shared component states are current implemented via React [Recoil](https://recoiljs.org) atoms and selectors.
-See the `state` folders in the various modules in `Resources/Private/JavaScript` for examples.
+See the `state` folders in the various modules in `packages` for examples.
 
 Those should be used every time multiple components share a state that is not relevant for
 the GraphQL queries.
@@ -373,7 +373,7 @@ yarn build:no-cache
 
 #### Register additional icons
 
-Font Awesome icons are registered in `Resources/Private/JavaScript/src/lib/FontAwesome`.
+Font Awesome icons are registered in `packages/src/lib/FontAwesome`.
 This way the bundle size is kept to a minimum.
 
 #### Patches
