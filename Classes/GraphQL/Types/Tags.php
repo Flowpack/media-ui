@@ -16,6 +16,14 @@ final class Tags implements \IteratorAggregate
     }
 
     /**
+     * @param Tag[] $tags
+     */
+    public static function fromArray(array $tags): self
+    {
+        return new self($tags);
+    }
+
+    /**
      * @return \Traversable<Tag>
      */
     public function getIterator(): \Traversable

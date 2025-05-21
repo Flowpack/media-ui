@@ -20,22 +20,17 @@ use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\Reflection\ReflectionService;
 use Neos\Media\Domain\Model\AssetInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class SimilarityService
 {
 
-    /**
-     * @Flow\Inject
-     * @var ReflectionService
-     */
-    protected $reflectionService;
+    #[Flow\Inject]
+    protected ReflectionService $reflectionService;
 
     /**
-     * @Flow\Inject
      * @var ObjectManagerInterface
      */
+    #[Flow\Inject]
     protected $objectManager;
 
     /**

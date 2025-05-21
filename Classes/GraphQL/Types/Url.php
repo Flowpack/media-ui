@@ -21,4 +21,9 @@ final class Url implements \JsonSerializable
     {
         return $this->value;
     }
+
+    public static function fromString(string $url): self
+    {
+        return new self($url);
+    }
 }

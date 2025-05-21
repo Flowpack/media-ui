@@ -26,15 +26,11 @@ final class UsageDetails
         return instantiate(self::class, [
             'label' => $usage->getLabel(),
             'url' => $usage->getUrl(),
-            // TODO: Simplify this instantiation
-            'metadata' => instantiate(
-                UsageDetailsMetadataList::class,
-                array_map(static function (array $metadata) {
-                    return instantiate(
-                        UsageDetailsMetadata::class,
-                        $metadata,
-                    );
-                }, $usage->getMetadata())
+            'metadata' => UsageDetailsMetadataList::fromArray(
+                array_map(static fn(array $metadata) => instantiate(
+                    UsageDetailsMetadata::class,
+                    $metadata,
+                ), $usage->getMetadata())
             ),
         ]);
     }

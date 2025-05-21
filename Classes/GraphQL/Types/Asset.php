@@ -32,13 +32,13 @@ final class Asset
 
     public static function fromAssetProxy(AssetProxyInterface $assetProxy): self
     {
-        return instantiate(self::class, [
-            'id' => $assetProxy->getIdentifier(),
-            'localId' => $assetProxy->getLocalAssetIdentifier(),
-            'filename' => $assetProxy->getFilename(),
-            'width' => $assetProxy->getWidthInPixels(),
-            'height' => $assetProxy->getHeightInPixels(),
-            'assetSource' => AssetSource::fromAssetSource($assetProxy->getAssetSource()),
-        ]);
+        return new self(
+            AssetId::fromString($assetProxy->getIdentifier()),
+            Filename::fromString($assetProxy->getFilename()),
+            AssetSource::fromAssetSource($assetProxy->getAssetSource()),
+            $assetProxy->getWidthInPixels(),
+            $assetProxy->getHeightInPixels(),
+            LocalAssetId::fromAssetProxy($assetProxy),
+        );
     }
 }

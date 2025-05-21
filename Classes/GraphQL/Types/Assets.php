@@ -9,8 +9,6 @@ use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Wwwision\Types\Attributes\ListBased;
 
-use function Wwwision\Types\instantiate;
-
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: Asset::class)]
 final class Assets implements \IteratorAggregate
@@ -21,7 +19,7 @@ final class Assets implements \IteratorAggregate
 
     public static function empty(): self
     {
-        return instantiate(self::class, []);
+        return new self([]);
     }
 
     /**
@@ -33,7 +31,7 @@ final class Assets implements \IteratorAggregate
         foreach ($assets as $asset) {
             $assetList[] = Asset::fromAssetProxy($asset->getAssetProxy());
         }
-        return instantiate(self::class, $assetList);
+        return new self($assetList);
     }
 
     /**
@@ -45,7 +43,15 @@ final class Assets implements \IteratorAggregate
         foreach ($assetProxies as $assetProxy) {
             $assetList[] = Asset::fromAssetProxy($assetProxy);
         }
-        return instantiate(self::class, $assetList);
+        return new self($assetList);
+    }
+
+    /**
+     * @param Asset[] $assets
+     */
+    public static function fromArray(array $assets): self
+    {
+        return new self($assets);
     }
 
     /**

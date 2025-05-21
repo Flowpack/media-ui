@@ -16,6 +16,14 @@ final class FileUploadResults implements \IteratorAggregate, \JsonSerializable
     }
 
     /**
+     * @param FileUploadResult[] $results
+     */
+    public static function fromArray(array $results): self
+    {
+        return new self($results);
+    }
+
+    /**
      * @return \Traversable<FileUploadResult>
      */
     public function getIterator(): \Traversable

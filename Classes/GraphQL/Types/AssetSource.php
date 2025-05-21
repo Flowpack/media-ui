@@ -19,11 +19,11 @@ final class AssetSource
     private function __construct(
         public readonly AssetSourceId $id,
         public readonly string $label,
-        public readonly string|null $description,
-        public readonly Url|null $iconUri,
+        public readonly string $description,
         public readonly bool $readOnly,
         public readonly bool $supportsTagging,
         public readonly bool $supportsCollections,
+        public readonly Url|null $iconUri = null,
     ) {
     }
 
@@ -33,8 +33,7 @@ final class AssetSource
             'id' => $assetSource->getIdentifier(),
             'label' => $assetSource->getLabel(),
             'description' => $assetSource->getDescription(),
-            'iconUri' => $assetSource->getIconUri() ? instantiate(Url::class,
-                $assetSource->getIconUri()) : null,
+            'iconUri' => $assetSource->getIconUri() ? Url::fromString($assetSource->getIconUri()) : null,
             'readOnly' => $assetSource->isReadonly(),
             'supportsTagging' => $assetSource->getAssetProxyRepository() instanceof SupportsTaggingInterface,
             'supportsCollections' => $assetSource->getAssetProxyRepository() instanceof SupportsCollectionsInterface,

@@ -19,30 +19,28 @@ use Neos\Neos\Domain\Service\ContentContext;
 #[Flow\Scope('singleton')]
 class AssetCollectionService
 {
-    /**
-     * @Flow\Inject
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
-
-    /**
-     * @Flow\Inject
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
 
     protected array $assetCollectAssetCountCache = [];
 
     /**
-     * @Flow\Inject
-     * @var AssetCollectionRepository
+     * @var EntityManagerInterface
      */
-    protected $assetCollectionRepository;
+    #[Flow\Inject]
+    protected $entityManager;
 
     /**
-     * @Flow\Inject
+     * @var ObjectManagerInterface
+     */
+    #[Flow\Inject]
+    protected $objectManager;
+
+    #[Flow\Inject]
+    protected AssetCollectionRepository $assetCollectionRepository;
+
+    /**
      * @var ContextFactoryInterface
      */
+    #[Flow\Inject]
     protected $contextFactory;
 
     /**
@@ -85,6 +83,7 @@ class AssetCollectionService
 
     public function updatePathForNestedAssetCollections(HierarchicalAssetCollectionInterface $parentCollection): void
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         $childCollections = $this->assetCollectionRepository->findByParent($parentCollection);
 
         foreach ($childCollections as $childCollection) {

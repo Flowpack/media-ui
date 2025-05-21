@@ -6,8 +6,6 @@ namespace Flowpack\Media\Ui\Transform;
 
 use GraphQL\Error\Error;
 use GraphQL\Executor\ExecutionResult;
-use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Log\ThrowableStorageInterface;
 
 /**
  * This transform is used to convert exceptions to errors in the GraphQL response.

@@ -17,6 +17,11 @@ final class AssetId implements \JsonSerializable
     {
     }
 
+    public static function fromString(string $identifier): self
+    {
+        return new self($identifier);
+    }
+
     public function jsonSerialize(): string
     {
         return $this->value;

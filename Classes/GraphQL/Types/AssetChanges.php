@@ -7,8 +7,6 @@ namespace Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\ListBased;
 
-use function Wwwision\Types\instantiate;
-
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: AssetChange::class)]
 final class AssetChanges implements \IteratorAggregate
@@ -22,7 +20,15 @@ final class AssetChanges implements \IteratorAggregate
 
     public static function empty(): self
     {
-        return instantiate(self::class, []);
+        return new self([]);
+    }
+
+    /**
+     * @param AssetChange[] $changes
+     */
+    public static function fromArray(array $changes): self
+    {
+        return new self($changes);
     }
 
     /**

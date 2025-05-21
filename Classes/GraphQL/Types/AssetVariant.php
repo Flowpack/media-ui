@@ -9,8 +9,6 @@ use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Model\ImageVariant;
 use Wwwision\Types\Attributes\Description;
 
-use function Wwwision\Types\instantiate;
-
 #[Description('An asset variant')]
 #[Flow\Proxy(false)]
 final class AssetVariant
@@ -36,10 +34,10 @@ final class AssetVariant
             $width = $assetVariant->getWidth();
             $height = $assetVariant->getHeight();
         }
-        return instantiate(self::class, [
-            'id' => $assetVariant->getIdentifier(),
-            'width' => $width,
-            'height' => $height,
-        ]);
+        return new self(
+            AssetId::fromString($assetVariant->getIdentifier()),
+            $width,
+            $height,
+        );
     }
 }

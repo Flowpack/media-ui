@@ -290,7 +290,7 @@ final class UsageDetailsService
             $serverRequest = ServerRequest::fromGlobals();
         }
 
-        $domain = $site ? $site->getPrimaryDomain() : null;
+        $domain = $site?->getPrimaryDomain();
 
         // Build the URI with the correct scheme and hostname for the node in the given site
         if ($domain && $domain->getHostname() !== $serverRequest->getUri()->getHost()) {

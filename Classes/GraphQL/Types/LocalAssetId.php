@@ -9,8 +9,6 @@ use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Wwwision\Types\Attributes\Description;
 use Wwwision\Types\Attributes\StringBased;
 
-use function Wwwision\Types\instantiate;
-
 #[Description('Unique identifier (UUID) of an imported Asset')]
 #[Flow\Proxy(false)]
 #[StringBased]
@@ -27,9 +25,6 @@ final class LocalAssetId implements \JsonSerializable
 
     public static function fromAssetProxy(AssetProxyInterface $assetProxy): ?self
     {
-        return $assetProxy->getLocalAssetIdentifier() ? instantiate(
-            self::class,
-            $assetProxy->getLocalAssetIdentifier()
-        ) : null;
+        return $assetProxy->getLocalAssetIdentifier() ? new self($assetProxy->getLocalAssetIdentifier()) : null;
     }
 }

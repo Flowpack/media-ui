@@ -17,6 +17,11 @@ final class AssetCollectionPath implements \JsonSerializable
     {
     }
 
+    public static function fromString(string $path): self
+    {
+        return new self($path);
+    }
+
     public function jsonSerialize(): string
     {
         return $this->value;

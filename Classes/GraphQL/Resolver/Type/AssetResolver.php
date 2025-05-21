@@ -143,7 +143,7 @@ class AssetResolver
         $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
         if ($assetProxy instanceof SupportsIptcMetadataInterface) {
             $properties = $assetProxy->getIptcProperties();
-            return instantiate(Types\IptcProperties::class,
+            return Types\IptcProperties::fromArray(
                 array_map(static function ($key) use ($properties) {
                     return instantiate(
                         Types\IptcProperty::class,
@@ -170,46 +170,44 @@ class AssetResolver
     public function tags(Types\Asset $asset): Types\Tags
     {
         $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
-        return $localAssetData instanceof Asset ? instantiate(
-            Types\Tags::class,
-            array_map(function (Tag $tag) {
-                return instantiate(Types\Tag::class, [
-                    'id' => $this->persistenceManager->getIdentifierByObject($tag),
-                    'label' => $tag->getLabel(),
-                ]);
-            }, $localAssetData->getTags()->toArray())
-        ) : Types\Tags::empty();
+        return $localAssetData instanceof Asset ?
+            Types\Tags::fromArray(
+                array_map(function (Tag $tag) {
+                    return instantiate(Types\Tag::class, [
+                        'id' => $this->persistenceManager->getIdentifierByObject($tag),
+                        'label' => $tag->getLabel(),
+                    ]);
+                }, $localAssetData->getTags()->toArray())
+            ) : Types\Tags::empty();
     }
 
     public function collections(Types\Asset $asset): Types\AssetCollections
     {
         $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
-        return $localAssetData instanceof Asset ? instantiate(
-            Types\AssetCollections::class,
-            array_map(function (HierarchicalAssetCollectionInterface $assetCollection) {
-                return instantiate(Types\AssetCollection::class, [
-                    'id' => $this->persistenceManager->getIdentifierByObject($assetCollection),
-                    'title' => $assetCollection->getTitle(),
-                    'path' => $assetCollection->getPath() ? instantiate(
-                        Types\AssetCollectionPath::class,
-                        $assetCollection->getPath(),
-                    ) : '',
-                ]);
-            },
-                $localAssetData->getAssetCollections()->toArray())
-        ) : Types\AssetCollections::empty();
+        return $localAssetData instanceof Asset ?
+            Types\AssetCollections::fromArray(
+                array_map(function (HierarchicalAssetCollectionInterface $assetCollection) {
+                    return instantiate(Types\AssetCollection::class, [
+                        'id' => $this->persistenceManager->getIdentifierByObject($assetCollection),
+                        'title' => $assetCollection->getTitle(),
+                        'path' => $assetCollection->getPath() ?
+                            Types\AssetCollectionPath::fromString($assetCollection->getPath()) : '',
+                    ]);
+                },
+                    $localAssetData->getAssetCollections()->toArray())
+            ) : Types\AssetCollections::empty();
     }
 
     public function thumbnailUrl(Types\Asset $asset): ?Types\Url
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
-        return $assetProxy ? instantiate(Types\Url::class, $assetProxy->getThumbnailUri()) : null;
+        return $assetProxy ? Types\Url::fromString((string)$assetProxy->getThumbnailUri()) : null;
     }
 
     public function previewUrl(Types\Asset $asset): ?Types\Url
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
-        return $assetProxy ? instantiate(Types\Url::class, $assetProxy->getPreviewUri()) : null;
+        return $assetProxy ? Types\Url::fromString((string)$assetProxy->getPreviewUri()) : null;
     }
 //
 //    public function thumbnail(

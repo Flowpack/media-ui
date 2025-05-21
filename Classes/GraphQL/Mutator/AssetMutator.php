@@ -26,7 +26,6 @@ use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\Exception as ResourceManagementException;
 use Neos\Flow\ResourceManagement\ResourceManager;
-use Neos\Http\Factories\FlowUploadedFile;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\Tag;
@@ -521,6 +520,6 @@ class AssetMutator
                 $assetCollectionId,
             );
         }
-        return instantiate(Types\FileUploadResults::class, $results);
+        return Types\FileUploadResults::fromArray($results);
     }
 }

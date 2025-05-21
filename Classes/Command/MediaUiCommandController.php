@@ -17,11 +17,17 @@ namespace Flowpack\Media\Ui\Command;
 use Flowpack\Media\Ui\GraphQL\MediaApi;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
+use Neos\Flow\Package\PackageManager;
+use Neos\Utility\Files;
 use Wwwision\TypesGraphQL\GraphQLGenerator;
 
 #[Flow\Scope('singleton')]
 class MediaUiCommandController extends CommandController
 {
+
+    #[Flow\Inject]
+    protected PackageManager $packageManager;
+
     public function createSchemaCommand(): void
     {
         $this->outputLine('Creating GraphQL schema...');
@@ -29,6 +35,16 @@ class MediaUiCommandController extends CommandController
         $generator = new GraphQLGenerator();
         $schema = $generator->generate(MediaApi::class)->render();
 
-        $this->output($schema);
+        $path = Files::concatenatePaths([
+            $this->packageManager->getPackage('Flowpack.Media.Ui')->getPackagePath(),
+            'Resources',
+            'Private',
+            'GraphQL',
+            'schema.root.graphql',
+        ]);
+
+        file_put_contents($path, $schema);
+
+        $this->outputFormatted('GraphQL schema created at: %s', [$path]);
     }
 }

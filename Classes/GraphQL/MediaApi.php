@@ -141,15 +141,14 @@ final class MediaApi
     #[Query]
     public function assetCollections(): Types\AssetCollections
     {
-        return instantiate(
-            Types\AssetCollections::class,
-            array_map(function (HierarchicalAssetCollectionInterface $assetCollection) {
-                return instantiate(Types\AssetCollection::class, [
+        return Types\AssetCollections::fromArray(
+            array_map(
+                fn(HierarchicalAssetCollectionInterface $assetCollection) => instantiate(Types\AssetCollection::class, [
                     'id' => $this->persistenceManager->getIdentifierByObject($assetCollection),
                     'title' => $assetCollection->getTitle(),
                     'path' => $assetCollection->getPath(),
-                ]);
-            }, $this->assetCollectionRepository->findAll()->toArray())
+                ]), $this->assetCollectionRepository->findAll()->toArray()
+            )
         );
     }
 
@@ -157,11 +156,9 @@ final class MediaApi
     #[Query]
     public function assetSources(): Types\AssetSources
     {
-        return instantiate(
-            Types\AssetSources::class,
-            array_map(static function (AssetSourceInterface $assetSource) {
-                return Types\AssetSource::fromAssetSource($assetSource);
-            }, $this->assetSourceContext->getAssetSources())
+        return Types\AssetSources::fromArray(array_map(
+                static fn(AssetSourceInterface $assetSource) => Types\AssetSource::fromAssetSource($assetSource),
+                $this->assetSourceContext->getAssetSources())
         );
     }
 
@@ -179,15 +176,13 @@ final class MediaApi
     #[Query]
     public function tags(): Types\Tags
     {
-        return instantiate(
-            Types\Tags::class,
-            array_map(function (Tag $tag) {
-                return instantiate(Types\Tag::class, [
-                    'id' => $this->persistenceManager->getIdentifierByObject($tag),
-                    'label' => $tag->getLabel(),
-                ]);
-            }, $this->tagRepository->findAll()->toArray())
-        );
+        return Types\Tags::fromArray(array_map(
+            fn(Tag $tag) => instantiate(Types\Tag::class, [
+                'id' => $this->persistenceManager->getIdentifierByObject($tag),
+                'label' => $tag->getLabel(),
+            ]),
+            $this->tagRepository->findAll()->toArray()
+        ));
     }
 
     #[Description('Get tag by id')]
@@ -300,7 +295,7 @@ final class MediaApi
     {
         $changes = $this->assetChangeLog->getChanges($since);
         return instantiate(Types\ChangedAssetsResult::class, [
-            'changes' => instantiate(Types\AssetChanges::class, $changes),
+            'changes' => $changes,
             'lastModified' => $changes->getLastModified(),
         ]);
     }

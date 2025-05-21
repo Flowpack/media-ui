@@ -5,11 +5,7 @@ declare(strict_types=1);
 namespace Flowpack\Media\Ui\GraphQL\Types;
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Media\Domain\Model\AssetVariantInterface;
-use Neos\Media\Domain\Model\ImageVariant;
 use Wwwision\Types\Attributes\Description;
-
-use function Wwwision\Types\instantiate;
 
 #[Flow\Proxy(false)]
 final class CropInformation
@@ -27,11 +23,6 @@ final class CropInformation
 
     public static function empty(): self
     {
-        return instantiate(self::class, [
-            'width' => 0,
-            'height' => 0,
-            'x' => 0,
-            'y' => 0,
-        ]);
+        return new self();
     }
 }

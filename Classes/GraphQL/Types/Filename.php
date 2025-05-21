@@ -17,6 +17,11 @@ final class Filename implements \JsonSerializable
     {
     }
 
+    public static function fromString(string $filename): self
+    {
+        return new self($filename);
+    }
+
     public function jsonSerialize(): string
     {
         return $this->value;

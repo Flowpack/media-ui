@@ -16,6 +16,14 @@ final class IptcProperties implements \IteratorAggregate
     }
 
     /**
+     * @param IptcProperty[] $iptcProperties
+     */
+    public static function fromArray(array $iptcProperties): self
+    {
+        return new self($iptcProperties);
+    }
+
+    /**
      * @return \Traversable<IptcProperty>
      */
     public function getIterator(): \Traversable

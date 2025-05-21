@@ -83,10 +83,8 @@ class AssetCollectionResolver
     {
         /** @var AssetCollection $originalAssetCollection */
         $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
-        return $originalAssetCollection ? instantiate(
-            Types\Tags::class,
-            $originalAssetCollection->getTags()
-        ) : Types\Tags::empty();
+        return $originalAssetCollection ?
+            Types\Tags::fromArray($originalAssetCollection->getTags()->toArray()) : Types\Tags::empty();
     }
 
     public function parent(Types\AssetCollection $assetCollection): ?Types\AssetCollectionParent
@@ -107,9 +105,9 @@ class AssetCollectionResolver
     {
         /** @var AssetCollection $originalAssetCollection */
         $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
-        return $originalAssetCollection ? instantiate(
-            Types\Assets::class,
-            $this->assetRepository->findByAssetCollection($originalAssetCollection)
-        ) : Types\Assets::empty();
+        return $originalAssetCollection ?
+            Types\Assets::fromArray(
+                $this->assetRepository->findByAssetCollection($originalAssetCollection)->toArray()
+            ) : Types\Assets::empty();
     }
 }
