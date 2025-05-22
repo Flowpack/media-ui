@@ -33,15 +33,3 @@ final class SortBy implements \JsonSerializable
         return $this->value;
     }
 }
-
-//enum SortBy
-//{
-//    #[Description('The resource file name')]
-//    case name;
-//
-//    #[Description('Last modification date')]
-//    case lastModified;
-//
-//    #[Description('The resource file size')]
-//    case size;
-//}
