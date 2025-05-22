@@ -13,8 +13,19 @@ use Wwwision\Types\Attributes\ListBased;
 #[ListBased(itemClassName: UploadedFile::class)]
 final class UploadedFiles implements \IteratorAggregate
 {
+    /**
+     * @param UploadedFiles[]|null $files
+     */
     private function __construct(public readonly ?array $files = null)
     {
+    }
+
+    /**
+     * @param UploadedFiles[] $files
+     */
+    public static function fromArray(array $files): self
+    {
+        return new self($files);
     }
 
     /**

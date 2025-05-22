@@ -11,8 +11,19 @@ use Wwwision\Types\Attributes\ListBased;
 #[ListBased(itemClassName: TagId::class)]
 final class TagIds implements \IteratorAggregate, \JsonSerializable
 {
+    /**
+     * @param TagId[] $values
+     */
     private function __construct(public readonly array $values)
     {
+    }
+
+    /**
+     * @param TagId[] $tagIds
+     */
+    public static function fromArray(array $tagIds): self
+    {
+        return new self($tagIds);
     }
 
     /**

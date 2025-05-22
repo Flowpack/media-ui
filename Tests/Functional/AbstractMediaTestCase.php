@@ -20,7 +20,7 @@ use Neos\Utility\Files;
 /**
  * Abstract Functional Test template
  */
-abstract class AbstractTest extends FunctionalTestCase
+abstract class AbstractMediaTestCase extends FunctionalTestCase
 {
     /**
      * @var string

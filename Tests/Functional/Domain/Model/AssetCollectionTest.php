@@ -15,12 +15,12 @@ namespace Flowpack\Media\Ui\Tests\Functional\Domain\Model;
 
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
-use Flowpack\Media\Ui\Tests\Functional\AbstractTest;
+use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 
-class AssetCollectionTest extends AbstractTest
+class AssetCollectionTest extends AbstractMediaTestCase
 {
     /**
      * @var boolean

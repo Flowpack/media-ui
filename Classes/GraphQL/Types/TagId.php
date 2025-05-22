@@ -11,12 +11,17 @@ use Wwwision\Types\Attributes\StringBased;
 #[Description('The id of a tag')]
 #[Flow\Proxy(false)]
 #[StringBased]
-final class TagId implements \JsonSerializable
+final class TagId implements \JsonSerializable, \Stringable
 {
     public const UNTAGGED = 'UNTAGGED';
 
     private function __construct(public readonly string $value)
     {
+    }
+
+    public static function fromString(string $string): self
+    {
+        return new self($string);
     }
 
     public function jsonSerialize(): string

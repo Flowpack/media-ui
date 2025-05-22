@@ -11,7 +11,7 @@ use Wwwision\Types\Attributes\StringBased;
 #[Description('Absolute path of an Asset collection (e.g. "/photos/trees")')]
 #[Flow\Proxy(false)]
 #[StringBased]
-final class AssetCollectionPath implements \JsonSerializable
+final class AssetCollectionPath implements \JsonSerializable, \Stringable
 {
     private function __construct(public readonly string $value)
     {
@@ -23,6 +23,11 @@ final class AssetCollectionPath implements \JsonSerializable
     }
 
     public function jsonSerialize(): string
+    {
+        return $this->value;
+    }
+
+    public function __toString(): string
     {
         return $this->value;
     }

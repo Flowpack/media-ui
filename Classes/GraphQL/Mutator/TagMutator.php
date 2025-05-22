@@ -18,6 +18,7 @@ use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
@@ -36,7 +37,18 @@ class TagMutator
         private readonly AssetRepository $assetRepository,
         private readonly PersistenceManagerInterface $persistenceManager,
         private readonly TagRepository $tagRepository,
+        private readonly Translator $translator,
     ) {
+    }
+
+    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
+    {
+        try {
+            return $this->translator->translateById($id, $arguments, null, null, 'Main',
+                'Flowpack.Media.Ui') ?? $fallback;
+        } catch (\Exception) {
+            return $fallback ?: $id;
+        }
     }
 
     /**
@@ -98,7 +110,9 @@ class TagMutator
         /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag) {
-            throw new Exception('Tag not found', 1591553709);
+            return MutationResult::error([
+                $this->localizedMessage('actions.deleteTag.notFound', 'Tag not found')
+            ]);
         }
 
         $taggedAssets = $this->assetRepository->findByTag($tag);
@@ -107,6 +121,6 @@ class TagMutator
             $this->assetRepository->update($asset);
         }
         $this->tagRepository->remove($tag);
-        return new MutationResult(true);
+        return MutationResult::success();
     }
 }

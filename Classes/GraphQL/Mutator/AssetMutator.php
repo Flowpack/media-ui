@@ -64,7 +64,12 @@ class AssetMutator
 
     protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
     {
-        return $this->translator->translateById($id, $arguments, null, null, 'Main', 'Flowpack.Media.Ui') ?? $fallback;
+        try {
+            return $this->translator->translateById($id, $arguments, null, null, 'Main',
+                'Flowpack.Media.Ui') ?? $fallback;
+        } catch (\Exception) {
+            return $fallback ?: $id;
+        }
     }
 
     protected function localizedMessageFromException(\Exception $exception): string
@@ -148,37 +153,28 @@ class AssetMutator
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
-            return instantiate(MutationResult::class, [
-                'success' => false,
-                'messages' => [
-                    $this->localizedMessage(
-                        'actions.deleteAssets.noProxy',
-                        'Asset could not be resolved'
-                    )
-                ]
+            return MutationResult::error([
+                $this->localizedMessage(
+                    'actions.deleteAssets.noProxy',
+                    'Asset could not be resolved'
+                )
             ]);
         }
         $asset = $this->assetSourceContext->getAssetForProxy($assetProxy);
 
         if (!$asset) {
-            return instantiate(MutationResult::class, [
-                'success' => false,
-                'messages' => [
-                    $this->localizedMessage(
-                        'actions.deleteAssets.noImportExists',
-                        'Cannot delete asset that was never imported'
-                    )
-                ]
+            return MutationResult::error([
+                $this->localizedMessage(
+                    'actions.deleteAssets.noImportExists',
+                    'Cannot delete asset that was never imported'
+                )
             ]);
         }
 
         try {
             $this->assetRepository->remove($asset);
         } catch (AssetServiceException $e) {
-            return instantiate(MutationResult::class, [
-                'success' => false,
-                'messages' => [$this->localizedMessageFromException($e)],
-            ]);
+            return MutationResult::error([$this->localizedMessageFromException($e)]);
         } catch (\Exception $e) {
             throw new MediaUiException('Failed to delete asset: ' . $e->getMessage(), 1591537315);
         }
@@ -394,8 +390,6 @@ class AssetMutator
             $filename .= '.' . $asset->getFileExtension();
         }
 
-        $success = false;
-
         // Copy the resource to a new one with the new filename
         $originalResource = $asset->getResource();
         $originalResourceStream = $originalResource->getStream();
@@ -407,10 +401,19 @@ class AssetMutator
 
         try {
             $this->assetService->replaceAssetResource($asset, $resource, $options->toArray());
-            $success = true;
         } catch (\Exception $exception) {
-            $this->logger->error(sprintf('Asset %s could not be replace with the renamed copy',
-                $asset->getIdentifier()), [$exception]);
+            $this->logger->error(sprintf(
+                'Asset %s could not be replaced: %s',
+                $asset->getIdentifier(),
+                $exception->getMessage()
+            ));
+            $this->logger->error('', [$exception]);
+            return MutationResult::error([
+                $this->localizedMessage(
+                    'actions.editAsset.cannotRename',
+                    sprintf('Asset "%s" could not be renamed', $asset->getLabel())
+                ),
+            ]);
         }
 
         return MutationResult::success();

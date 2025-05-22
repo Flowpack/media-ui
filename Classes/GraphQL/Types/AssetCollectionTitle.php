@@ -17,6 +17,11 @@ final class AssetCollectionTitle implements \JsonSerializable, \Stringable
     {
     }
 
+    public static function fromString(string $string): self
+    {
+        return new self($string);
+    }
+
     public function jsonSerialize(): string
     {
         return $this->value;

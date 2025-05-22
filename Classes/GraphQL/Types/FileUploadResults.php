@@ -11,6 +11,9 @@ use Wwwision\Types\Attributes\ListBased;
 #[ListBased(itemClassName: FileUploadResult::class)]
 final class FileUploadResults implements \IteratorAggregate, \JsonSerializable
 {
+    /**
+     * @param FileUploadResult[] $values
+     */
     private function __construct(public readonly array $values)
     {
     }
@@ -36,6 +39,9 @@ final class FileUploadResults implements \IteratorAggregate, \JsonSerializable
         return new self([]);
     }
 
+    /**
+     * @return FileUploadResult[]
+     */
     public function jsonSerialize(): array
     {
         return $this->values;

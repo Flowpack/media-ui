@@ -13,7 +13,8 @@ namespace Flowpack\Media\Ui\Tests\Functional\Domain\Repository;
  * source code.
  */
 
-use Flowpack\Media\Ui\Tests\Functional\AbstractTest;
+use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
+use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
@@ -22,21 +23,15 @@ use Neos\Media\Domain\Repository\AssetCollectionRepository;
  * Testcase for an asset collection repository
  *
  */
-class AssetCollectionRepositoryTest extends AbstractTest
+class AssetCollectionRepositoryTest extends AbstractMediaTestCase
 {
     /**
      * @var boolean
      */
     protected static $testablePersistenceEnabled = true;
 
-    /**
-     * @var AssetCollectionRepository
-     */
-    protected $assetCollectionRepository;
+    protected AssetCollectionRepository $assetCollectionRepository;
 
-    /**
-     * @return void
-     */
     public function setUp(): void
     {
         parent::setUp();
@@ -52,8 +47,11 @@ class AssetCollectionRepositoryTest extends AbstractTest
      */
     public function parentRemoveRemovesCompleteHierarchy(): void
     {
+        /** @var HierarchicalAssetCollectionInterface $grandchild */
         $grandchild = new AssetCollection('grandChild');
+        /** @var HierarchicalAssetCollectionInterface $child */
         $child = new AssetCollection('child');
+        /** @var HierarchicalAssetCollectionInterface $parent */
         $parent = new AssetCollection('parent');
         $child->setParent($parent);
         $grandchild->setParent($child);
