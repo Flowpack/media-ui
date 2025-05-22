@@ -36,7 +36,10 @@ const AssetsFilter: React.FC = () => {
     return (
         <details
             ref={detailsRef}
-            className={cx(classes.assetsFilter, (assetTypeFilter || mediaTypeFilter || showUnusedAssets) && classes.active)}
+            className={cx(
+                classes.assetsFilter,
+                (assetTypeFilter || mediaTypeFilter || showUnusedAssets) && classes.active
+            )}
         >
             <summary title={translate('assetsFilter.title', 'Toggle asset filters')}>
                 <IconLabel icon="filter" label={translate('assetsFilter.filter', 'Filter')} />

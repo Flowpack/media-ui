@@ -198,7 +198,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     }
                 }
 
-                assetCollection.parent = { __typename: 'AssetCollectionParent', id: parentCollection.id, title: parentCollection.title };
+                assetCollection.parent = {
+                    __typename: 'AssetCollectionParent',
+                    id: parentCollection.id,
+                    title: parentCollection.title,
+                };
                 return true;
             },
             updateAssetCollection: (
