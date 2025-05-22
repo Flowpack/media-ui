@@ -21,6 +21,7 @@ use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\AssetCollection;
@@ -39,17 +40,28 @@ class AssetCollectionMutator
         private readonly PersistenceManagerInterface $persistenceManager,
         private readonly TagRepository $tagRepository,
         private readonly SiteRepository $siteRepository,
+        private readonly Translator $translator,
     ) {
+    }
+
+    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
+    {
+        try {
+            return $this->translator->translateById($id, $arguments, null, null, 'Main',
+                'Flowpack.Media.Ui') ?? $fallback;
+        } catch (\Exception) {
+            return $fallback ?: $id;
+        }
     }
 
     /**
      * @throws IllegalObjectTypeException
      */
     public function createAssetCollection(
-        string $title,
+        Types\AssetCollectionTitle $title,
         Types\AssetCollectionId $parent = null
     ): Types\AssetCollection {
-        $newAssetCollection = new AssetCollection($title);
+        $newAssetCollection = new AssetCollection($title->value);
         if ($parent) {
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
             /** @var HierarchicalAssetCollectionInterface $newAssetCollection */
@@ -73,20 +85,35 @@ class AssetCollectionMutator
     {
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
         if (!$assetCollection) {
-            throw new Exception('Asset collection not found', 1591972269);
+            return MutationResult::error([
+                $this->localizedMessage(
+                    'actions.deleteAssetCollection.notFound',
+                    'Asset collection not found'
+                )
+            ]);
         }
 
         if ($this->assetCollectionService->getAssetCollectionAssetCount($id) > 0) {
-            throw new Exception('Asset collection is not empty', 1730102095);
+            return MutationResult::error([
+                $this->localizedMessage(
+                    'actions.deleteAssetCollection.notEmpty',
+                    'Asset collection is not empty'
+                )
+            ]);
         }
 
         /** @noinspection PhpUndefinedMethodInspection */
         if ($this->siteRepository->findOneByAssetCollection($assetCollection)) {
-            throw new Exception('Asset collection is referenced as default collection of a site', 1730101671);
+            return MutationResult::error([
+                $this->localizedMessage(
+                    'actions.deleteAssetCollection.isDefaultCollection',
+                    'Asset collection is referenced as default collection of a site'
+                )
+            ]);
         }
 
         $this->assetCollectionRepository->remove($assetCollection);
-        return new MutationResult(true);
+        return MutationResult::success();
     }
 
     /**
@@ -94,17 +121,22 @@ class AssetCollectionMutator
      */
     public function updateAssetCollection(
         Types\AssetCollectionId $id,
-        string $title = null,
+        Types\AssetCollectionTitle $title = null,
         Types\TagIds $tagIds = null
     ): MutationResult {
         /** @var AssetCollection&HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
         if (!$assetCollection) {
-            throw new Exception('Asset collection not found', 1590659045);
+            return MutationResult::error([
+                $this->localizedMessage(
+                    'actions.updateAssetCollection.notFound',
+                    'Asset collection not found'
+                )
+            ]);
         }
 
-        if (is_string($title) && trim($title)) {
-            $assetCollection->setTitle(trim($title));
+        if ($title && trim($title->value)) {
+            $assetCollection->setTitle(trim($title->value));
         }
 
         if ($tagIds !== null) {
@@ -112,7 +144,12 @@ class AssetCollectionMutator
             foreach ($tagIds as $tagId) {
                 $tag = $this->tagRepository->findByIdentifier($tagId->value);
                 if (!$tag) {
-                    throw new Exception('Cannot tag asset collection with tag that does not exist', 1594621319);
+                    return MutationResult::error([
+                        $this->localizedMessage(
+                            'actions.updateAssetCollection.tagNotFound',
+                            'Cannot tag asset collection with tag that does not exist'
+                        )
+                    ]);
                 }
                 $tags->add($tag);
             }
@@ -125,7 +162,7 @@ class AssetCollectionMutator
     }
 
     /**
-     * @throws Exception|IllegalObjectTypeException
+     * @throws IllegalObjectTypeException
      */
     public function setAssetCollectionParent(
         Types\AssetCollectionId $id,
@@ -135,15 +172,25 @@ class AssetCollectionMutator
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
 
         if (!$assetCollection) {
-            throw new Exception('Asset collection not found', 1681999816);
+            return MutationResult::error([
+                $this->localizedMessage(
+                    'actions.setAssetCollectionParent.notFound',
+                    'Asset collection not found'
+                )
+            ]);
         }
 
         /** @var HierarchicalAssetCollectionInterface $assetCollection */
         if ($parent) {
-            /** @var AssetCollection $parentCollection */
+            /** @var HierarchicalAssetCollectionInterface $parentCollection */
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
             if (!$parentCollection) {
-                throw new Exception('Parent asset collection not found', 1681999836);
+                return MutationResult::error([
+                    $this->localizedMessage(
+                        'actions.setAssetCollectionParent.parentNotFound',
+                        'Parent asset collection not found'
+                    )
+                ]);
             }
             $assetCollection->setParent($parentCollection);
         } else {

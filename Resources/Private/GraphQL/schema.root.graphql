@@ -44,6 +44,10 @@ type Mutation {
   deleteAsset(id: AssetId! assetSourceId: AssetSourceId!): MutationResult!
   setAssetTags(id: AssetId! assetSourceId: AssetSourceId! tagIds: [TagId!]!): Asset
   setAssetCollections(id: AssetId! assetSourceId: AssetSourceId! assetCollectionIds: [AssetCollectionId!]!): MutationResult!
+  createAssetCollection(title: AssetCollectionTitle! parent: AssetCollectionId): AssetCollection
+  deleteAssetCollection(id: AssetCollectionId!): MutationResult!
+  updateAssetCollection(id: AssetCollectionId! title: AssetCollectionTitle tagIds: [TagId!]): MutationResult!
+  setAssetCollectionParent(id: AssetCollectionId! parent: AssetCollectionId): MutationResult!
   replaceAsset(id: AssetId! assetSourceId: AssetSourceId! file: UploadedFileInput! options: AssetReplacementOptionsInput!): FileUploadResult!
   editAsset(id: AssetId! assetSourceId: AssetSourceId! filename: String! options: AssetEditOptionsInput!): MutationResult!
   importAsset(id: AssetId! assetSourceId: AssetSourceId!): Asset

@@ -18,6 +18,16 @@ class MutationResult implements \JsonSerializable
     {
     }
 
+    public static function success(): self
+    {
+        return new self(true);
+    }
+
+    public static function error(array $array): self
+    {
+        return new self(false, MutationResponseMessages::fromArray($array));
+    }
+
     public function isSuccess(): bool
     {
         return $this->success;

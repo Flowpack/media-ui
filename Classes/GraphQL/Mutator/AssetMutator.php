@@ -261,7 +261,7 @@ class AssetMutator
             throw new MediaUiException('Failed to assign asset collections: ' . $e->getMessage(), 1594621296);
         }
 
-        return new MutationResult(true);
+        return MutationResult::success();
     }
 
     /**
@@ -413,7 +413,7 @@ class AssetMutator
                 $asset->getIdentifier()), [$exception]);
         }
 
-        return new MutationResult($success);
+        return MutationResult::success();
     }
 
     /**

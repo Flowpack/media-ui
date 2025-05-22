@@ -71,11 +71,10 @@ class AssetCollectionsCommandController extends CommandController
 
     public function setParentCommand(string $assetCollectionIdentifier, string $parentAssetCollectionIdentifier): void
     {
-        /** @var AssetCollection $assetCollection */
-        $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionIdentifier);
-        /** @var AssetCollection $parentAssetCollection */
-        $parentAssetCollection = $this->assetCollectionRepository->findByIdentifier($parentAssetCollectionIdentifier);
         /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionIdentifier);
+        /** @var HierarchicalAssetCollectionInterface $parentAssetCollection */
+        $parentAssetCollection = $this->assetCollectionRepository->findByIdentifier($parentAssetCollectionIdentifier);
         $assetCollection->setParent($parentAssetCollection);
         $this->assetCollectionRepository->update($assetCollection);
         $this->assetCollectionService->updatePathForNestedAssetCollections($assetCollection);

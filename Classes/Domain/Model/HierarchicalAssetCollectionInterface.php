@@ -43,7 +43,7 @@ interface HierarchicalAssetCollectionInterface
     /**
      * @return void
      */
-    public function setParent(?AssetCollection $parent);
+    public function setParent(?HierarchicalAssetCollectionInterface $parent);
 
     /**
      * @return void

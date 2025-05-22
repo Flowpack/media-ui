@@ -15,6 +15,11 @@ final class MutationResponseMessages implements \IteratorAggregate, \JsonSeriali
     {
     }
 
+    public static function fromArray(array $array): self
+    {
+        return new self($array);
+    }
+
     /**
      * @return \Traversable<MutationResponseMessage>
      */

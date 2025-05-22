@@ -53,8 +53,11 @@ class AssetCollectionTest extends AbstractTest
      */
     public function parentChildrenRelation(): void
     {
+        /** @var HierarchicalAssetCollectionInterface $child1 */
         $child1 = new AssetCollection('child1');
+        /** @var HierarchicalAssetCollectionInterface $child2 */
         $child2 = new AssetCollection('child2');
+        /** @var HierarchicalAssetCollectionInterface $parent */
         $parent = new AssetCollection('parent');
 
         $child1->setParent($parent);
@@ -87,8 +90,11 @@ class AssetCollectionTest extends AbstractTest
      */
     public function circularParentChildrenRelationThrowsErrorWhenSettingParent(): void
     {
+        /** @var HierarchicalAssetCollectionInterface $firstCollection */
         $firstCollection = new AssetCollection('first');
+        /** @var HierarchicalAssetCollectionInterface $secondCollection */
         $secondCollection = new AssetCollection('second');
+        /** @var HierarchicalAssetCollectionInterface $thirdCollection */
         $thirdCollection = new AssetCollection('third');
 
         $secondCollection->setParent($firstCollection);
@@ -103,7 +109,9 @@ class AssetCollectionTest extends AbstractTest
      */
     public function unsettingTheParentRemovesChildFromParent(): void
     {
+        /** @var HierarchicalAssetCollectionInterface $child */
         $child = new AssetCollection('child');
+        /** @var HierarchicalAssetCollectionInterface $parent */
         $parent = new AssetCollection('parent');
 
         $child->setParent($parent);
@@ -136,7 +144,9 @@ class AssetCollectionTest extends AbstractTest
      */
     public function deletingTheParentDeletesTheChild(): void
     {
+        /** @var HierarchicalAssetCollectionInterface $child */
         $child = new AssetCollection('child');
+        /** @var HierarchicalAssetCollectionInterface $parent */
         $parent = new AssetCollection('parent');
 
         $child->setParent($parent);
@@ -165,7 +175,9 @@ class AssetCollectionTest extends AbstractTest
      */
     public function hasParentReturnsTrueIfParentIsSet(): void
     {
+        /** @var HierarchicalAssetCollectionInterface $child */
         $child = new AssetCollection('child');
+        /** @var HierarchicalAssetCollectionInterface $parent */
         $parent = new AssetCollection('parent');
 
         $child->setParent($parent);
@@ -222,7 +234,9 @@ class AssetCollectionTest extends AbstractTest
      */
     public function pathOfSubCollectionContainsPathOfParentCollection(): void
     {
+        /** @var HierarchicalAssetCollectionInterface $parent */
         $parent = new AssetCollection('Parent');
+        /** @var HierarchicalAssetCollectionInterface $child */
         $child = new AssetCollection('Child');
         $child->setParent($parent);
 
@@ -243,7 +257,9 @@ class AssetCollectionTest extends AbstractTest
      */
     public function pathOfSubCollectionUpdatesWhenParentIsRenamed(): void
     {
+        /** @var HierarchicalAssetCollectionInterface $parent */
         $parent = new AssetCollection('Parent');
+        /** @var HierarchicalAssetCollectionInterface $child */
         $child = new AssetCollection('Child');
         $child->setParent($parent);
 

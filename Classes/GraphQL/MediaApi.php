@@ -20,8 +20,12 @@ use Flowpack\Media\Ui\Domain\Model\SearchTerm;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
+use Flowpack\Media\Ui\GraphQL\Mutator\AssetCollectionMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\TagMutator;
+use Flowpack\Media\Ui\GraphQL\Types\AssetCollectionId;
+use Flowpack\Media\Ui\GraphQL\Types\AssetCollectionTitle;
+use Flowpack\Media\Ui\GraphQL\Types\TagIds;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyIteratorBuilder;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
@@ -32,7 +36,6 @@ use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\Exception as ResourceManagementException;
 use Neos\Flow\Security\Authorization\PrivilegeManagerInterface;
-use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
 use Neos\Media\Domain\Model\AssetVariantInterface;
@@ -60,6 +63,7 @@ final class MediaApi
         private readonly AssetChangeLog $assetChangeLog,
         private readonly AssetCollectionRepository $assetCollectionRepository,
         private readonly AssetCollectionService $assetCollectionService,
+        private readonly AssetCollectionMutator $assetCollectionMutator,
         private readonly AssetMutator $assetMutator,
         private readonly AssetProxyIteratorBuilder $assetProxyIteratorBuilder,
         private readonly AssetService $assetService,
@@ -392,6 +396,55 @@ final class MediaApi
         Types\AssetCollectionIds $assetCollectionIds
     ): MutationResult {
         return $this->assetMutator->setAssetCollections($id, $assetSourceId, $assetCollectionIds);
+    }
+
+    /**
+     * @throws IllegalObjectTypeException
+     */
+    #[Mutation]
+    public function createAssetCollection(
+        Types\AssetCollectionTitle $title,
+        ?Types\AssetCollectionId $parent = null,
+    ): ?Types\AssetCollection {
+        return $this->assetCollectionMutator->createAssetCollection(
+            $title,
+            $parent,
+        );
+    }
+
+    /**
+     * @throws IllegalObjectTypeException
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function deleteAssetCollection(
+        Types\AssetCollectionId $id,
+    ): MutationResult {
+        return $this->assetCollectionMutator->deleteAssetCollection($id);
+    }
+
+    /**
+     * @throws IllegalObjectTypeException
+     * @throws MediaUiException
+     */
+    #[Mutation]
+    public function updateAssetCollection(
+        Types\AssetCollectionId $id,
+        ?Types\AssetCollectionTitle $title = null,
+        ?Types\TagIds $tagIds = null,
+    ): MutationResult {
+        return $this->assetCollectionMutator->updateAssetCollection($id, $title, $tagIds);
+    }
+
+    /**
+     * @throws IllegalObjectTypeException
+     */
+    #[Mutation]
+    public function setAssetCollectionParent(
+        Types\AssetCollectionId $id,
+        ?Types\AssetCollectionId $parent = null,
+    ): MutationResult {
+        return $this->assetCollectionMutator->setAssetCollectionParent($id, $parent);
     }
 
     /**
