@@ -5,7 +5,6 @@ Plugin.js binary
 Plugin.css binary
 
 /packages export-ignore
-/Tests export-ignore
 /.yarn export-ignore
 /.env export-ignore
 /.github export-ignore

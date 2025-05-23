@@ -234,6 +234,9 @@ class AssetApiTest extends AbstractMediaTestCase
         // TODO: Add a test for the usage count when the asset is used in a content repository
     }
 
+    /**
+     * @group entity-usage
+     */
     public function testUnusedAssets(): void
     {
         $file = self::createFile();
