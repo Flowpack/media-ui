@@ -370,7 +370,7 @@ class AssetMutator
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
         string $filename,
-        Types\AssetEditOptionsInput $options,
+        Types\AssetEditOptions $options,
     ): MutationResult {
         $filename = trim($filename);
         if (!$filename) {

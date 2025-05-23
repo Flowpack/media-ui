@@ -10,8 +10,7 @@ use Wwwision\Types\Attributes\StringBased;
 
 #[Description('Options for asset editing')]
 #[Flow\Proxy(false)]
-#[StringBased]
-final class AssetEditOptionsInput implements \JsonSerializable
+final class AssetEditOptions implements \JsonSerializable
 {
     private function __construct(
         public readonly bool $generateRedirects,

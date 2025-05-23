@@ -13,6 +13,9 @@ use Wwwision\Types\Attributes\ListBased;
 #[ListBased(itemClassName: Asset::class)]
 final class Assets implements \IteratorAggregate
 {
+    /**
+     * @param Asset[] $assets
+     */
     private function __construct(public readonly array $assets)
     {
     }

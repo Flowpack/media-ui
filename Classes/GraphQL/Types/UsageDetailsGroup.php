@@ -7,7 +7,7 @@ namespace Flowpack\Media\Ui\GraphQL\Types;
 use Wwwision\Types\Attributes\Description;
 use Neos\Flow\Annotations as Flow;
 
-#[Description('A collection of assets. One asset can belong to multiple collections')]
+#[Description('Asset usages for a specific service')]
 #[Flow\Proxy(false)]
 final class UsageDetailsGroup
 {

@@ -144,7 +144,7 @@ final class UsageDetailsService
             return !$usageByStrategy->usages->isEmpty();
         });
 
-        return instantiate(Types\UsageDetailsGroups::class, $groups);
+        return Types\UsageDetailsGroups::fromArray($groups);
     }
 
     protected function getNodePropertiesUsageMetadataSchema(

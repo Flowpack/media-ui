@@ -472,7 +472,7 @@ final class MediaApi
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
         string $filename,
-        Types\AssetEditOptionsInput $options,
+        Types\AssetEditOptions $options,
     ): MutationResult {
         return $this->assetMutator->editAsset($id, $assetSourceId, $filename, $options);
     }

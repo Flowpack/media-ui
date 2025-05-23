@@ -14,14 +14,14 @@ use Wwwision\Types\Attributes\ListBased;
 final class UploadedFiles implements \IteratorAggregate
 {
     /**
-     * @param UploadedFiles[]|null $files
+     * @param UploadedFile[]|null $files
      */
     private function __construct(public readonly ?array $files = null)
     {
     }
 
     /**
-     * @param UploadedFiles[] $files
+     * @param UploadedFile[] $files
      */
     public static function fromArray(array $files): self
     {

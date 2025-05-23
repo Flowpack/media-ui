@@ -302,7 +302,6 @@ type FileUploadResult {
   result: String!
 }
 
-"""
-Options for asset editing
-"""
-scalar AssetEditOptionsInput
+input AssetEditOptionsInput {
+  generateRedirects: Boolean!
+}

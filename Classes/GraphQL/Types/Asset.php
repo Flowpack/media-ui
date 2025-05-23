@@ -8,8 +8,6 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Wwwision\Types\Attributes\Description;
 
-use function Wwwision\Types\instantiate;
-
 /**
  * @property File $file -> see resolver
  */
