@@ -25,7 +25,9 @@
     "esm": true,
     "experimentalSpecifierResolution": "node",
     "compilerOptions": {
-      "module": "es2020"
+      "module": "esnext",
+      "moduleResolution": "node",
+      "esModuleInterop": true
     }
   }
 }

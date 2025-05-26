@@ -158,7 +158,7 @@ jobs:
         run: yarn build:plugin
 
       - name: Run TestCafe
-        run: yarn test:github-actions
+        run: yarn test:e2e:github-actions
 
       - name: Archive failure screenshots
         if: ${{ failure() }}

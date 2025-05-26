@@ -335,9 +335,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             untagAsset: ($_, { id, assetSourceId, tagId }): Asset => {
                 throw new Error('Not implemented');
             },
-            uploadFile: ($_, { file, tagId, assetCollectionId }): FileUploadResult => {
-                throw new Error('Not implemented');
-            },
             uploadFiles: ($_, { files, tagId, assetCollectionId }): FileUploadResult[] => {
                 throw new Error('Not implemented');
             },
@@ -347,7 +344,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         },
     };
 
-    const graphqlSchema = fs.readFileSync(path.resolve(__dirname, '../../../GraphQL/schema.root.graphql'));
+    const graphqlSchema = fs.readFileSync(path.resolve(__dirname, '../../../Resources/Private/GraphQL/schema.root.graphql'));
 
     const typeDefs = gql`
         ${graphqlSchema}
