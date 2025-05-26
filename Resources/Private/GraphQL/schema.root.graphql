@@ -124,6 +124,87 @@ Unique identifier (UUID) of an imported Asset
 """
 scalar LocalAssetId
 
+"""
+A File extension (e.g. "pdf")
+"""
+scalar FileExtension
+
+type Image {
+  width: Int!
+  height: Int!
+  """ An absolute or relative URL """
+  url: Url!
+  alt: String!
+}
+
+"""
+Size of a file in bytes
+
+*Constraints:*
+* Minimum value: `0`
+"""
+scalar FileSize @constraint(min: 0)
+
+type File {
+  """ A File extension (e.g. "pdf") """
+  extension: FileExtension!
+  """ IANA media type of an Asset (e.g. "image/jpeg") """
+  mediaType: MediaType!
+  """ Representation of an image that can be rendered to the browser """
+  typeIcon: Image!
+  """ Size of a file in bytes """
+  size: FileSize!
+  """ An absolute or relative URL """
+  url: Url!
+}
+
+"""
+Name of an IPTC metadata property (e.g. "Creator", see https://www.iptc.org/)
+"""
+scalar IptcPropertyName
+
+type IptcProperty {
+  """ Name of an IPTC metadata property (e.g. "Creator", see https://www.iptc.org/) """
+  propertyName: IptcPropertyName!
+  value: String!
+}
+
+type Tag {
+  """ The id of a tag """
+  id: TagId!
+  label: String!
+}
+
+"""
+The title of an Asset collection (e.g. "slideshows")
+"""
+scalar AssetCollectionTitle
+
+"""
+Absolute path of an Asset collection (e.g. "/photos/trees")
+"""
+scalar AssetCollectionPath
+
+type AssetCollectionParent {
+  """ Unique identifier of an Asset collection (e.g. "neos") """
+  id: AssetCollectionId!
+  """ The title of an Asset collection (e.g. "slideshows") """
+  title: AssetCollectionTitle!
+}
+
+type AssetCollection {
+  """ Unique identifier of an Asset collection (e.g. "neos") """
+  id: AssetCollectionId!
+  """ The title of an Asset collection (e.g. "slideshows") """
+  title: AssetCollectionTitle!
+  """ Absolute path of an Asset collection (e.g. "/photos/trees") """
+  path: AssetCollectionPath
+  assetCount: Int!
+  canDelete: Boolean!
+  tags: [Tag!]!
+  parent: AssetCollectionParent
+}
+
 type Asset {
   """ Unique identifier (UUID) of an Asset """
   id: AssetId!
@@ -137,40 +218,20 @@ type Asset {
   height: Int
   """ Unique identifier (UUID) of an imported Asset """
   localId: LocalAssetId
+  file: File
+  imported: Boolean!
+  iptcProperties: [IptcProperty!]!
+  label: String
+  caption: String
+  copyrightNotice: String
+  lastModified: String
+  tags: [Tag!]!
+  collections: [AssetCollection!]!
+  thumbnailUrl: Url
+  previewUrl: Url
+  """ Check if the asset is used as reported by registered AssetUsageStrategies """
+  isInUse: Boolean!
 }
-
-"""
-The title of an Asset collection (e.g. "slideshows")
-"""
-scalar AssetCollectionTitle
-
-"""
-Absolute path of an Asset collection (e.g. "/photos/trees")
-"""
-scalar AssetCollectionPath
-
-type AssetCollection {
-  """ Unique identifier of an Asset collection (e.g. "neos") """
-  id: AssetCollectionId!
-  """ The title of an Asset collection (e.g. "slideshows") """
-  title: AssetCollectionTitle!
-  """ Absolute path of an Asset collection (e.g. "/photos/trees") """
-  path: AssetCollectionPath
-}
-
-type Tag {
-  """ The id of a tag """
-  id: TagId!
-  label: String!
-}
-
-"""
-Size of a file in bytes
-
-*Constraints:*
-* Minimum value: `0`
-"""
-scalar FileSize @constraint(min: 0)
 
 """
 A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the date-time format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar
@@ -262,6 +323,15 @@ Variant Preset Identifier
 """
 scalar VariantPresetIdentifier
 
+type CropInformation {
+  """ The width in pixels (only for Images and Videos) """
+  width: Int
+  """ The height in pixels (only for Images and Videos) """
+  height: Int
+  x: Int
+  y: Int
+}
+
 type AssetVariant {
   """ Unique identifier (UUID) of an Asset """
   id: AssetId!
@@ -273,6 +343,9 @@ type AssetVariant {
   variantName: VariantName
   """ Variant Preset Identifier """
   presetIdentifier: VariantPresetIdentifier
+  previewUrl: Url
+  hasCrop: Boolean!
+  cropInformation: CropInformation!
 }
 
 scalar MutationResponseMessage

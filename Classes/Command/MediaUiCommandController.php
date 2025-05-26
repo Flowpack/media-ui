@@ -15,6 +15,7 @@ namespace Flowpack\Media\Ui\Command;
  */
 
 use Flowpack\Media\Ui\GraphQL\MediaApi;
+use Flowpack\Media\Ui\GraphQL\Middleware\GraphQLMiddleware;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
 use Neos\Flow\Package\PackageManager;
@@ -28,12 +29,21 @@ class MediaUiCommandController extends CommandController
     #[Flow\Inject]
     protected PackageManager $packageManager;
 
+    /**
+     * @var GraphQLMiddleware
+     */
+    #[Flow\Inject('Flowpack.Media.Ui:GraphQLMiddleware')]
+    protected $mediaApiMiddleware;
+
     public function createSchemaCommand(): void
     {
         $this->outputLine('Creating GraphQL schema...');
 
         $generator = new GraphQLGenerator();
-        $schema = $generator->generate(MediaApi::class)->render();
+        $schema = $generator->generate(
+            MediaApi::class,
+            $this->mediaApiMiddleware->getCustomResolvers(),
+        )->render();
 
         $path = Files::concatenatePaths([
             $this->packageManager->getPackage('Flowpack.Media.Ui')->getPackagePath(),

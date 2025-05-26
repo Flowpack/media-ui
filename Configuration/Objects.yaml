@@ -67,7 +67,6 @@
             resolverClassName: 'Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetCollectionResolver'
           canDelete: *assetCollectionResolver
           tags: *assetCollectionResolver
-#          assets: *assetCollectionResolver
           parent: *assetCollectionResolver
         AssetVariant:
           previewUrl: &assetVariantResolver

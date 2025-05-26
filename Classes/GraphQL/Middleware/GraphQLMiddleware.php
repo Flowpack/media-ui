@@ -90,6 +90,11 @@ final class GraphQLMiddleware implements MiddlewareInterface
         return $response;
     }
 
+    public function getCustomResolvers(): CustomResolvers
+    {
+        return $this->customResolvers;
+    }
+
     private function handlePostRequest(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $api = $this->serviceLocator->get($this->apiObjectName);
