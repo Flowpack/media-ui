@@ -344,7 +344,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         },
     };
 
-    const graphqlSchema = fs.readFileSync(path.resolve(__dirname, '../../../Resources/Private/GraphQL/schema.root.graphql'));
+    const graphqlSchema = fs.readFileSync(
+        path.resolve(__dirname, '../../../Resources/Private/GraphQL/schema.root.graphql')
+    );
 
     const typeDefs = gql`
         ${graphqlSchema}
