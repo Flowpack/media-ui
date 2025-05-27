@@ -12,6 +12,7 @@
   "debugOnFail": false,
   "stopOnFirstFail": true,
   "hostname": "127.0.0.1",
+  "baseUrl": "http://127.0.0.1:8000",
   "retryTestPages": true,
   "pageLoadTimeout": 10000,
   "pageRequestTimeout": 60000,
