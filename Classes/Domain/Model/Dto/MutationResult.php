@@ -14,8 +14,7 @@ class MutationResult implements \JsonSerializable
     public function __construct(
         public readonly bool $success,
         public readonly ?MutationResponseMessages $messages = null,
-    )
-    {
+    ) {
     }
 
     public static function success(): self
