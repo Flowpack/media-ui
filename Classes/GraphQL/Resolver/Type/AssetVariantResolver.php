@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection PhpUnusedParameterInspection */
 declare(strict_types=1);
 
@@ -14,99 +15,81 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
+use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Adjustment\CropImageAdjustment;
 use Neos\Media\Domain\Model\ImageVariant;
+use Neos\Media\Domain\Repository\ImageVariantRepository;
 
-use t3n\GraphQL\ResolverInterface;
+use function Wwwision\Types\instantiate;
 
-/**
- * @Flow\Scope("singleton")
- */
-class AssetVariantResolver implements ResolverInterface
+#[Flow\Scope('singleton')]
+class AssetVariantResolver
 {
+    #[Flow\Inject]
+    protected ResourceManager $resourceManager;
+
+    #[Flow\Inject]
+    protected ImageVariantRepository $imageVariantRepository;
 
     /**
-     * @Flow\Inject
-     * @var PersistenceManager
+     * Returns a preview url for image variants
      */
-    public $persistenceManager;
-
-    /**
-     * @Flow\Inject
-     * @var ResourceManager
-     */
-    protected $resourceManager;
-
-
-    public function id(ImageVariant $assetVariant): ?string
+    public function previewUrl(Types\AssetVariant $assetVariant): ?Types\Url
     {
-        return (string)$this->persistenceManager->getIdentifierByObject($assetVariant);
+        $imageVariant = $this->imageVariantRepository->findByIdentifier($assetVariant->id->value);
+        $imageUri = $imageVariant ? $this->resourceManager->getPublicPersistentResourceUri($imageVariant->getResource()) : null;
+        return $imageUri ? Types\Url::fromString($imageUri) : null;
     }
 
-    public function previewUrl(ImageVariant $assetVariant): string
+    public function hasCrop(Types\AssetVariant $assetVariant): bool
     {
-        return (string)$this->resourceManager->getPublicPersistentResourceUri($assetVariant->getResource());
-    }
-
-    public function width(ImageVariant $assetVariant): int
-    {
-        return $assetVariant->getWidth();
-    }
-
-    public function height(ImageVariant $assetVariant): int
-    {
-        return $assetVariant->getHeight();
-    }
-
-    public function presetIdentifier(ImageVariant $assetVariant): ?string
-    {
-        return $assetVariant->getPresetIdentifier();
-    }
-
-    public function variantName(ImageVariant $assetVariant): ?string
-    {
-        return $assetVariant->getPresetVariantName();
-    }
-
-    public function hasCrop(ImageVariant $assetVariant): bool
-    {
-        foreach ($assetVariant->getAdjustments() as $adjustment) {
+        $imageVariant = $this->imageVariantRepository->findByIdentifier($assetVariant->id->value);
+        foreach ($imageVariant?->getAdjustments() as $adjustment) {
             if ($adjustment instanceof CropImageAdjustment) {
                 return true;
             }
         }
-
         return false;
     }
 
-    public function cropInformation(ImageVariant $assetVariant): array
+    public function cropInformation(Types\AssetVariant $assetVariant): Types\CropInformation
     {
-        $cropInformation = [];
-        foreach ($assetVariant->getAdjustments() as $adjustment) {
-            if ($adjustment instanceof CropImageAdjustment) {
-                $cropInformation = [
-                    'width' => $adjustment->getWidth(),
-                    'height' => $adjustment->getHeight(),
-                    'x' => $adjustment->getX(),
-                    'y' => $adjustment->getY(),
-                ];
-                $aspectRatio = $adjustment->getAspectRatio();
-                if ($aspectRatio !== null) {
-                    [$x, $y, $width, $height] = CropImageAdjustment::calculateDimensionsByAspectRatio($assetVariant->getOriginalAsset()->getWidth(), $assetVariant->getOriginalAsset()->getHeight(), $aspectRatio);
-                    $cropInformation = [
-                        'width' => $width,
-                        'height' => $height,
-                        'x' => $x,
-                        'y' => $y,
-                    ];
-                }
-            }
-
+        $imageVariant = $this->imageVariantRepository->findByIdentifier($assetVariant->id->value);
+        if (!$imageVariant instanceof ImageVariant) {
+            return Types\CropInformation::empty();
         }
-
-        return $cropInformation;
+        $cropInformation = [];
+        foreach ($imageVariant->getAdjustments() as $adjustment) {
+            if (!$adjustment instanceof CropImageAdjustment) {
+                continue;
+            }
+            $cropInformation = [
+                'width' => $adjustment->getWidth(),
+                'height' => $adjustment->getHeight(),
+                'x' => $adjustment->getX(),
+                'y' => $adjustment->getY(),
+            ];
+            $aspectRatio = $adjustment->getAspectRatio();
+            if ($aspectRatio !== null) {
+                [
+                    $x,
+                    $y,
+                    $width,
+                    $height
+                ] = CropImageAdjustment::calculateDimensionsByAspectRatio(
+                    $imageVariant->getOriginalAsset()->getWidth(),
+                    $imageVariant->getOriginalAsset()->getHeight(), $aspectRatio
+                );
+                $cropInformation = [
+                    'width' => $width,
+                    'height' => $height,
+                    'x' => $x,
+                    'y' => $y,
+                ];
+            }
+        }
+        return instantiate(Types\CropInformation::class, $cropInformation);
     }
 }

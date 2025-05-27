@@ -1,19 +1,20 @@
 {
   "browsers": {
-    "path": "chromium",
+    "path": "firefox",
     "cmd": "--window-size=1280,720"
   },
-  "src": ["Resources/Private/JavaScript/media-module/tests/**/*.ts"],
-  "appCommand": "yarn ts-node --project Resources/Private/JavaScript/dev-server/tsconfig.json Resources/Private/JavaScript/dev-server/src/server.ts",
+  "src": ["packages/media-module/tests/**/*.ts"],
+  "appCommand": "yarn dev:test",
+  "appInitDelay": 2000,
   "screenshots": {
     "takeOnFails": true
   },
+  "debugOnFail": false,
   "stopOnFirstFail": true,
-  "hostname": "localhost",
+  "hostname": "127.0.0.1",
+  "baseUrl": "http://127.0.0.1:8000",
   "retryTestPages": true,
   "pageLoadTimeout": 10000,
   "pageRequestTimeout": 60000,
-  "skipJsErrors": {
-    "stack": "/.*chrome-extension.*/ig"
-  }
+  "skipJsErrors": true
 }

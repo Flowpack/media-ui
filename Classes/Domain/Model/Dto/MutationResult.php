@@ -4,23 +4,27 @@ declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\Domain\Model\Dto;
 
+use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessages;
 use Neos\Flow\Annotations as Flow;
 
-/**
- * @Flow\Proxy(false)
- */
+#[Flow\Proxy(false)]
 class MutationResult implements \JsonSerializable
 {
 
-    private bool $success;
-    private ?array $messages;
-    private ?array $data;
+    public function __construct(
+        public readonly bool $success,
+        public readonly ?MutationResponseMessages $messages = null,
+    ) {
+    }
 
-    public function __construct(bool $success, array $messages = null, array $data = null)
+    public static function success(): self
     {
-        $this->success = $success;
-        $this->messages = $messages;
-        $this->data = $data;
+        return new self(true);
+    }
+
+    public static function error(array $array): self
+    {
+        return new self(false, MutationResponseMessages::fromArray($array));
     }
 
     public function isSuccess(): bool
@@ -28,22 +32,16 @@ class MutationResult implements \JsonSerializable
         return $this->success;
     }
 
-    public function getMessages(): ?array
+    public function getMessages(): ?MutationResponseMessages
     {
-        return $this->messages;
-    }
-
-    public function getData(): ?array
-    {
-        return $this->data;
+        return $this->messages ?? MutationResponseMessages::empty();
     }
 
     public function toArray(): array
     {
         return [
             'success' => $this->success,
-            'messages' => $this->messages,
-            'data' => $this->data,
+            'messages' => $this->getMessages(),
         ];
     }
 

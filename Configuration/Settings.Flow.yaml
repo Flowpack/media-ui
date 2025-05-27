@@ -10,11 +10,16 @@ Neos:
         providers:
           'Neos.Neos:Backend':
             requestPatterns:
-              'Flowpack.Media.Ui:GraphQLControllers':
-                pattern: 'ControllerObjectName'
-                patternOptions:
-                  controllerObjectNamePattern: 't3n\GraphQL\Controller\.*'
               'Flowpack.Media.Ui:Controllers':
                 pattern: 'ControllerObjectName'
                 patternOptions:
                   controllerObjectNamePattern: 'Flowpack\Media\Ui\Controller\.*'
+
+    http:
+      middlewares:
+        'Flowpack.Media.Ui:GraphQL':
+          position: 'before routing'
+          middleware: 'Flowpack.Media.Ui:GraphQLMiddleware'
+        'Flowpack.Media.Ui:GraphQLUpload':
+          position: 'before Flowpack.Media.Ui:GraphQL'
+          middleware: 'Flowpack.Media.Ui:GraphQLUploadMiddleware'

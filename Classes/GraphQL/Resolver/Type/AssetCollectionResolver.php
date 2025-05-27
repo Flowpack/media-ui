@@ -14,60 +14,51 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
+use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
+use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Domain\Repository\SiteRepository;
-use t3n\GraphQL\ResolverInterface;
-use Neos\Media\Domain\Model\AssetCollection;
-use Neos\Flow\Persistence\PersistenceManagerInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
-class AssetCollectionResolver implements ResolverInterface
+use function Wwwision\Types\instantiate;
+
+#[Flow\Scope('singleton')]
+class AssetCollectionResolver
 {
     /**
-     * @Flow\Inject
      * @var PersistenceManagerInterface
      */
+    #[Flow\Inject]
     protected $persistenceManager;
 
-    /**
-     * @Flow\Inject
-     * @var AssetRepository
-     */
-    protected $assetRepository;
+    #[Flow\Inject]
+    protected AssetRepository $assetRepository;
 
-    /**
-     * @Flow\Inject
-     * @var AssetCollectionService
-     */
-    protected $assetCollectionService;
+    #[Flow\Inject]
+    protected AssetCollectionService $assetCollectionService;
 
-    /**
-     * @Flow\Inject
-     * @var SiteRepository
-     */
-    protected $siteRepository;
+    #[Flow\Inject]
+    protected SiteRepository $siteRepository;
+
+    #[Flow\Inject]
+    protected AssetCollectionRepository $assetCollectionRepository;
 
     protected array|null $siteDefaultAssetCollections = null;
 
-    public function id(AssetCollection $assetCollection): string
+    public function assetCount(Types\AssetCollection $assetCollection): int
     {
-        return $this->persistenceManager->getIdentifierByObject($assetCollection);
-    }
-
-    public function assetCount(AssetCollection $assetCollection): int
-    {
-        return $this->assetCollectionService->getAssetCollectionAssetCount($this->id($assetCollection));
+        return $this->assetCollectionService->getAssetCollectionAssetCount($assetCollection->id);
     }
 
     /**
      * Returns true if the asset collection is empty and is not assigned as default collection for a site
      */
-    public function canDelete(AssetCollection $assetCollection): bool
+    public function canDelete(Types\AssetCollection $assetCollection): bool
     {
         if ($this->siteDefaultAssetCollections === null) {
             $this->siteDefaultAssetCollections = [];
@@ -77,11 +68,46 @@ class AssetCollectionResolver implements ResolverInterface
                 if (!$siteAssetCollection) {
                     continue;
                 }
-                $this->siteDefaultAssetCollections[$this->id($site->getAssetCollection())] = true;
+                $siteAssetCollectionId = $this->persistenceManager->getIdentifierByObject($siteAssetCollection);
+                $this->siteDefaultAssetCollections[$siteAssetCollectionId] = true;
             }
         }
 
-        return !array_key_exists($this->id($assetCollection), $this->siteDefaultAssetCollections)
-            && $this->assetCount($assetCollection) === 0;
+        return !array_key_exists(
+                $assetCollection->id->value,
+                $this->siteDefaultAssetCollections
+            ) && $this->assetCount($assetCollection) === 0;
+    }
+
+    public function tags(Types\AssetCollection $assetCollection): Types\Tags
+    {
+        /** @var AssetCollection $originalAssetCollection */
+        $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
+        return $originalAssetCollection ?
+            Types\Tags::fromArray($originalAssetCollection->getTags()->toArray()) : Types\Tags::empty();
+    }
+
+    public function parent(Types\AssetCollection $assetCollection): ?Types\AssetCollectionParent
+    {
+        /** @var HierarchicalAssetCollectionInterface $originalAssetCollection */
+        $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
+        if (!$originalAssetCollection) {
+            return null;
+        }
+        $parent = $originalAssetCollection->getParent();
+        return $parent ? instantiate(Types\AssetCollectionParent::class, [
+            'id' => $this->persistenceManager->getIdentifierByObject($parent),
+            'title' => $parent->getTitle(),
+        ]) : null;
+    }
+
+    public function assets(Types\AssetCollection $assetCollection): Types\Assets
+    {
+        /** @var AssetCollection $originalAssetCollection */
+        $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
+        return $originalAssetCollection ?
+            Types\Assets::fromArray(
+                $this->assetRepository->findByAssetCollection($originalAssetCollection)->toArray()
+            ) : Types\Assets::empty();
     }
 }

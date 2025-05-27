@@ -36,14 +36,14 @@ interface HierarchicalAssetCollectionInterface
     public function getTags();
 
     /**
-     * @return AssetCollection|null
+     * @return HierarchicalAssetCollectionInterface|null
      */
     public function getParent();
 
     /**
      * @return void
      */
-    public function setParent(?AssetCollection $parent);
+    public function setParent(?HierarchicalAssetCollectionInterface $parent);
 
     /**
      * @return void

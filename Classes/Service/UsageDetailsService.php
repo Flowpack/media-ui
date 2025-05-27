@@ -15,9 +15,12 @@ namespace Flowpack\Media\Ui\Service;
  */
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Flowpack\Media\Ui\Domain\Model\Dto\AssetUsageDetails;
 use Flowpack\Media\Ui\Domain\Model\Dto\UsageMetadataSchema;
 use Flowpack\Media\Ui\Exception;
+use Flowpack\Media\Ui\GraphQL\Types;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Domain\Model\Node;
@@ -51,109 +54,43 @@ use Neos\Neos\Domain\Strategy\AssetUsageInNodePropertiesStrategy;
 use Neos\Neos\Service\LinkingService;
 use Neos\Neos\Service\UserService;
 
-/**
- * @Flow\Scope("singleton")
- */
-class UsageDetailsService
+use function Wwwision\Types\instantiate;
+
+#[Flow\Scope('singleton')]
+final class UsageDetailsService
 {
+    # TODO: Use ContextFactory instead of trait
     use CreateContentContextTrait;
     use BackendUserTranslationTrait;
 
-    /**
-     * @Flow\Inject
-     * @var Bootstrap
-     */
-    protected $bootstrap;
-
-    /**
-     * @Flow\Inject
-     * @var UserService
-     */
-    protected $userService;
-
-    /**
-     * @Flow\Inject
-     * @var SiteRepository
-     */
-    protected $siteRepository;
-
-    /**
-     * @Flow\Inject
-     * @var NodeTypeManager
-     */
-    protected $nodeTypeManager;
-
-    /**
-     * @Flow\Inject
-     * @var WorkspaceRepository
-     */
-    protected $workspaceRepository;
-
-    /**
-     * @Flow\Inject
-     * @var AssetService
-     */
-    protected $assetService;
-
-    /**
-     * @Flow\Inject
-     * @var DomainUserService
-     */
-    protected $domainUserService;
-
-    /**
-     * @Flow\Inject
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
-     * @Flow\Inject
-     * @var LinkingService
-     */
-    protected $linkingService;
-
-    /**
-     * @Flow\Inject
-     * @var ReflectionService
-     */
-    protected $reflectionService;
-
-    /**
-     * @Flow\Inject
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
-
-    /**
-     * @Flow\Inject
-     * @var PackageManager
-     */
-    protected $packageManager;
-
-    /**
-     * @Flow\InjectConfiguration(path="contentDimensions", package="Neos.ContentRepository")
-     * @var array
-     */
-    protected $contentDimensionsConfiguration;
-
-    /**
-     * @Flow\Inject
-     * @var Translator
-     */
-    protected $translator;
+    #[Flow\InjectConfiguration('contentDimensions', 'Neos.ContentRepository')]
+    protected array $contentDimensionsConfiguration = [];
 
     private array $accessibleWorkspaces = [];
 
-    /**
-     * @return AssetUsageDetails[]
-     */
-    public function resolveUsagesForAsset(AssetInterface $asset): array
+    public function __construct(
+        protected readonly Translator $translator,
+        protected readonly PackageManager $packageManager,
+        protected readonly EntityManagerInterface $entityManager,
+        protected readonly ReflectionService $reflectionService,
+        protected readonly LinkingService $linkingService,
+        protected readonly ObjectManagerInterface $objectManager,
+        protected readonly DomainUserService $domainUserService,
+        protected readonly AssetService $assetService,
+        protected readonly WorkspaceRepository $workspaceRepository,
+        protected readonly NodeTypeManager $nodeTypeManager,
+        protected readonly SiteRepository $siteRepository,
+        protected readonly UserService $userService,
+        protected readonly Bootstrap $bootstrap,
+    ) {
+    }
+
+    public function resolveUsagesForAsset(AssetInterface $asset): Types\UsageDetailsGroups
     {
         $includeSites = $this->siteRepository->countAll() > 1;
         $includeDimensions = count($this->contentDimensionsConfiguration) > 0;
 
-        return array_filter(array_map(function ($strategy) use ($asset, $includeSites, $includeDimensions) {
+        $groups = array_map(function ($strategy) use ($asset, $includeSites, $includeDimensions) {
             $usageByStrategy = [
                 'serviceId' => get_class($strategy),
                 'label' => get_class($strategy),
@@ -162,7 +99,7 @@ class UsageDetailsService
             ];
 
             if (!$strategy instanceof AssetUsageStrategyInterface) {
-                return $usageByStrategy;
+                return instantiate(Types\UsageDetailsGroup::class, $usageByStrategy);
             }
 
             // Should be solved via an interface in the future
@@ -189,14 +126,25 @@ class UsageDetailsService
                             return $this->getNodePropertiesUsageDetails($usage, $includeSites, $includeDimensions);
                         }, $usageReferences);
                     }
-                } catch (NodeConfigurationException $e) {
+                } catch (NodeConfigurationException) {
                     // TODO: Handle error
                 }
             }
-            return $usageByStrategy;
-        }, $this->getUsageStrategies()), static function ($usageByStrategy) {
-            return count($usageByStrategy['usages']) > 0;
+            // TODO: Already return a graphql compatible type before, so we don't have to map it here
+            $usageByStrategy['usages'] = array_map(
+                static function (AssetUsageDetails $usage) {
+                    return Types\UsageDetails::fromUsage($usage);
+                },
+                $usageByStrategy['usages']
+            );
+            return instantiate(Types\UsageDetailsGroup::class, $usageByStrategy);
+        }, $this->getUsageStrategies());
+
+        $groups = array_filter($groups, static function (Types\UsageDetailsGroup $usageByStrategy) {
+            return !$usageByStrategy->usages->isEmpty();
         });
+
+        return Types\UsageDetailsGroups::fromArray($groups);
     }
 
     protected function getNodePropertiesUsageMetadataSchema(
@@ -342,7 +290,7 @@ class UsageDetailsService
             $serverRequest = ServerRequest::fromGlobals();
         }
 
-        $domain = $site ? $site->getPrimaryDomain() : null;
+        $domain = $site?->getPrimaryDomain();
 
         // Build the URI with the correct scheme and hostname for the node in the given site
         if ($domain && $domain->getHostname() !== $serverRequest->getUri()->getHost()) {
@@ -390,10 +338,10 @@ class UsageDetailsService
     /**
      * Returns all assets which have no usage reference provided by `Flowpack.EntityUsage`
      *
-     * @return array<AssetInterface>
+     * @return AssetInterface[]
      * @throws Exception
      */
-    public function getUnusedAssets(int $limit = 20, int $offset = 0): array
+    public function getUnusedAssets(int $limit = 20, int $offset = 0, Types\AssetSourceId $assetSourceId = null): array
     {
         // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
         $this->canQueryAssetUsage();
@@ -411,7 +359,7 @@ class UsageDetailsService
                 )
             ORDER BY a.lastModified DESC
         ', $this->getAssetVariantFilterClause('a')))
-            ->setParameter('assetSourceIdentifier', 'neos')
+            ->setParameter('assetSourceIdentifier', $assetSourceId->value ?? 'neos')
             ->setFirstResult($offset)
             ->setMaxResults($limit)
             ->getResult();
@@ -447,6 +395,8 @@ class UsageDetailsService
     /**
      * Returns number of assets which have no usage reference provided by `Flowpack.EntityUsage`
      *
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      * @throws Exception
      */
     public function getUnusedAssetCount(): int

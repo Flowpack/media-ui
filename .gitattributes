@@ -4,8 +4,7 @@
 Plugin.js binary
 Plugin.css binary
 
-/Resources/Private/JavaScript export-ignore
-/Tests export-ignore
+/packages export-ignore
 /.yarn export-ignore
 /.env export-ignore
 /.github export-ignore

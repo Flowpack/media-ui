@@ -18,9 +18,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class MediaController extends AbstractModuleController
 {
     /**

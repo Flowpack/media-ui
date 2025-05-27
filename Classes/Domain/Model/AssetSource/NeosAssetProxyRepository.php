@@ -48,15 +48,15 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
                                                 SupportsCollectionsInterface, SupportsTaggingInterface
 {
     /**
-     * @Flow\Inject
      * @var ObjectManagerInterface
      */
+    #[Flow\Inject]
     protected $objectManager;
 
     /**
-     * @Flow\Inject
      * @var EntityManagerInterface
      */
+    #[Flow\Inject]
     protected $entityManager;
 
     /**
@@ -308,7 +308,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
         return $query;
     }
 
-    private function filterOutAssetsWithOtherMediaTypes(QueryInterface $query)
+    private function filterOutAssetsWithOtherMediaTypes(QueryInterface $query): QueryInterface
     {
         $constraints = $query->getConstraint();
         return $query->matching(

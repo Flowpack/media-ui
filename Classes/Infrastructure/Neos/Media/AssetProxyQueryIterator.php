@@ -20,9 +20,9 @@ use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 
 /**
- * @Flow\Proxy(false)
  * @internal
  */
+#[Flow\Proxy(false)]
 final class AssetProxyQueryIterator implements AssetProxyIteratorAggregate
 {
     /**

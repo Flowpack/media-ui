@@ -47,6 +47,7 @@ class HierarchicalAssetCollectionRepositoryAspect
         $persistenceManager = ObjectAccess::getProperty($assetCollectionRepository, 'persistenceManager', true);
 
         $deleteRecursively = static function (AssetCollection $collection) use (&$deleteRecursively, $persistenceManager, $assetCollectionRepository) {
+            /** @noinspection PhpUndefinedMethodInspection */
             $childCollections = $assetCollectionRepository->findByParent($collection);
             foreach ($childCollections as $childCollection) {
                 $deleteRecursively($childCollection);

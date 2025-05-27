@@ -1,0 +1,66 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Flowpack\Media\Ui\Tests\Functional\GraphQL;
+
+/*
+ * This file is part of the Flowpack.Media.Ui package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+
+use Flowpack\Media\Ui\GraphQL\MediaApi;
+use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
+use Neos\Flow\Persistence\Doctrine\PersistenceManager;
+
+/**
+ * Testcase for the Media.Ui API
+ */
+class TagApiTest extends AbstractMediaTestCase
+{
+    /**
+     * @var boolean
+     */
+    protected static $testablePersistenceEnabled = true;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        if (!$this->persistenceManager instanceof PersistenceManager) {
+            static::markTestSkipped('Doctrine persistence is not enabled');
+        }
+
+        $this->mediaApi = $this->objectManager->get(MediaApi::class);
+    }
+
+    public function testCreateTag(): void
+    {
+        $tag = $this->mediaApi->createTag('Test Tag');
+        $this->assertEquals('Test Tag', $tag->label);
+    }
+
+    public function testUpdateTag(): void
+    {
+        $tag = $this->mediaApi->createTag('Test Tag');
+        $updatedTag = $this->mediaApi->updateTag($tag->id, 'Updated Tag');
+
+        $this->assertEquals('Updated Tag', $updatedTag->label);
+    }
+
+    public function testDeleteTag(): void
+    {
+        $tag = $this->mediaApi->createTag('Test Tag');
+        $result = $this->mediaApi->deleteTag($tag->id);
+
+        $this->assertTrue($result->success);
+
+        $deletedTag = $this->mediaApi->tag($tag->id);
+        $this->assertNull($deletedTag);
+    }
+}

@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection PhpUnusedParameterInspection */
 declare(strict_types=1);
 
@@ -14,124 +15,105 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  * source code.
  */
 
+use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
+use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Asset;
-use Neos\Media\Domain\Model\AssetCollection;
-use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\ProvidesOriginalUriInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\SupportsIptcMetadataInterface;
 use Neos\Media\Domain\Model\Tag;
-use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Service\FileTypeIconService;
-use t3n\GraphQL\ResolverInterface;
 
-/**
- * @Flow\Scope("singleton")
- */
-class AssetResolver implements ResolverInterface
+use function Wwwision\Types\instantiate;
+
+#[Flow\Scope('singleton')]
+class AssetResolver
 {
-    /**
-     * @Flow\Inject
-     * @var AssetRepository
-     */
-    protected $assetRepository;
+
+    #[Flow\Inject]
+    protected FileTypeIconService $fileTypeIconService;
+
+    #[Flow\Inject]
+    protected ResourceManager $resourceManager;
+
+    #[Flow\Inject]
+    protected AssetService $assetService;
+
+    #[Flow\Inject]
+    protected AssetSourceContext $assetSourceContext;
 
     /**
-     * @Flow\Inject
-     * @var FileTypeIconService
+     * @var PersistenceManagerInterface
      */
-    protected $fileTypeIconService;
-
-    /**
-     * @Flow\Inject
-     * @var ResourceManager
-     */
-    protected $resourceManager;
-
-    /**
-     * @Flow\Inject
-     * @var AssetService
-     */
-    protected $assetService;
-
-    public function id(AssetProxyInterface $assetProxy): ?string
-    {
-        return $assetProxy->getIdentifier();
-    }
-
-    public function localId(AssetProxyInterface $assetProxy): ?string
-    {
-        return $assetProxy->getLocalAssetIdentifier();
-    }
+    #[Flow\Inject]
+    protected $persistenceManager;
 
     /**
      * Returns the title of the associated local asset data or the label of the proxy as fallback
      */
-    public function label(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
+    public function label(Types\Asset $asset): ?string
     {
-        $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
+        $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
         if ($localAssetData && $localAssetData->getTitle()) {
             return $localAssetData->getTitle();
         }
-        return $assetProxy->getLabel();
+        $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
+        return $assetProxy?->getLabel();
     }
 
     /**
      * Returns true if the asset is at least used once
      */
-    public function isInUse(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?bool
+    public function isInUse(Types\Asset $asset): bool
     {
-        if (!$assetProxy->getLocalAssetIdentifier()) {
+        if (!$asset->localId) {
             return false;
         }
-        return $this->assetService->isInUse($assetSourceContext->getAssetForProxy($assetProxy));
+        $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
+        return $localAssetData && $this->assetService->isInUse($localAssetData);
     }
 
     /**
      * Returns the caption of the associated local asset data
      */
-    public function caption(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
+    public function caption(Types\Asset $asset): ?string
     {
-        $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
+        $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
         return $localAssetData instanceof Asset ? $localAssetData->getCaption() : null;
     }
 
-    public function imported(AssetProxyInterface $assetProxy): bool
+    public function imported(Types\Asset $asset): bool
     {
+        $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
         // TODO: Find better way to make sure the asset originates from somewhere outside Neos
-        return $assetProxy->getLocalAssetIdentifier() && $assetProxy->getAssetSource()->getIdentifier() !== 'neos';
+        return $assetProxy?->getLocalAssetIdentifier() && $assetProxy?->getAssetSource()->getIdentifier() !== 'neos';
     }
 
     /**
      * Returns a matching icon uri for the given asset-proxy
-     *
-     * @return array{
-     *     extension: string,
-     *     mediaType: string,
-     *     typeIcon: array{
-     *         width: int,
-     *         height: int,
-     *         url: string,
-     *         alt: string
-     *     },
-     *     size: int,
-     *     url: string
-     * }
      */
-    public function file(AssetProxyInterface $assetProxy): array
+    public function file(Types\Asset $asset): ?Types\File
     {
+        $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
+
+        if (!$assetProxy) {
+            return null;
+        }
+
         $icon = $this->fileTypeIconService::getIcon($assetProxy->getFilename());
 
-        if ($assetProxy instanceof ProvidesOriginalUriInterface) {
+        if ($asset instanceof ProvidesOriginalUriInterface) {
+            /** @phpstan-ignore method.notFound */
             $url = (string)$assetProxy->getOriginalUri();
         } else {
             $url = (string)$assetProxy->getPreviewUri();
         }
 
-        return [
+        return instantiate(Types\File::class, [
             'extension' => $icon['alt'],
             'mediaType' => $assetProxy->getMediaType(),
             'typeIcon' => [
@@ -142,91 +124,81 @@ class AssetResolver implements ResolverInterface
             ],
             'size' => $assetProxy->getFileSize(),
             'url' => $url,
-        ];
-    }
-
-    /**
-     * Returns the iptc properties for assetproxies that implement the interface
-     */
-    public function iptcProperty(AssetProxyInterface $assetProxy, array $variables): ?string
-    {
-        $iptcProperties = $this->iptcProperties($assetProxy);
-        return $iptcProperties[$variables['property']] ?? null;
+        ]);
     }
 
     /**
      * Returns the iptc properties for asset-proxies that implement the interface
-     * @return array{propertyName: string, value: string}[]
      */
-    public function iptcProperties(AssetProxyInterface $assetProxy): array
+    public function iptcProperties(Types\Asset $asset): Types\IptcProperties
     {
+        $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
         if ($assetProxy instanceof SupportsIptcMetadataInterface) {
             $properties = $assetProxy->getIptcProperties();
-            return array_map(static function ($key) use ($properties) {
-                return ['propertyName' => $key, 'value' => $properties[$key]];
-            }, array_keys($properties));
+            return Types\IptcProperties::fromArray(
+                array_map(static function ($key) use ($properties) {
+                    return instantiate(
+                        Types\IptcProperty::class,
+                        ['propertyName' => $key, 'value' => $properties[$key]]
+                    );
+                }, array_keys($properties))
+            );
         }
-        return [];
+        return Types\IptcProperties::empty();
     }
 
-    public function copyrightNotice(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
+    public function copyrightNotice(Types\Asset $asset): ?string
     {
-        $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
+        $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
         return $localAssetData instanceof Asset ? $localAssetData->getCopyrightNotice() : null;
     }
 
-    public function lastModified(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): ?string
+    public function lastModified(Types\Asset $asset): ?string
     {
-        return $assetProxy->getLastModified() ? $assetProxy->getLastModified()->format(DATE_W3C) : null;
+        $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
+        return $assetProxy?->getLastModified() ? $assetProxy?->getLastModified()->format(DATE_W3C) : null;
     }
 
-    /**
-     * @return Tag[]
-     */
-    public function tags(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): array
+    public function tags(Types\Asset $asset): Types\Tags
     {
-        $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
-        return $localAssetData instanceof Asset ? $localAssetData->getTags()->toArray() : [];
+        $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
+        return $localAssetData instanceof Asset ?
+            Types\Tags::fromArray(
+                array_map(function (Tag $tag) {
+                    return instantiate(Types\Tag::class, [
+                        'id' => $this->persistenceManager->getIdentifierByObject($tag),
+                        'label' => $tag->getLabel(),
+                    ]);
+                }, $localAssetData->getTags()->toArray())
+            ) : Types\Tags::empty();
     }
 
-    /**
-     * @return AssetCollection[]
-     */
-    public function collections(AssetProxyInterface $assetProxy, array $variables, AssetSourceContext $assetSourceContext): array
+    public function collections(Types\Asset $asset): Types\AssetCollections
     {
-        $localAssetData = $assetSourceContext->getAssetForProxy($assetProxy);
-        return $localAssetData instanceof Asset ? $localAssetData->getAssetCollections()->toArray() : [];
+        $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
+        return $localAssetData instanceof Asset ?
+            Types\AssetCollections::fromArray(
+                array_map(function (HierarchicalAssetCollectionInterface $assetCollection) {
+                    return instantiate(Types\AssetCollection::class, [
+                        'id' => $this->persistenceManager->getIdentifierByObject($assetCollection),
+                        'title' => $assetCollection->getTitle(),
+                        'path' => $assetCollection->getPath() ?
+                            Types\AssetCollectionPath::fromString($assetCollection->getPath()) : '',
+                    ]);
+                },
+                    $localAssetData->getAssetCollections()->toArray())
+            ) : Types\AssetCollections::empty();
     }
 
-    public function width(AssetProxyInterface $assetProxy): int
+    public function thumbnailUrl(Types\Asset $asset): ?Types\Url
     {
-        return $assetProxy->getWidthInPixels() ?? 0;
+        $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
+        return $assetProxy ? Types\Url::fromString((string)$assetProxy->getThumbnailUri()) : null;
     }
 
-    public function height(AssetProxyInterface $assetProxy): int
+    public function previewUrl(Types\Asset $asset): ?Types\Url
     {
-        return $assetProxy->getHeightInPixels() ?? 0;
-    }
-
-    public function thumbnailUrl(AssetProxyInterface $assetProxy): string
-    {
-        return (string)$assetProxy->getThumbnailUri();
-    }
-
-    public function previewUrl(AssetProxyInterface $assetProxy): string
-    {
-        return (string)$assetProxy->getPreviewUri();
-    }
-
-    public function thumbnail(
-        AssetProxyInterface $assetProxy,
-        int $maximumWidth,
-        int $maximumHeight,
-        string $ratioMode,
-        bool $allowUpScaling,
-        bool $allowCropping
-    ): array {
-        // TODO: Implement
-        throw new \RuntimeException('Not implemented yet', 1590840085);
+        $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
+        return $assetProxy ? Types\Url::fromString((string)$assetProxy->getPreviewUri()) : null;
     }
 }
