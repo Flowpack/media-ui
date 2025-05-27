@@ -4,10 +4,10 @@
   "license": "GNU GPLv3",
   "private": true,
   "source": "src/index.tsx",
-  "app": "../../../Public/Assets/main.bundle.js",
+  "app": "../../Public/Assets/main.bundle.js",
   "targets": {
     "app": {
-      "distDir": "../../../Public/Assets"
+      "distDir": "../../Resources/Public/Assets"
     }
   },
   "scripts": {

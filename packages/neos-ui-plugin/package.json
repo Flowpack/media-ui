@@ -27,6 +27,6 @@
     "supports async-functions"
   ],
   "neos": {
-    "buildTargetDirectory": "../../../Public/AssetEditor"
+    "buildTargetDirectory": "../../Resources/Public/AssetEditor"
   }
 }
