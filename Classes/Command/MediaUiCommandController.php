@@ -35,6 +35,9 @@ class MediaUiCommandController extends CommandController
     #[Flow\Inject('Flowpack.Media.Ui:GraphQLMiddleware')]
     protected $mediaApiMiddleware;
 
+    /**
+     * @internal only for development
+     */
     public function createSchemaCommand(): void
     {
         $this->outputLine('Creating GraphQL schema...');
