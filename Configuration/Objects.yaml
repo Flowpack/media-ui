@@ -44,7 +44,7 @@
       # Simulate a request to the module controller to check if the current user has access to the requested resource
       value: 'Flowpack\Media\Ui\Controller\MediaController'
     5:
-      # Custom resolvers
+      # Custom resolvers extending the base classes or interfaces we use for our types
       value:
         Asset:
           file: &assetResolver
