@@ -12,7 +12,7 @@ Neos:
             assetsPerPage: 20
             maximumLinks: 5
           # Background polling for changes by other users
-          pollForChanges: false
+          pollForChanges: true
           # Settings for the property editor
           propertyEditor:
             collapsed: false
