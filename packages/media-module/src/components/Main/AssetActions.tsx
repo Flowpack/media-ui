@@ -60,7 +60,11 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             <DownloadAssetButton asset={asset} />
             {asset.localId && (
                 <IconButton
-                    title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}
+                    title={
+                        isInClipboard
+                            ? translate('itemActions.removeFromClipboard', 'Remove from clipboard')
+                            : translate('itemActions.copyToClipboard', 'Copy to clipboard')
+                    }
                     icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
                     size="regular"
                     style="transparent"

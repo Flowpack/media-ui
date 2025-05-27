@@ -27,14 +27,20 @@ export const clipboardItemState = selectorFamily<boolean, { assetId: string; ass
         (assetIdentity) =>
         ({ set }) => {
             set(clipboardState, (prevState: AssetIdentity[]) => {
+                // Check if the asset is already in the clipboard
                 const assetInClipboardIndex = prevState.findIndex(
                     ({ assetId, assetSourceId }) =>
                         assetId === assetIdentity.assetId && assetSourceId === assetIdentity.assetSourceId
                 );
+                // If the asset is not in the clipboard, add it
                 if (assetInClipboardIndex === -1) {
                     return [...prevState, assetIdentity];
                 }
-                return prevState.splice(assetInClipboardIndex, 1);
+                // If it already is, remove the asset from the clipboard
+                return prevState.filter(
+                    ({ assetId, assetSourceId }) =>
+                        assetId !== assetIdentity.assetId || assetSourceId !== assetIdentity.assetSourceId
+                );
             });
         },
 });
