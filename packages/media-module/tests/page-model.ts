@@ -16,6 +16,7 @@ class Page {
     public inspectorActions: Selector;
     public assetSourceList: Selector;
     public assetsFilter: Selector;
+    public clipboardToggle: Selector;
 
     constructor() {
         // Collection tree
@@ -32,6 +33,7 @@ class Page {
 
         // Bottom bar
         this.assetCount = ReactSelector('AssetCount');
+        this.clipboardToggle = ReactSelector('ClipboardToggle');
 
         // Pagination
         this.pagination = ReactSelector('Pagination');

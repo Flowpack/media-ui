@@ -37,8 +37,8 @@ const ClipboardActions: React.FC = () => {
             });
     }, [approvalAttainmentStrategy, clipboard, deleteAsset, Notify, translate]);
 
-    const onFlushClipboard = useCallback(() => {
-        const canFlushClipboard = approvalAttainmentStrategy.obtainApprovalToFlushClipboard();
+    const onFlushClipboard = useCallback(async () => {
+        const canFlushClipboard = await approvalAttainmentStrategy.obtainApprovalToFlushClipboard();
         if (!canFlushClipboard) return;
         setClipboard([]);
     }, [approvalAttainmentStrategy, setClipboard]);
@@ -53,6 +53,7 @@ const ClipboardActions: React.FC = () => {
                 size="regular"
                 style="transparent"
                 hoverStyle="error"
+                disabled={clipboard.length === 0}
                 onClick={onDeleteClipboard}
             />
             <IconButton
@@ -61,6 +62,7 @@ const ClipboardActions: React.FC = () => {
                 size="regular"
                 style="transparent"
                 hoverStyle="warn"
+                disabled={clipboard.length === 0}
                 onClick={onFlushClipboard}
             />
         </div>
