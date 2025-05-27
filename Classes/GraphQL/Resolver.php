@@ -18,7 +18,6 @@ namespace Flowpack\Media\Ui\GraphQL;
 
 use BackedEnum;
 use GraphQL\Language\AST\EnumTypeDefinitionNode;
-use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\InterfaceTypeDefinitionNode;
 use GraphQL\Language\AST\TypeDefinitionNode;
 use GraphQL\Server\RequestError;
@@ -33,7 +32,6 @@ use Wwwision\Types\Exception\CoerceException;
 use Wwwision\Types\Parser;
 use Wwwision\Types\Schema\EnumCaseSchema;
 use Wwwision\Types\Schema\EnumSchema;
-use Wwwision\Types\Schema\ShapeSchema;
 use Wwwision\TypesGraphQL\Types\CustomResolvers;
 
 use function Wwwision\Types\instantiate;

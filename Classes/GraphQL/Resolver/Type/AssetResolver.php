@@ -127,15 +127,6 @@ class AssetResolver
         ]);
     }
 
-//    /**
-//     * Returns the iptc properties for assetproxies that implement the interface
-//     */
-//    public function iptcProperty(AssetProxyInterface $assetProxy, array $variables): ?string
-//    {
-//        $iptcProperties = $this->iptcProperties($assetProxy);
-//        return $iptcProperties[$variables['property']] ?? null;
-//    }
-
     /**
      * Returns the iptc properties for asset-proxies that implement the interface
      */
@@ -210,16 +201,4 @@ class AssetResolver
         $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
         return $assetProxy ? Types\Url::fromString((string)$assetProxy->getPreviewUri()) : null;
     }
-//
-//    public function thumbnail(
-//        AssetProxyInterface $assetProxy,
-//        int $maximumWidth,
-//        int $maximumHeight,
-//        string $ratioMode,
-//        bool $allowUpScaling,
-//        bool $allowCropping
-//    ): array {
-//        // TODO: Implement
-//        throw new \RuntimeException('Not implemented yet', 1590840085);
-//    }
 }
