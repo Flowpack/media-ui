@@ -16,7 +16,6 @@ final class UsageDetailsGroup
         public readonly string $label,
         public readonly UsageDetailsMetadataSchemaList $metadataSchema,
         public readonly UsageDetailsList $usages
-    )
-    {
+    ) {
     }
 }

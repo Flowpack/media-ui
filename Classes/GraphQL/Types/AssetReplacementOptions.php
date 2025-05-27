@@ -15,8 +15,7 @@ final class AssetReplacementOptions implements \JsonSerializable
     private function __construct(
         public readonly bool $generateRedirects,
         public readonly bool $keepOriginalFilename,
-    )
-    {
+    ) {
     }
 
     public function toArray(): array

@@ -14,7 +14,6 @@ final class AssetCollectionParent
     private function __construct(
         public readonly AssetCollectionId $id,
         public readonly AssetCollectionTitle $title,
-    )
-    {
+    ) {
     }
 }
