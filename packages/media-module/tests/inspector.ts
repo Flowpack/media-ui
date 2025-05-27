@@ -1,9 +1,8 @@
 import { ReactSelector } from 'testcafe-react-selectors';
 
 import page from './page-model';
-import { SERVER_NAME } from './helpers';
 
-fixture('Inspector').page(SERVER_NAME);
+fixture('Inspector').page('./?reset=1');
 
 test('Inspector appears and shows first asset', async (t) => {
     await t

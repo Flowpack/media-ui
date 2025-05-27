@@ -1,7 +1,6 @@
 import page from './page-model';
-import { SERVER_NAME } from './helpers';
 
-fixture('Asset collections').page(SERVER_NAME);
+fixture('Asset collections').page('./?reset=1');
 
 test('Clicking first collection updates list and only assets should be shown that are assigned to it', async (t) => {
     await t

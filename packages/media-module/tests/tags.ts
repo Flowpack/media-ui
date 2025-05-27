@@ -1,8 +1,7 @@
 import page from './page-model';
 import { ReactSelector } from 'testcafe-react-selectors';
-import { SERVER_NAME } from './helpers';
 
-fixture('Tags').page(SERVER_NAME);
+fixture('Tags').page('./?reset=1');
 
 const subSection = (name) => console.log('\x1b[33m%s\x1b[0m', ' - ' + name);
 

@@ -1,7 +1,6 @@
 import page from './page-model';
-import { SERVER_NAME } from './helpers';
 
-fixture('Sorting').page(SERVER_NAME);
+fixture('Sorting').page('./?reset=1');
 
 test('The sort direction is changed on click of button', async (t) => {
     await t

@@ -1,7 +1,6 @@
 import page from './page-model';
-import { SERVER_NAME } from './helpers';
 
-fixture('Lightbox').page(SERVER_NAME);
+fixture('Lightbox').page('./?reset=1');
 
 test('Preview opens lightbox', async (t) => {
     await t

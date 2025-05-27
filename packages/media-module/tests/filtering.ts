@@ -1,7 +1,6 @@
 import page from './page-model';
-import { SERVER_NAME } from './helpers';
 
-fixture('Filtering').page(SERVER_NAME);
+fixture('Filtering').page('./?reset=1');
 
 test('No results are shown when filtering videos', async (t) => {
     await t
