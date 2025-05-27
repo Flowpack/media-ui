@@ -138,6 +138,7 @@ jobs:
     env:
       # Solves error when parcel tries to count cpus via lscpu
       PARCEL_WORKERS: 1
+      DEBUG: 'testcafe:tested-app:*'
 
     runs-on: ubuntu-latest
 

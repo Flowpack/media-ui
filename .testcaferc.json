@@ -5,11 +5,13 @@
   },
   "src": ["packages/media-module/tests/**/*.ts"],
   "appCommand": "yarn dev:test",
+  "appInitDelay": 2000,
   "screenshots": {
     "takeOnFails": true
   },
+  "debugOnFail": false,
   "stopOnFirstFail": true,
-  "hostname": "localhost",
+  "hostname": "127.0.0.1",
   "retryTestPages": true,
   "pageLoadTimeout": 10000,
   "pageRequestTimeout": 60000,
