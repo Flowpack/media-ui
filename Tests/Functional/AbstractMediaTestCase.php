@@ -15,6 +15,7 @@ use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
+use Neos\Flow\Tests\Behavior\Features\Bootstrap\SecurityOperationsTrait;
 use Neos\Flow\Tests\FunctionalTestCase;
 use Neos\Utility\Files;
 
@@ -25,6 +26,8 @@ use function Wwwision\Types\instantiate;
  */
 abstract class AbstractMediaTestCase extends FunctionalTestCase
 {
+    use SecurityOperationsTrait;
+
     /**
      * @var string
      */
@@ -108,5 +111,16 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
             'clientFilename' => 'test.svg',
             'errorStatus' => 0,
         ]);
+    }
+
+    /**
+     * @template T of object
+     * @param class-string<T> $className
+     *
+     * @return T
+     */
+    private function getObject(string $className): object
+    {
+        return $this->objectManager->get($className);
     }
 }
