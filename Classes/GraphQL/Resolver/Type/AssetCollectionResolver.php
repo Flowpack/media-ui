@@ -20,6 +20,7 @@ use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Neos\Domain\Model\Site;
@@ -83,8 +84,14 @@ class AssetCollectionResolver
     {
         /** @var AssetCollection $originalAssetCollection */
         $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
-        return $originalAssetCollection ?
-            Types\Tags::fromArray($originalAssetCollection->getTags()->toArray()) : Types\Tags::empty();
+
+        return $originalAssetCollection ? Types\Tags::fromArray(array_map(
+            fn(Tag $tag) => instantiate(Types\Tag::class, [
+                'id' => $this->persistenceManager->getIdentifierByObject($tag),
+                'label' => $tag->getLabel(),
+            ]),
+            $originalAssetCollection->getTags()->toArray()
+        )) : Types\Tags::empty();
     }
 
     public function parent(Types\AssetCollection $assetCollection): ?Types\AssetCollectionParent

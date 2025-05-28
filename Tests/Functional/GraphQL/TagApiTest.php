@@ -15,6 +15,7 @@ namespace Flowpack\Media\Ui\Tests\Functional\GraphQL;
  */
 
 use Flowpack\Media\Ui\GraphQL\MediaApi;
+use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetCollectionResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
@@ -37,6 +38,7 @@ class TagApiTest extends AbstractMediaTestCase
         }
 
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
+        $this->assetCollectionResolver = $this->objectManager->get(AssetCollectionResolver::class);
     }
 
     public function testCreateTag(): void
@@ -62,5 +64,22 @@ class TagApiTest extends AbstractMediaTestCase
 
         $deletedTag = $this->mediaApi->tag($tag->id);
         $this->assertNull($deletedTag);
+    }
+
+    public function testTagAssetCollection(): void
+    {
+        $assetCollection = $this->mediaApi->createAssetCollection(
+            Types\AssetCollectionTitle::fromString('Test Collection')
+        );
+        $tag = $this->mediaApi->createTag('Test Tag', $assetCollection->id);
+        $createdTag = $this->mediaApi->tag($tag->id);
+
+        $resolvedTags = $this->assetCollectionResolver->tags($assetCollection);
+        $this->assertCount(1, $resolvedTags->tags);
+        $this->assertEquals(
+            $createdTag,
+            $resolvedTags->tags[0],
+            'The tag should be associated with the asset collection'
+        );
     }
 }
