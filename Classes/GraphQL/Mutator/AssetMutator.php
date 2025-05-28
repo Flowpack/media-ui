@@ -198,12 +198,15 @@ class AssetMutator
         Types\AssetSourceId $assetSourceId,
         Types\TagIds $tagIds
     ): ?Types\Asset {
-        $asset = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
+        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot tag asset that was never imported', 1594621322);
         }
         if (!$asset instanceof Asset) {
-            throw new MediaUiException('Asset type does not support tagging', 1619081714);
+            throw new MediaUiException(
+                sprintf('Asset type %s does not support tagging', $asset::class),
+                1619081714
+            );
         }
 
         $tags = new ArrayCollection();
@@ -233,7 +236,7 @@ class AssetMutator
         Types\AssetSourceId $assetSourceId,
         Types\AssetCollectionIds $assetCollectionIds
     ): MutationResult {
-        $asset = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
+        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot assign collections to asset that was never imported', 1594621322);
         }
@@ -265,7 +268,7 @@ class AssetMutator
      */
     public function untagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): ?Types\Asset
     {
-        $asset = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
+        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot untag asset that was never imported', 1591561930);
         }

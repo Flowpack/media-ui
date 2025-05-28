@@ -11,11 +11,14 @@ namespace Flowpack\Media\Ui\Tests\Functional;
  * source code.
  */
 
+use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Flow\Tests\FunctionalTestCase;
 use Neos\Utility\Files;
+
+use function Wwwision\Types\instantiate;
 
 /**
  * Abstract Functional Test template
@@ -89,10 +92,21 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
 
     /**
      * Initializes the resource manager and modifies the persistent resource storage location.
-     * @return void
      */
-    protected function prepareResourceManager()
+    protected function prepareResourceManager(): void
     {
         $this->resourceManager = $this->objectManager->get(ResourceManager::class);
+    }
+
+    protected static function createFile(): Types\UploadedFile
+    {
+        $fileContent = Files::getFileContents(__DIR__ . '/Fixtures/norman.svg');
+        return instantiate(Types\UploadedFile::class, [
+            'streamOrFile' => $fileContent,
+            'size' => strlen($fileContent),
+            'clientMediaType' => 'image/svg+xml',
+            'clientFilename' => 'test.svg',
+            'errorStatus' => 0,
+        ]);
     }
 }

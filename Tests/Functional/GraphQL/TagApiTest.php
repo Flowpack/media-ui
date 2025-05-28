@@ -16,6 +16,7 @@ namespace Flowpack\Media\Ui\Tests\Functional\GraphQL;
 
 use Flowpack\Media\Ui\GraphQL\MediaApi;
 use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetCollectionResolver;
+use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
@@ -39,6 +40,7 @@ class TagApiTest extends AbstractMediaTestCase
 
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
         $this->assetCollectionResolver = $this->objectManager->get(AssetCollectionResolver::class);
+        $this->assetResolver = $this->objectManager->get(AssetResolver::class);
     }
 
     public function testCreateTag(): void
@@ -81,5 +83,37 @@ class TagApiTest extends AbstractMediaTestCase
             $resolvedTags->tags[0],
             'The tag should be associated with the asset collection'
         );
+    }
+
+    public function testTagAsset(): void
+    {
+        $file = self::createFile();
+        $result = $this->mediaApi->uploadFile($file);
+        $this->assertTrue($result->success);
+
+        $this->persistenceManager->persistAll();
+        $assets = $this->mediaApi->assets();
+        /** @var Types\Asset $uploadedAsset */
+        $uploadedAsset = $assets->getIterator()->current();
+
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
+        $this->mediaApi->tagAsset(
+            $uploadedAsset->id,
+            $uploadedAsset->assetSource->id,
+            $tag->id
+        );
+
+        $resolvedTags = $this->assetResolver->tags($uploadedAsset);
+        $this->assertCount(1, $resolvedTags->tags);
+        $this->assertEquals('Test Tag', $resolvedTags->tags[0]->label);
+
+        $this->mediaApi->untagAsset(
+            $uploadedAsset->id,
+            $uploadedAsset->assetSource->id,
+            $tag->id
+        );
+
+        $resolvedTags = $this->assetResolver->tags($uploadedAsset);
+        $this->assertCount(0, $resolvedTags->tags);
     }
 }

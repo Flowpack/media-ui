@@ -20,7 +20,6 @@ use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Flow\Tests\Behavior\Features\Bootstrap\SecurityOperationsTrait;
-use Neos\Utility\Files;
 
 use function Wwwision\Types\instantiate;
 
@@ -48,18 +47,6 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->assetResolver = $this->objectManager->get(AssetResolver::class);
 
         $this->iAmAuthenticatedWithRole('Neos.Neos:Editor');
-    }
-
-    protected static function createFile(): Types\UploadedFile
-    {
-        $fileContent = Files::getFileContents(__DIR__ . '/Fixtures/norman.svg');
-        return instantiate(Types\UploadedFile::class, [
-            'streamOrFile' => $fileContent,
-            'size' => strlen($fileContent),
-            'clientMediaType' => 'image/svg+xml',
-            'clientFilename' => 'test.svg',
-            'errorStatus' => 0,
-        ]);
     }
 
     public function testUploadFile(): void
