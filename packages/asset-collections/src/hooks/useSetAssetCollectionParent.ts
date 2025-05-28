@@ -14,7 +14,7 @@ interface SetAssetCollectionParentVariables {
 }
 
 export function useSetAssetCollectionParent() {
-    const [action, { error, data, loading }] = useMutation<boolean, SetAssetCollectionParentVariables>(
+    const [action, { error, data, loading }] = useMutation<{ setAssetCollectionParent: MutationResult }, SetAssetCollectionParentVariables>(
         SET_ASSET_COLLECTION_PARENT
     );
 
@@ -25,7 +25,12 @@ export function useSetAssetCollectionParent() {
                     id: assetCollection.id,
                     parent: parent?.id,
                 },
-                optimisticResponse: true,
+                optimisticResponse: {
+                    setAssetCollectionParent: {
+                        success: true,
+                        messages: [],
+                    },
+                },
                 update: (cache, { data }) => {
                     if (!data) return;
                     cache.modify({

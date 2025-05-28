@@ -12,7 +12,7 @@ interface DeleteTagVariables {
 }
 
 export default function useDeleteTag() {
-    const [action, { error, data }] = useMutation<{ __typename: string; deleteTag: boolean }, DeleteTagVariables>(
+    const [action, { error, data }] = useMutation<{ deleteTag: MutationResult }, DeleteTagVariables>(
         DELETE_TAG
     );
     const [selectedTagId, setSelectedTagId] = useRecoilState(selectedTagIdState);
@@ -21,8 +21,10 @@ export default function useDeleteTag() {
         action({
             variables: { id },
             optimisticResponse: {
-                __typename: 'Mutation',
-                deleteTag: true,
+                deleteTag: {
+                    success: true,
+                    messages: [],
+                },
             },
             update: (proxy, { data: { deleteTag: success } }) => {
                 if (!success) return;

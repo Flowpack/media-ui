@@ -6,7 +6,10 @@ const SET_ASSET_COLLECTIONS = gql`
         $assetSourceId: AssetSourceId!
         $assetCollectionIds: [AssetCollectionId!]!
     ) {
-        setAssetCollections(id: $id, assetSourceId: $assetSourceId, assetCollectionIds: $assetCollectionIds)
+        setAssetCollections(id: $id, assetSourceId: $assetSourceId, assetCollectionIds: $assetCollectionIds) {
+            success
+            messages
+        }
     }
 `;
 

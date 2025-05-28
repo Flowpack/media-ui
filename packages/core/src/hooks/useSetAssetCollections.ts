@@ -14,7 +14,7 @@ interface SetAssetCollectionsVariables {
 }
 
 export default function useSetAssetCollections() {
-    const [action, { error, data, loading }] = useMutation<boolean, SetAssetCollectionsVariables>(
+    const [action, { error, data, loading }] = useMutation<{ setAssetCollections: MutationResult }, SetAssetCollectionsVariables>(
         SET_ASSET_COLLECTIONS
     );
 
@@ -25,7 +25,12 @@ export default function useSetAssetCollections() {
                 assetSourceId: asset.assetSource.id,
                 assetCollectionIds: assetCollections.map((c) => c.id),
             },
-            optimisticResponse: true,
+            optimisticResponse: {
+                setAssetCollections: {
+                    success: true,
+                    messages: [],
+                },
+            },
             // The ASSETS query should be triggered to again show the full amount of assets in the current collection
             // FIXME: The ASSET_COLLECTIONS query is triggered to update the asset count in the asset collection list, which could be modified directly in the cache update method below
             refetchQueries: ['ASSETS', 'ASSET_COLLECTIONS'],

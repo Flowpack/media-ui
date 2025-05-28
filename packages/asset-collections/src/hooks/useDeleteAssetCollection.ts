@@ -8,7 +8,7 @@ interface DeleteAssetCollectionVariables {
 }
 
 export default function useDeleteAssetCollection() {
-    const [action, { error, data, loading }] = useMutation<boolean, DeleteAssetCollectionVariables>(
+    const [action, { error, data, loading }] = useMutation<{ deleteAssetCollection: MutationResult }, DeleteAssetCollectionVariables>(
         DELETE_ASSET_COLLECTION
     );
 
@@ -17,7 +17,12 @@ export default function useDeleteAssetCollection() {
             variables: {
                 id,
             },
-            optimisticResponse: true,
+            optimisticResponse: {
+                deleteAssetCollection: {
+                    success: true,
+                    messages: [],
+                },
+            },
             update(cache) {
                 const { assetCollections } = cache.readQuery<{ assetCollections: AssetCollection[] }>({
                     query: ASSET_COLLECTIONS,
