@@ -359,41 +359,7 @@ final class UsageDetailsService
      */
     public function getUnusedAssets(int $limit = 20, int $offset = 0, Types\AssetSourceId $assetSourceId = null): array
     {
-        // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
-        $this->canQueryAssetUsage();
-
-        return $this->entityManager->createQuery(sprintf(/** @lang DQL */ '
-            SELECT a
-            FROM Neos\Media\Domain\Model\Asset a
-            WHERE
-                a.assetSourceIdentifier = :assetSourceIdentifier AND
-                %s AND
-                NOT EXISTS (
-                    SELECT e
-                    FROM Flowpack\EntityUsage\DatabaseStorage\Domain\Model\EntityUsage e
-                    WHERE a.Persistence_Object_Identifier = e.entityId
-                )
-            ORDER BY a.lastModified DESC
-        ', $this->getAssetVariantFilterClause('a')))
-            ->setParameter('assetSourceIdentifier', $assetSourceId->value ?? 'neos')
-            ->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->getResult();
-    }
-
-    /**
-     * Checks for the presence of the
-     *
-     * @throws Exception
-     */
-    protected function canQueryAssetUsage(): void
-    {
-        try {
-            $this->packageManager->getPackage('Flowpack.EntityUsage.DatabaseStorage');
-        } catch (FlowException $e) {
-            throw new Exception('This method requires "flowpack/entity-usage-databasestorage" to be installed.',
-                1619178077);
-        }
+        throw new Exception('Not implemented yet for Neos 9');
     }
 
     /**
