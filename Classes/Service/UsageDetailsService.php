@@ -24,7 +24,6 @@ use Flowpack\Media\Ui\GraphQL\Types;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Core\NodeType\NodeTypeNames;
-use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindAncestorNodesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindClosestNodeFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\NodeType\NodeTypeCriteria;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
@@ -51,7 +50,6 @@ use Neos\Neos\AssetUsage\AssetUsageStrategy;
 use Neos\Neos\AssetUsage\Dto\AssetUsageReference;
 use Neos\Neos\Controller\BackendUserTranslationTrait;
 use Neos\Neos\Domain\Model\Site;
-use Neos\Neos\Domain\Model\SiteNodeName;
 use Neos\Neos\Domain\NodeLabel\NodeLabelGeneratorInterface;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use Neos\Neos\Domain\Repository\WorkspaceMetadataAndRoleRepository;
@@ -66,48 +64,6 @@ final class UsageDetailsService
 {
     use BackendUserTranslationTrait;
 
-    #[Flow\Inject]
-    protected Bootstrap $bootstrap;
-
-    #[Flow\Inject]
-    protected UserService $userService;
-
-    #[Flow\Inject]
-    protected SiteRepository $siteRepository;
-
-    #[Flow\Inject]
-    protected AssetService $assetService;
-
-    #[Flow\Inject]
-    protected ObjectManagerInterface $objectManager;
-
-    #[Flow\Inject]
-    protected ReflectionService $reflectionService;
-
-    #[Flow\Inject]
-    protected EntityManagerInterface $entityManager;
-
-    #[Flow\Inject]
-    protected PackageManager $packageManager;
-
-    #[Flow\Inject]
-    protected Translator $translator;
-
-    #[Flow\Inject]
-    protected ContentRepositoryRegistry $contentRepositoryRegistry;
-
-    #[Flow\Inject]
-    protected NodeLabelGeneratorInterface $nodeLabelGenerator;
-
-    #[Flow\Inject()]
-    protected WorkspaceMetadataAndRoleRepository $workspaceMetadataAndRoleRepository;
-
-    #[Flow\Inject()]
-    protected SecurityContext $securityContext;
-
-    #[Flow\Inject()]
-    protected ContentRepositoryAuthorizationService $contentRepositoryAuthorizationService;
-
     private array $accessibleWorkspaces = [];
 
     public function __construct(
@@ -115,22 +71,23 @@ final class UsageDetailsService
         protected readonly PackageManager $packageManager,
         protected readonly EntityManagerInterface $entityManager,
         protected readonly ReflectionService $reflectionService,
-        protected readonly LinkingService $linkingService,
         protected readonly ObjectManagerInterface $objectManager,
-        protected readonly DomainUserService $domainUserService,
         protected readonly AssetService $assetService,
-        protected readonly WorkspaceRepository $workspaceRepository,
-        protected readonly NodeTypeManager $nodeTypeManager,
         protected readonly SiteRepository $siteRepository,
         protected readonly UserService $userService,
         protected readonly Bootstrap $bootstrap,
+        protected readonly ContentRepositoryRegistry $contentRepositoryRegistry,
+        protected readonly NodeLabelGeneratorInterface $nodeLabelGenerator,
+        protected readonly WorkspaceMetadataAndRoleRepository $workspaceMetadataAndRoleRepository,
+        protected readonly ContentRepositoryAuthorizationService $contentRepositoryAuthorizationService,
+        protected readonly SecurityContext $securityContext,
     ) {
     }
 
     public function resolveUsagesForAsset(AssetInterface $asset): Types\UsageDetailsGroups
     {
         $includeSites = $this->siteRepository->countAll() > 1;
-        return array_filter(array_map(function ($strategy) use ($asset, $includeSites) {
+        $groups = array_filter(array_map(function ($strategy) use ($asset, $includeSites) {
             $usageByStrategy = [
                 'serviceId' => get_class($strategy),
                 'label' => get_class($strategy),
@@ -174,7 +131,7 @@ final class UsageDetailsService
                 $usageByStrategy['usages']
             );
             return instantiate(Types\UsageDetailsGroup::class, $usageByStrategy);
-        }, $this->getUsageStrategies());
+        }, $this->getUsageStrategies()));
 
         $groups = array_filter($groups, static function (Types\UsageDetailsGroup $usageByStrategy) {
             return !$usageByStrategy->usages->isEmpty();
@@ -246,7 +203,7 @@ final class UsageDetailsService
             ],
             [
                 'name' => 'nodeExists',
-                'value' => $node?->name->value,
+                'value' => $node?->name?->value,
             ],
             [
                 'name' => 'lastModified',
@@ -308,7 +265,10 @@ final class UsageDetailsService
     {
         $parentNode = $node;
         $contentRepository = $this->contentRepositoryRegistry->get($parentNode->contentRepositoryId);
-        while ($parentNode && !$contentRepository->getNodeTypeManager()->getNodeType($parentNode->nodeTypeName)->isOfType('Neos.Neos:Document')) {
+        while ($parentNode
+            && !$contentRepository->getNodeTypeManager()->getNodeType(
+                $parentNode->nodeTypeName)?->isOfType('Neos.Neos:Document')
+        ) {
             $subgraph = $this->contentRepositoryRegistry->subgraphForNode($parentNode);
             $parentNode = $subgraph->findParentNode($parentNode->aggregateId);
         }
