@@ -36,7 +36,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 8.2
 
       - name: Cache dependencies
         uses: actions/cache@v3
@@ -47,13 +47,13 @@ jobs:
       - name: Install dependencies
         uses: php-actions/composer@v6
         with:
-          php_version: 8.1
+          php_version: 8.2
           version: 2
 
       - name: PHPStan
         uses: php-actions/phpstan@v3
         with:
-          php_version: 8.1
+          php_version: 8.2
           version: 2.1.17
           command: analyse
           path: 'Classes/'
@@ -68,8 +68,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['8.1']
-        flow-versions: ['8.3']
+        php-versions: ['8.2']
+        flow-versions: ['9.0']
 
     steps:
       - uses: actions/checkout@v3
