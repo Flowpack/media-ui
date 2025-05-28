@@ -57,7 +57,7 @@ class AssetResolver
      */
     public function label(Types\Asset $asset): ?string
     {
-        $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
+        $localAssetData = $asset->localId ? $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId) : null;
         if ($localAssetData && $localAssetData->getTitle()) {
             return $localAssetData->getTitle();
         }
@@ -82,6 +82,9 @@ class AssetResolver
      */
     public function caption(Types\Asset $asset): ?string
     {
+        if (!$asset->localId) {
+            return null;
+        }
         $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
         return $localAssetData instanceof Asset ? $localAssetData->getCaption() : null;
     }
@@ -149,6 +152,9 @@ class AssetResolver
 
     public function copyrightNotice(Types\Asset $asset): ?string
     {
+        if (!$asset->localId) {
+            return null;
+        }
         $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
         return $localAssetData instanceof Asset ? $localAssetData->getCopyrightNotice() : null;
     }
@@ -161,6 +167,9 @@ class AssetResolver
 
     public function tags(Types\Asset $asset): Types\Tags
     {
+        if (!$asset->localId) {
+            return Types\Tags::empty();
+        }
         $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
         return $localAssetData instanceof Asset ?
             Types\Tags::fromArray(
@@ -175,6 +184,9 @@ class AssetResolver
 
     public function collections(Types\Asset $asset): Types\AssetCollections
     {
+        if (!$asset->localId) {
+            return Types\AssetCollections::empty();
+        }
         $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
         return $localAssetData instanceof Asset ?
             Types\AssetCollections::fromArray(
