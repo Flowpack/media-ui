@@ -96,8 +96,6 @@ jobs:
         run: |
           git clone https://github.com/neos/flow-base-distribution.git -b ${{ matrix.flow-versions }} ${FLOW_FOLDER}
           cd ${FLOW_FOLDER}
-          composer require --no-update --no-interaction flowpack/entity-usage:"^1.1"
-          composer require --no-update --no-interaction flowpack/entity-usage-databasestorage:"^0.1"
 
           git -C ../${{ env.PACKAGE_FOLDER }} checkout -b build
           composer config repositories.package '{ "type": "path", "url": "../${{ env.PACKAGE_FOLDER }}", "options": { "symlink": false } }'

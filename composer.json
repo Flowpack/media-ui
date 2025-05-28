@@ -15,9 +15,7 @@
     "phpunit/phpunit": "^9.5"
   },
   "suggest": {
-    "phpstan/phpstan": "For running code quality checks",
-    "flowpack/neos-asset-usage": "Allows filtering unused assets and other related features",
-    "flowpack/entity-usage-databasestorage": "Required for the asset usage features"
+    "phpstan/phpstan": "For running code quality checks"
   },
   "scripts": {
     "test": "../../../bin/phpunit --enforce-time-limit --bootstrap ../../Libraries/autoload.php --testdox Tests",
