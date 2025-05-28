@@ -14,12 +14,11 @@ namespace Flowpack\Media\Ui\Service;
  * source code.
  */
 
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Flowpack\Media\Ui\Domain\Model\Dto\AssetUsageDetails;
 use Flowpack\Media\Ui\Domain\Model\Dto\UsageMetadataSchema;
-use Flowpack\Media\Ui\Exception;
+use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
@@ -31,7 +30,6 @@ use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
 use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Core\Bootstrap;
-use Neos\Flow\Exception as FlowException;
 use Neos\Flow\Http\Exception as HttpException;
 use Neos\Flow\Http\HttpRequestHandlerInterface;
 use Neos\Flow\I18n\Translator;
@@ -40,13 +38,17 @@ use Neos\Flow\Mvc\Routing\Exception\MissingActionNameException;
 use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\Package\PackageManager;
+use Neos\Flow\Reflection\Exception\ClassLoadingForReflectionFailedException;
+use Neos\Flow\Reflection\Exception\InvalidClassException;
 use Neos\Flow\Reflection\ReflectionService;
 use Neos\Flow\Security\Context as SecurityContext;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetUsageStrategyInterface;
 use Neos\Neos\AssetUsage\AssetUsageStrategy;
+use Neos\Neos\AssetUsage\Domain\AssetUsageRepository;
 use Neos\Neos\AssetUsage\Dto\AssetUsageReference;
 use Neos\Neos\Controller\BackendUserTranslationTrait;
 use Neos\Neos\Domain\Model\Site;
@@ -67,20 +69,22 @@ final class UsageDetailsService
     private array $accessibleWorkspaces = [];
 
     public function __construct(
-        protected readonly Translator $translator,
-        protected readonly PackageManager $packageManager,
-        protected readonly EntityManagerInterface $entityManager,
-        protected readonly ReflectionService $reflectionService,
-        protected readonly ObjectManagerInterface $objectManager,
-        protected readonly AssetService $assetService,
-        protected readonly SiteRepository $siteRepository,
-        protected readonly UserService $userService,
-        protected readonly Bootstrap $bootstrap,
-        protected readonly ContentRepositoryRegistry $contentRepositoryRegistry,
-        protected readonly NodeLabelGeneratorInterface $nodeLabelGenerator,
-        protected readonly WorkspaceMetadataAndRoleRepository $workspaceMetadataAndRoleRepository,
-        protected readonly ContentRepositoryAuthorizationService $contentRepositoryAuthorizationService,
-        protected readonly SecurityContext $securityContext,
+        private readonly Translator $translator,
+        private readonly PackageManager $packageManager,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ReflectionService $reflectionService,
+        private readonly ObjectManagerInterface $objectManager,
+        private readonly AssetService $assetService,
+        private readonly SiteRepository $siteRepository,
+        private readonly UserService $userService,
+        private readonly Bootstrap $bootstrap,
+        private readonly ContentRepositoryRegistry $contentRepositoryRegistry,
+        private readonly NodeLabelGeneratorInterface $nodeLabelGenerator,
+        private readonly WorkspaceMetadataAndRoleRepository $workspaceMetadataAndRoleRepository,
+        private readonly ContentRepositoryAuthorizationService $contentRepositoryAuthorizationService,
+        private readonly SecurityContext $securityContext,
+        private readonly Connection $dbal,
+        private readonly AssetSourceContext $assetSourceContext,
     ) {
     }
 
@@ -353,88 +357,100 @@ final class UsageDetailsService
 
     /**
      * Returns all assets which have no usage reference provided by `Flowpack.EntityUsage`
-     *
-     * @return AssetInterface[]
-     * @throws Exception
      */
-    public function getUnusedAssets(int $limit = 20, int $offset = 0, Types\AssetSourceId $assetSourceId = null): array
-    {
-        // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
-        $this->canQueryAssetUsage();
+    public function getUnusedAssets(
+        int $limit = 20,
+        int $offset = 0,
+        ?Types\AssetSourceId $assetSourceId = null
+    ): Types\Assets {
+        $queryBuilder = $this->dbal->createQueryBuilder();
+        $unusedAssetIds = [];
+        $assetSourceIdentifier = $assetSourceId ?? Types\AssetSourceId::default();
 
-        return $this->entityManager->createQuery(sprintf(/** @lang DQL */ '
-            SELECT a
-            FROM Neos\Media\Domain\Model\Asset a
-            WHERE
-                a.assetSourceIdentifier = :assetSourceIdentifier AND
-                %s AND
-                NOT EXISTS (
-                    SELECT e
-                    FROM Flowpack\EntityUsage\DatabaseStorage\Domain\Model\EntityUsage e
-                    WHERE a.Persistence_Object_Identifier = e.entityId
-                )
-            ORDER BY a.lastModified DESC
-        ', $this->getAssetVariantFilterClause('a')))
-            ->setParameter('assetSourceIdentifier', $assetSourceId->value ?? 'neos')
-            ->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->getResult();
-    }
-
-    /**
-     * Checks for the presence of the
-     *
-     * @throws Exception
-     */
-    protected function canQueryAssetUsage(): void
-    {
         try {
-            $this->packageManager->getPackage('Flowpack.EntityUsage.DatabaseStorage');
-        } catch (FlowException $e) {
-            throw new Exception('This method requires "flowpack/entity-usage-databasestorage" to be installed.',
-                1619178077);
+            $unusedAssetIds = $queryBuilder
+                ->select('a.persistence_object_identifier')
+                ->from('neos_media_domain_model_asset'/** @type Asset */, 'a')
+                ->leftJoin(
+                    'a',
+                    AssetUsageRepository::TABLE,
+                    'u',
+                    'a.persistence_object_identifier = u.assetid'
+                )
+                ->where('a.assetSourceIdentifier = :assetSourceId')
+                ->andWhere('a.dtype NOT IN (:assetVariantFilter)')
+                ->andWhere('u.assetid IS NULL')
+                ->setParameter('assetVariantFilter', implode(',', $this->getAssetVariantNames()))
+                ->setParameter('assetSourceId', $assetSourceIdentifier)
+                ->setFirstResult($offset)
+                ->setMaxResults($limit)
+                ->fetchFirstColumn();
+        } catch (\Doctrine\DBAL\Exception) {
+            // TODO: Log the error
         }
-    }
 
-    /**
-     * Returns a DQL clause filtering any implementation of AssetVariantInterface
-     */
-    protected function getAssetVariantFilterClause(string $alias): string
-    {
-        $variantClassNames = $this->reflectionService->getAllImplementationClassNamesForInterface(AssetVariantInterface::class);
+        $assetProxies = array_map(
+            fn(string $id) => $this->assetSourceContext->getAssetProxy(
+                Types\AssetId::fromString($id),
+                $assetSourceIdentifier
+            ),
+            $unusedAssetIds
+        );
 
-        return implode(' AND ', array_map(static function ($className) use ($alias) {
-            return sprintf("%s NOT INSTANCE OF %s", $alias, $className);
-        }, $variantClassNames));
+        return Types\Assets::fromAssetProxies($assetProxies);
     }
 
     /**
      * Returns number of assets which have no usage reference provided by `Flowpack.EntityUsage`
-     *
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     * @throws Exception
      */
-    public function getUnusedAssetCount(): int
+    public function getUnusedAssetCount(?Types\AssetSourceId $assetSourceId = null): int
     {
-        // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
-        $this->canQueryAssetUsage();
+        $queryBuilder = $this->dbal->createQueryBuilder();
+        $assetSourceIdentifier = $assetSourceId ?? Types\AssetSourceId::default();
 
-        return (int)$this->entityManager->createQuery(sprintf(/** @lang DQL */ '
-            SELECT COUNT(a.Persistence_Object_Identifier)
-            FROM Neos\Media\Domain\Model\Asset a
-            WHERE
-                a.assetSourceIdentifier = :assetSourceIdentifier AND
-                %s AND
-                NOT EXISTS (
-                    SELECT e
-                    FROM Flowpack\EntityUsage\DatabaseStorage\Domain\Model\EntityUsage e
-                    WHERE a.Persistence_Object_Identifier = e.entityId
+        try {
+            $queryBuilder
+                ->select('a.persistence_object_identifier')
+                ->from('neos_media_domain_model_asset'/** @type Asset */, 'a')
+                ->leftJoin(
+                    'a',
+                    AssetUsageRepository::TABLE,
+                    'u',
+                    'a.persistence_object_identifier = u.assetid'
                 )
-            ORDER BY a.lastModified DESC
-        ', $this->getAssetVariantFilterClause('a')))
-            ->setParameter('assetSourceIdentifier', 'neos')
-            ->getSingleScalarResult();
+                ->where('a.assetSourceIdentifier = :assetSourceId')
+                ->andWhere('a.dtype NOT IN (:assetVariantFilter)')
+                ->andWhere('u.assetid IS NULL')
+                ->setParameter('assetVariantFilter', implode(',', $this->getAssetVariantNames()))
+                ->setParameter('assetSourceId', $assetSourceIdentifier);
+            return (int)$this->dbal
+                ->fetchOne(
+                    'SELECT COUNT(*) FROM (' . $queryBuilder->getSQL() . ') s',
+                    $queryBuilder->getParameters()
+                );
+        } catch (\Doctrine\DBAL\Exception) {
+            // TODO: Log the error
+        }
+        return 0;
+    }
+
+    /**
+     * Returns the list of asset variant class names
+     * @return string[]
+     */
+    protected function getAssetVariantNames(): array
+    {
+        try {
+            $variantClassNames = $this->reflectionService->getAllImplementationClassNamesForInterface(
+                AssetVariantInterface::class
+            );
+        } catch (\Exception) {
+            return [];
+        }
+
+        return array_map(static function ($className) {
+            return strtolower(str_replace('Domain_Model_', '', str_replace('\\', '_', $className)));
+        }, $variantClassNames);
     }
 
     protected function translateById(string $id): ?string
