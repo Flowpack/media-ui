@@ -11,6 +11,9 @@ use Wwwision\Types\Attributes\ListBased;
 #[ListBased(itemClassName: Tag::class)]
 final class Tags implements \IteratorAggregate
 {
+    /**
+     * @param Tag[] $tags
+     */
     private function __construct(public readonly array $tags)
     {
     }
