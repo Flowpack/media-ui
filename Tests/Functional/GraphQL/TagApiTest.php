@@ -43,21 +43,21 @@ class TagApiTest extends AbstractMediaTestCase
 
     public function testCreateTag(): void
     {
-        $tag = $this->mediaApi->createTag('Test Tag');
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
         $this->assertEquals('Test Tag', $tag->label);
     }
 
     public function testUpdateTag(): void
     {
-        $tag = $this->mediaApi->createTag('Test Tag');
-        $updatedTag = $this->mediaApi->updateTag($tag->id, 'Updated Tag');
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
+        $updatedTag = $this->mediaApi->updateTag($tag->id, Types\TagLabel::fromString('Updated Tag'));
 
         $this->assertEquals('Updated Tag', $updatedTag->label);
     }
 
     public function testDeleteTag(): void
     {
-        $tag = $this->mediaApi->createTag('Test Tag');
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
         $result = $this->mediaApi->deleteTag($tag->id);
 
         $this->assertTrue($result->success);
@@ -71,7 +71,7 @@ class TagApiTest extends AbstractMediaTestCase
         $assetCollection = $this->mediaApi->createAssetCollection(
             Types\AssetCollectionTitle::fromString('Test Collection')
         );
-        $tag = $this->mediaApi->createTag('Test Tag', $assetCollection->id);
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), $assetCollection->id);
         $createdTag = $this->mediaApi->tag($tag->id);
 
         $resolvedTags = $this->assetCollectionResolver->tags($assetCollection);

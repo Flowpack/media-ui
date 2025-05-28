@@ -52,8 +52,8 @@ type Mutation {
   editAsset(id: AssetId! assetSourceId: AssetSourceId! filename: String! options: AssetEditOptionsInput!): MutationResult!
   importAsset(id: AssetId! assetSourceId: AssetSourceId!): Asset
   uploadFiles(files: [UploadedFileInput!] tagId: TagId assetCollectionId: AssetCollectionId): [FileUploadResult!]!
-  createTag(label: String! assetCollectionId: AssetCollectionId): Tag!
-  updateTag(id: TagId! label: String): Tag!
+  createTag(label: TagLabel! assetCollectionId: AssetCollectionId): Tag!
+  updateTag(id: TagId! label: TagLabel): Tag!
   deleteTag(id: TagId!): MutationResult!
 }
 
@@ -169,10 +169,16 @@ type IptcProperty {
   value: String!
 }
 
+"""
+The label of a Tag (e.g. "important")
+"""
+scalar TagLabel
+
 type Tag {
   """ The id of a tag """
   id: TagId!
-  label: String!
+  """ The label of a Tag (e.g. "important") """
+  label: TagLabel!
 }
 
 """

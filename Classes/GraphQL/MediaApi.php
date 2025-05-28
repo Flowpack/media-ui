@@ -506,7 +506,7 @@ final class MediaApi
      * @throws Exception|IllegalObjectTypeException
      */
     #[Mutation]
-    public function createTag(string $label, Types\AssetCollectionId $assetCollectionId = null): Types\Tag
+    public function createTag(Types\TagLabel $label, Types\AssetCollectionId $assetCollectionId = null): Types\Tag
     {
         return $this->tagMutator->createTag($label, $assetCollectionId);
     }
@@ -515,7 +515,7 @@ final class MediaApi
      * @throws Exception|IllegalObjectTypeException
      */
     #[Mutation]
-    public function updateTag(Types\TagId $id, string $label = null): Types\Tag
+    public function updateTag(Types\TagId $id, Types\TagLabel $label = null): Types\Tag
     {
         return $this->tagMutator->updateTag($id, $label);
     }

@@ -13,7 +13,7 @@ final class Tag
 {
     private function __construct(
         public readonly TagId $id,
-        public readonly string $label,
+        public readonly TagLabel $label,
     ) {
     }
 }
