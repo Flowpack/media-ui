@@ -8,9 +8,10 @@ interface DeleteAssetCollectionVariables {
 }
 
 export default function useDeleteAssetCollection() {
-    const [action, { error, data, loading }] = useMutation<{ deleteAssetCollection: MutationResult }, DeleteAssetCollectionVariables>(
-        DELETE_ASSET_COLLECTION
-    );
+    const [action, { error, data, loading }] = useMutation<
+        { deleteAssetCollection: MutationResult },
+        DeleteAssetCollectionVariables
+    >(DELETE_ASSET_COLLECTION);
 
     const deleteAssetCollection = (id: string) =>
         action({

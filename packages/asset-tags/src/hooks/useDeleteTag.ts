@@ -12,9 +12,7 @@ interface DeleteTagVariables {
 }
 
 export default function useDeleteTag() {
-    const [action, { error, data }] = useMutation<{ deleteTag: MutationResult }, DeleteTagVariables>(
-        DELETE_TAG
-    );
+    const [action, { error, data }] = useMutation<{ deleteTag: MutationResult }, DeleteTagVariables>(DELETE_TAG);
     const [selectedTagId, setSelectedTagId] = useRecoilState(selectedTagIdState);
 
     const deleteTag = (id: string) =>

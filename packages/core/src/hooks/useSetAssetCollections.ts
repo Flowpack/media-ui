@@ -14,9 +14,10 @@ interface SetAssetCollectionsVariables {
 }
 
 export default function useSetAssetCollections() {
-    const [action, { error, data, loading }] = useMutation<{ setAssetCollections: MutationResult }, SetAssetCollectionsVariables>(
-        SET_ASSET_COLLECTIONS
-    );
+    const [action, { error, data, loading }] = useMutation<
+        { setAssetCollections: MutationResult },
+        SetAssetCollectionsVariables
+    >(SET_ASSET_COLLECTIONS);
 
     const setAssetCollections = ({ asset, assetCollections }: SetAssetCollectionsProps) =>
         action({

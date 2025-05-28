@@ -14,9 +14,10 @@ interface SetAssetCollectionParentVariables {
 }
 
 export function useSetAssetCollectionParent() {
-    const [action, { error, data, loading }] = useMutation<{ setAssetCollectionParent: MutationResult }, SetAssetCollectionParentVariables>(
-        SET_ASSET_COLLECTION_PARENT
-    );
+    const [action, { error, data, loading }] = useMutation<
+        { setAssetCollectionParent: MutationResult },
+        SetAssetCollectionParentVariables
+    >(SET_ASSET_COLLECTION_PARENT);
 
     const setAssetCollectionParent = useCallback(
         ({ assetCollection, parent }: SetAssetCollectionParentProps) =>
