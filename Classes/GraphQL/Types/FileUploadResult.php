@@ -12,9 +12,9 @@ use Wwwision\Types\Attributes\Description;
 final class FileUploadResult implements \JsonSerializable
 {
     private function __construct(
-        public readonly Filename $filename,
         public readonly bool $success,
         public readonly string $result,
+        public readonly ?Filename $filename = null,
     ) {
     }
 

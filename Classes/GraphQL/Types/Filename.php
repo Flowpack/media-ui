@@ -11,7 +11,7 @@ use Wwwision\Types\Attributes\StringBased;
 #[Description('Base file name including extension (e.g. "some-file.pdf")')]
 #[Flow\Proxy(false)]
 #[StringBased]
-final class Filename implements \JsonSerializable
+final class Filename implements \JsonSerializable, \Stringable
 {
     private function __construct(public readonly string $value)
     {
@@ -23,6 +23,11 @@ final class Filename implements \JsonSerializable
     }
 
     public function jsonSerialize(): string
+    {
+        return $this->value;
+    }
+
+    public function __toString(): string
     {
         return $this->value;
     }

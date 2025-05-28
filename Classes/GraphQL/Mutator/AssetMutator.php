@@ -369,11 +369,11 @@ class AssetMutator
     public function editAsset(
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
-        string $filename,
+        Types\Filename $filename,
         Types\AssetEditOptions $options,
     ): MutationResult {
-        $filename = trim($filename);
-        if (!$filename) {
+        $filename = Types\Filename::fromString(trim($filename->value));
+        if (!$filename->value) {
             throw new MediaUiException('Filename was empty', 1678156902);
         }
 
@@ -386,8 +386,8 @@ class AssetMutator
         }
 
         // Make sure the filename has the same extension as before
-        if (!strpos($filename, $asset->getFileExtension())) {
-            $filename .= '.' . $asset->getFileExtension();
+        if (!strpos($filename->value, $asset->getFileExtension())) {
+            $filename = Types\Filename::fromString($filename . '.' . $asset->getFileExtension());
         }
 
         // Copy the resource to a new one with the new filename

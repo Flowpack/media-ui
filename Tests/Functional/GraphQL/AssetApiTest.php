@@ -95,7 +95,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $editResult = $this->mediaApi->editAsset(
             $asset->id,
             $asset->assetSource->id,
-            'new-name.svg',
+            Types\Filename::fromString('new-name.svg'),
             instantiate(Types\AssetEditOptions::class, [
                 'generateRedirects' => false,
             ])
