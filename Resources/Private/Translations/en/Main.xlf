@@ -792,9 +792,6 @@
             <trans-unit id="errors.1669221347.message" xml:space="preserve" approved="yes">
                 <source>Not supported: AssetProxyQueryInterface::setLimit does not accept `null`.</source>
             </trans-unit>
-            <trans-unit id="errors.1619178077.message" xml:space="preserve" approved="yes">
-                <source>This method requires "flowpack/entity-usage-databasestorage" to be installed.</source>
-            </trans-unit>
             <trans-unit id="errors.1462196420.message" xml:space="preserve" approved="yes">
                 <source>Asset could not be deleted, because it is still in use.</source>
             </trans-unit>
