@@ -487,6 +487,22 @@ final class MediaApi
     }
 
     /**
+     * Stores the given file and returns the result
+     */
+    #[Mutation]
+    public function uploadFile(
+        Types\UploadedFile $file = null,
+        Types\TagId $tagId = null,
+        Types\AssetCollectionId $assetCollectionId = null
+    ): Types\FileUploadResult {
+        return $this->assetMutator->uploadFile(
+            $file,
+            $tagId,
+            $assetCollectionId
+        );
+    }
+
+    /**
      * Stores all given files and returns an array of results for each upload
      */
     #[Mutation]

@@ -435,12 +435,20 @@ class AssetMutator
      * Stores the given file and returns an array with the result
      */
     public function uploadFile(
-        Types\UploadedFile $file,
+        ?Types\UploadedFile $file,
         Types\TagId $tagId = null,
         Types\AssetCollectionId $assetCollectionId = null
     ): Types\FileUploadResult {
         $success = false;
         $result = self::STATE_ERROR;
+
+        if (!$file) {
+            return instantiate(Types\FileUploadResult::class, [
+                'filename' => null,
+                'success' => false,
+                'result' => $result,
+            ]);
+        }
 
         $filename = $file->clientFilename;
         try {

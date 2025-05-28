@@ -65,7 +65,15 @@ class AssetApiTest extends AbstractMediaTestCase
     public function testUploadFile(): void
     {
         $file = self::createFile();
+        $result = $this->mediaApi->uploadFile($file);
 
+        $this->assertTrue($result->success);
+        $this->assertEquals('test.svg', $result->filename->value);
+    }
+
+    public function testUploadFiles(): void
+    {
+        $file = self::createFile();
         $result = $this->mediaApi->uploadFiles(
             Types\UploadedFiles::fromArray([$file])
         );
