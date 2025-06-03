@@ -37,6 +37,8 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
         }
 
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
+
+        $this->authenticateRoles(['Neos.Neos:Editor']);
     }
 
     public function testCreateAssetCollection(): void

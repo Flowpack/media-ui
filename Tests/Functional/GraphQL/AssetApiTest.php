@@ -44,7 +44,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
         $this->assetResolver = $this->objectManager->get(AssetResolver::class);
 
-        $this->iAmAuthenticatedWithRole('Neos.Neos:Editor');
+        $this->authenticateRoles(['Neos.Neos:Editor']);
     }
 
     public function testUploadFile(): void
