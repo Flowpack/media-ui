@@ -38,4 +38,9 @@ final class AssetCollectionId implements \JsonSerializable, \Stringable
     {
         return $this->value === self::UNASSIGNED;
     }
+
+    public function equals(?AssetCollectionId $id): bool
+    {
+        return $this->value === $id?->value;
+    }
 }

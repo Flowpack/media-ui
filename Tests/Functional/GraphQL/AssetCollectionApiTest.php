@@ -56,6 +56,21 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
 
         $this->assertInstanceOf(Types\AssetCollection::class, $childCollection);
         $this->assertTrue(str_starts_with($childCollection->path->value, $assetCollection->path->value));
+
+        $this->persist();
+
+        $assetCollections = $this->mediaApi->assetCollections();
+        $this->assertNotEmpty($assetCollections->collections);
+
+        // Assert that the created asset collection is in the list of asset collections
+        $foundCollection = false;
+        foreach ($assetCollections->collections as $collection) {
+            if ($collection->equals($assetCollection)) {
+                $foundCollection = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundCollection, 'The created asset collection was not found in the list of asset collections.');
     }
 
     public function testDeleteAssetCollection(): void
@@ -63,12 +78,14 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
         $assetCollection = $this->mediaApi->createAssetCollection(
             Types\AssetCollectionTitle::fromString('Test Collection'),
         );
-        $result = $this->mediaApi->deleteAssetCollection($assetCollection->id);
 
+        $result = $this->mediaApi->deleteAssetCollection($assetCollection->id);
         $this->assertTrue($result->success);
 
-        $assetCollection = $this->mediaApi->assetCollection($assetCollection->id);
-        $this->assertNull($assetCollection);
+        $this->persist();
+
+        $deletedAssetCollection = $this->mediaApi->assetCollection($assetCollection->id);
+        $this->assertNull($deletedAssetCollection);
     }
 
     public function testDeleteNonExistingAssetCollection(): void

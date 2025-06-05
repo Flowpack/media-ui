@@ -17,4 +17,9 @@ final class AssetCollection
         public readonly ?AssetCollectionPath $path = null,
     ) {
     }
+
+    public function equals(?AssetCollection $assetCollection): bool
+    {
+        return $assetCollection !== null && $this->id->equals($assetCollection->id);
+    }
 }
