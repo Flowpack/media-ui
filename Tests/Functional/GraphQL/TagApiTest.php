@@ -41,6 +41,8 @@ class TagApiTest extends AbstractMediaTestCase
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
         $this->assetCollectionResolver = $this->objectManager->get(AssetCollectionResolver::class);
         $this->assetResolver = $this->objectManager->get(AssetResolver::class);
+
+        $this->authenticateRoles(['Neos.Neos:Editor']);
     }
 
     public function testCreateTag(): void
@@ -61,8 +63,9 @@ class TagApiTest extends AbstractMediaTestCase
     {
         $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
         $result = $this->mediaApi->deleteTag($tag->id);
-
         $this->assertTrue($result->success);
+
+        $this->persist();
 
         $deletedTag = $this->mediaApi->tag($tag->id);
         $this->assertNull($deletedTag);

@@ -19,7 +19,6 @@ use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
-use Neos\Flow\Tests\Behavior\Features\Bootstrap\SecurityOperationsTrait;
 
 use function Wwwision\Types\instantiate;
 
@@ -28,7 +27,6 @@ use function Wwwision\Types\instantiate;
  */
 class AssetApiTest extends AbstractMediaTestCase
 {
-    use SecurityOperationsTrait;
 
     /**
      * @var boolean
@@ -46,7 +44,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
         $this->assetResolver = $this->objectManager->get(AssetResolver::class);
 
-        $this->iAmAuthenticatedWithRole('Neos.Neos:Editor');
+        $this->authenticateRoles(['Neos.Neos:Editor']);
     }
 
     public function testUploadFile(): void

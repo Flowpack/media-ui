@@ -1,4 +1,5 @@
 <?php
+
 namespace Flowpack\Media\Ui\Tests\Functional;
 
 /*
@@ -12,9 +13,11 @@ namespace Flowpack\Media\Ui\Tests\Functional;
  */
 
 use Flowpack\Media\Ui\GraphQL\Types;
+use Neos\Behat\FlowEntitiesTrait;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
+use Neos\Flow\Tests\Behavior\Features\Bootstrap\SecurityOperationsTrait;
 use Neos\Flow\Tests\FunctionalTestCase;
 use Neos\Utility\Files;
 
@@ -25,6 +28,9 @@ use function Wwwision\Types\instantiate;
  */
 abstract class AbstractMediaTestCase extends FunctionalTestCase
 {
+    use SecurityOperationsTrait;
+    use FlowEntitiesTrait;
+
     /**
      * @var string
      */
@@ -35,43 +41,98 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      */
     protected $resourceManager;
 
+    protected function setUp(): void
+    {
+        $this->objectManager = self::$bootstrap->getObjectManager();
+
+        $this->truncateAndSetupFlowEntities();
+
+        $this->cleanupPersistentResourcesDirectory();
+        self::$bootstrap->getObjectManager()->forgetInstance(ResourceManager::class);
+        $session = $this->objectManager->get(\Neos\Flow\Session\SessionInterface::class);
+        if ($session->isStarted()) {
+            $session->destroy(
+                sprintf(
+                    'assure that session is fresh, in setUp() method of functional test %s.',
+                    get_class($this) . '::' . $this->getName()
+                )
+            );
+        }
+
+        $privilegeManager = $this->objectManager->get(\Neos\Flow\Security\Authorization\TestingPrivilegeManager::class);
+        $privilegeManager->reset();
+
+        if ($this->testableSecurityEnabled === true || static::$testablePersistenceEnabled === true) {
+            $this->persistenceManager = $this->objectManager->get(
+                PersistenceManagerInterface::class
+            );
+        } else {
+            $privilegeManager->setOverrideDecision(true);
+        }
+
+        // HTTP must be initialized before Session and Security because they rely
+        // on an HTTP request being available via the request handler:
+        $this->setupHttp();
+
+        $session = $this->objectManager->get(\Neos\Flow\Session\SessionInterface::class);
+        if ($session->isStarted()) {
+            $session->destroy(
+                sprintf(
+                    'assure that session is fresh, in setUp() method of functional test %s.',
+                    get_class($this) . '::' . $this->getName()
+                )
+            );
+        }
+
+        $this->setupSecurity();
+    }
+
+    protected function persist(): void
+    {
+        $this->persistenceManager->persistAll();
+        $this->persistenceManager->clearState();
+    }
+
     public function tearDown(): void
     {
-        $persistenceManager = self::$bootstrap->getObjectManager()->get(PersistenceManagerInterface::class);
-        if (is_callable([$persistenceManager, 'tearDown'])) {
-            $persistenceManager->tearDown();
+        try {
+            $this->persistenceManager->persistAll();
+        } catch (\Exception $exception) {
         }
-        self::$bootstrap->getObjectManager()->forgetInstance(PersistenceManagerInterface::class);
-        parent::tearDown();
+
+        //if (is_callable([$this->persistenceManager, 'tearDown'])) {
+        //    $this->persistenceManager->tearDown();
+        //}
+        //$persistenceManager = self::$bootstrap->getObjectManager()->get(PersistenceManagerInterface::class);
+        //if (is_callable([$persistenceManager, 'tearDown'])) {
+        //    $persistenceManager->tearDown();
+        //}
+        //self::$bootstrap->getObjectManager()->forgetInstance(PersistenceManagerInterface::class);
+        //parent::tearDown();
     }
 
     /**
      * Creates an Image object from a file using a mock resource (in order to avoid a database resource pointer entry)
-     * @param string $imagePathAndFilename
-     * @return PersistentResource
      */
-    protected function getMockResourceByImagePath($imagePathAndFilename)
+    protected function getMockResourceByImagePath(string $imagePathAndFilename): PersistentResource
     {
         $imagePathAndFilename = Files::getUnixStylePath($imagePathAndFilename);
         $hash = sha1_file($imagePathAndFilename);
         copy($imagePathAndFilename, 'resource://' . $hash);
-        return $mockResource = $this->createMockResourceAndPointerFromHash($hash);
+        return $this->createMockResourceAndPointerFromHash($hash);
     }
 
     /**
      * Creates a mock ResourcePointer and PersistentResource from a given hash.
      * Make sure that a file representation already exists, e.g. with
      * file_put_content('resource://' . $hash) before
-     *
-     * @param string $hash
-     * @return PersistentResource
      */
-    protected function createMockResourceAndPointerFromHash($hash)
+    protected function createMockResourceAndPointerFromHash(string $hash): PersistentResource
     {
         $mockResource = $this->getMockBuilder(PersistentResource::class)->setMethods(['getHash', 'getUri'])->getMock();
         $mockResource->expects(self::any())
-                ->method('getHash')
-                ->will(self::returnValue($hash));
+            ->method('getHash')
+            ->will(self::returnValue($hash));
         $mockResource->expects(self::any())
             ->method('getUri')
             ->will(self::returnValue('resource://' . $hash));
@@ -80,11 +141,12 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
 
     /**
      * Builds a temporary directory to work on.
-     * @return void
      */
-    protected function prepareTemporaryDirectory()
+    protected function prepareTemporaryDirectory(): void
     {
-        $this->temporaryDirectory = Files::concatenatePaths([FLOW_PATH_DATA, 'Temporary', 'Testing', str_replace('\\', '_', __CLASS__)]);
+        $this->temporaryDirectory = Files::concatenatePaths(
+            [FLOW_PATH_DATA, 'Temporary', 'Testing', str_replace('\\', '_', __CLASS__)]
+        );
         if (!file_exists($this->temporaryDirectory)) {
             Files::createDirectoryRecursively($this->temporaryDirectory);
         }
@@ -108,5 +170,16 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
             'clientFilename' => 'test.svg',
             'errorStatus' => 0,
         ]);
+    }
+
+    /**
+     * @template T of object
+     * @param class-string<T> $className
+     *
+     * @return T
+     */
+    private function getObject(string $className): object
+    {
+        return $this->objectManager->get($className);
     }
 }

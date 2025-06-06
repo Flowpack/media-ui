@@ -16,8 +16,8 @@ Neos:
           # Settings for the property editor
           propertyEditor:
             collapsed: false
-          # Query the usage of each asset when loading them, note: this requires a more performant implementation of the asset usage than the Neos default provides
-          queryAssetUsage: false
+          # Query the usage of each asset when loading them
+          queryAssetUsage: true
           # Show similar assets, note: this requires an additional package to be installed
           showSimilarAssets: false
           # Show variants and the editor to modify them

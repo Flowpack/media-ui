@@ -111,7 +111,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
         $this->assetRepository->setDefaultOrderings($orderings);
     }
 
-    public function filterByType(AssetTypeFilter $assetType = null): void
+    public function filterByType(?AssetTypeFilter $assetType = null): void
     {
         $this->assetTypeFilter = (string)$assetType ?: 'All';
         $this->initializeObject();
@@ -126,7 +126,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
      * NOTE: This needs to be refactored to use an asset collection identifier instead of Media's domain model before
      *       it can become a public API for other asset sources.
      */
-    public function filterByCollection(AssetCollection $assetCollection = null): void
+    public function filterByCollection(?AssetCollection $assetCollection = null): void
     {
         $this->activeAssetCollection = $assetCollection;
     }

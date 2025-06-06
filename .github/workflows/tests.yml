@@ -36,7 +36,11 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: 8.2
+
+      - name: Add additional dependencies
+        run: |
+          composer require --no-update --no-interaction neos/contentgraph-doctrinedbaladapter:"~9.0.0"
 
       - name: Cache dependencies
         uses: actions/cache@v3
@@ -47,13 +51,13 @@ jobs:
       - name: Install dependencies
         uses: php-actions/composer@v6
         with:
-          php_version: 8.1
+          php_version: 8.2
           version: 2
 
       - name: PHPStan
         uses: php-actions/phpstan@v3
         with:
-          php_version: 8.1
+          php_version: 8.2
           version: 2.1.17
           command: analyse
           path: 'Classes/'
@@ -68,8 +72,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['8.1']
-        flow-versions: ['8.3']
+        php-versions: ['8.2']
+        flow-versions: ['9.0']
+
+    services:
+      mariadb:
+        # see https://mariadb.com/kb/en/mariadb-server-release-dates/
+        # this should be a current release, e.g. the LTS version
+        image: mariadb:10.8
+        env:
+          MYSQL_USER: neos
+          MYSQL_PASSWORD: neos
+          MYSQL_DATABASE: neos_functional_testing
+          MYSQL_ROOT_PASSWORD: neos
+        ports:
+          - "3306:3306"
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v3
@@ -96,12 +114,11 @@ jobs:
         run: |
           git clone https://github.com/neos/flow-base-distribution.git -b ${{ matrix.flow-versions }} ${FLOW_FOLDER}
           cd ${FLOW_FOLDER}
-          composer require --no-update --no-interaction flowpack/entity-usage:"^1.1"
-          composer require --no-update --no-interaction flowpack/entity-usage-databasestorage:"^0.1"
 
           git -C ../${{ env.PACKAGE_FOLDER }} checkout -b build
           composer config repositories.package '{ "type": "path", "url": "../${{ env.PACKAGE_FOLDER }}", "options": { "symlink": false } }'
           composer require --no-update --no-interaction flowpack/media-ui:"dev-build as dev-${PACKAGE_TARGET_VERSION}"
+          composer require --no-update --no-interaction neos/contentgraph-doctrinedbaladapter:"~9.0.0"
 
       - name: Composer Install
         run: |
@@ -113,10 +130,36 @@ jobs:
           cd ${FLOW_FOLDER}
           bin/phpunit --colors -c Build/BuildEssentials/PhpUnit/UnitTests.xml Packages/Application/Flowpack.Media.Ui/Tests/Unit/
 
+      - name: Setup Flow configuration
+        run: |
+          cd ${FLOW_FOLDER}
+          rm -f Configuration/Testing/Settings.yaml
+          cat <<EOF >> Configuration/Testing/Settings.yaml
+          Neos:
+            Flow:
+              persistence:
+                backendOptions:
+                  host: '127.0.0.1'
+                  driver: pdo_mysql
+                  user: 'neos'
+                  password: 'neos'
+                  dbname: 'neos_functional_testing'
+          EOF
+
       - name: Run Functional tests
         run: |
           cd ${FLOW_FOLDER}
           bin/phpunit --colors -c Build/BuildEssentials/PhpUnit/FunctionalTests.xml Packages/Application/Flowpack.Media.Ui/Tests/Functional/
+
+      - name: Show log on failure
+        if: ${{ failure()  }}
+        run: |
+          cd ${FLOW_PATH_ROOT}
+          cat Data/Logs/System_Testing.log
+          for file in Data/Logs/Exceptions/*; do
+            echo $file
+            cat $file
+          done
 
   js-unit-tests:
     runs-on: ubuntu-latest

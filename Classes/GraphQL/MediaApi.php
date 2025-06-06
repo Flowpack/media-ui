@@ -280,13 +280,12 @@ final class MediaApi
     #[Query]
     public function unusedAssets(int $limit = 20, int $offset = 0): Types\Assets
     {
-        $assets = [];
         try {
-            $assets = $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
+            return $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
         } catch (MediaUiException $e) {
             $this->logger->error('Could not retrieve unused assets', ['exception' => $e]);
         }
-        return Types\Assets::fromAssets($assets);
+        return Types\Assets::empty();
     }
 
     #[Description('Provides a list of changes to assets since a given timestamp')]
