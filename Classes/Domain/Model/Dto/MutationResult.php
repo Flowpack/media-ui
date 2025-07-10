@@ -16,7 +16,7 @@ class MutationResult implements \JsonSerializable
     private ?array $messages;
     private ?array $data;
 
-    public function __construct(bool $success, array $messages = null, array $data = null)
+    public function __construct(bool $success, ?array $messages = null, ?array $data = null)
     {
         $this->success = $success;
         $this->messages = $messages;
