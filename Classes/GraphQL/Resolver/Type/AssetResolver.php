@@ -109,8 +109,7 @@ class AssetResolver
 
         $icon = $this->fileTypeIconService::getIcon($assetProxy->getFilename());
 
-        if ($asset instanceof ProvidesOriginalUriInterface) {
-            /** @phpstan-ignore method.notFound */
+        if ($assetProxy instanceof ProvidesOriginalUriInterface) {
             $url = (string)$assetProxy->getOriginalUri();
         } else {
             $url = (string)$assetProxy->getPreviewUri();
