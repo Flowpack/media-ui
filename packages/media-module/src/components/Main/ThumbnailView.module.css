@@ -3,3 +3,7 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--theme-spacing-Full);
 }
+
+.thumbnailViewInSelectionMode {
+    padding-bottom: 41px;
+}
