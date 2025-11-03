@@ -34,30 +34,46 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             });
     }, [importAsset, asset, Notify, translate]);
 
+    const canBeViewedInLightbox = asset.thumbnailUrl.indexOf('/Static/Packages/') === -1;
+
     if (!asset) return null;
 
     return (
         <>
-            <IconButton
-                title={translate('itemActions.preview', 'Preview asset')}
-                icon="expand-alt"
-                size="regular"
-                style="transparent"
-                hoverStyle="brand"
-                onClick={() => setSelectedAssetForPreview({ assetId: asset.id, assetSourceId: asset.assetSource.id })}
-            />
+            {canBeViewedInLightbox && (
+                <IconButton
+                    title={translate('itemActions.preview', 'Preview asset')}
+                    icon="expand-alt"
+                    size="small"
+                    style="transparent"
+                    hoverStyle="brand"
+                    onClick={() =>
+                        setSelectedAssetForPreview({ assetId: asset.id, assetSourceId: asset.assetSource.id })
+                    }
+                />
+            )}
+            {asset.file?.url && (
+                <a
+                    href={asset.file.url}
+                    title={translate('itemActions.openInNewTab', 'Open asset in a new browser tab')}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                >
+                    <IconButton icon="external-link-alt" size="small" style="transparent" hoverStyle="brand" />
+                </a>
+            )}
             {!asset.imported && !asset.localId && (
                 <IconButton
                     title={translate('itemActions.import', 'Import asset')}
                     icon="cloud-download-alt"
-                    size="regular"
+                    size="small"
                     style="transparent"
                     hoverStyle="brand"
                     onClick={onImportAsset}
                 />
             )}
-            <DeleteAssetButton asset={asset} />
-            <DownloadAssetButton asset={asset} />
+            <DeleteAssetButton asset={asset} size="small" />
+            <DownloadAssetButton asset={asset} size="small" />
             {asset.localId && (
                 <IconButton
                     title={
@@ -66,7 +82,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                             : translate('itemActions.copyToClipboard', 'Copy to clipboard')
                     }
                     icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
-                    size="regular"
+                    size="small"
                     style="transparent"
                     hoverStyle="brand"
                     className={isInClipboard ? 'button--active' : ''}
