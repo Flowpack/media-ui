@@ -5,7 +5,11 @@ import { IconButton } from '@neos-project/react-ui-components';
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useDeleteAsset } from '@media-ui/core/src/hooks';
 
-const DeleteAssetButton: React.FC<{ asset: Asset; style?: string }> = ({ asset, style = 'transparent' }) => {
+const DeleteAssetButton: React.FC<{ asset: Asset; style?: string; size?: 'small' | 'regular' }> = ({
+    asset,
+    style = 'transparent',
+    size = 'regular',
+}) => {
     const { translate } = useIntl();
     const { approvalAttainmentStrategy } = useMediaUi();
     const { deleteAsset } = useDeleteAsset();
@@ -43,7 +47,7 @@ const DeleteAssetButton: React.FC<{ asset: Asset; style?: string }> = ({ asset, 
             }
             disabled={asset.isInUse}
             icon="trash"
-            size="regular"
+            size={size}
             style={style}
             hoverStyle="error"
             onClick={() => onDeleteAsset(asset)}

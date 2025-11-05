@@ -11,7 +11,8 @@
 
 .thumbnail:hover .toolBar {
     pointer-events: all;
-    background-color: rgba(0.15, 0.15, 0.15, 0.25);
+    background-color: rgba(0.15, 0.15, 0.15, 0.35);
+    backdrop-filter: blur(2px);
 }
 
 .thumbnail:hover .toolBar button {
@@ -67,8 +68,8 @@
 .toolBar {
     display: flex;
     position: absolute;
-    top: var(--theme-spacing-Quarter);
-    right: var(--theme-spacing-Quarter);
+    top: 0;
+    right: 0;
     pointer-events: none;
     background-color: transparent;
     transition: background-color .1s ease-in;
