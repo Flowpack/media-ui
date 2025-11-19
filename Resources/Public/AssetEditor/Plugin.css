@@ -1664,7 +1664,8 @@
 
 .Thumbnail-module__thumbnail___ck0xX:hover .Thumbnail-module__toolBar___2GIKg {
     pointer-events: all;
-    background-color: rgba(0.15, 0.15, 0.15, 0.25);
+    background-color: rgba(0.15, 0.15, 0.15, 0.35);
+    backdrop-filter: blur(2px);
 }
 
 .Thumbnail-module__thumbnail___ck0xX:hover .Thumbnail-module__toolBar___2GIKg button {
@@ -1720,8 +1721,8 @@
 .Thumbnail-module__toolBar___2GIKg {
     display: flex;
     position: absolute;
-    top: var(--theme-spacing-Quarter);
-    right: var(--theme-spacing-Quarter);
+    top: 0;
+    right: 0;
     pointer-events: none;
     background-color: transparent;
     transition: background-color .1s ease-in;
