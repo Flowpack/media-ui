@@ -238,6 +238,10 @@
                 <source>Preview asset</source>
                 <target>Vorschau</target>
             </trans-unit>
+            <trans-unit id="itemActions.openInNewTab" xml:space="preserve" approved="yes">
+                <source>Open asset in a new browser tab</source>
+                <target>Datei in einem neuen Browser-Tab öffnen</target>
+            </trans-unit>
             <trans-unit id="itemActions.import" xml:space="preserve" approved="yes">
                 <source>Import asset</source>
                 <target>Datei importieren</target>
