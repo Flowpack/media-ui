@@ -33,7 +33,7 @@ import classes from './App.module.css';
 import './Global.module.css';
 
 const App = () => {
-    const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
+    const { selectionMode, isInDialog, containerRef } = useMediaUi();
     const uploadDialog = useRecoilValue(uploadDialogState);
     const createTagDialog = useRecoilValue(createTagDialogState);
     const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogVisibleState);
@@ -59,7 +59,7 @@ const App = () => {
         <div
             className={cx(classes.container, classes.mediaModuleApp, theme.mediaModuleTheme, {
                 [classes.selectionMode]: selectionMode,
-                [classes.fullHeight]: isInNodeCreationDialog,
+                [classes.fullHeight]: isInDialog,
             })}
             ref={containerRef}
         >

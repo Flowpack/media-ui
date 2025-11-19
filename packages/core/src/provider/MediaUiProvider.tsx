@@ -20,6 +20,7 @@ interface MediaUiProviderProps {
     dummyImage: string;
     selectionMode?: boolean;
     isInNodeCreationDialog?: boolean;
+    isInDialog?: boolean;
     containerRef: React.RefObject<HTMLDivElement>;
     onAssetSelection?: (localAssetIdentifier: string) => void;
     approvalAttainmentStrategyFactory?: ApprovalAttainmentStrategyFactory;
@@ -32,6 +33,7 @@ interface MediaUiProviderValues {
     // TODO: Turn view variants into a single view Enum
     selectionMode: boolean;
     isInNodeCreationDialog: boolean;
+    isInDialog: boolean;
     isAssetSelectable: (asset: Asset) => boolean;
     approvalAttainmentStrategy: ApprovalAttainmentStrategy;
 }
@@ -44,6 +46,7 @@ export function MediaUiProvider({
     dummyImage,
     selectionMode = false,
     isInNodeCreationDialog = false,
+    isInDialog = false,
     onAssetSelection = null,
     containerRef,
     approvalAttainmentStrategyFactory = DefaultApprovalAttainmentStrategyFactory,
@@ -136,6 +139,7 @@ export function MediaUiProvider({
                 handleSelectAsset,
                 selectionMode,
                 isInNodeCreationDialog,
+                isInDialog,
                 isAssetSelectable,
                 approvalAttainmentStrategy,
             }}

@@ -33,11 +33,11 @@ const useLightBoxContainer = (defaultContainer: null | Element = null) => {
 };
 
 export default function AssetPreview() {
-    const { containerRef, isInNodeCreationDialog } = useMediaUi();
+    const { containerRef, isInDialog } = useMediaUi();
     const assets = useRecoilValue(availableAssetsState);
     const [selectedAssetForPreview, setSelectedAssetForPreview] = useRecoilState(selectedAssetForPreviewState);
     const { asset } = useAssetQuery(selectedAssetForPreview);
-    const lightBoxContainer = useLightBoxContainer(isInNodeCreationDialog ? null : containerRef.current);
+    const lightBoxContainer = useLightBoxContainer(isInDialog ? null : containerRef.current);
 
     const [prevAsset, nextAsset] = useMemo(() => {
         if (!asset) return [null, null];

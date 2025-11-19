@@ -17,10 +17,10 @@ interface SortByOption {
 }
 
 const SortOrderSelector: React.FC = () => {
-    const { isInNodeCreationDialog, selectionMode } = useMediaUi();
+    const { isInDialog, selectionMode } = useMediaUi();
     const [sortOrderState, setSortOrderState] = useRecoilState(selectedSortOrderState);
     const { translate } = useIntl();
-    const hideOptionIcon = isInNodeCreationDialog || selectionMode;
+    const hideOptionIcon = isInDialog || selectionMode;
     const handleChangeSortBy = useCallback(
         (sortBy: SORT_BY) => {
             setSortOrderState({ ...sortOrderState, sortBy });

@@ -45,6 +45,7 @@ interface MediaSelectionScreenState {
 
 class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps, MediaSelectionScreenState> {
     notificationHandler: NeosNotification;
+    containerRef = createRef<HTMLDivElement>();
 
     constructor(props: MediaSelectionScreenProps) {
         super(props);
@@ -69,7 +70,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
             initialLeftSideBarHiddenState: isLeftSideBarHidden,
             initialNodeCreationDialogOpenState: isNodeCreationDialogOpen,
         });
-        if (!isLeftSideBarHidden && !isNodeCreationDialogOpen) {
+        if (!isLeftSideBarHidden && !isNodeCreationDialogOpen && !this.isInDialog()) {
             toggleSidebar();
         }
     }
@@ -77,7 +78,11 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
     componentWillUnmount() {
         const { isLeftSideBarHidden, toggleSidebar } = this.props;
         const { initialLeftSideBarHiddenState, initialNodeCreationDialogOpenState } = this.state;
-        if (initialLeftSideBarHiddenState !== isLeftSideBarHidden && !initialNodeCreationDialogOpenState) {
+        if (
+            initialLeftSideBarHiddenState !== isLeftSideBarHidden &&
+            !initialNodeCreationDialogOpenState &&
+            !this.isInDialog()
+        ) {
             toggleSidebar();
         }
     }
@@ -138,16 +143,20 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         };
     };
 
+    isInDialog = () => {
+        return this.state.initialNodeCreationDialogOpenState || !!this.containerRef.current?.closest('[role="dialog"]');
+    };
+
     render() {
         const { onComplete } = this.props;
         const { dummyImage } = this.getConfig();
-        const containerRef = createRef<HTMLDivElement>();
-        const isInNodeCreationDialog = this.state.initialNodeCreationDialogOpenState;
+        const isInDialog = this.isInDialog();
+        const { initialNodeCreationDialogOpenState } = this.state;
 
         return (
             <div
                 className={cx(classes.mediaSelectionScreen, {
-                    [classes.isInNodeCreationDialog]: isInNodeCreationDialog,
+                    [classes.isInDialog]: isInDialog,
                 })}
             >
                 <MediaApplicationWrapper
@@ -160,8 +169,9 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                         dummyImage={dummyImage}
                         onAssetSelection={onComplete}
                         selectionMode
-                        isInNodeCreationDialog={isInNodeCreationDialog}
-                        containerRef={containerRef}
+                        isInNodeCreationDialog={initialNodeCreationDialogOpenState}
+                        isInDialog={isInDialog}
+                        containerRef={this.containerRef}
                     >
                         <AssetCollectionTreeDndProvider>
                             <App />
