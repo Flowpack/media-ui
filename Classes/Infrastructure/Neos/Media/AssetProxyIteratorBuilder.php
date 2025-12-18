@@ -85,12 +85,12 @@ class AssetProxyIteratorBuilder
         ?Types\AssetType $assetType,
         AssetProxyRepositoryInterface $assetProxyRepository
     ): void {
-        if ($assetType) {
+        if ($assetType && $assetType->value && $assetType->value !== 'All') {
             try {
                 $assetTypeFilter = new AssetTypeFilter(ucfirst((string)$assetType));
                 $assetProxyRepository->filterByType($assetTypeFilter);
-            } catch (\InvalidArgumentException) {
-                $this->logger->warning('Ignoring invalid asset type when filtering assets ' . $assetType);
+            } catch (\InvalidArgumentException $e) {
+                $this->logger->warning('Ignoring invalid asset type when filtering assets ' . $e->getMessage());
             }
         }
     }
@@ -99,11 +99,11 @@ class AssetProxyIteratorBuilder
         ?Types\MediaType $mediaType,
         AssetProxyRepositoryInterface $assetProxyRepository
     ): void {
-        if ($mediaType && $assetProxyRepository instanceof NeosAssetProxyRepository) {
+        if ($mediaType && $mediaType->value && $assetProxyRepository instanceof NeosAssetProxyRepository) {
             try {
                 $assetProxyRepository->filterByMediaType((string)$mediaType);
-            } catch (\InvalidArgumentException) {
-                $this->logger->warning('Ignoring invalid media-type when filtering assets ' . $mediaType);
+            } catch (\InvalidArgumentException $e) {
+                $this->logger->warning('Ignoring invalid media-type when filtering assets ' . $e->getMessage());
             }
         }
     }
