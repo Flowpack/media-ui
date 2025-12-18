@@ -1532,8 +1532,9 @@
     height: auto;
 }
 
-.ListView-module__listView--fullHeight___36H-z {
+.ListView-module__fullHeight___199_T {
     height: 100%;
+    padding-bottom: 41px;
 }
 
 .ListView-module__listView___OX0zS table {
@@ -1870,7 +1871,7 @@ body > [class*="_selectBox__contents_"] {
     padding: 1rem;
 }
 
-.MediaSelectionScreen-module__isInNodeCreationDialog___2u1FV {
+.MediaSelectionScreen-module__isInDialog___2pig1 {
     padding: 0;
 }
 
