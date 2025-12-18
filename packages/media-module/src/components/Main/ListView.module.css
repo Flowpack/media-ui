@@ -2,8 +2,9 @@
     height: auto;
 }
 
-.listView--fullHeight {
+.fullHeight {
     height: 100%;
+    padding-bottom: 41px;
 }
 
 .listView table {

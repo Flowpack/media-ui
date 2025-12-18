@@ -15,7 +15,7 @@ interface ListViewProps {
 import classes from './ListView.module.css';
 
 const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) => {
-    const { isInNodeCreationDialog } = useMediaUi();
+    const { isInDialog } = useMediaUi();
     const { translate } = useIntl();
     const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
     const selectAsset = useSelectAsset();
@@ -32,7 +32,7 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
     );
 
     return (
-        <section className={cx(classes.listView, isInNodeCreationDialog && classes.listViewFullHeight)}>
+        <section className={cx(classes.listView, isInDialog && classes.fullHeight)}>
             <table>
                 <thead>
                     <tr>
