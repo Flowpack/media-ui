@@ -59,7 +59,7 @@ class AssetCollectionMutator
      */
     public function createAssetCollection(
         Types\AssetCollectionTitle $title,
-        Types\AssetCollectionId $parent = null
+        ?Types\AssetCollectionId $parent = null
     ): Types\AssetCollection {
         $newAssetCollection = new AssetCollection($title->value);
         if ($parent) {
@@ -121,8 +121,8 @@ class AssetCollectionMutator
      */
     public function updateAssetCollection(
         Types\AssetCollectionId $id,
-        Types\AssetCollectionTitle $title = null,
-        Types\TagIds $tagIds = null
+        ?Types\AssetCollectionTitle $title = null,
+        ?Types\TagIds $tagIds = null
     ): MutationResult {
         /** @var AssetCollection&HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
@@ -166,7 +166,7 @@ class AssetCollectionMutator
      */
     public function setAssetCollectionParent(
         Types\AssetCollectionId $id,
-        Types\AssetCollectionId $parent = null
+        ?Types\AssetCollectionId $parent = null
     ): MutationResult {
         /** @var AssetCollection $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);

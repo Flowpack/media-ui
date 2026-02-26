@@ -64,7 +64,7 @@ final class AssetChangeLog
     /**
      * Returns all changes since the given timestamp in ascending order
      */
-    public function getChanges(Types\DateTime $since = null): Types\AssetChanges
+    public function getChanges(?Types\DateTime $since = null): Types\AssetChanges
     {
         try {
             $cachedChanges = $this->cache->getByTag('changedAssets');

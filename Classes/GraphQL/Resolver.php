@@ -46,7 +46,7 @@ class Resolver
     public function __construct(
         private readonly object $api,
         private readonly array $typeNamespaces,
-        CustomResolvers $customResolvers = null,
+        ?CustomResolvers $customResolvers = null,
     ) {
         $this->customResolvers = $customResolvers ?? CustomResolvers::create();
     }
