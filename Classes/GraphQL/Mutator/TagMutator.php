@@ -54,7 +54,7 @@ class TagMutator
     /**
      * @throws Exception|IllegalObjectTypeException
      */
-    public function createTag(Types\TagLabel $label, Types\AssetCollectionId $assetCollectionId = null): Types\Tag
+    public function createTag(Types\TagLabel $label, ?Types\AssetCollectionId $assetCollectionId = null): Types\Tag
     {
         $tag = $this->tagRepository->findOneByLabel($label->value);
         if ($tag === null) {
@@ -82,7 +82,7 @@ class TagMutator
     /**
      * @throws Exception|IllegalObjectTypeException
      */
-    public function updateTag(Types\TagId $id, Types\TagLabel $label = null): Types\Tag
+    public function updateTag(Types\TagId $id, ?Types\TagLabel $label = null): Types\Tag
     {
         /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);

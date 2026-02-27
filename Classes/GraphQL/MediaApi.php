@@ -80,12 +80,12 @@ final class MediaApi
      */
     #[Query]
     public function assetCount(
-        Types\AssetSourceId $assetSourceId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\MediaType $mediaType = null,
-        Types\AssetType $assetType = null,
-        Types\TagId $tagId = null,
-        string $searchTerm = null,
+        ?Types\AssetSourceId $assetSourceId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
+        ?Types\MediaType $mediaType = null,
+        ?Types\AssetType $assetType = null,
+        ?Types\TagId $tagId = null,
+        ?string $searchTerm = null,
     ): int {
         $iterator = $this->assetProxyIteratorBuilder->build(
             $assetSourceId,
@@ -106,14 +106,14 @@ final class MediaApi
     #[Description('Provides a filterable list of asset proxies. These are the main entities for media management.')]
     #[Query]
     public function assets(
-        Types\AssetSourceId $assetSourceId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\MediaType $mediaType = null,
-        Types\AssetType $assetType = null,
-        Types\TagId $tagId = null,
-        Types\SortBy $sortBy = null,
-        Types\SortDirection $sortDirection = null,
-        string $searchTerm = null,
+        ?Types\AssetSourceId $assetSourceId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
+        ?Types\MediaType $mediaType = null,
+        ?Types\AssetType $assetType = null,
+        ?Types\TagId $tagId = null,
+        ?Types\SortBy $sortBy = null,
+        ?Types\SortDirection $sortDirection = null,
+        ?string $searchTerm = null,
         int $limit = 20,
         int $offset = 0,
     ): ?Types\Assets {
@@ -290,7 +290,7 @@ final class MediaApi
 
     #[Description('Provides a list of changes to assets since a given timestamp')]
     #[Query]
-    public function changedAssets(Types\DateTime $since = null): Types\ChangedAssetsResult
+    public function changedAssets(?Types\DateTime $since = null): Types\ChangedAssetsResult
     {
         $changes = $this->assetChangeLog->getChanges($since);
         return instantiate(Types\ChangedAssetsResult::class, [
@@ -336,9 +336,9 @@ final class MediaApi
     public function updateAsset(
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
-        string $label = null,
-        string $caption = null,
-        string $copyrightNotice = null
+        ?string $label = null,
+        ?string $caption = null,
+        ?string $copyrightNotice = null
     ): ?Types\Asset {
         return $this->assetMutator->updateAsset($id, $assetSourceId, $label, $caption, $copyrightNotice);
     }
@@ -490,9 +490,9 @@ final class MediaApi
      */
     #[Mutation]
     public function uploadFile(
-        Types\UploadedFile $file = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        ?Types\UploadedFile $file = null,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null
     ): Types\FileUploadResult {
         return $this->assetMutator->uploadFile(
             $file,
@@ -506,9 +506,9 @@ final class MediaApi
      */
     #[Mutation]
     public function uploadFiles(
-        Types\UploadedFiles $files = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        ?Types\UploadedFiles $files = null,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null
     ): Types\FileUploadResults {
         return $this->assetMutator->uploadFiles(
             $files,
@@ -521,7 +521,7 @@ final class MediaApi
      * @throws Exception|IllegalObjectTypeException
      */
     #[Mutation]
-    public function createTag(Types\TagLabel $label, Types\AssetCollectionId $assetCollectionId = null): Types\Tag
+    public function createTag(Types\TagLabel $label, ?Types\AssetCollectionId $assetCollectionId = null): Types\Tag
     {
         return $this->tagMutator->createTag($label, $assetCollectionId);
     }
@@ -530,7 +530,7 @@ final class MediaApi
      * @throws Exception|IllegalObjectTypeException
      */
     #[Mutation]
-    public function updateTag(Types\TagId $id, Types\TagLabel $label = null): Types\Tag
+    public function updateTag(Types\TagId $id, ?Types\TagLabel $label = null): Types\Tag
     {
         return $this->tagMutator->updateTag($id, $label);
     }

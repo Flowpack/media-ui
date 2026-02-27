@@ -84,9 +84,9 @@ class AssetMutator
     public function updateAsset(
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
-        string $label = null,
-        string $caption = null,
-        string $copyrightNotice = null
+        ?string $label = null,
+        ?string $caption = null,
+        ?string $copyrightNotice = null
     ): ?Types\Asset {
         $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
@@ -439,8 +439,8 @@ class AssetMutator
      */
     public function uploadFile(
         ?Types\UploadedFile $file,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null
     ): Types\FileUploadResult {
         $success = false;
         $result = self::STATE_ERROR;
@@ -519,9 +519,9 @@ class AssetMutator
      * Stores all given files and returns an array of results for each upload
      */
     public function uploadFiles(
-        Types\UploadedFiles $files = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        ?Types\UploadedFiles $files = null,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null
     ): Types\FileUploadResults {
         if (!$files) {
             return Types\FileUploadResults::empty();

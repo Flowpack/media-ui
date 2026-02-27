@@ -47,8 +47,8 @@ final class GraphQLMiddlewareFactory
         string $uriPath,
         string $apiObjectName,
         array $typeNamespaces = [],
-        string $simulateControllerObjectName = null,
-        array $customResolversSettings = null,
+        ?string $simulateControllerObjectName = null,
+        ?array $customResolversSettings = null,
     ): GraphQLMiddleware {
         return new GraphQLMiddleware(
             $uriPath,

@@ -36,14 +36,14 @@ class AssetProxyIteratorBuilder
     }
 
     public function build(
-        Types\AssetSourceId $assetSourceId = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\MediaType $mediaType = null,
-        Types\AssetType $assetType = null,
-        SearchTerm $searchTerm = null,
-        Types\SortBy $sortBy = null,
-        Types\SortDirection $sortDirection = null,
+        ?Types\AssetSourceId $assetSourceId = null,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
+        ?Types\MediaType $mediaType = null,
+        ?Types\AssetType $assetType = null,
+        ?SearchTerm $searchTerm = null,
+        ?Types\SortBy $sortBy = null,
+        ?Types\SortDirection $sortDirection = null,
     ): ?AssetProxyIteratorAggregate {
         $assetSourceId = $assetSourceId ?: Types\AssetSourceId::default();
 
