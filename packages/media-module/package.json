@@ -4,15 +4,9 @@
   "license": "GNU GPLv3",
   "private": true,
   "source": "src/index.tsx",
-  "app": "../../Public/Assets/main.bundle.js",
-  "targets": {
-    "app": {
-      "distDir": "../../Resources/Public/Assets"
-    }
-  },
   "scripts": {
-    "watch": "parcel watch",
-    "build": "parcel build --no-scope-hoist"
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch"
   },
   "dependencies": {
     "@apollo/client": "^3.3.13",
@@ -55,7 +49,6 @@
     "@types/react": "^17.0.60",
     "@types/react-dom": "^17.0.20",
     "@types/react-dropzone": "^5.1.0",
-    "apollo-server-express": "^2.26.1",
-    "parcel": "^2.9.1"
+    "apollo-server-express": "^2.26.1"
   }
 }
