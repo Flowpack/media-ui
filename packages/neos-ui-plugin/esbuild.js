@@ -6,7 +6,10 @@ const isWatch = process.argv.includes('--watch');
 const options = {
     logLevel: 'info',
     bundle: true,
-    minify: !isWatch,
+    // we don't minify identifiers as with css modules another plugin is likely to override them https://github.com/evanw/esbuild/issues/3484
+    minifyIdentifiers: false,
+    minifySyntax: !isWatch,
+    minifyWhitespace: !isWatch,
     sourcemap: 'linked',
     legalComments: 'linked',
     target: 'es2020',
