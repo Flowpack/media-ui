@@ -13,6 +13,10 @@ const options = {
         'main.bundle': './src/index.tsx',
     },
     outdir: '../../Resources/Public/Assets',
+    define: {
+        // react-image-lightbox
+        global: 'window',
+    },
 };
 
 if (isWatch) {

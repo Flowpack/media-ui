@@ -17,6 +17,10 @@ const options = {
         Plugin: './src/manifest.js',
     },
     outdir: '../../Resources/Public/AssetEditor',
+    define: {
+        // react-image-lightbox
+        global: 'window',
+    },
     alias: extensibilityMap,
 };
 
