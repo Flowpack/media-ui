@@ -1,4 +1,5 @@
 const esbuild = require('esbuild');
+const CssModulesPlugin = require('esbuild-css-modules-plugin');
 const extensibilityMap = require('@neos-project/neos-ui-extensibility/extensibilityMap.json');
 const isWatch = process.argv.includes('--watch');
 
@@ -6,11 +7,8 @@ const isWatch = process.argv.includes('--watch');
 const options = {
     logLevel: 'info',
     bundle: true,
-    // we don't minify identifiers as with css modules another plugin is likely to override them https://github.com/evanw/esbuild/issues/3484
-    minifyIdentifiers: false,
-    minifySyntax: !isWatch,
-    minifyWhitespace: !isWatch,
     sourcemap: 'linked',
+    minify: !isWatch,
     legalComments: 'linked',
     target: 'es2020',
     entryPoints: {
@@ -21,6 +19,15 @@ const options = {
         // react-image-lightbox
         global: 'window',
     },
+    plugins: [
+        CssModulesPlugin({
+            // @see https://github.com/indooorsman/esbuild-css-modules-plugin/blob/main/index.d.ts for more details
+            force: true,
+            localsConvention: 'camelCaseOnly',
+            namedExports: true,
+            inject: false,
+        }),
+    ],
     alias: extensibilityMap,
 };
 
