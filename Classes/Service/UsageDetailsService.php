@@ -26,6 +26,7 @@ use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
+use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\ContentRepository\Exception\NodeConfigurationException;
 use Neos\Flow\Annotations as Flow;
@@ -65,6 +66,9 @@ final class UsageDetailsService
 
     #[Flow\InjectConfiguration('contentDimensions', 'Neos.ContentRepository')]
     protected array $contentDimensionsConfiguration = [];
+
+    #[Flow\Inject]
+    protected ContextFactoryInterface $contextFactory;
 
     private array $accessibleWorkspaces = [];
 
@@ -300,12 +304,20 @@ final class UsageDetailsService
             $serverRequest = $serverRequest->withUri(new Uri((string)$domain));
         }
 
-        $request = ActionRequest::fromHttpRequest($serverRequest);//$this->getActionRequestForUriBuilder($domain ? $domain->getHostname() : null);
+        // Instead of the live workspace uri we want to link to the user workspace for editing
+        if ($node->getWorkspace()->getBaseWorkspace() === null) {
+            $userWorkspaceContextProperties = [
+                'workspaceName' => $this->userService->getPersonalWorkspaceName(),
+            ];
+            $userWorkspaceContext = $this->contextFactory->create(array_merge($node->getContext()->getProperties(), $userWorkspaceContextProperties));
+            $node = $userWorkspaceContext->getNodeByIdentifier($node->getIdentifier());
+        }
+
+        $request = ActionRequest::fromHttpRequest($serverRequest);
 
         $uriBuilder = new UriBuilder();
         $uriBuilder->setRequest($request);
         $uriBuilder->setCreateAbsoluteUri(false);
-
         $requestUri = $serverRequest->getUri();
         $relativeNodeBackendUri = $uriBuilder->uriFor(
             'index',
