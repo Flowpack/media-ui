@@ -22,6 +22,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         minify: false,
         keepNames: true,
         sourcemap: 'linked',
+        mainFields: ['browser', 'module', 'main'],
         target: 'es2020',
         entryPoints: {
             server: path.resolve(__dirname, './index.ts'),
