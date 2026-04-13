@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, '2.x', '2.x-dev' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, '2.x', '2.x-dev' ]
 
 env:
   YARN_ENABLE_IMMUTABLE_INSTALLS: false
