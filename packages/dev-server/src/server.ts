@@ -20,6 +20,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         logLevel: 'info',
         bundle: true,
         minify: false,
+        keepNames: true,
         sourcemap: 'linked',
         target: 'es2020',
         entryPoints: {
