@@ -1,6 +1,6 @@
 {
   "browsers": {
-    "path": "firefox",
+    "path": "chromium",
     "cmd": "--window-size=1280,720"
   },
   "src": ["packages/media-module/tests/**/*.ts"],
