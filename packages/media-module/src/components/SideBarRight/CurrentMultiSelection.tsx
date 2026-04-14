@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { Headline, Icon, IconButton } from '@neos-project/react-ui-components';
 
-import { useIntl, useMediaUi } from '@media-ui/core';
+import { useIntl } from '@media-ui/core';
 import { useAssetQuery, useSelectAssets } from '@media-ui/core/src/hooks';
 import { selectedAssetIdsState } from '@media-ui/core/src/state';
 
@@ -16,11 +16,10 @@ interface MultiSelectionItemProps {
 
 const MultiSelectionItem: React.FC<MultiSelectionItemProps> = ({ assetIdentity, onRemove }) => {
     const { asset } = useAssetQuery(assetIdentity);
-    const { dummyImage } = useMediaUi();
 
     return (
         <div className={classes.item} title={asset?.label}>
-            <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label || assetIdentity.assetId} />
+            <p>{asset?.label}</p>
             <button
                 type="button"
                 className={classes.removeButton}

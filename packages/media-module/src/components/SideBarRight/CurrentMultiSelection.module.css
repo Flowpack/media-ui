@@ -17,35 +17,40 @@
 }
 
 .scrollArea {
-    max-height: 200px;
+    max-height: 115px;
+    overflow-x: hidden;
     overflow-y: auto;
     display: flex;
     flex-wrap: wrap;
     gap: var(--theme-spacing-Quarter);
-    padding: var(--theme-spacing-Quarter);
 }
 
 .item {
-    position: relative;
-    width: var(--theme-spacing-GoldenUnit);
-    height: var(--theme-spacing-GoldenUnit);
+    color: #fff;
+    background-color: #3f3f3f;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    white-space: nowrap;
+    vertical-align: baseline;
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    padding: 2px 4px;
+    font-size: 0.846em;
+    font-weight: bold;
+    line-height: 14px;
     flex-shrink: 0;
+    max-width: 97%;
 }
 
-.item img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.item p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .removeButton {
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    background: var(--theme-colors-ContrastDarkest);
+    background: none;
     border: none;
-    border-radius: 50%;
     width: 16px;
     height: 16px;
     display: flex;
@@ -53,16 +58,10 @@
     justify-content: center;
     cursor: pointer;
     padding: 0;
-    opacity: 0;
-    transition: opacity var(--theme-transition-fast);
 }
 
 .removeButton svg {
     width: 10px;
     height: 10px;
     color: var(--theme-colors-ContrastBrightest);
-}
-
-.item:hover .removeButton {
-    opacity: 1;
 }
