@@ -16,12 +16,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 (async () => {
     const frontendPort = 8000;
 
-    const options = {
+    const options: esbuild.BuildOptions = {
         logLevel: 'info',
         bundle: true,
         minify: false,
         keepNames: true,
         sourcemap: 'linked',
+        mainFields: ['browser', 'module', 'main'],
         target: 'es2020',
         entryPoints: {
             server: path.resolve(__dirname, './index.ts'),
