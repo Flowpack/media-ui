@@ -16,7 +16,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 (async () => {
     const frontendPort = 8000;
 
-    const options = {
+    const options: esbuild.BuildOptions = {
         logLevel: 'info',
         bundle: true,
         minify: false,

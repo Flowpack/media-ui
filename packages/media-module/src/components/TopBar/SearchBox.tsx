@@ -27,7 +27,7 @@ const SearchBox: React.FC = () => {
         setSearchValue('');
         setSearchTerm(SearchTerm.fromString(''));
         setCurrentPage(1);
-    }, [setSearchValue, setSearchTerm, handleSearch]);
+    }, [setCurrentPage, setSearchValue, setSearchTerm]);
 
     if (mainView !== MainViewMode.DEFAULT) return null;
 

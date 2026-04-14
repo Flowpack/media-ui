@@ -1,0 +1,4 @@
+.cache
+dist
+esbuild.js
+node_modules
