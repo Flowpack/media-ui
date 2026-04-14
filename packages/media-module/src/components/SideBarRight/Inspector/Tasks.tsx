@@ -1,7 +1,7 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { Headline } from '@neos-project/react-ui-components';
+import { Headline, IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
@@ -11,6 +11,7 @@ import { AssetReplacementButton } from '@media-ui/feature-asset-upload/src/compo
 import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { applicationContextState, featureFlagsState } from '@media-ui/core/src/state';
+import { clipboardItemState } from '@media-ui/feature-clipboard';
 
 import DownloadAssetButton from '../../Actions/DownloadAssetButton';
 import DeleteAssetButton from '../../Actions/DeleteAssetButton';
@@ -22,8 +23,13 @@ const Tasks: React.FC = () => {
     const selectedAsset = useSelectedAsset();
     const applicationContext = useRecoilValue(applicationContextState);
     const { showSimilarAssets } = useRecoilValue(featureFlagsState);
+    const [isInClipboard, toggleClipboardState] = useRecoilState(
+        clipboardItemState({ assetId: selectedAsset?.id ?? '', assetSourceId: selectedAsset?.assetSource?.id ?? '' })
+    );
 
     if (!selectedAsset) return null;
+
+    // TODO: Differ between single selection and multi selection tasks
 
     return (
         <div className={classes.tasks}>
@@ -41,6 +47,20 @@ const Tasks: React.FC = () => {
                     </>
                 )}
                 <DeleteAssetButton asset={selectedAsset} style="lighter" />
+                {selectedAsset.localId && (
+                    <IconButton
+                        title={
+                            isInClipboard
+                                ? translate('itemActions.removeFromClipboard', 'Remove from clipboard')
+                                : translate('itemActions.copyToClipboard', 'Copy to clipboard')
+                        }
+                        icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
+                        style="lighter"
+                        hoverStyle="brand"
+                        className={isInClipboard ? 'button--active' : ''}
+                        onClick={toggleClipboardState}
+                    />
+                )}
             </div>
         </div>
     );

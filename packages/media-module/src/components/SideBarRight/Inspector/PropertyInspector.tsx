@@ -90,6 +90,8 @@ const PropertyInspector = () => {
 
     return (
         <InspectorContainer>
+            <Tasks />
+            
             <ToggablePanel
                 closesToBottom={true}
                 className={classes.propertyPanel}
@@ -147,7 +149,6 @@ const PropertyInspector = () => {
             {assetSourceForSelectedAsset?.supportsCollections && <CollectionSelectBox />}
             {assetSourceForSelectedAsset?.supportsTagging && <TagSelectBoxAsset />}
 
-            <Tasks />
             <MetadataView />
         </InspectorContainer>
     );
