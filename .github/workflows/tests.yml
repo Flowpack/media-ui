@@ -160,7 +160,7 @@ jobs:
         run: yarn build:plugin
 
       - name: Run TestCafe
-        run: yarn test:e2e:github-actions
+        run: yarn testcafe --config-file .testcaferc.ci.json
 
       - name: Archive failure screenshots
         if: ${{ failure() }}
