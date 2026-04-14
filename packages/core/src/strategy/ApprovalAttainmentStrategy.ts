@@ -8,6 +8,10 @@ export interface ApprovalAttainmentStrategy {
         asset: Asset;
         newAssetCollections: AssetCollection[];
     }) => Promise<boolean>;
+    obtainApprovalToShiftAssetsToCollection: (given: {
+        assets: AssetIdentity[];
+        assetCollection: AssetCollection;
+    }) => Promise<boolean>;
     obtainApprovalToDeleteAsset: (given: { asset: Asset }) => Promise<boolean>;
     obtainApprovalToDeleteAssets: (given: { assets: AssetIdentity[] }) => Promise<boolean>;
     obtainApprovalToDeleteAssetCollection: (given: { assetCollection: AssetCollection }) => Promise<boolean>;
@@ -24,6 +28,7 @@ export const AssumeApprovalForEveryAction: ApprovalAttainmentStrategy = {
     obtainApprovalToUpdateAsset: assumeApproval,
     obtainApprovalToSetAssetTags: assumeApproval,
     obtainApprovalToSetAssetCollections: assumeApproval,
+    obtainApprovalToShiftAssetsToCollection: assumeApproval,
     obtainApprovalToDeleteAsset: assumeApproval,
     obtainApprovalToDeleteAssets: assumeApproval,
     obtainApprovalToDeleteAssetCollection: assumeApproval,
@@ -65,6 +70,20 @@ export const DefaultApprovalAttainmentStrategyFactory: ApprovalAttainmentStrateg
             buttonLabel: deps.intl.translate(
                 'actions.deleteAssets.confirm.buttonLabel',
                 'Yes, proceed with deleting the assets',
+                [assets.length]
+            ),
+        }),
+    obtainApprovalToShiftAssetsToCollection: ({ assets, assetCollection }) =>
+        deps.interaction.confirm({
+            title: deps.intl.translate('actions.shiftToAssetsCollection.confirm.title', 'Shift to collection'),
+            message: deps.intl.translate(
+                'actions.shiftToAssetsCollection.confirm.message',
+                `Are you sure you want to shift ${assets.length} files into the collection "${assetCollection.title}"?`,
+                [assets.length, assetCollection.title]
+            ),
+            buttonLabel: deps.intl.translate(
+                'actions.shiftToAssetsCollection.confirm.buttonLabel',
+                'Yes, shift assets',
                 [assets.length]
             ),
         }),

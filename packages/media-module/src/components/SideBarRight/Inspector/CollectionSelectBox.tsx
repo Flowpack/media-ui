@@ -26,7 +26,7 @@ const CollectionSelectBox: React.FC<CollectionSelectBoxProps> = ({ isMultiAssetP
     const { translate } = useIntl();
     const { config } = useConfigQuery();
     const {
-        approvalAttainmentStrategy: { obtainApprovalToSetAssetCollections },
+        approvalAttainmentStrategy: { obtainApprovalToSetAssetCollections, obtainApprovalToShiftAssetsToCollection },
     } = useMediaUi();
     const { assetCollections } = useAssetCollectionsQuery();
     const { setAssetCollections, loading } = useSetAssetCollections();
@@ -72,8 +72,16 @@ const CollectionSelectBox: React.FC<CollectionSelectBoxProps> = ({ isMultiAssetP
             const newAssetCollections = assetCollections.filter((c) => newAssetCollectionIds.includes(c.id));
 
             if (isMultiAssetProcess && assets?.length) {
-                // TODO: Add approval strategy for setting collections on multiple assets
+                const targetCollection = newAssetCollections[0];
+                if (!targetCollection) return;
+
                 // TODO: Check readOnly per asset source when multi-select is implemented
+                const canSetCollection = await obtainApprovalToShiftAssetsToCollection({
+                    assets,
+                    assetCollection: targetCollection,
+                });
+                if (!canSetCollection) return;
+
                 try {
                     await Promise.all(
                         assets.map((identity) =>
@@ -145,6 +153,7 @@ const CollectionSelectBox: React.FC<CollectionSelectBoxProps> = ({ isMultiAssetP
             translate,
             syncSelectedAssetCollectionIds,
             obtainApprovalToSetAssetCollections,
+            obtainApprovalToShiftAssetsToCollection,
         ]
     );
 
@@ -166,7 +175,11 @@ const CollectionSelectBox: React.FC<CollectionSelectBoxProps> = ({ isMultiAssetP
                     <SelectBox
                         className={classes.collectionSelectBox}
                         disabled={loading || (!isMultiAssetProcess && selectedAsset.assetSource.readOnly)}
-                        placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
+                        placeholder={
+                            isMultiAssetProcess
+                                ? translate('inspector.collections.multiPlaceholder', 'Shift to other collection')
+                                : translate('inspector.collections.placeholder', 'Select a collection')
+                        }
                         value={isMultiAssetProcess ? null : selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
                         optionValueField="id"
                         options={filteredSelectBoxOptions}

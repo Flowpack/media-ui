@@ -298,6 +298,26 @@
                 <source>Error while tagging the asset</source>
                 <target>Fehler beim Taggen der Datei</target>
             </trans-unit>
+            <trans-unit id="actions.shiftToAssetsCollection.confirm.title" xml:space="preserve" approved="yes">
+                <source>Shift to collection</source>
+                <target>In Sammlung verschieben</target>
+            </trans-unit>
+            <trans-unit id="actions.shiftToAssetsCollection.confirm.message" xml:space="preserve" approved="yes">
+                <source>Are you sure you want to shift {0} files into the collection "{1}"?</source>
+                <target>Möchten Sie wirklich {0} Dateien in die Sammlung „{1}" verschieben?</target>
+            </trans-unit>
+            <trans-unit id="actions.shiftToAssetsCollection.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, shift assets</source>
+                <target>Ja, Dateien verschieben</target>
+            </trans-unit>
+            <trans-unit id="actions.setAssetCollections.multiSuccess" xml:space="preserve" approved="yes">
+                <source>The collections for the assets have been set</source>
+                <target>Die Sammlungen für die Dateien wurden gesetzt</target>
+            </trans-unit>
+            <trans-unit id="actions.setAssetCollections.multiError" xml:space="preserve" approved="yes">
+                <source>Error while setting the collections for the assets</source>
+                <target>Fehler beim Setzen der Sammlungen für die Dateien</target>
+            </trans-unit>
             <trans-unit id="actions.updateAssetCollection.success" xml:space="preserve" approved="yes">
                 <source>The asset collection has been updated</source>
                 <target>Die Sammlung wurde aktualisiert</target>
@@ -654,6 +674,10 @@
             <trans-unit id="inspector.collections.placeholder" xml:space="preserve" approved="yes">
                 <source>Select a collection</source>
                 <target>Sammlung auswählen</target>
+            </trans-unit>
+            <trans-unit id="inspector.collections.multiPlaceholder" xml:space="preserve" approved="yes">
+                <source>Shift to other collection</source>
+                <target>In andere Sammlung verschieben</target>
             </trans-unit>
             <trans-unit id="inspector.tags" xml:space="preserve" approved="yes">
                 <source>Tags</source>
