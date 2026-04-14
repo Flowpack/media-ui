@@ -10,7 +10,7 @@ interface NeosI18n {
         fallback: string,
         packageKey: string,
         source: string,
-        args: Record<string, unknown> | string[]
+        args: Record<string, unknown> | (string | number)[],
     ) => string;
     initialized: boolean;
 }
