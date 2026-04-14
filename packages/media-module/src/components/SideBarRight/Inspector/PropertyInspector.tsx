@@ -6,7 +6,7 @@ import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-compo
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
-import { featureFlagsState } from '@media-ui/core/src/state';
+import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import Property from './Property';
@@ -18,8 +18,8 @@ import classes from './PropertyInspector.module.css';
 import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
 const PropertyInspector = () => {
-    // TODO: Replace isMultiAssetProcess with actual multi-selection state
-    const isMultiAssetProcess = true;
+    const selectedAssets = useRecoilValue(selectedAssetIdsState);
+    const isMultiSelection = selectedAssets.length > 1;
     const selectedAsset = useSelectedAsset();
     const { assetSources } = useAssetSourcesQuery();
     const Notify = useNotify();
@@ -88,11 +88,11 @@ const PropertyInspector = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAsset?.id]);
 
-    if (!selectedAsset) return null;
+    if (!selectedAsset && !isMultiSelection) return null;
 
     return (
         <InspectorContainer>
-            <Tasks isMultiAssetProcess={isMultiAssetProcess} />
+            <Tasks />
 
             <ToggablePanel
                 closesToBottom={true}
@@ -105,7 +105,7 @@ const PropertyInspector = () => {
                 </ToggablePanel.Header>
                 <ToggablePanel.Contents className={classes.propertyPanelContents}>
                     {
-                        !isMultiAssetProcess &&
+                        !isMultiSelection &&
                         <>
                             <Property label={translate('inspector.title', 'Title')}>
                                 <TextInput
@@ -128,38 +128,38 @@ const PropertyInspector = () => {
                                     onChange={setCaption}
                                 />
                             </Property>
+                            <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
+                                <TextArea
+                                    name="copyrightNotice"
+                                    className={classes.textArea}
+                                    disabled={!isEditable}
+                                    minRows={2}
+                                    expandedRows={4}
+                                    value={copyrightNotice || ''}
+                                    onChange={setCopyrightNotice}
+                                />
+                            </Property>
+
+                            {isEditable && (
+                                <Actions
+                                    handleApply={handleApply}
+                                    handleDiscard={handleDiscard}
+                                    hasUnpublishedChanges={hasUnpublishedChanges}
+                                    inputValid={!!label}
+                                />
+                            )}
                         </>
                     }
-                    <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
-                        <TextArea
-                            name="copyrightNotice"
-                            className={classes.textArea}
-                            disabled={!isEditable}
-                            minRows={2}
-                            expandedRows={4}
-                            value={copyrightNotice || ''}
-                            onChange={setCopyrightNotice}
-                        />
-                    </Property>
-
-                    {isEditable && (
-                        <Actions
-                            handleApply={handleApply}
-                            handleDiscard={handleDiscard}
-                            hasUnpublishedChanges={hasUnpublishedChanges}
-                            inputValid={!!label}
-                        />
-                    )}
                 </ToggablePanel.Contents>
             </ToggablePanel>
 
-            {assetSourceForSelectedAsset?.supportsCollections && (
-                <CollectionSelectBox isMultiAssetProcess={isMultiAssetProcess} />
+            {(assetSourceForSelectedAsset?.supportsCollections || isMultiSelection) && (
+                <CollectionSelectBox />
             )}
-            {!isMultiAssetProcess && assetSourceForSelectedAsset?.supportsTagging && <TagSelectBoxAsset />}
+            {!isMultiSelection && assetSourceForSelectedAsset?.supportsTagging && <TagSelectBoxAsset />}
 
             {
-                !isMultiAssetProcess &&
+                !isMultiSelection &&
                 <MetadataView />
             }
         </InspectorContainer>

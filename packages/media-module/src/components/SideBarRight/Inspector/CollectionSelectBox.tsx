@@ -6,22 +6,19 @@ import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-comp
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { useConfigQuery, useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
-import { featureFlagsState } from '@media-ui/core/src/state';
+import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 
 import * as classes from './CollectionSelectBox.module.css';
 import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
 
-interface CollectionSelectBoxProps {
-    isMultiAssetProcess?: boolean;
-    assets?: AssetIdentity[];
-}
-
 const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
     return assetCollectionIds.join(',') === asset.collections.map((collection) => collection.id).join(',');
 };
 
-const CollectionSelectBox: React.FC<CollectionSelectBoxProps> = ({ isMultiAssetProcess = false, assets }) => {
+const CollectionSelectBox: React.FC = () => {
+    const selectedAssets = useRecoilValue(selectedAssetIdsState);
+    const isMultiSelection = selectedAssets.length > 1;
     const Notify = useNotify();
     const { translate } = useIntl();
     const { config } = useConfigQuery();
@@ -71,20 +68,20 @@ const CollectionSelectBox: React.FC<CollectionSelectBoxProps> = ({ isMultiAssetP
 
             const newAssetCollections = assetCollections.filter((c) => newAssetCollectionIds.includes(c.id));
 
-            if (isMultiAssetProcess && assets?.length) {
+            if (isMultiSelection && selectedAssets?.length) {
                 const targetCollection = newAssetCollections[0];
                 if (!targetCollection) return;
 
                 // TODO: Check readOnly per asset source when multi-select is implemented
                 const canSetCollection = await obtainApprovalToShiftAssetsToCollection({
-                    assets,
+                    assets: selectedAssets,
                     assetCollection: targetCollection,
                 });
                 if (!canSetCollection) return;
 
                 try {
                     await Promise.all(
-                        assets.map((identity) =>
+                        selectedAssets.map((identity) =>
                             setAssetCollections({
                                 asset: { id: identity.assetId, assetSource: { id: identity.assetSourceId } } as Asset,
                                 assetCollections: newAssetCollections,
@@ -145,8 +142,8 @@ const CollectionSelectBox: React.FC<CollectionSelectBoxProps> = ({ isMultiAssetP
         },
         [
             Notify,
-            isMultiAssetProcess,
-            assets,
+            isMultiSelection,
+            selectedAssets,
             selectedAsset,
             setAssetCollections,
             assetCollections,
@@ -163,24 +160,24 @@ const CollectionSelectBox: React.FC<CollectionSelectBoxProps> = ({ isMultiAssetP
 
     useEffect(syncSelectedAssetCollectionIds, [syncSelectedAssetCollectionIds]);
 
-    if (!selectedAsset) return null;
+    if (!selectedAsset && !isMultiSelection) return null;
 
     return (
         <div className="collectionSelectBox">
-            {isMultiAssetProcess || limitToSingleAssetCollectionPerAsset ? (
+            {isMultiSelection || limitToSingleAssetCollectionPerAsset ? (
                 <>
                     <Headline type="h2">
                         <IconLabel icon="folder" label={translate('inspector.assetCollection', 'Collection')} />
                     </Headline>
                     <SelectBox
                         className={classes.collectionSelectBox}
-                        disabled={loading || (!isMultiAssetProcess && selectedAsset.assetSource.readOnly)}
+                        disabled={loading || (!isMultiSelection && selectedAsset.assetSource.readOnly)}
                         placeholder={
-                            isMultiAssetProcess
+                            isMultiSelection
                                 ? translate('inspector.collections.multiPlaceholder', 'Shift to other collection')
                                 : translate('inspector.collections.placeholder', 'Select a collection')
                         }
-                        value={isMultiAssetProcess ? null : selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
+                        value={isMultiSelection ? null : selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
                         optionValueField="id"
                         options={filteredSelectBoxOptions}
                         noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}

@@ -6,6 +6,7 @@ export { default as useDeleteAsset } from './useDeleteAsset';
 export { default as useEvent } from './useEvent';
 export { default as useImportAsset } from './useImportAsset';
 export { default as useSelectAsset } from './useSelectAsset';
+export { default as useSelectAssets } from './useSelectAssets';
 export { default as useSelectedAsset } from './useSelectedAsset';
 export { default as useSetAssetCollections } from './useSetAssetCollections';
 export { default as useSetAssetTags } from './useSetAssetTags';

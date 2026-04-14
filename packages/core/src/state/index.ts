@@ -13,3 +13,4 @@ export { selectedMediaTypeState } from './selectedMediaTypeState';
 export { selectedAssetTypeState } from './selectedAssetTypeState';
 export { selectedSortOrderState } from './selectedSortOrderState';
 export { applicationContextState } from './applicationContextState';
+export { selectedAssetIdsState, isAssetSelectedState } from './selectedAssetIdsState';

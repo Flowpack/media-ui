@@ -5,8 +5,8 @@
     position: relative;
 }
 
-.thumbnail:hover .caption {
-    background-color: var(--theme-colors-PrimaryBlue);
+.thumbnail:hover {
+    box-shadow: 0 0 0 2px rgb(255 255 255 /0.6);
 }
 
 .thumbnail:hover .toolBar {
@@ -35,6 +35,7 @@
     align-content: center;
     justify-content: center;
     background-color: var(--theme-colors-assetBackground);
+    padding: 10px 10px 0 10px;
 }
 
 .picture img {
@@ -47,22 +48,17 @@
 }
 
 .caption {
-    background-color: var(--theme-colors-captionBackground);
-    transition: background-color var(--theme-transition-fast);
+    background-color: var(--theme-colors-assetBackground);
     padding: var(--theme-spacing-Half);
     display: flex;
     align-items: center;
     flex: 1;
 }
 
-.caption img, .caption svg {
+.caption svg {
     width: 1.3rem;
     height: auto;
     margin-right: var(--theme-spacing-Half);
-}
-
-.selected {
-    background-color: var(--theme-colors-PrimaryBlue);
 }
 
 .toolBar {
@@ -97,6 +93,41 @@
     border-radius: 3px;
     padding: 2px 4px;
     user-select: none;
+}
+
+.checkbox {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    z-index: 2;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    margin: 0;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.7);
+    display: none;
+}
+
+.thumbnail:hover .checkbox,
+.checkbox:checked {
+    display: block;
+}
+
+.checkbox:checked {
+    background-color: var(--theme-colors-PrimaryBlue);
+    border-color: var(--theme-colors-PrimaryBlue);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z'/%3E%3C/svg%3E");
+    background-size: 14px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.multiSelected,
+.multiSelected:hover {
+    box-shadow: 0 0 0 2px var(--theme-colors-PrimaryBlue);
 }
 
 .disabled {

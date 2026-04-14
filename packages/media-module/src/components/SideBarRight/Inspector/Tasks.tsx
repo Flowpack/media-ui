@@ -10,7 +10,7 @@ import { SimilarAssetsToggleButton } from '@media-ui/feature-similar-assets';
 import { AssetReplacementButton } from '@media-ui/feature-asset-upload/src/components';
 import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
-import { applicationContextState, featureFlagsState } from '@media-ui/core/src/state';
+import { applicationContextState, featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { clipboardItemState } from '@media-ui/feature-clipboard';
 
 import DownloadAssetButton from '../../Actions/DownloadAssetButton';
@@ -18,11 +18,8 @@ import DeleteAssetButton from '../../Actions/DeleteAssetButton';
 
 import classes from './Tasks.module.css';
 
-interface TasksProps {
-    isMultiAssetProcess?: boolean;
-}
-
-const Tasks: React.FC<TasksProps> = ({ isMultiAssetProcess = false }) => {
+const Tasks: React.FC = () => {
+    const selectedAssets = useRecoilValue(selectedAssetIdsState);
     const { translate } = useIntl();
     const selectedAsset = useSelectedAsset();
     const applicationContext = useRecoilValue(applicationContextState);
@@ -31,7 +28,9 @@ const Tasks: React.FC<TasksProps> = ({ isMultiAssetProcess = false }) => {
         clipboardItemState({ assetId: selectedAsset?.id ?? '', assetSourceId: selectedAsset?.assetSource?.id ?? '' })
     );
 
-    if (!selectedAsset) return null;
+    const isMultiSelection = selectedAssets.length > 1;
+
+    if (!selectedAsset && !isMultiSelection) return null;
 
     return (
         <div className={classes.tasks}>
@@ -39,17 +38,23 @@ const Tasks: React.FC<TasksProps> = ({ isMultiAssetProcess = false }) => {
                 <IconLabel icon="tasks" label={translate('inspector.actions', 'Tasks')} />
             </Headline>
             <div className={classes.buttonWrapper}>
-                {!isMultiAssetProcess && <AssetUsagesToggleButton />}
-                {!isMultiAssetProcess && showSimilarAssets && <SimilarAssetsToggleButton />}
-                <DownloadAssetButton asset={selectedAsset} style="lighter" />
-                {!isMultiAssetProcess && !selectedAsset.assetSource.readOnly && applicationContext !== 'details' && (
+                {!isMultiSelection && <AssetUsagesToggleButton />}
+                {!isMultiSelection && showSimilarAssets && <SimilarAssetsToggleButton />}
+                {/* TODO: Extend DownloadAssetButton to support multiple assets */}
+                {!isMultiSelection && <DownloadAssetButton asset={selectedAsset} style="lighter" />}
+                {!isMultiSelection && !selectedAsset.assetSource.readOnly && applicationContext !== 'details' && (
                     <>
                         <OpenAssetEditDialogButton />
                         <AssetReplacementButton />
                     </>
                 )}
-                <DeleteAssetButton asset={selectedAsset} style="lighter" />
-                {selectedAsset.localId && (
+                {isMultiSelection ? (
+                    <DeleteAssetButton assets={selectedAssets} style="lighter" />
+                ) : (
+                    <DeleteAssetButton asset={selectedAsset} style="lighter" />
+                )}
+                {/* TODO: Extend clipboard toggle to support multiple assets */}
+                {!isMultiSelection && selectedAsset.localId && (
                     <IconButton
                         title={
                             isInClipboard
