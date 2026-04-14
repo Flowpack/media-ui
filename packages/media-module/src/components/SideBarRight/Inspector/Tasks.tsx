@@ -18,7 +18,11 @@ import DeleteAssetButton from '../../Actions/DeleteAssetButton';
 
 import classes from './Tasks.module.css';
 
-const Tasks: React.FC = () => {
+interface TasksProps {
+    isMultiAssetProcess?: boolean;
+}
+
+const Tasks: React.FC<TasksProps> = ({ isMultiAssetProcess = false }) => {
     const { translate } = useIntl();
     const selectedAsset = useSelectedAsset();
     const applicationContext = useRecoilValue(applicationContextState);
@@ -29,18 +33,16 @@ const Tasks: React.FC = () => {
 
     if (!selectedAsset) return null;
 
-    // TODO: Differ between single selection and multi selection tasks
-
     return (
         <div className={classes.tasks}>
             <Headline type="h2">
                 <IconLabel icon="tasks" label={translate('inspector.actions', 'Tasks')} />
             </Headline>
             <div className={classes.buttonWrapper}>
-                <AssetUsagesToggleButton />
-                {showSimilarAssets && <SimilarAssetsToggleButton />}
+                {!isMultiAssetProcess && <AssetUsagesToggleButton />}
+                {!isMultiAssetProcess && showSimilarAssets && <SimilarAssetsToggleButton />}
                 <DownloadAssetButton asset={selectedAsset} style="lighter" />
-                {!selectedAsset.assetSource.readOnly && applicationContext !== 'details' && (
+                {!isMultiAssetProcess && !selectedAsset.assetSource.readOnly && applicationContext !== 'details' && (
                     <>
                         <OpenAssetEditDialogButton />
                         <AssetReplacementButton />

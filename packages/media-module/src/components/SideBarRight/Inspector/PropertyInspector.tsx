@@ -19,7 +19,7 @@ import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
 const PropertyInspector = () => {
     // TODO: Replace isMultiAssetProcess with actual multi-selection state
-    const isMultiAssetProcess = false;
+    const isMultiAssetProcess = true;
     const selectedAsset = useSelectedAsset();
     const { assetSources } = useAssetSourcesQuery();
     const Notify = useNotify();
@@ -92,7 +92,7 @@ const PropertyInspector = () => {
 
     return (
         <InspectorContainer>
-            <Tasks />
+            <Tasks isMultiAssetProcess={isMultiAssetProcess} />
 
             <ToggablePanel
                 closesToBottom={true}
@@ -104,27 +104,32 @@ const PropertyInspector = () => {
                     <IconLabel icon="pencil" label={translate('propertyPanel.header', 'Properties')} />
                 </ToggablePanel.Header>
                 <ToggablePanel.Contents className={classes.propertyPanelContents}>
-                    <Property label={translate('inspector.title', 'Title')}>
-                        <TextInput
-                            name="label"
-                            disabled={!isEditable}
-                            type="text"
-                            value={label || ''}
-                            onChange={setLabel}
-                            onEnterKey={handleApply}
-                        />
-                    </Property>
-                    <Property label={translate('inspector.caption', 'Caption')}>
-                        <TextArea
-                            name="caption"
-                            className={classes.textArea}
-                            disabled={!isEditable}
-                            minRows={3}
-                            expandedRows={6}
-                            value={caption || ''}
-                            onChange={setCaption}
-                        />
-                    </Property>
+                    {
+                        !isMultiAssetProcess &&
+                        <>
+                            <Property label={translate('inspector.title', 'Title')}>
+                                <TextInput
+                                    name="label"
+                                    disabled={!isEditable}
+                                    type="text"
+                                    value={label || ''}
+                                    onChange={setLabel}
+                                    onEnterKey={handleApply}
+                                />
+                            </Property>
+                            <Property label={translate('inspector.caption', 'Caption')}>
+                                <TextArea
+                                    name="caption"
+                                    className={classes.textArea}
+                                    disabled={!isEditable}
+                                    minRows={3}
+                                    expandedRows={6}
+                                    value={caption || ''}
+                                    onChange={setCaption}
+                                />
+                            </Property>
+                        </>
+                    }
                     <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
                         <TextArea
                             name="copyrightNotice"
@@ -151,9 +156,12 @@ const PropertyInspector = () => {
             {assetSourceForSelectedAsset?.supportsCollections && (
                 <CollectionSelectBox isMultiAssetProcess={isMultiAssetProcess} />
             )}
-            {assetSourceForSelectedAsset?.supportsTagging && <TagSelectBoxAsset />}
+            {!isMultiAssetProcess && assetSourceForSelectedAsset?.supportsTagging && <TagSelectBoxAsset />}
 
-            <MetadataView />
+            {
+                !isMultiAssetProcess &&
+                <MetadataView />
+            }
         </InspectorContainer>
     );
 };
