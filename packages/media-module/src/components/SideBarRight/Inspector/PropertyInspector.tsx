@@ -75,7 +75,7 @@ const PropertyInspector = () => {
 
                     Notify.ok(translate('actions.updateAsset.success', 'The asset has been updated'));
                 } catch ({ message }) {
-                    Notify.error(translate('actions.deleteAsset.error', 'Error while updating the asset'), message);
+                    Notify.error(translate('actions.updateAsset.error', 'Error while updating the asset'), message);
                 }
             }
         }
@@ -91,7 +91,7 @@ const PropertyInspector = () => {
     return (
         <InspectorContainer>
             <Tasks />
-            
+
             <ToggablePanel
                 closesToBottom={true}
                 className={classes.propertyPanel}

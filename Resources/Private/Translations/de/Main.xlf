@@ -151,10 +151,6 @@
                 <source>Close clipboard</source>
                 <target>Zwischenablage schließen</target>
             </trans-unit>
-            <trans-unit id="clipboard.deleteAsset" xml:space="preserve" approved="yes">
-                <source>Delete all assets in clipboard</source>
-                <target>Alle Dateien in der Zwischenablage löschen</target>
-            </trans-unit>
             <trans-unit id="actions.deleteAssets.confirm.title" xml:space="preserve" approved="yes">
                 <source>Delete Assets</source>
                 <target>Dateien löschen</target>
@@ -166,14 +162,6 @@
             <trans-unit id="actions.deleteAssets.confirm.buttonLabel" xml:space="preserve" approved="yes">
                 <source>Yes, proceed with deleting the assets</source>
                 <target>Ja, mit dem Löschen fortfahren</target>
-            </trans-unit>
-            <trans-unit id="clipboard.deleteAssets.success" xml:space="preserve" approved="yes">
-                <source>The assets have been deleted</source>
-                <target>Die Dateien wurden gelöscht</target>
-            </trans-unit>
-            <trans-unit id="clipboard.deleteAssets.error" xml:space="preserve" approved="yes">
-                <source>Error while trying to delete the assets</source>
-                <target>Fehler beim Löschen der Dateien</target>
             </trans-unit>
             <trans-unit id="actions.deleteAssets.noProxy" xml:space="preserve" approved="yes">
                 <source>Asset could not be resolved</source>
@@ -234,6 +222,10 @@
                 <source>The asset has been deleted</source>
                 <target>Die Datei wurde gelöscht</target>
             </trans-unit>
+            <trans-unit id="action.deleteAssets.success" xml:space="preserve" approved="yes">
+                <source>The assets have been deleted</source>
+                <target>Die Dateien wurden gelöscht</target>
+            </trans-unit>
             <trans-unit id="itemActions.preview" xml:space="preserve" approved="yes">
                 <source>Preview asset</source>
                 <target>Vorschau</target>
@@ -274,11 +266,19 @@
                 <source>Yes, proceed with deleting the asset</source>
                 <target>Ja, mit dem Löschen fortfahren</target>
             </trans-unit>
+            <trans-unit id="action.deleteAsset.error" xml:space="preserve" approved="yes">
+                <source>Error while trying to delete the asset</source>
+                <target>Fehler beim Löschen der Datei</target>
+            </trans-unit>
+            <trans-unit id="action.deleteAssets.error" xml:space="preserve" approved="yes">
+                <source>Error while trying to delete the assets</source>
+                <target>Fehler beim Löschen der Dateien</target>
+            </trans-unit>
             <trans-unit id="actions.updateAsset.success" xml:space="preserve" approved="yes">
                 <source>The asset has been updated</source>
                 <target>Die Datei wurde aktualisiert</target>
             </trans-unit>
-            <trans-unit id="actions.deleteAsset.error" xml:space="preserve" approved="yes">
+            <trans-unit id="actions.updateAsset.error" xml:space="preserve" approved="yes">
                 <source>Error while updating the asset</source>
                 <target>Fehler beim Aktualisieren der Datei</target>
             </trans-unit>

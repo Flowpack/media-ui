@@ -178,6 +178,9 @@
             <trans-unit id="action.deleteAsset.success" xml:space="preserve" approved="yes">
                 <source>The asset has been deleted</source>
             </trans-unit>
+            <trans-unit id="action.deleteAssets.success" xml:space="preserve" approved="yes">
+                <source>The assets have been deleted</source>
+            </trans-unit>
             <trans-unit id="itemActions.preview" xml:space="preserve" approved="yes">
                 <source>Preview asset</source>
             </trans-unit>
@@ -208,10 +211,16 @@
             <trans-unit id="actions.deleteAsset.confirm.buttonLabel" xml:space="preserve" approved="yes">
                 <source>Yes, proceed with deleting the asset</source>
             </trans-unit>
+            <trans-unit id="action.deleteAsset.error" xml:space="preserve" approved="yes">
+                <source>Error while trying to delete the asset</source>
+            </trans-unit>
+            <trans-unit id="action.deleteAssets.error" xml:space="preserve" approved="yes">
+                <source>Error while trying to delete the assets</source>
+            </trans-unit>
             <trans-unit id="actions.updateAsset.success" xml:space="preserve" approved="yes">
                 <source>The asset has been updated</source>
             </trans-unit>
-            <trans-unit id="actions.deleteAsset.error" xml:space="preserve" approved="yes">
+            <trans-unit id="actions.updateAsset.error" xml:space="preserve" approved="yes">
                 <source>Error while updating the asset</source>
             </trans-unit>
             <trans-unit id="actions.updateTag.success" xml:space="preserve" approved="yes">
