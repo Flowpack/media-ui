@@ -5133,10 +5133,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff@npm:^4.0.1, diff@npm:^4.0.2":
+"diff@npm:^4.0.1":
   version: 4.0.2
   resolution: "diff@npm:4.0.2"
   checksum: 10c0/81b91f9d39c4eaca068eb0c1eb0e4afbdc5bb2941d197f513dd596b820b956fef43485876226d65d497bebc15666aa2aa82c679e84f65d5f2bfbf14ee46e32c1
+  languageName: node
+  linkType: hard
+
+"diff@npm:^8.0.3":
+  version: 8.0.4
+  resolution: "diff@npm:8.0.4"
+  checksum: 10c0/7ee5d03926db4039be7252ac3b0abaae1bd122a2ca971e5ca7270e444e36ff83dd906fad1a719740ca347e97ed5dc8f458a76a8391dbcd7aff363bdafb348a00
   languageName: node
   linkType: hard
 
@@ -8238,7 +8245,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^4.6.0"
     eslint-plugin-testcafe: "npm:^0.2.1"
     prettier: "npm:^2.8.8"
-    testcafe: "npm:^3.7.2"
+    testcafe: "npm:^3.7.4"
     testcafe-react-selectors: "npm:^5.0.3"
     ts-loader: "npm:^8.4.0"
     ts-node: "npm:^10.9.1"
@@ -8540,13 +8547,6 @@ __metadata:
   version: 1.1.0
   resolution: "os-family@npm:1.1.0"
   checksum: 10c0/1abac7220a0afa16d45553be0a2ba2a5adfd891fe824824baf07dfca35938e31af83d7f8f6472b469b454f298f634317b0414a97c2f29dbcf75082dc2f942bf1
-  languageName: node
-  linkType: hard
-
-"os-tmpdir@npm:~1.0.1":
-  version: 1.0.2
-  resolution: "os-tmpdir@npm:1.0.2"
-  checksum: 10c0/f438450224f8e2687605a8dd318f0db694b6293c5d835ae509a69e97c8de38b6994645337e5577f5001115470414638978cc49da1cdcc25106dad8738dc69990
   languageName: node
   linkType: hard
 
@@ -10431,9 +10431,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"testcafe-hammerhead@npm:31.7.5":
-  version: 31.7.5
-  resolution: "testcafe-hammerhead@npm:31.7.5"
+"testcafe-hammerhead@npm:31.7.7":
+  version: 31.7.7
+  resolution: "testcafe-hammerhead@npm:31.7.7"
   dependencies:
     "@adobe/css-tools": "npm:^4.3.0-rc.1"
     "@electron/asar": "npm:^3.2.3"
@@ -10460,7 +10460,7 @@ __metadata:
     tough-cookie: "npm:4.1.3"
     tunnel-agent: "npm:0.6.0"
     ws: "npm:^7.4.6"
-  checksum: 10c0/9a2ecedcb7cccbc74833b2baf9c7fd46844427ebd2948fd28bc1a07c7d451166b00d172fbb91bcbe9d94f5072a812ea2afed3648075048aea4baad2078028a1a
+  checksum: 10c0/b409b21fae5277487e8779b904dcbd0c1080322099693e91652b608e9c0e9d1c5062bd7a3bcdadcbe657dce4a38da411d9df6a703454aef58411ac18f270124e
   languageName: node
   linkType: hard
 
@@ -10568,9 +10568,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"testcafe@npm:^3.7.2":
-  version: 3.7.2
-  resolution: "testcafe@npm:3.7.2"
+"testcafe@npm:^3.7.4":
+  version: 3.7.4
+  resolution: "testcafe@npm:3.7.4"
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/plugin-proposal-decorators": "npm:^7.23.2"
@@ -10608,7 +10608,7 @@ __metadata:
     del: "npm:^3.0.0"
     device-specs: "npm:^1.0.0"
     devtools-protocol: "npm:0.0.1109433"
-    diff: "npm:^4.0.2"
+    diff: "npm:^8.0.3"
     elegant-spinner: "npm:^1.0.1"
     email-validator: "npm:^2.0.4"
     emittery: "npm:^0.4.1"
@@ -10655,7 +10655,7 @@ __metadata:
     source-map-support: "npm:^0.5.16"
     strip-bom: "npm:^2.0.0"
     testcafe-browser-tools: "npm:2.0.26"
-    testcafe-hammerhead: "npm:31.7.5"
+    testcafe-hammerhead: "npm:31.7.7"
     testcafe-legacy-api: "npm:5.1.8"
     testcafe-reporter-json: "npm:^2.1.0"
     testcafe-reporter-list: "npm:^2.2.0"
@@ -10664,14 +10664,14 @@ __metadata:
     testcafe-reporter-xunit: "npm:^2.2.1"
     testcafe-selector-generator: "npm:^0.1.0"
     time-limit-promise: "npm:^1.0.2"
-    tmp: "npm:0.0.28"
+    tmp: "npm:0.2.5"
     tree-kill: "npm:^1.2.2"
     typescript: "npm:4.7.4"
     unquote: "npm:^1.1.1"
     url-to-options: "npm:^2.0.0"
   bin:
     testcafe: bin/testcafe-with-v8-flag-filter.js
-  checksum: 10c0/dd0128b2419dcd4697011ac66429ebf9762e2fff00b0307772f9e383fa32898245a55a4af658f9a1a0aecc8f18abdcd32c74641823b96ddffcb4cf317f5c6184
+  checksum: 10c0/0b8e96777a227b2a23cd1891a960872d3ea380ae645fdfdd23eb263edb257171c5d8d3ba4772c1c9575dd3c7621d2dcfb0f515b875c15bff59957ce20f0e5bd2
   languageName: node
   linkType: hard
 
@@ -10689,12 +10689,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:0.0.28":
-  version: 0.0.28
-  resolution: "tmp@npm:0.0.28"
-  dependencies:
-    os-tmpdir: "npm:~1.0.1"
-  checksum: 10c0/2be352b43206411d4f7c29d09afa03c94e93386fdd87d9973aecd2b6569b8fda1e7a96ed613ac9b2dc30038a9a3ec762b9f4b910d311e565124653750a991dac
+"tmp@npm:0.2.5":
+  version: 0.2.5
+  resolution: "tmp@npm:0.2.5"
+  checksum: 10c0/cee5bb7d674bb4ba3ab3f3841c2ca7e46daeb2109eec395c1ec7329a91d52fcb21032b79ac25161a37b2565c4858fefab927af9735926a113ef7bac9091a6e0e
   languageName: node
   linkType: hard
 
