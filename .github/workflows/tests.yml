@@ -59,9 +59,7 @@ jobs:
         uses: php-actions/phpstan@v3
         with:
           php_version: ${{ matrix.php-versions }}
-          version: 2.1.17
-          command: analyse
-          path: 'Classes/'
+          configuration: phpstan.neon
 
   php-unit-tests:
     env:
