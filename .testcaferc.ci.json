@@ -1,0 +1,27 @@
+{
+  "browsers": "chrome:headless --window-size=1280,720 --incognito --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-software-rasterizer --disable-extensions",
+  "src": [
+    "packages/media-module/tests/**/*.ts"
+  ],
+  "appCommand": "yarn dev:test",
+  "appInitDelay": 3000,
+  "screenshots": {
+    "takeOnFails": true
+  },
+  "reporter": [
+    {
+      "name": "spec"
+    }
+  ],
+  "stopOnFirstFail": false,
+  "hostname": "localhost",
+  "baseUrl": "http://localhost:8000",
+  "pageLoadTimeout": 30000,
+  "pageRequestTimeout": 30000,
+  "ajaxRequestTimeout": 30000,
+  "browserInitTimeout": 60000,
+  "selectorTimeout": 10000,
+  "assertionTimeout": 10000,
+  "skipJsErrors": true,
+  "skipUncaughtErrors": true
+}

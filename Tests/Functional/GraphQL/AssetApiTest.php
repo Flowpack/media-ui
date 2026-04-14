@@ -18,9 +18,10 @@ use Flowpack\Media\Ui\GraphQL\MediaApi;
 use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
+use Flowpack\Media\Ui\Tests\Functional\TestAssetUsageStrategy;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Flow\Tests\Behavior\Features\Bootstrap\SecurityOperationsTrait;
-use Neos\Media\Domain\Service\AssetService;
+use Neos\Media\Domain\Repository\AssetRepository;
 
 use function Wwwision\Types\instantiate;
 
@@ -36,6 +37,11 @@ class AssetApiTest extends AbstractMediaTestCase
      */
     protected static $testablePersistenceEnabled = true;
 
+    protected MediaApi $mediaApi;
+    protected AssetResolver $assetResolver;
+    protected TestAssetUsageStrategy $testAssetUsageStrategy;
+    protected AssetRepository $assetRepository;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -46,6 +52,11 @@ class AssetApiTest extends AbstractMediaTestCase
 
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
         $this->assetResolver = $this->objectManager->get(AssetResolver::class);
+        $this->testAssetUsageStrategy = $this->objectManager->get(TestAssetUsageStrategy::class);
+        $this->assetRepository = $this->objectManager->get(AssetRepository::class);
+
+        // Reset the test strategy before each test
+        $this->testAssetUsageStrategy->reset();
 
         $this->iAmAuthenticatedWithRole('Neos.Neos:Editor');
     }
@@ -83,8 +94,7 @@ class AssetApiTest extends AbstractMediaTestCase
 
         $this->persistenceManager->persistAll();
 
-        $assets = $this->mediaApi->assets();
-        $asset = $assets->getIterator()->current();
+        $asset = $this->mediaApi->assets()->assets[0];
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
         // Edit the asset
@@ -98,7 +108,7 @@ class AssetApiTest extends AbstractMediaTestCase
         );
 
         $this->assertTrue($editResult->success);
-        $editedAsset = $this->mediaApi->assets()->getIterator()->current();
+        $editedAsset = $this->mediaApi->assets()->assets[0];
         $this->assertEquals('new-name.svg', $editedAsset->filename->value);
     }
 
@@ -107,11 +117,9 @@ class AssetApiTest extends AbstractMediaTestCase
         $file = self::createFile();
         $result = $this->mediaApi->uploadFiles(Types\UploadedFiles::fromArray([$file]));
         $this->assertCount(1, $result->values);
-
         $this->persistenceManager->persistAll();
 
-        $assets = $this->mediaApi->assets();
-        $asset = $assets->getIterator()->current();
+        $asset = $this->mediaApi->assets()->assets[0];
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
         // Delete the asset
@@ -125,20 +133,15 @@ class AssetApiTest extends AbstractMediaTestCase
 
     public function testDeleteUsedAssetFails(): void
     {
-        $assetServiceMock = $this->getMockBuilder(AssetService::class)->setMethods(
-            ['isInUse']
-        )->disableOriginalConstructor()->getMock();
-        $assetServiceMock->expects(self::once())->method('isInUse')->willReturn(true);
-
         $file = self::createFile();
-        $result = $this->mediaApi->assets()->getIterator()->current();
-        $this->assertEquals($file->clientFilename, $result->filename->value);
-
+        $result = $this->mediaApi->uploadFiles(Types\UploadedFiles::fromArray([$file]));
+        $this->assertCount(1, $result->values);
         $this->persistenceManager->persistAll();
+        $asset = $this->mediaApi->assets()->assets[0];
 
-        $assets = $this->mediaApi->assets();
-        $asset = $assets->getIterator()->current();
-        $this->assertEquals($file->clientFilename, $asset->filename->value);
+        // Get the actual asset entity from repository and mark it as used
+        $assetEntity = $this->assetRepository->findByIdentifier($asset->id->value);
+        $this->testAssetUsageStrategy->markAssetAsUsed($assetEntity);
 
         // Try to delete the used asset
         $deleteResult = $this->mediaApi->deleteAsset($asset->id, $asset->assetSource->id);

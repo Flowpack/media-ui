@@ -38,7 +38,7 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
     const isFocused = useRecoilValue(tagFocusedState({ assetCollectionId, tagId }));
 
     return (
-        <Tree.Node>
+        <Tree.Node className="TagTreeNode">
             <Tree.Node.Header
                 isActive={isFocused}
                 isCollapsed={true}

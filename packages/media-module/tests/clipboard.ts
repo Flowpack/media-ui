@@ -1,5 +1,5 @@
+import { Selector } from 'testcafe';
 import page from './page-model';
-import { ReactSelector } from 'testcafe-react-selectors';
 
 fixture('Clipboard').page('./?reset=1');
 
@@ -13,7 +13,7 @@ test('Asset can be added and removed from the clipboard', async (t) => {
         .ok('The first asset was added to the clipboard');
 
     await t
-        .click(page.clipboardToggle.findReact('Button').withText('Clipboard (1)'))
+        .click(page.clipboardToggle.find('button').withText('Clipboard (1)'))
         .expect(page.thumbnails.count)
         .eql(1, 'The clipboard is visible and contains one asset');
 
@@ -35,19 +35,19 @@ test('The clipboard can be flushed', async (t) => {
         .ok('Two assets were added to the clipboard');
 
     await t
-        .click(page.clipboardToggle.findReact('Button').withText('Clipboard (2)'))
-        .click(ReactSelector('ClipboardActions').find('[title="Flush clipboard"]'))
-        .click(ReactSelector('Dialog').findReact('Button').withText('Cancel'))
+        .click(page.clipboardToggle.find('button').withText('Clipboard (2)'))
+        .click(Selector('div[class*="clipboardActions"]').find('[title="Flush clipboard"]'))
+        .click(Selector('div[class*="dialog"]').find('button').withText('Cancel'))
         .expect(page.thumbnails.count)
         .eql(2, 'The clipboard was not flushed and the assets are still present');
 
     await t
-        .click(ReactSelector('ClipboardActions').find('[title="Flush clipboard"]'))
-        .click(ReactSelector('Dialog').findReact('Button').withText('Yes, proceed with flushing the clipboard'))
+        .click(Selector('div[class*="clipboardActions"]').find('[title="Flush clipboard"]'))
+        .click(Selector('div[class*="dialog"]').find('button').withText('Yes, proceed with flushing the clipboard'))
         .expect(page.clipboardToggle.withText('Clipboard (0)').exists)
         .ok('The clipboard was flushed and the toggle shows 0 items')
         .expect(page.thumbnails.count)
         .eql(0, 'The clipboard is empty the counter is 0')
-        .expect(ReactSelector('Button').withText('Close clipboard').exists)
+        .expect(Selector('button').withText('Close clipboard').exists)
         .ok('A button to close the clipboard is available after flushing it');
 });

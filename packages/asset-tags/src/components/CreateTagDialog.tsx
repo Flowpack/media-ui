@@ -77,6 +77,7 @@ const CreateTagDialog: React.FC = () => {
 
     return (
         <Dialog
+            id="CreateTagDialog"
             isOpen={dialogState.visible}
             title={translate('createTagDialog.title', 'Create tag')}
             onRequestClose={handleRequestClose}
@@ -96,8 +97,9 @@ const CreateTagDialog: React.FC = () => {
             ]}
         >
             <div className={classes.formBody}>
-                <Label>{translate('general.label', 'Label')}</Label>
+                <Label htmlFor="tag-label">{translate('general.label', 'Label')}</Label>
                 <TextInput
+                    id="tag-label"
                     setFocus
                     validationerrors={dialogState.validation?.valid ? null : ['This input is invalid']}
                     required={true}

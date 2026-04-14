@@ -88,7 +88,7 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
         !config.canManageAssetCollections || !assetCollectionId || assetCollectionId === UNASSIGNED_COLLECTION_ID;
 
     return (
-        <Tree.Node>
+        <Tree.Node className="AssetCollectionTreeNode">
             <Tree.Node.Header
                 isActive={isActive || isFocused}
                 isFocused={isFocused && !isActive}
