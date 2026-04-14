@@ -34,6 +34,8 @@ use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Exception as FlowException;
 use Neos\Flow\Http\Exception as HttpException;
 use Neos\Flow\Http\HttpRequestHandlerInterface;
+use Neos\Flow\I18n\Exception\IndexOutOfBoundsException;
+use Neos\Flow\I18n\Exception\InvalidFormatPlaceholderException;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Routing\Exception\MissingActionNameException;
@@ -232,7 +234,9 @@ final class UsageDetailsService
     {
         $dimensionValues = [];
         foreach ($node->getDimensions() as $dimensionName => $dimensionValuesForName) {
-            $dimensionValues[$this->contentDimensionsConfiguration[$dimensionName]['label'] ?? $dimensionName] = array_map(function (
+            $dimensionLabel = $this->translateById(
+                $this->contentDimensionsConfiguration[$dimensionName]['label'] ?? $dimensionName);
+            $dimensionValues[$dimensionLabel] = array_map(function (
                 $dimensionValue
             ) use ($dimensionName) {
                 return $this->contentDimensionsConfiguration[$dimensionName]['presets'][$dimensionValue]['label'] ?? $dimensionValue;
@@ -433,9 +437,28 @@ final class UsageDetailsService
             ->getSingleScalarResult();
     }
 
+    /**
+     * @throws InvalidFormatPlaceholderException
+     * @throws IndexOutOfBoundsException
+     */
     protected function translateById(string $id): ?string
     {
-        return $this->translator->translateById($id, [], null, null, 'Main', 'Flowpack.Media.Ui') ?? $id;
+        $source = 'Main';
+        $package = 'Flowpack.Media.Ui';
+
+        $shortHandStringParts = explode(':', $id);
+        if (count($shortHandStringParts) === 3) {
+            [$package, $source, $id] = $shortHandStringParts;
+        }
+
+        return $this->translator->translateById(
+            $id,
+            [],
+            null,
+            null,
+            $source,
+            $package,
+        ) ?? $id;
     }
 
     /**
