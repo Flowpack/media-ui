@@ -2404,6 +2404,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fortawesome/fontawesome-common-types@npm:6.7.2":
+  version: 6.7.2
+  resolution: "@fortawesome/fontawesome-common-types@npm:6.7.2"
+  checksum: 10c0/0785df560542d9c08a0ba07bb7a39902274a3cd65c018672eb2520a99efccce18bdb7f7f4b1c6089763bc5627bf0f0837c3af963a8427eaeb535bd57c820a723
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-common-types@npm:^0.2.36":
   version: 0.2.36
   resolution: "@fortawesome/fontawesome-common-types@npm:0.2.36"
@@ -2411,12 +2418,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-svg-core@npm:^1.2.35, @fortawesome/fontawesome-svg-core@npm:^1.2.36":
+"@fortawesome/fontawesome-svg-core@npm:^1.2.36":
   version: 1.2.36
   resolution: "@fortawesome/fontawesome-svg-core@npm:1.2.36"
   dependencies:
     "@fortawesome/fontawesome-common-types": "npm:^0.2.36"
   checksum: 10c0/aaff16abc453d5ddf36035720ab9e600a5b22a6d37f8e0641104ecc505a10a7aae3b1ef3ec37992039d4fc00b322d0029b992c88b483f750794792f672b509f6
+  languageName: node
+  linkType: hard
+
+"@fortawesome/fontawesome-svg-core@npm:^6.5.2":
+  version: 6.7.2
+  resolution: "@fortawesome/fontawesome-svg-core@npm:6.7.2"
+  dependencies:
+    "@fortawesome/fontawesome-common-types": "npm:6.7.2"
+  checksum: 10c0/9e4e2992b341d2d11cd6ab8cf001e2cb9be4266ce200b307d15c0618e7d2cf11c1c4c67a1f95f3cc70feed2380fa66672132c32078674d5f9cb2cb0b7703f3ac
   languageName: node
   linkType: hard
 
@@ -2447,18 +2463,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/react-fontawesome@npm:^0.1.14":
-  version: 0.1.19
-  resolution: "@fortawesome/react-fontawesome@npm:0.1.19"
-  dependencies:
-    prop-types: "npm:^15.8.1"
-  peerDependencies:
-    "@fortawesome/fontawesome-svg-core": ~1 || ~6
-    react: ">=16.x"
-  checksum: 10c0/e0442e5f6bc4b7768f491504890192c1d78f1ee52587febaaefeedeba98f7c4906f81b4e10871bfb10eae3fafce3eecd27b5653312e846ce7373f0d5a81cf144
-  languageName: node
-  linkType: hard
-
 "@fortawesome/react-fontawesome@npm:^0.2.0":
   version: 0.2.0
   resolution: "@fortawesome/react-fontawesome@npm:0.2.0"
@@ -2468,6 +2472,18 @@ __metadata:
     "@fortawesome/fontawesome-svg-core": ~1 || ~6
     react: ">=16.3"
   checksum: 10c0/cf1bd3840dfe1b39d2d5ee92ac49ba3aabad95d05dd6374368a5a1e5f140c8e497d11599290cb70afc6c856bb3228628269199e9659ce8f3132692a2d1e464a5
+  languageName: node
+  linkType: hard
+
+"@fortawesome/react-fontawesome@npm:^0.2.2":
+  version: 0.2.6
+  resolution: "@fortawesome/react-fontawesome@npm:0.2.6"
+  dependencies:
+    prop-types: "npm:^15.8.1"
+  peerDependencies:
+    "@fortawesome/fontawesome-svg-core": ~1 || ~6 || ~7
+    react: ^16.3 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/d4b733ad211a6cf4354564124fd1119890d5497762d6eff39e4716e6ded709a3b8ec6064cc6ab423e12f0307ad159130e3341e5e46132ad1124a16b416b4a6c7
   languageName: node
   linkType: hard
 
@@ -2781,7 +2797,7 @@ __metadata:
     "@media-ui/feature-clipboard": "workspace:*"
     "@media-ui/feature-concurrent-editing": "workspace:*"
     "@media-ui/feature-similar-assets": "workspace:*"
-    "@neos-project/react-ui-components": "npm:^8.3.0"
+    "@neos-project/react-ui-components": "npm:^8.4.0"
     "@types/apollo-upload-client": "npm:^14.1.0"
     "@types/react": "npm:^17.0.60"
     "@types/react-dom": "npm:^17.0.20"
@@ -2826,33 +2842,33 @@ __metadata:
   dependencies:
     "@media-ui/media-details-screen": "workspace:*"
     "@media-ui/media-selection-screen": "workspace:*"
-    "@neos-project/neos-ui-extensibility": "npm:^8.3.0"
+    "@neos-project/neos-ui-extensibility": "npm:^8.4.0"
     esbuild-css-modules-plugin: "npm:^3.1.5"
   languageName: unknown
   linkType: soft
 
-"@neos-project/neos-ui-extensibility@npm:^8.3.0":
-  version: 8.3.0
-  resolution: "@neos-project/neos-ui-extensibility@npm:8.3.0"
+"@neos-project/neos-ui-extensibility@npm:^8.4.0":
+  version: 8.4.3
+  resolution: "@neos-project/neos-ui-extensibility@npm:8.4.3"
   dependencies:
-    "@neos-project/positional-array-sorter": "npm:8.3.0"
-  checksum: 10c0/9df177a22868785c75656e2fc274dd940db0b7a57f8086a098070d21314885b5ecd0cecee6a9f3cf07e6daf72df6db81f3984a8b3fa0933ea0fc40b3ea788253
+    "@neos-project/positional-array-sorter": "npm:8.4.3"
+  checksum: 10c0/8b64fb7761fa2893203313029305a42159518ad4b0675dd26244a117a70a9c71f64b6982f211df471af69b20371963efa0be8f0f2171ce2bbc3a6585e74a50ff
   languageName: node
   linkType: hard
 
-"@neos-project/positional-array-sorter@npm:8.3.0":
-  version: 8.3.0
-  resolution: "@neos-project/positional-array-sorter@npm:8.3.0"
-  checksum: 10c0/6d4125f3192056b5bbd6bc90c08f3fb73b31904f08ccbcef7a46bc86c5083f3b85ed156d092cc2a9096b87943400a0aaed76217cab9f717807b880a0eec19555
+"@neos-project/positional-array-sorter@npm:8.4.3":
+  version: 8.4.3
+  resolution: "@neos-project/positional-array-sorter@npm:8.4.3"
+  checksum: 10c0/fab2917fd18f2a19ea9a500ac28a05c9458148d8a3193c1281b7442325f14df4cd1fe4efab8e9870ab6dbca742b0d9e1111f66c9b05784eecdd1913a41115b20
   languageName: node
   linkType: hard
 
-"@neos-project/react-ui-components@npm:^8.3.0":
-  version: 8.3.0
-  resolution: "@neos-project/react-ui-components@npm:8.3.0"
+"@neos-project/react-ui-components@npm:^8.4.0":
+  version: 8.4.3
+  resolution: "@neos-project/react-ui-components@npm:8.4.3"
   dependencies:
-    "@fortawesome/fontawesome-svg-core": "npm:^1.2.35"
-    "@fortawesome/react-fontawesome": "npm:^0.1.14"
+    "@fortawesome/fontawesome-svg-core": "npm:^6.5.2"
+    "@fortawesome/react-fontawesome": "npm:^0.2.2"
     classnames: "npm:^2.2.3"
     hoist-non-react-statics: "npm:^3.3.1"
     lodash.assign: "npm:^4.2.0"
@@ -2862,10 +2878,9 @@ __metadata:
     lodash.isfunction: "npm:^3.0.8"
     lodash.omit: "npm:^4.5.0"
     lodash.throttle: "npm:^4.0.8"
-    moment: "npm:^2.14.1"
+    moment: "npm:^2.30.1"
     plow-js: "npm:3.0.0"
     raf: "npm:^3.4.1"
-    react-close-on-escape: "npm:^3.0.0"
     react-collapse: "npm:^5.0.1"
     react-datetime: "npm:^2.8.10"
     react-dnd: "npm:^10.0.0"
@@ -2873,19 +2888,18 @@ __metadata:
     react-height: "npm:^3.0.0"
     react-keydown: "npm:^1.9.4"
     react-motion: "npm:^0.5.0"
-    react-portal: "npm:^4.2.0"
     react-svg: "npm:^11.1.2"
     react-textarea-autosize: "npm:^8.3.0"
   peerDependencies:
-    "@fortawesome/free-brands-svg-icons": ^5.15.3
-    "@fortawesome/free-regular-svg-icons": ^5.15.3
-    "@fortawesome/free-solid-svg-icons": ^5.15.3
+    "@fortawesome/free-brands-svg-icons": ^6.5.2
+    "@fortawesome/free-regular-svg-icons": ^6.5.2
+    "@fortawesome/free-solid-svg-icons": ^6.5.2
     "@friendsofreactjs/react-css-themr": ~4.2.0
     notosans-fontface: ^1.3.0
     prop-types: ^15.5.10
     react: ^16.12.0
     react-dom: ^16.0.0
-  checksum: 10c0/42c15525843d50b9f8a9456538fa369757ddab5730740b6eb0fa79770c5f59f3245bc09816c0e81e7ea8a7105472174a8f40b89b144e7e7ed8e970dac74fc6fa
+  checksum: 10c0/c82040e9d8fe616aac45fc29369105edb72f765f46df1da3549b3cb9f956af81cb9afe4611d08433be55c53feb0e5b6ddd0eb13a7457117a592e1ac528bd7327
   languageName: node
   linkType: hard
 
@@ -8131,6 +8145,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moment@npm:^2.30.1":
+  version: 2.30.1
+  resolution: "moment@npm:2.30.1"
+  checksum: 10c0/865e4279418c6de666fca7786607705fd0189d8a7b7624e2e56be99290ac846f90878a6f602e34b4e0455c549b85385b1baf9966845962b313699e7cb847543a
+  languageName: node
+  linkType: hard
+
 "ms@npm:2.0.0":
   version: 2.0.0
   resolution: "ms@npm:2.0.0"
@@ -9169,16 +9190,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-close-on-escape@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "react-close-on-escape@npm:3.0.0"
-  peerDependencies:
-    prop-types: ">=15.5.0"
-    react: ">=15.5.0"
-  checksum: 10c0/3e7c868d8cd8075b334a12bfd31000e4d7c8580a66a4e2325166fc13e331edec20ca521f489302b05c8fd868228e38076963f6470f33e95b95a6295b58419891
-  languageName: node
-  linkType: hard
-
 "react-collapse@npm:^5.0.1":
   version: 5.1.1
   resolution: "react-collapse@npm:5.1.1"
@@ -9355,18 +9366,6 @@ __metadata:
     react: ^15.5.x || ^16.x || ^17.x
     react-dom: ^15.5.x || ^16.x || ^17.x
   checksum: 10c0/c3918dc1dbf7b34fbda857c085da733f2f0ade1aa6a8317f46284902b8d8527f9d129674cc8516943a86300ee83b58b0344dd4cfb35526286108851f1fe2443d
-  languageName: node
-  linkType: hard
-
-"react-portal@npm:^4.2.0":
-  version: 4.2.2
-  resolution: "react-portal@npm:4.2.2"
-  dependencies:
-    prop-types: "npm:^15.5.8"
-  peerDependencies:
-    react: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
-    react-dom: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
-  checksum: 10c0/323872f9cafb82e4385738a7a855b3ae6f4b59b1ebe194a2eb4cf0e6c6e4ac7d7c0c10598339dbf648b3c7299ade2bac3661c3eb7a7f0b11d3c81a86c2a0187c
   languageName: node
   linkType: hard
 

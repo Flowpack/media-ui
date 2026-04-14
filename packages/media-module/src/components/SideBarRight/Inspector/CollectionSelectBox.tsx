@@ -161,6 +161,7 @@ const CollectionSelectBox: React.FC = () => {
                         displaySearchBox
                         allowEmpty={!config.defaultAssetCollectionId}
                         threshold={0}
+                        allowDragging={false}
                     />
                 </>
             )}

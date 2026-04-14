@@ -54,6 +54,7 @@ const TagSelectBox = ({ values, options, onChange, disabled = false }: TagSelect
                 displaySearchBox
                 allowEmpty
                 threshold={0}
+                allowDragging={false}
             />
         </div>
     );
