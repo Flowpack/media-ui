@@ -5,7 +5,16 @@ const createErrorHandler = (notify: NeosNotification) => {
         return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
     };
 
-    return onError(({ graphQLErrors, networkError }) => {
+    return onError(({ graphQLErrors, networkError, operation }) => {
+        const context = operation.getContext();
+        const isRetrying = context.isRetrying;
+
+        // Don't show notifications while retrying - only after max retries exhausted
+        if (isRetrying) {
+            console.warn('[ErrorHandler] Suppressing error notifications during retry attempts');
+            return;
+        }
+
         if (graphQLErrors) {
             graphQLErrors.map((data) => {
                 const isInternalError = data.extensions?.category === 'internal';
@@ -17,7 +26,11 @@ const createErrorHandler = (notify: NeosNotification) => {
                 if (data.extensions?.errorCode) {
                     errorTitleLabel = `errors.${data.extensions.errorCode}.title`;
                     errorMessageLabel = `errors.${data.extensions.errorCode}.message`;
+                } else if (data.extensions?.debugMessage) {
+                    errorMessageLabel = data.extensions.debugMessage;
                 }
+
+                console.error('[GraphQL error]:', data);
 
                 notify.error(
                     translate(errorTitleLabel, defaultErrorTitle),
@@ -27,9 +40,11 @@ const createErrorHandler = (notify: NeosNotification) => {
         }
 
         if (networkError) {
-            console.error(`[Network error]: ${networkError}`);
+            console.error('[Network error]:', networkError);
             notify.warning('Network error', 'Please check your connection.');
         }
+
+        // TODO: Show error overlay and ask the user on how to continue (retry, reload, re-login)
     });
 };
 

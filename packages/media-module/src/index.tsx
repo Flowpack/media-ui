@@ -46,8 +46,8 @@ window.onload = async (): Promise<void> => {
         connectToDevTools: true,
         cache,
         link: ApolloLink.from([
-            createErrorHandler(Notification),
-            createRetryHandler(),
+            createRetryHandler(), // Retry first, BEFORE showing errors
+            createErrorHandler(Notification), // Then handle errors (only shown after retries exhausted)
             createUploadLink({
                 uri: endpoints.graphql,
                 credentials: 'same-origin',
