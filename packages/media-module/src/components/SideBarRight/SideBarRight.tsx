@@ -9,7 +9,7 @@ import CurrentMultiSelection from './CurrentMultiSelection';
 const SideBarRight = () => {
     // TODO: Read from component store
     const components = [
-        // CurrentMultiSelection,
+        CurrentMultiSelection,
         CurrentSelection,
         AssetInspector,
         AssetCollectionInspector,

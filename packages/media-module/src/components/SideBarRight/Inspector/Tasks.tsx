@@ -11,7 +11,7 @@ import { AssetReplacementButton } from '@media-ui/feature-asset-upload/src/compo
 import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { applicationContextState, featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
-import { clipboardItemState } from '@media-ui/feature-clipboard';
+import { clipboardItemState, clipboardItemsState } from '@media-ui/feature-clipboard';
 
 import DownloadAssetButton from '../../Actions/DownloadAssetButton';
 import DeleteAssetButton from '../../Actions/DeleteAssetButton';
@@ -27,6 +27,7 @@ const Tasks: React.FC = () => {
     const [isInClipboard, toggleClipboardState] = useRecoilState(
         clipboardItemState({ assetId: selectedAsset?.id ?? '', assetSourceId: selectedAsset?.assetSource?.id ?? '' })
     );
+    const [allInClipboard, toggleAllClipboardState] = useRecoilState(clipboardItemsState);
 
     const isMultiSelection = selectedAssets.length > 1;
 
@@ -53,20 +54,34 @@ const Tasks: React.FC = () => {
                 ) : (
                     <DeleteAssetButton asset={selectedAsset} style="lighter" />
                 )}
-                {/* TODO: Extend clipboard toggle to support multiple assets */}
-                {!isMultiSelection && selectedAsset.localId && (
+                {isMultiSelection ? (
                     <IconButton
                         title={
-                            isInClipboard
-                                ? translate('itemActions.removeFromClipboard', 'Remove from clipboard')
-                                : translate('itemActions.copyToClipboard', 'Copy to clipboard')
+                            allInClipboard
+                                ? translate('itemActions.removeAllFromClipboard', 'Remove all from clipboard')
+                                : translate('itemActions.copyAllToClipboard', 'Copy all to clipboard')
                         }
-                        icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
+                        icon={allInClipboard ? 'clipboard-check' : 'clipboard'}
                         style="lighter"
                         hoverStyle="brand"
-                        className={isInClipboard ? 'button--active' : ''}
-                        onClick={toggleClipboardState}
+                        className={allInClipboard ? 'button--active' : ''}
+                        onClick={toggleAllClipboardState}
                     />
+                ) : (
+                    selectedAsset.localId && (
+                        <IconButton
+                            title={
+                                isInClipboard
+                                    ? translate('itemActions.removeFromClipboard', 'Remove from clipboard')
+                                    : translate('itemActions.copyToClipboard', 'Copy to clipboard')
+                            }
+                            icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
+                            style="lighter"
+                            hoverStyle="brand"
+                            className={isInClipboard ? 'button--active' : ''}
+                            onClick={toggleClipboardState}
+                        />
+                    )
                 )}
             </div>
         </div>
