@@ -12,11 +12,16 @@ import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asse
 import * as classes from './CollectionSelectBox.module.css';
 import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
 
+interface CollectionSelectBoxProps {
+    isMultiAssetProcess?: boolean;
+    assets?: AssetIdentity[];
+}
+
 const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
     return assetCollectionIds.join(',') === asset.collections.map((collection) => collection.id).join(',');
 };
 
-const CollectionSelectBox: React.FC = () => {
+const CollectionSelectBox: React.FC<CollectionSelectBoxProps> = ({ isMultiAssetProcess = false, assets }) => {
     const Notify = useNotify();
     const { translate } = useIntl();
     const { config } = useConfigQuery();
@@ -64,9 +69,40 @@ const CollectionSelectBox: React.FC = () => {
                 newAssetCollectionIds = [newAssetCollectionIds];
             }
 
+            const newAssetCollections = assetCollections.filter((c) => newAssetCollectionIds.includes(c.id));
+
+            if (isMultiAssetProcess && assets?.length) {
+                // TODO: Add approval strategy for setting collections on multiple assets
+                // TODO: Check readOnly per asset source when multi-select is implemented
+                try {
+                    await Promise.all(
+                        assets.map((identity) =>
+                            setAssetCollections({
+                                asset: { id: identity.assetId, assetSource: { id: identity.assetSourceId } } as Asset,
+                                assetCollections: newAssetCollections,
+                            })
+                        )
+                    );
+                    Notify.ok(
+                        translate(
+                            'actions.setAssetCollections.multiSuccess',
+                            'The collections for the assets have been set'
+                        )
+                    );
+                } catch ({ message }) {
+                    Notify.error(
+                        translate(
+                            'actions.setAssetCollections.multiError',
+                            'Error while setting the collections for the assets'
+                        ),
+                        message
+                    );
+                }
+                return;
+            }
+
             if (!collectionsMatchAsset(newAssetCollectionIds, selectedAsset)) {
                 const asset = selectedAsset;
-                const newAssetCollections = assetCollections.filter((c) => newAssetCollectionIds.includes(c.id));
                 const hasApprovalToSetAssetCollections = await obtainApprovalToSetAssetCollections({
                     asset,
                     newAssetCollections,
@@ -101,6 +137,8 @@ const CollectionSelectBox: React.FC = () => {
         },
         [
             Notify,
+            isMultiAssetProcess,
+            assets,
             selectedAsset,
             setAssetCollections,
             assetCollections,
@@ -120,16 +158,16 @@ const CollectionSelectBox: React.FC = () => {
 
     return (
         <div className="collectionSelectBox">
-            {limitToSingleAssetCollectionPerAsset ? (
+            {isMultiAssetProcess || limitToSingleAssetCollectionPerAsset ? (
                 <>
                     <Headline type="h2">
                         <IconLabel icon="folder" label={translate('inspector.assetCollection', 'Collection')} />
                     </Headline>
                     <SelectBox
                         className={classes.collectionSelectBox}
-                        disabled={loading || selectedAsset.assetSource.readOnly}
+                        disabled={loading || (!isMultiAssetProcess && selectedAsset.assetSource.readOnly)}
                         placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                        value={selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
+                        value={isMultiAssetProcess ? null : selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
                         optionValueField="id"
                         options={filteredSelectBoxOptions}
                         noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}

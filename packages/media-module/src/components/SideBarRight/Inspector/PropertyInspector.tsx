@@ -18,6 +18,8 @@ import classes from './PropertyInspector.module.css';
 import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
 const PropertyInspector = () => {
+    // TODO: Replace isMultiAssetProcess with actual multi-selection state
+    const isMultiAssetProcess = false;
     const selectedAsset = useSelectedAsset();
     const { assetSources } = useAssetSourcesQuery();
     const Notify = useNotify();
@@ -146,7 +148,9 @@ const PropertyInspector = () => {
                 </ToggablePanel.Contents>
             </ToggablePanel>
 
-            {assetSourceForSelectedAsset?.supportsCollections && <CollectionSelectBox />}
+            {assetSourceForSelectedAsset?.supportsCollections && (
+                <CollectionSelectBox isMultiAssetProcess={isMultiAssetProcess} />
+            )}
             {assetSourceForSelectedAsset?.supportsTagging && <TagSelectBoxAsset />}
 
             <MetadataView />
