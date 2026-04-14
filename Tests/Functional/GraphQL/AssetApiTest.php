@@ -20,6 +20,7 @@ use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Flow\Tests\Behavior\Features\Bootstrap\SecurityOperationsTrait;
+use Neos\Media\Domain\Service\AssetService;
 
 use function Wwwision\Types\instantiate;
 
@@ -101,6 +102,53 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->assertEquals('new-name.svg', $editedAsset->filename->value);
     }
 
+    public function testDeleteUnusedAssetWorks(): void
+    {
+        $file = self::createFile();
+        $result = $this->mediaApi->uploadFiles(Types\UploadedFiles::fromArray([$file]));
+        $this->assertCount(1, $result->values);
+
+        $this->persistenceManager->persistAll();
+
+        $assets = $this->mediaApi->assets();
+        $asset = $assets->getIterator()->current();
+        $this->assertEquals($file->clientFilename, $asset->filename->value);
+
+        // Delete the asset
+        $deleteResult = $this->mediaApi->deleteAsset($asset->id, $asset->assetSource->id);
+        $this->persistenceManager->persistAll();
+
+        $this->assertTrue($deleteResult->success);
+        $assetsAfterDeletion = $this->mediaApi->assets();
+        $this->assertCount(0, $assetsAfterDeletion);
+    }
+
+    public function testDeleteUsedAssetFails(): void
+    {
+        $assetServiceMock = $this->getMockBuilder(AssetService::class)->setMethods(
+            ['isInUse']
+        )->disableOriginalConstructor()->getMock();
+        $assetServiceMock->expects(self::once())->method('isInUse')->willReturn(true);
+
+        $file = self::createFile();
+        $result = $this->mediaApi->assets()->getIterator()->current();
+        $this->assertEquals($file->clientFilename, $result->filename->value);
+
+        $this->persistenceManager->persistAll();
+
+        $assets = $this->mediaApi->assets();
+        $asset = $assets->getIterator()->current();
+        $this->assertEquals($file->clientFilename, $asset->filename->value);
+
+        // Try to delete the used asset
+        $deleteResult = $this->mediaApi->deleteAsset($asset->id, $asset->assetSource->id);
+        $this->persistenceManager->persistAll();
+
+        $this->assertFalse($deleteResult->success);
+        $assetsAfterDeletion = $this->mediaApi->assets();
+        $this->assertCount(1, $assetsAfterDeletion);
+    }
+
     public function testUpdateAsset(): void
     {
         $file = self::createFile();
@@ -114,7 +162,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $asset = $assets->getIterator()->current();
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
-        $updateAssetResult = $this->mediaApi->updateAsset(
+        $updatedAsset = $this->mediaApi->updateAsset(
             $asset->id,
             $asset->assetSource->id,
             'some label',
@@ -122,8 +170,7 @@ class AssetApiTest extends AbstractMediaTestCase
             'copyright notice',
         );
 
-        /** @var Types\Asset $updatedAsset */
-        $updatedAsset = $this->mediaApi->assets()->getIterator()->current();
+        $this->assertEquals($asset->id, $updatedAsset->id);
         $this->assertEquals('some label', $this->assetResolver->label($updatedAsset));
         $this->assertEquals('some caption', $this->assetResolver->caption($updatedAsset));
         $this->assertEquals('copyright notice', $this->assetResolver->copyrightNotice($updatedAsset));

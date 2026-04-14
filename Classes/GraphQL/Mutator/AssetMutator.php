@@ -15,10 +15,10 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
  */
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
@@ -65,8 +65,14 @@ class AssetMutator
     protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
     {
         try {
-            return $this->translator->translateById($id, $arguments, null, null, 'Main',
-                'Flowpack.Media.Ui') ?? $fallback;
+            return $this->translator->translateById(
+                $id,
+                $arguments,
+                null,
+                null,
+                'Main',
+                'Flowpack.Media.Ui'
+            ) ?? $fallback;
         } catch (\Exception) {
             return $fallback ?: $id;
         }
@@ -153,7 +159,7 @@ class AssetMutator
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.deleteAssets.noProxy',
                     'Asset could not be resolved'
@@ -163,7 +169,7 @@ class AssetMutator
         $asset = $this->assetSourceContext->getAssetForProxy($assetProxy);
 
         if (!$asset) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.deleteAssets.noImportExists',
                     'Cannot delete asset that was never imported'
@@ -174,19 +180,16 @@ class AssetMutator
         try {
             $this->assetRepository->remove($asset);
         } catch (AssetServiceException $e) {
-            return MutationResult::error([$this->localizedMessageFromException($e)]);
+            return MutationResult::fromError([$this->localizedMessageFromException($e)]);
         } catch (\Exception $e) {
             throw new MediaUiException('Failed to delete asset: ' . $e->getMessage(), 1591537315);
         }
 
-        return instantiate(MutationResult::class, [
-            'success' => true,
-            'messages' => [
-                $this->localizedMessage(
-                    'actions.deleteAssets.success',
-                    'Asset deleted'
-                )
-            ]
+        return MutationResult::fromSuccess([
+            $this->localizedMessage(
+                'actions.deleteAssets.success',
+                'Asset deleted'
+            )
         ]);
     }
 
@@ -260,7 +263,7 @@ class AssetMutator
             throw new MediaUiException('Failed to assign asset collections: ' . $e->getMessage(), 1594621296);
         }
 
-        return MutationResult::success();
+        return MutationResult::fromSuccess();
     }
 
     /**
@@ -319,10 +322,17 @@ class AssetMutator
         $filename = $file->clientFilename;
 
         // Prevent replacement of image, audio and video by a different mimetype because of possible rendering issues.
-        if ($sourceMediaType['type'] !== $replacementMediaType['type'] && in_array($sourceMediaType['type'],
-                ['image', 'audio', 'video'])) {
-            $this->logger->error(sprintf('Cannot replace asset of mimetype %s with mimetype %s',
-                $sourceMediaType['type'], $replacementMediaType['type']));
+        if ($sourceMediaType['type'] !== $replacementMediaType['type'] && in_array(
+                $sourceMediaType['type'],
+                ['image', 'audio', 'video']
+            )) {
+            $this->logger->error(
+                sprintf(
+                    'Cannot replace asset of mimetype %s with mimetype %s',
+                    $sourceMediaType['type'],
+                    $replacementMediaType['type']
+                )
+            );
             return instantiate(Types\FileUploadResult::class, [
                 'filename' => $filename,
                 'success' => false,
@@ -353,9 +363,13 @@ class AssetMutator
                 $success = true;
                 $result = 'REPLACED';
             } catch (\Exception $e) {
-                $this->logger->error(sprintf(
-                    'Asset %s could not be replaced: %s', $asset->getIdentifier(), $e->getMessage()
-                ));
+                $this->logger->error(
+                    sprintf(
+                        'Asset %s could not be replaced: %s',
+                        $asset->getIdentifier(),
+                        $e->getMessage()
+                    )
+                );
             }
         }
 
@@ -396,8 +410,10 @@ class AssetMutator
         // Copy the resource to a new one with the new filename
         $originalResource = $asset->getResource();
         $originalResourceStream = $originalResource->getStream();
-        $resource = $this->resourceManager->importResource($originalResourceStream,
-            $originalResource->getCollectionName());
+        $resource = $this->resourceManager->importResource(
+            $originalResourceStream,
+            $originalResource->getCollectionName()
+        );
         fclose($originalResourceStream);
         $resource->setFilename($filename);
         $resource->setMediaType($originalResource->getMediaType());
@@ -405,13 +421,15 @@ class AssetMutator
         try {
             $this->assetService->replaceAssetResource($asset, $resource, $options->toArray());
         } catch (\Exception $exception) {
-            $this->logger->error(sprintf(
-                'Asset %s could not be replaced: %s',
-                $asset->getIdentifier(),
-                $exception->getMessage()
-            ));
+            $this->logger->error(
+                sprintf(
+                    'Asset %s could not be replaced: %s',
+                    $asset->getIdentifier(),
+                    $exception->getMessage()
+                )
+            );
             $this->logger->error('', [$exception]);
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.editAsset.cannotRename',
                     sprintf('Asset "%s" could not be renamed', $asset->getLabel())
@@ -419,7 +437,7 @@ class AssetMutator
             ]);
         }
 
-        return MutationResult::success();
+        return MutationResult::fromSuccess();
     }
 
     /**
@@ -486,7 +504,9 @@ class AssetMutator
                         }
                         if ($assetCollectionId) {
                             /** @var AssetCollection $assetCollection */
-                            $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId->value);
+                            $assetCollection = $this->assetCollectionRepository->findByIdentifier(
+                                $assetCollectionId->value
+                            );
                         } else {
                             // Assign the asset to the asset collection of the site it has been uploaded to
                             $assetCollection = $this->assetCollectionService->getDefaultCollectionForCurrentSite();

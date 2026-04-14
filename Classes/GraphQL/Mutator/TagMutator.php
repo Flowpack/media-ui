@@ -14,9 +14,9 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
  * source code.
  */
 
-use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
@@ -110,7 +110,7 @@ class TagMutator
         /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage('actions.deleteTag.notFound', 'Tag not found')
             ]);
         }
@@ -121,6 +121,6 @@ class TagMutator
             $this->assetRepository->update($asset);
         }
         $this->tagRepository->remove($tag);
-        return MutationResult::success();
+        return MutationResult::fromSuccess();
     }
 }

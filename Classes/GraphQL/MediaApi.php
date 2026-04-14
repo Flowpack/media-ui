@@ -14,7 +14,6 @@ namespace Flowpack\Media\Ui\GraphQL;
  * source code.
  */
 
-use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Domain\Model\SearchTerm;
 use Flowpack\Media\Ui\Exception;
@@ -23,6 +22,7 @@ use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetCollectionMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\TagMutator;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyIteratorBuilder;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
