@@ -28,6 +28,11 @@ final class MutationResponseMessages implements \IteratorAggregate, \JsonSeriali
         yield from $this->values;
     }
 
+    public function isEmpty(): bool
+    {
+        return count($this->values) === 0;
+    }
+
     public static function empty(): self
     {
         return new self([]);

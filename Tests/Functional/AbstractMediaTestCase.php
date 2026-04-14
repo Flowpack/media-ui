@@ -109,4 +109,9 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
             'errorStatus' => 0,
         ]);
     }
+
+    public function getObject(string $className): object
+    {
+        return $this->objectManager->get($className);
+    }
 }
