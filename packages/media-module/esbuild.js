@@ -1,4 +1,5 @@
 const esbuild = require('esbuild');
+const CssModulesPlugin = require("esbuild-css-modules-plugin");
 const isWatch = process.argv.includes('--watch');
 const isAnalyze = process.argv.includes('--analyze');
 
@@ -15,6 +16,15 @@ const options = {
     entryPoints: {
         'main.bundle': './src/index.tsx',
     },
+    plugins: [
+        CssModulesPlugin({
+            // @see https://github.com/indooorsman/esbuild-css-modules-plugin/blob/main/index.d.ts for more details
+            force: true,
+            localsConvention: 'camelCaseOnly',
+            namedExports: true,
+            inject: false,
+        }),
+    ],
     outdir: '../../Resources/Public/Assets',
     define: {
         // react-image-lightbox
