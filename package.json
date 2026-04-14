@@ -40,7 +40,6 @@
     "eslint-plugin-testcafe": "^0.2.1",
     "prettier": "^2.8.8",
     "testcafe": "^3.7.4",
-    "testcafe-react-selectors": "^5.0.3",
     "ts-loader": "^8.4.0",
     "ts-node": "^10.9.1",
     "tsx": "^4.21.0",

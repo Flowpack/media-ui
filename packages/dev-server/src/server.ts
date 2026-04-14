@@ -311,11 +311,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 return false;
             },
             createTag: ($_, { tag: newTag }: { tag: Tag }): Tag => {
-                if (!tags.find((tag) => tag === newTag)) {
-                    tags.push(newTag);
-                    return newTag;
+                if (tags.find((tag) => tag === newTag)) {
+                    throw new Error('Tag with this id already exists');
                 }
-                return null;
+                tags.push(newTag);
+                return newTag;
             },
             updateTag: ($_, { id, label }): Tag => {
                 throw new Error('Not implemented');

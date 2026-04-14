@@ -1,9 +1,11 @@
 {
   "browsers": {
     "path": "chromium",
-    "cmd": "--window-size=1280,720"
+    "cmd": "--window-size=1280,720 --incognito"
   },
-  "src": ["packages/media-module/tests/**/*.ts"],
+  "src": [
+    "packages/media-module/tests/**/*.ts"
+  ],
   "appCommand": "yarn dev:test",
   "appInitDelay": 2000,
   "screenshots": {

@@ -8246,7 +8246,6 @@ __metadata:
     eslint-plugin-testcafe: "npm:^0.2.1"
     prettier: "npm:^2.8.8"
     testcafe: "npm:^3.7.4"
-    testcafe-react-selectors: "npm:^5.0.3"
     ts-loader: "npm:^8.4.0"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.21.0"
@@ -10514,15 +10513,6 @@ __metadata:
     strip-bom: "npm:^2.0.0"
     testcafe-hammerhead: "npm:>=19.4.0"
   checksum: 10c0/88f016ea7c28c4205928171bea9b7d32bb89c7a16afad2a442531befb3f5414475202effafa0c189899012089d1074ce46c8820d1c8232a92677e8f5b4834207
-  languageName: node
-  linkType: hard
-
-"testcafe-react-selectors@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "testcafe-react-selectors@npm:5.0.3"
-  peerDependencies:
-    testcafe: ">1.0.0"
-  checksum: 10c0/46039f9468879412b66e864a746ae74583179260a3ae965a63554d5487289b6582de0b6f2feb58fa3047e8011fea665c937c1a9ed57c3930348aa0156a5ec560
   languageName: node
   linkType: hard
 
