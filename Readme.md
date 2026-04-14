@@ -314,7 +314,7 @@ yarn lint
 First start the dev server via `yarn dev` and the run the following command to execute all end-to-end tests: 
 
 ```console
-yarn e2e
+yarn test:e2e
 ```    
 
 The test configuration is defined in `.testcaferc.json`.

@@ -43,31 +43,36 @@ const CreateTagDialog: React.FC = () => {
                 return;
             });
     }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetCollection]);
-    const validate = (label) => {
-        const validationErrors = [];
-        const trimmedLabel = label.trim();
-        const tagWithLabelExist = tags?.some((tag) => tag.label === trimmedLabel);
+    const validate = useCallback(
+        (label) => {
+            const validationErrors = [];
+            const trimmedLabel = label.trim();
+            const tagWithLabelExist = tags?.some((tag) => tag.label === trimmedLabel);
 
-        if (trimmedLabel.length === 0) {
-            validationErrors.push(translate('tagActions.validation.emptyTagLabel', 'Please provide a tag label'));
-        }
+            if (trimmedLabel.length === 0) {
+                validationErrors.push(translate('tagActions.validation.emptyTagLabel', 'Please provide a tag label'));
+            }
 
-        if (tagWithLabelExist) {
-            validationErrors.push(translate('tagActions.validation.tagExists', 'A tag with this label already exists'));
-        }
+            if (tagWithLabelExist) {
+                validationErrors.push(
+                    translate('tagActions.validation.tagExists', 'A tag with this label already exists')
+                );
+            }
 
-        const validation = {
-            errors: validationErrors,
-            valid: validationErrors.length === 0,
-        };
-        setDialogState((state) => ({ ...state, validation }));
-    };
+            const validation = {
+                errors: validationErrors,
+                valid: validationErrors.length === 0,
+            };
+            setDialogState((state) => ({ ...state, validation }));
+        },
+        [setDialogState, tags, translate]
+    );
     const setLabel = useCallback(
         (label) => {
             validate(label);
             setDialogState((state) => ({ ...state, label }));
         },
-        [setDialogState]
+        [setDialogState, validate]
     );
 
     return (
