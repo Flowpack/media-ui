@@ -174,7 +174,7 @@ const CollectionSelectBox: React.FC = () => {
                         disabled={loading || (!isMultiSelection && selectedAsset.assetSource.readOnly)}
                         placeholder={
                             isMultiSelection
-                                ? translate('inspector.collections.multiPlaceholder', 'Shift to other collection')
+                                ? translate('inspector.collections.multiPlaceholder', 'Move to other collection')
                                 : translate('inspector.collections.placeholder', 'Select a collection')
                         }
                         value={isMultiSelection ? null : selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}

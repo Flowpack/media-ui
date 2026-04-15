@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { Tabs } from '@neos-project/react-ui-components';
@@ -19,12 +19,7 @@ const AssetInspector = () => {
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const { showVariantsEditor } = useRecoilValue(featureFlagsState);
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
-    const selectedAssets = useRecoilValue(selectedAssetIdsState);
-    const [isMultiSelection, setIsMultiSelection] = useState<boolean>(false);
-
-    useEffect(() => {
-        setIsMultiSelection(selectedAssets.length > 1);
-    }, [selectedAssets]);
+    const isMultiSelection = useRecoilValue(selectedAssetIdsState).length > 1;
 
     if ((!selectedAssetId && !isMultiSelection) || selectedInspectorView !== 'asset') return null;
 

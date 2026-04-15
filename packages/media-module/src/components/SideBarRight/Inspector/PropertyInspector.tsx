@@ -18,8 +18,7 @@ import classes from './PropertyInspector.module.css';
 import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
 const PropertyInspector = () => {
-    const selectedAssets = useRecoilValue(selectedAssetIdsState);
-    const isMultiSelection = selectedAssets.length > 1;
+    const isMultiSelection = useRecoilValue(selectedAssetIdsState).length > 1;
     const selectedAsset = useSelectedAsset();
     const { assetSources } = useAssetSourcesQuery();
     const Notify = useNotify();
