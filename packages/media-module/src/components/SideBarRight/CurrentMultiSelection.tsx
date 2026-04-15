@@ -1,11 +1,9 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { Headline, Icon, IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { useAssetQuery, useSelectAssets } from '@media-ui/core/src/hooks';
-import { selectedAssetIdsState } from '@media-ui/core/src/state';
 
 import classes from './CurrentMultiSelection.module.css';
 
@@ -36,8 +34,7 @@ const MultiSelectionItem: React.FC<MultiSelectionItemProps> = ({ assetIdentity, 
 
 const CurrentMultiSelection: React.FC = () => {
     const { translate } = useIntl();
-    const selectedAssets = useRecoilValue(selectedAssetIdsState);
-    const { removeFromSelection, clearSelection } = useSelectAssets();
+    const { selectedAssets, removeFromSelection, clearSelection } = useSelectAssets();
 
     if (selectedAssets.length <= 1) return null;
 

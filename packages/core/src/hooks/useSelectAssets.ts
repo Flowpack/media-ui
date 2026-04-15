@@ -58,6 +58,7 @@ const useSelectAssets = () => {
         addMultipleToSelection,
         removeFromSelection,
         toggleSelection,
+        setSelection: setSelectedAssets,
         clearSelection,
     };
 };

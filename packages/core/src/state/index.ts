@@ -7,7 +7,7 @@ export { loadingState } from './loadingState';
 export { localStorageEffect } from './localStorageEffect';
 export { searchTermState } from './searchTermState';
 export { selectedAssetCollectionAndTagState } from './selectedAssetCollectionAndTagState';
-export { selectedAssetIdState } from './selectedAssetIdState';
+export { selectedAssetIdState, isFocusedAssetState } from './selectedAssetIdState';
 export { selectedInspectorViewState } from './selectedInspectorViewState';
 export { selectedMediaTypeState } from './selectedMediaTypeState';
 export { selectedAssetTypeState } from './selectedAssetTypeState';
