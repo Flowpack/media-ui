@@ -1,12 +1,6 @@
-html,
-body {
-    min-height: 100%;
-    height: auto;
-    background: var(--grayDark);
-}
-
 .neos.neos-module {
-    background: var(--grayDark);
+    background: transparent;
+    padding-bottom: var(--spacing-GoldenUnit);
 
     .neos-control-label + .neos-controls {
         margin-top: 0.5rem;
@@ -32,4 +26,37 @@ body {
     .neos-button + .neos-button {
         margin-left: 0.5rem;
     }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+
+    footer {
+        display: flex;
+        justify-content: flex-end;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: 0;
+    }
+}
+
+
+:global(::-webkit-scrollbar) {
+    width: 4px;
+    height: 4px;
+}
+
+:global(::-webkit-scrollbar-track) {
+    background: transparent;
+}
+
+:global(::-webkit-scrollbar-thumb) {
+    background-color: #999;
+}
+
+:global(::-webkit-scrollbar-corner) {
+    background-color: var(--grayLight);
 }

@@ -1,0 +1,35 @@
+prototype(Flowpack.Media.Ui:Component.MetadataEditor) < prototype(Neos.Fusion:Component) {
+    /// AssetInterface
+    asset = null
+    /// data structure with the form schema for the metadata editor form
+    formSchema = null
+
+    // TODO: Translate labels
+
+    renderer = afx`
+        <main>
+            <h1>
+                Editing asset "{asset.label}"
+            </h1>
+            <Flowpack.Media.Ui:Component.MetadataEditorForm
+                asset={props.asset}
+                formSchema={props.formSchema}
+            />
+        </main>
+        <footer>
+            <Neos.Fusion.Form:Button
+                attributes.type="button"
+                attributes.class="neos-button"
+                attributes.id="cancelButton"
+            >
+                Cancel
+            </Neos.Fusion.Form:Button>
+            <Neos.Fusion.Form:Button
+                attributes.form="editMetadataForm"
+                attributes.class="neos-button neos-button-success"
+            >
+                Save
+            </Neos.Fusion.Form:Button>
+        </footer>
+    `
+}

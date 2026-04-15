@@ -42,6 +42,8 @@ Flowpack.Media.Ui.MediaController {
 
             javascripts = Neos.Fusion:Join {
                 @position = 'after stylesheets'
+                module = ${StaticResource.uri('Flowpack.Media.Ui', 'Public/Javascript/EditMetadataForm.js')}
+                module.@process.wrap = ${'<script src="' + value + '"></script>'}
             }
         }
 
@@ -56,19 +58,11 @@ Flowpack.Media.Ui.MediaController {
             attributes.class.@process.addNeosBackendClass.@if.onlyRenderWhenNotInLiveWorkspace = ${documentNode.context.inBackend}
         }
 
-        body = afx`
-            <div class="neos-module-container neos-row-fluid">
-                <Neos.Fusion.Form:Form form.target.action="updateMetadata">
-                    <Neos.Fusion.Form:Hidden field.name="asset" field.value={asset} />
-                    <Neos.Fusion:Loop items={Json.parse(formSchema)} itemKey="fieldName" itemName="fieldConfig">
-                        <Flowpack.Media.Ui:EditMetadata.FieldRenderer fieldName={fieldName} fieldConfig={fieldConfig} />
-                    </Neos.Fusion:Loop>
-                    <Neos.Fusion.Form:Button attributes.class="neos-button">Cancel</Neos.Fusion.Form:Button>
-                    <Neos.Fusion.Form:Button type="submit" attributes.class="neos-button neos-button-success">Save
-                    </Neos.Fusion.Form:Button>
-                </Neos.Fusion.Form:Form>
-            </div>
-        `
+        body = Flowpack.Media.Ui:Component.MetadataEditor {
+            asset = ${asset}
+            formSchema = ${formSchema}
+        }
+
         closingBodyTag = '</body>'
         closingBodyTag.@position = 'end 100'
 

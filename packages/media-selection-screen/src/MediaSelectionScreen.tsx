@@ -86,6 +86,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                 // TODO: Generate uri from Neos maybe like $get('routes.core.modules.mediaBrowser', neos);
                 graphql: '/neos/graphql/media-assets',
                 upload: '/neos/media-ui/upload',
+                editMetadata: '/neos/media-ui/editmetadata',
             },
             // TODO: Generate image uri from Neos
             dummyImage: '/_Resources/Static/Packages/Neos.Neos/Images/dummy-image.svg',
@@ -129,6 +130,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         return {
             applicationContext: 'selection' as ApplicationContext,
             featureFlags: frontendConfiguration,
+            endpoints: this.getConfig().endpoints,
             constraints: {
                 ...(constraints || {}),
                 assetType: type === 'images' ? 'image' : type,

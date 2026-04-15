@@ -56,12 +56,13 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
         };
     }
 
-    getConfig() {
+    getConfig(): { endpoints: Endpoints; dummyImage: string; buildLinkToMediaUi: (asset: Asset) => string } {
         return {
             endpoints: {
                 // TODO: Generate uri from Neos maybe like $get('routes.core.modules.mediaBrowser', neos);
                 graphql: '/neos/graphql/media-assets',
                 upload: '/neos/media-ui/upload',
+                editMetadata: '/neos/media-ui/editmetadata',
             },
             // TODO: Generate image uri from Neos
             dummyImage: '/_Resources/Static/Packages/Neos.Neos/Images/dummy-image.svg',
@@ -69,7 +70,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
         };
     }
 
-    getApolloClient() {
+    getApolloClient(): ApolloClient<any> {
         if (!apolloClient) {
             const { endpoints } = this.getConfig();
             const cache = CacheFactory.createCache(this.props.frontendConfiguration as FeatureFlags);
@@ -90,7 +91,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
         return apolloClient;
     }
 
-    translate = (
+    translate: TranslateFunction = (
         id?: string,
         fallback?: string,
         params?: Record<string, unknown> | string[],
@@ -102,10 +103,12 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
 
     getInitialApplicationState = () => {
         const { frontendConfiguration, imageIdentity, type, constraints } = this.props;
+        const { endpoints } = this.getConfig();
 
         return {
             applicationContext: 'details' as ApplicationContext,
             featureFlags: frontendConfiguration,
+            endpoints,
             selectedAsset: {
                 assetId: imageIdentity,
                 // FIXME: Set the correct asset source id (do we even have it at this point?)
