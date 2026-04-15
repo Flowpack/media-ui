@@ -15,8 +15,14 @@ namespace Flowpack\Media\Ui\GraphQL\Resolver\Type;
  */
 
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryIdExtractor;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\AssetSourceId;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
+use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\AssetCollection;
@@ -49,6 +55,9 @@ class AssetCollectionResolver
     #[Flow\Inject]
     protected AssetCollectionRepository $assetCollectionRepository;
 
+    #[Flow\Inject]
+    protected ContentRepositoryResolver $contentRepositoryResolver;
+
     protected array|null $siteDefaultAssetCollections = null;
 
     public function assetCount(Types\AssetCollection $assetCollection): int
@@ -80,32 +89,67 @@ class AssetCollectionResolver
             ) && $this->assetCount($assetCollection) === 0;
     }
 
-    public function tags(Types\AssetCollection $assetCollection): Types\Tags
-    {
-        /** @var AssetCollection $originalAssetCollection */
-        $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
+    public function tags(
+        Types\AssetCollection $assetCollection,
+        ?Types\AssetSourceId $assetSourceId = null,
+    ): Types\Tags {
+        $assetSourceId = $assetSourceId ?: AssetSourceId::fromString('cr:default');
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            /** @todo hand over from request */
+            $workspaceName = WorkspaceName::forLive();
+            /** @todo hand over from request */
+            $dimensionSpacePoint = DimensionSpacePoint::fromArray(['language' => 'de']);
 
-        return $originalAssetCollection ? Types\Tags::fromArray(array_map(
-            fn(Tag $tag) => instantiate(Types\Tag::class, [
-                'id' => $this->persistenceManager->getIdentifierByObject($tag),
-                'label' => $tag->getLabel(),
-            ]),
-            $originalAssetCollection->getTags()->toArray()
-        )) : Types\Tags::empty();
+            return $this->contentRepositoryResolver->findAssetCollectionTags(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                dimensionSpacePoint: $dimensionSpacePoint,
+                folderId: NodeAggregateId::fromString($assetCollection->id->value),
+            );
+        } else {
+            /** @var AssetCollection $originalAssetCollection */
+            $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
+
+            return $originalAssetCollection ? Types\Tags::fromArray(array_map(
+                fn(Tag $tag) => instantiate(Types\Tag::class, [
+                    'id' => $this->persistenceManager->getIdentifierByObject($tag),
+                    'label' => $tag->getLabel(),
+                ]),
+                $originalAssetCollection->getTags()->toArray()
+            )) : Types\Tags::empty();
+        }
     }
 
-    public function parent(Types\AssetCollection $assetCollection): ?Types\AssetCollectionParent
-    {
-        /** @var HierarchicalAssetCollectionInterface $originalAssetCollection */
-        $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
-        if (!$originalAssetCollection) {
-            return null;
+    public function parent(
+        Types\AssetCollection $assetCollection,
+        ?Types\AssetSourceId $assetSourceId = null,
+    ): ?Types\AssetCollectionParent {
+        $assetSourceId = $assetSourceId ?: AssetSourceId::fromString('cr:default');
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            /** @todo hand over from request */
+            $workspaceName = WorkspaceName::forLive();
+            /** @todo hand over from request */
+            $dimensionSpacePoint = DimensionSpacePoint::fromArray(['language' => 'de']);
+            return $this->contentRepositoryResolver->findParentAssetCollection(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                dimensionSpacePoint: $dimensionSpacePoint,
+                childNodeAggregateId: NodeAggregateId::fromString($assetCollection->id->value),
+            );
+        } else {
+            /** @var HierarchicalAssetCollectionInterface $originalAssetCollection */
+            $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
+            if (!$originalAssetCollection) {
+                return null;
+            }
+            $parent = $originalAssetCollection->getParent();
+            return $parent ? instantiate(Types\AssetCollectionParent::class, [
+                'id' => $this->persistenceManager->getIdentifierByObject($parent),
+                'title' => $parent->getTitle(),
+            ]) : null;
         }
-        $parent = $originalAssetCollection->getParent();
-        return $parent ? instantiate(Types\AssetCollectionParent::class, [
-            'id' => $this->persistenceManager->getIdentifierByObject($parent),
-            'title' => $parent->getTitle(),
-        ]) : null;
     }
 
     public function assets(Types\AssetCollection $assetCollection): Types\Assets

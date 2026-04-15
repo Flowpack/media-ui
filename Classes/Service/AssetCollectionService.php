@@ -19,6 +19,9 @@ use Neos\Neos\Domain\Repository\DomainRepository;
 class AssetCollectionService
 {
 
+    /**
+     * @var array<string,int>
+     */
     protected array $assetCollectAssetCountCache = [];
 
     /**

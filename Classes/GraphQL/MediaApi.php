@@ -21,13 +21,33 @@ use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetCollectionMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetMutator;
+use Flowpack\Media\Ui\GraphQL\Mutator\ContentRepositoryMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\TagMutator;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryIdExtractor;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryResolver;
+use Flowpack\Media\Ui\GraphQL\Types\AssetCollections;
+use Flowpack\Media\Ui\GraphQL\Types\AssetSourceId;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyIteratorBuilder;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
+use Neos\ContentRepository\Core\ContentRepository;
+use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
+use Neos\ContentRepository\Core\DimensionSpace\OriginDimensionSpacePoint;
+use Neos\ContentRepository\Core\Feature\NodeCreation\Command\CreateNodeAggregateWithNode;
+use Neos\ContentRepository\Core\Feature\NodeModification\Dto\PropertyValuesToWrite;
+use Neos\ContentRepository\Core\NodeType\NodeTypeName;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindAncestorNodesFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindSubtreeFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Subtree;
+use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
+use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
+use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
@@ -41,6 +61,8 @@ use Neos\Media\Domain\Model\VariantSupportInterface;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Service\AssetService;
+use Neos\Neos\Domain\NodeLabel\NodeLabelGeneratorInterface;
+use Neos\Neos\Domain\SubtreeTagging\NeosVisibilityConstraints;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
 use Psr\Log\LoggerInterface;
@@ -72,6 +94,10 @@ final class MediaApi
         private readonly TagMutator $tagMutator,
         private readonly TagRepository $tagRepository,
         private readonly UsageDetailsService $usageDetailsService,
+        private readonly ContentRepositoryMutator $contentRepositoryMutator,
+        private readonly ContentRepositoryResolver $contentRepositoryResolver,
+        private readonly ContentRepositoryRegistry $contentRepositoryRegistry,
+        private readonly NodeLabelGeneratorInterface $nodeLabelGenerator,
     ) {
     }
 
@@ -140,27 +166,55 @@ final class MediaApi
 
     #[Description('All asset collections')]
     #[Query]
-    public function assetCollections(): Types\AssetCollections
-    {
-        return Types\AssetCollections::fromArray(
-            array_map(
-                fn(HierarchicalAssetCollectionInterface $assetCollection) => instantiate(Types\AssetCollection::class, [
-                    'id' => $this->persistenceManager->getIdentifierByObject($assetCollection),
-                    'title' => $assetCollection->getTitle(),
-                    'path' => $assetCollection->getPath(),
-                ]), $this->assetCollectionRepository->findAll()->toArray()
-            )
-        );
+    public function assetCollections(
+        ?AssetSourceId $assetSourceId = null,
+    ): Types\AssetCollections {
+        $assetSourceId = $assetSourceId ?: AssetSourceId::fromString('cr:default');
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId !== null) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $dimensionSpacePoint = DimensionSpacePoint::fromArray(['language' => 'de']);
+            return $this->contentRepositoryResolver->findAssetCollections($contentRepositoryId, $workspaceName, $dimensionSpacePoint);
+        } else {
+            return Types\AssetCollections::fromArray(
+                array_map(
+                    fn(HierarchicalAssetCollectionInterface $assetCollection) => instantiate(Types\AssetCollection::class, [
+                        'id' => $this->persistenceManager->getIdentifierByObject($assetCollection),
+                        'title' => $assetCollection->getTitle(),
+                        'path' => $assetCollection->getPath(),
+                    ]), $this->assetCollectionRepository->findAll()->toArray()
+                )
+            );
+        }
     }
 
-    #[Description('All configured asset sources (by default only the "neos" source)')]
+    #[Description('All configured asset sources (by default only the "neos" source) and content repositories with a Media Assets root node')]
     #[Query]
     public function assetSources(): Types\AssetSources
     {
+        $assetContentRepositories = [];
+        // @todo pass from UI
+        $workspaceName = WorkspaceName::forLive();
+        foreach ($this->contentRepositoryRegistry->getContentRepositoryIds() as $contentRepositoryId) {
+            $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
+            if ($contentRepository->getContentGraph($workspaceName)
+                ->findRootNodeAggregateByType(NodeTypeName::fromString('Flowpack.Media:Media'))
+            ) {
+                $assetContentRepositories[] = $contentRepository;
+            }
+        }
+
         return Types\AssetSources::fromArray(array_map(
-                static fn(AssetSourceInterface $assetSource) => Types\AssetSource::fromAssetSource($assetSource),
-                $this->assetSourceContext->getAssetSources())
-        );
+            static fn(AssetSourceInterface|ContentRepository $assetSource) => $assetSource instanceof AssetSourceInterface
+                ? Types\AssetSource::fromAssetSource($assetSource)
+                : Types\AssetSource::fromContentRepository($contentRepository),
+            array_merge(
+                $this->assetSourceContext->getAssetSources(),
+                $assetContentRepositories,
+            )
+        ));
     }
 
     /**
@@ -175,15 +229,22 @@ final class MediaApi
 
     #[Description('Provides a list of all tags')]
     #[Query]
-    public function tags(): Types\Tags
-    {
-        return Types\Tags::fromArray(array_map(
-            fn(Tag $tag) => instantiate(Types\Tag::class, [
-                'id' => $this->persistenceManager->getIdentifierByObject($tag),
-                'label' => $tag->getLabel(),
-            ]),
-            $this->tagRepository->findAll()->toArray()
-        ));
+    public function tags(
+        ?AssetSourceId $assetSourceId = null,
+    ): Types\Tags {
+        $assetSourceId = $assetSourceId ?: AssetSourceId::fromString('cr:default');
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            return $this->contentRepositoryResolver->findAssetCollections($contentRepositoryId, $assetSourceId);
+        } else {
+            return Types\Tags::fromArray(array_map(
+                fn(Tag $tag) => instantiate(Types\Tag::class, [
+                    'id' => $this->persistenceManager->getIdentifierByObject($tag),
+                    'label' => $tag->getLabel(),
+                ]),
+                $this->tagRepository->findAll()->toArray()
+            ));
+        }
     }
 
     #[Description('Get tag by id')]
@@ -401,11 +462,30 @@ final class MediaApi
     public function createAssetCollection(
         Types\AssetCollectionTitle $title,
         ?Types\AssetCollectionId $parent = null,
+        ?Types\AssetSourceId $assetSourceId = null,
     ): ?Types\AssetCollection {
-        return $this->assetCollectionMutator->createAssetCollection(
-            $title,
-            $parent,
-        );
+        $assetSourceId = $assetSourceId ?: AssetSourceId::fromString('cr:default');
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+
+        if ($contentRepositoryId) {
+            // @todo send from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo send from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromArray(['language' => 'de']);
+
+            return $this->contentRepositoryMutator->createAssetCollection(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                title: $title,
+                parent: $parent,
+            );
+        } else {
+            return $this->assetCollectionMutator->createAssetCollection(
+                $title,
+                $parent,
+            );
+        }
     }
 
     /**
@@ -521,18 +601,57 @@ final class MediaApi
      * @throws Exception|IllegalObjectTypeException
      */
     #[Mutation]
-    public function createTag(Types\TagLabel $label, ?Types\AssetCollectionId $assetCollectionId = null): Types\Tag
-    {
-        return $this->tagMutator->createTag($label, $assetCollectionId);
+    public function createTag(
+        Types\TagLabel $label,
+        ?Types\AssetSourceId $assetSourceId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
+    ): Types\Tag {
+        $assetSourceId = $assetSourceId ?: AssetSourceId::fromString('cr:default');
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+
+        if ($contentRepositoryId) {
+            /** @todo send via request */
+            $workspaceName = WorkspaceName::forLive();
+            /** @todo send via request */
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromArray(['language' => 'de']);
+            return $this->contentRepositoryMutator->createTag(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                label: $label,
+                assetCollectionId: $assetCollectionId
+            );
+        } else {
+            return $this->tagMutator->createTag($label, $assetCollectionId);
+        }
     }
 
     /**
      * @throws Exception|IllegalObjectTypeException
      */
     #[Mutation]
-    public function updateTag(Types\TagId $id, ?Types\TagLabel $label = null): Types\Tag
-    {
-        return $this->tagMutator->updateTag($id, $label);
+    public function updateTag(
+        Types\TagId $id,
+        ?Types\TagLabel $label = null,
+        ?Types\AssetSourceId $assetSourceId = null,
+    ): Types\Tag {
+        $assetSourceId = $assetSourceId ?: AssetSourceId::fromString('cr:default');
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            /** @todo send via request */
+            $workspaceName = WorkspaceName::forLive();
+            /** @todo send via request */
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromArray(['language' => 'de']);
+            return $this->contentRepositoryMutator->updateTag(
+                $contentRepositoryId,
+                $workspaceName,
+                $originDimensionSpacePoint,
+                NodeAggregateId::fromString($id->value),
+                $label,
+            );
+        } else {
+            return $this->tagMutator->updateTag($id, $label);
+        }
     }
 
     /**
