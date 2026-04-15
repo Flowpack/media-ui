@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { Icon } from '@neos-project/react-ui-components';
 
-import { useIntl, useMediaUi } from '@media-ui/core';
+import { useMediaUi } from '@media-ui/core';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { isFocusedAssetState, isAssetSelectedState } from '@media-ui/core/src/state';
 import { AssetLabel } from '@media-ui/core/src/components';
@@ -21,7 +21,6 @@ interface ThumbnailProps {
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect, onMultiSelect }: ThumbnailProps) => {
-    const { translate } = useIntl();
     const { dummyImage, isAssetSelectable, selectionMode } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
     const isSelected = useRecoilValue(isFocusedAssetState(assetIdentity.assetId));
@@ -53,7 +52,6 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect, onMultiS
             className={cx(classes.thumbnail, !canBeSelected && classes.disabled, isMultiSelected && classes.selected)}
             title={asset?.label}
         >
-            {asset?.imported && <span className={classes.label}>{translate('asset.label.imported', 'Imported')}</span>}
             <label className={cx('neos-checkbox', classes.checkbox)} onClick={handleCheckboxClick}>
                 <input type="checkbox" checked={isMultiSelected} readOnly />
                 <span></span>
