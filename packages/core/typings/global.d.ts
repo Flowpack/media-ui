@@ -10,7 +10,7 @@ interface NeosI18n {
         fallback: string,
         packageKey: string,
         source: string,
-        args: Record<string, unknown> | (string | number)[],
+        args: Record<string, unknown> | (string | number)[]
     ) => string;
     initialized: boolean;
 }
@@ -70,4 +70,3 @@ declare namespace React {
         popover?: 'auto' | 'manual' | '';
     }
 }
-
