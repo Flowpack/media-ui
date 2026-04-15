@@ -97,11 +97,8 @@ class MediaController extends AbstractModuleController
     }
 
     /**
-     * @param {
-     *    "assetIdentity": AssetIdentity,
-     *    "metadata": array
-     * } $postData
-     * @return void
+     * @param AssetInterface $asset
+     * @param string[] $postData
      */
     public function updateMetadataAction(
         AssetInterface $asset,
