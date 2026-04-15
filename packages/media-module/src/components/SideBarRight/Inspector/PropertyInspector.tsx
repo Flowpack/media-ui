@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { gql, useApolloClient } from '@apollo/client';
 
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
@@ -7,6 +8,8 @@ import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
+import { UPDATE_ASSET } from '@media-ui/core/src/mutations';
+import { useInteraction } from '@media-ui/core/src/provider';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import TagSelectBoxMulti from './TagSelectBoxMulti';
@@ -18,8 +21,15 @@ import Tasks from './Tasks';
 import classes from './PropertyInspector.module.css';
 import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
+const ASSET_LABEL_FRAGMENT = gql`
+    fragment AssetLabel on Asset {
+        label
+    }
+`;
+
 const PropertyInspector = () => {
-    const isMultiSelection = useRecoilValue(selectedAssetIdsState).length > 1;
+    const selectedAssets = useRecoilValue(selectedAssetIdsState);
+    const isMultiSelection = selectedAssets.length > 1;
     const selectedAsset = useSelectedAsset();
     const { assetSources } = useAssetSourcesQuery();
     const Notify = useNotify();
@@ -27,34 +37,53 @@ const PropertyInspector = () => {
     const {
         approvalAttainmentStrategy: { obtainApprovalToUpdateAsset },
     } = useMediaUi();
+    const { confirm } = useInteraction();
+    const client = useApolloClient();
     const featureFlags = useRecoilValue(featureFlagsState);
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
     const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
+    const [multiLoading, setMultiLoading] = useState<boolean>(false);
     const [propertyEditorCollapsed, setPropertyEditorCollapsed] = useState<boolean>(
         featureFlags.propertyEditor.collapsed
     );
 
     const { updateAsset, loading } = useUpdateAsset();
 
-    const isEditable = selectedAsset?.localId && !loading;
-    const hasUnpublishedChanges =
-        selectedAsset &&
-        (label !== selectedAsset.label ||
-            caption !== selectedAsset.caption ||
-            copyrightNotice !== selectedAsset.copyrightNotice);
+    const isEditable = isMultiSelection ? !multiLoading : selectedAsset?.localId && !loading;
+    const hasUnpublishedChanges = isMultiSelection
+        ? copyrightNotice !== '' && copyrightNotice !== null
+        : selectedAsset &&
+          (label !== selectedAsset.label ||
+              caption !== selectedAsset.caption ||
+              copyrightNotice !== selectedAsset.copyrightNotice);
 
     const assetSourceForSelectedAsset = selectedAsset
         ? assetSources.find(({ id }) => id === selectedAsset.assetSource.id)
         : null;
 
+    const getAssetLabel = useCallback(
+        (assetId: string): string => {
+            const data = client.readFragment({
+                fragment: ASSET_LABEL_FRAGMENT,
+                id: client.cache.identify({ __typename: 'Asset', id: assetId }),
+            });
+            return data?.label || assetId;
+        },
+        [client]
+    );
+
     const handleDiscard = useCallback(() => {
+        if (isMultiSelection) {
+            setCopyrightNotice('');
+            return;
+        }
         if (selectedAsset) {
             setLabel(selectedAsset.label);
             setCaption(selectedAsset.caption);
             setCopyrightNotice(selectedAsset.copyrightNotice);
         }
-    }, [selectedAsset, setLabel, setCaption, setCopyrightNotice]);
+    }, [isMultiSelection, selectedAsset, setLabel, setCaption, setCopyrightNotice]);
 
     const handleApply = useCallback(async () => {
         if (
@@ -83,10 +112,70 @@ const PropertyInspector = () => {
         }
     }, [Notify, translate, caption, copyrightNotice, label, selectedAsset, updateAsset, obtainApprovalToUpdateAsset]);
 
+    const handleApplyMulti = useCallback(async () => {
+        if (!selectedAssets.length || !copyrightNotice) return;
+
+        const confirmed = await confirm({
+            title: translate('actions.bulkUpdateCopyright.confirm.title', 'Update copyright notice'),
+            message: translate(
+                'actions.bulkUpdateCopyright.confirm.message',
+                `Are you sure you want to overwrite the copyright notice of ${selectedAssets.length} assets?`,
+                [selectedAssets.length]
+            ),
+            buttonLabel: translate('actions.bulkUpdateCopyright.confirm.buttonLabel', 'Yes, update copyright notice', [
+                selectedAssets.length,
+            ]),
+        });
+
+        if (!confirmed) return;
+
+        setMultiLoading(true);
+
+        const mutations = selectedAssets.map((identity) =>
+            client.mutate({
+                mutation: UPDATE_ASSET,
+                variables: {
+                    id: identity.assetId,
+                    assetSourceId: identity.assetSourceId,
+                    copyrightNotice,
+                },
+            })
+        );
+
+        const results = await Promise.allSettled(mutations);
+        const failedLabels = results
+            .map((result, index) =>
+                result.status === 'rejected' ? getAssetLabel(selectedAssets[index].assetId) : null
+            )
+            .filter(Boolean);
+
+        await client.reFetchObservableQueries();
+
+        if (failedLabels.length === 0) {
+            Notify.ok(
+                translate('actions.bulkUpdateCopyright.success', 'Copyright notice updated for all selected assets')
+            );
+            setCopyrightNotice('');
+        } else {
+            Notify.error(
+                translate('actions.bulkUpdateCopyright.error', 'The following assets could not be updated:'),
+                failedLabels.join(', ')
+            );
+        }
+
+        setMultiLoading(false);
+    }, [selectedAssets, copyrightNotice, confirm, translate, client, getAssetLabel, Notify]);
+
     useEffect(() => {
         handleDiscard();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedAsset?.id]);
+
+    useEffect(() => {
+        if (isMultiSelection) {
+            setCopyrightNotice('');
+        }
+    }, [isMultiSelection]);
 
     if (!selectedAsset && !isMultiSelection) return null;
 
@@ -127,27 +216,27 @@ const PropertyInspector = () => {
                                     onChange={setCaption}
                                 />
                             </Property>
-                            <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
-                                <TextArea
-                                    name="copyrightNotice"
-                                    className={classes.textArea}
-                                    disabled={!isEditable}
-                                    minRows={2}
-                                    expandedRows={4}
-                                    value={copyrightNotice || ''}
-                                    onChange={setCopyrightNotice}
-                                />
-                            </Property>
-
-                            {isEditable && (
-                                <Actions
-                                    handleApply={handleApply}
-                                    handleDiscard={handleDiscard}
-                                    hasUnpublishedChanges={hasUnpublishedChanges}
-                                    inputValid={!!label}
-                                />
-                            )}
                         </>
+                    )}
+                    <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
+                        <TextArea
+                            name="copyrightNotice"
+                            className={classes.textArea}
+                            disabled={!isEditable}
+                            minRows={2}
+                            expandedRows={4}
+                            value={copyrightNotice || ''}
+                            onChange={setCopyrightNotice}
+                        />
+                    </Property>
+
+                    {isEditable && (
+                        <Actions
+                            handleApply={isMultiSelection ? handleApplyMulti : handleApply}
+                            handleDiscard={handleDiscard}
+                            hasUnpublishedChanges={hasUnpublishedChanges}
+                            inputValid={isMultiSelection || !!label}
+                        />
                     )}
                 </ToggablePanel.Contents>
             </ToggablePanel>
