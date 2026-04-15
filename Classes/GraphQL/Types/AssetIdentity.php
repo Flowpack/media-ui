@@ -9,24 +9,18 @@ use Wwwision\Types\Attributes\Description;
 
 #[Description('Unique identity of an Asset in an asset-source')]
 #[Flow\Proxy(false)]
-final class AssetIdentity implements \JsonSerializable
+final readonly class AssetIdentity implements \JsonSerializable
 {
-    private function __construct(
-        public readonly AssetId $id,
-        public readonly AssetSourceId $assetSourceId,
-    )
-    {
+    public function __construct(
+        public AssetId $assetId,
+        public AssetSourceId $assetSourceId,
+    ) {
     }
-
-    public static function fromArray(array $identity): self {
-        return new self ($identity['id'], $identity['assetSourceId']);
-    }
-
 
     public function jsonSerialize(): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->assetId,
             'assetSourceId' => $this->assetSourceId,
         ];
     }
