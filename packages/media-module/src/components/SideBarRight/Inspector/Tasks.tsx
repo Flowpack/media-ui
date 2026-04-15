@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { Headline, IconButton } from '@neos-project/react-ui-components';
+import { DropDown, Icon } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
@@ -17,6 +17,10 @@ import DownloadAssetButton from '../../Actions/DownloadAssetButton';
 import DeleteAssetButton from '../../Actions/DeleteAssetButton';
 
 import classes from './Tasks.module.css';
+import menuItemClasses from './TaskMenuItem.module.css';
+
+const DropDownHeader = (DropDown as any).Header;
+const DropDownContents = (DropDown as any).Contents;
 
 const Tasks: React.FC = () => {
     const selectedAssets = useRecoilValue(selectedAssetIdsState);
@@ -30,61 +34,92 @@ const Tasks: React.FC = () => {
     const [allInClipboard, toggleAllClipboardState] = useRecoilState(clipboardItemsState);
 
     const isMultiSelection = selectedAssets.length > 1;
+    const [isOpen, setIsOpen] = useState(false);
 
     if (!selectedAsset && !isMultiSelection) return null;
 
     return (
-        <div className={classes.tasks}>
-            <Headline type="h2">
+        <DropDown className={classes.tasks} onToggle={() => setIsOpen((prev) => !prev)}>
+            <DropDownHeader
+                className={classes.dropdownHeader}
+                showDropDownToggle={false}
+            >
                 <IconLabel icon="tasks" label={translate('inspector.actions', 'Tasks')} />
-            </Headline>
-            <div className={classes.buttonWrapper}>
-                {!isMultiSelection && <AssetUsagesToggleButton />}
-                {!isMultiSelection && showSimilarAssets && <SimilarAssetsToggleButton />}
-                {/* TODO: Extend DownloadAssetButton to support multiple assets */}
-                {!isMultiSelection && <DownloadAssetButton asset={selectedAsset} style="lighter" />}
+                <span className={`${classes.dropdownToggleIcon}${isOpen ? ` ${classes.dropdownToggleIconOpen}` : ''}`}>
+                    <Icon icon="ellipsis-v" />
+                </span>
+            </DropDownHeader>
+            <DropDownContents className={classes.dropdownContents}>
+                {!isMultiSelection && (
+                    <AssetUsagesToggleButton
+                        variant="menuItem"
+                        menuItemClassName={menuItemClasses.menuItem}
+                        menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
+                    />
+                )}
+                {!isMultiSelection && showSimilarAssets && (
+                    <SimilarAssetsToggleButton
+                        variant="menuItem"
+                        menuItemClassName={menuItemClasses.menuItem}
+                    />
+                )}
+                {!isMultiSelection && (
+                    <DownloadAssetButton
+                        asset={selectedAsset}
+                        variant="menuItem"
+                        menuItemClassName={menuItemClasses.menuItem}
+                    />
+                )}
                 {!isMultiSelection && !selectedAsset.assetSource.readOnly && applicationContext !== 'details' && (
                     <>
-                        <OpenAssetEditDialogButton />
-                        <AssetReplacementButton />
+                        <OpenAssetEditDialogButton
+                            variant="menuItem"
+                            menuItemClassName={menuItemClasses.menuItem}
+                        />
+                        <AssetReplacementButton
+                            variant="menuItem"
+                            menuItemClassName={menuItemClasses.menuItem}
+                        />
                     </>
                 )}
                 {isMultiSelection ? (
-                    <DeleteAssetButton assets={selectedAssets} style="lighter" />
-                ) : (
-                    <DeleteAssetButton asset={selectedAsset} style="lighter" />
-                )}
-                {isMultiSelection ? (
-                    <IconButton
-                        title={
-                            allInClipboard
-                                ? translate('itemActions.removeAllFromClipboard', 'Remove all from clipboard')
-                                : translate('itemActions.copyAllToClipboard', 'Copy all to clipboard')
-                        }
-                        icon={allInClipboard ? 'clipboard-check' : 'clipboard'}
-                        style="lighter"
-                        hoverStyle="brand"
-                        className={allInClipboard ? 'button--active' : ''}
-                        onClick={toggleAllClipboardState}
+                    <DeleteAssetButton
+                        assets={selectedAssets}
+                        variant="menuItem"
+                        menuItemClassName={menuItemClasses.menuItem}
+                        menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
                     />
                 ) : (
+                    <DeleteAssetButton
+                        asset={selectedAsset}
+                        variant="menuItem"
+                        menuItemClassName={menuItemClasses.menuItem}
+                        menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
+                    />
+                )}
+                {isMultiSelection ? (
+                    <li className={menuItemClasses.menuItem} onClick={() => toggleAllClipboardState(!allInClipboard)}>
+                        <Icon icon={allInClipboard ? 'clipboard-check' : 'clipboard'} />
+                        <span>
+                            {allInClipboard
+                                ? translate('itemActions.removeAllFromClipboard', 'Remove all from clipboard')
+                                : translate('itemActions.copyAllToClipboard', 'Copy all to clipboard')}
+                        </span>
+                    </li>
+                ) : (
                     selectedAsset.localId && (
-                        <IconButton
-                            title={
-                                isInClipboard
+                        <li className={menuItemClasses.menuItem} onClick={() => toggleClipboardState(!isInClipboard)}>
+                            <Icon icon={isInClipboard ? 'clipboard-check' : 'clipboard'} />
+                            <span>
+                                {isInClipboard
                                     ? translate('itemActions.removeFromClipboard', 'Remove from clipboard')
-                                    : translate('itemActions.copyToClipboard', 'Copy to clipboard')
-                            }
-                            icon={isInClipboard ? 'clipboard-check' : 'clipboard'}
-                            style="lighter"
-                            hoverStyle="brand"
-                            className={isInClipboard ? 'button--active' : ''}
-                            onClick={toggleClipboardState}
-                        />
+                                    : translate('itemActions.copyToClipboard', 'Copy to clipboard')}
+                            </span>
+                        </li>
                     )
                 )}
-            </div>
-        </div>
+            </DropDownContents>
+        </DropDown>
     );
 };
 

@@ -4,17 +4,30 @@
     gap: var(--theme-spacing-Half);
 }
 
-.buttonWrapper {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1px;
-}
-
-.buttonWrapper button {
+.dropdownHeader {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    background: none;
+    padding: 0;
+}
+
+.dropdownToggleIcon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
     justify-content: center;
-    gap: var(--theme-spacing-Half);
-    max-width: var(--theme-unit);
+}
+
+.dropdownHeader:hover .dropdownToggleIcon,
+.dropdownHeader:active .dropdownToggleIcon,
+.dropdownToggleIconOpen {
+    background-color: var(--colors-ContrastDark) !important;
+}
+
+.dropdownContents {
+    background-color: var(--colors-ContrastDark);
+    padding: 2px !important;
+    min-width: 100%;
 }

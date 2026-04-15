@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { IconButton } from '@neos-project/react-ui-components';
+import { Icon, IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useDeleteAsset } from '@media-ui/core/src/hooks';
@@ -10,6 +10,9 @@ interface DeleteAssetButtonProps {
     assets?: AssetIdentity[];
     style?: string;
     size?: 'small' | 'regular';
+    variant?: 'button' | 'menuItem';
+    menuItemClassName?: string;
+    menuItemDisabledClassName?: string;
 }
 
 const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
@@ -17,6 +20,9 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
     assets,
     style = 'transparent',
     size = 'regular',
+    variant = 'button',
+    menuItemClassName,
+    menuItemDisabledClassName,
 }) => {
     const { translate } = useIntl();
     const { approvalAttainmentStrategy } = useMediaUi();
@@ -24,6 +30,7 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
     const Notify = useNotify();
 
     const isSingle = !assets && !!asset;
+    const disabled = isSingle ? asset.isInUse : assets?.length === 0;
 
     const onDelete = useCallback(async (): Promise<boolean> => {
         const identities: AssetIdentity[] = assets ?? [
@@ -58,17 +65,29 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
 
     if (isSingle && asset.assetSource.readOnly) return null;
 
+    const label = isSingle && asset.isInUse
+        ? translate('itemActions.delete.disabled', 'Cannot delete an asset that is in use')
+        : isSingle
+          ? translate('itemActions.delete', 'Delete asset')
+          : translate('itemActions.deleteMultiple', 'Delete assets');
+
+    if (variant === 'menuItem') {
+        return (
+            <li
+                className={`${menuItemClassName}${disabled ? ` ${menuItemDisabledClassName}` : ''}`}
+                onClick={disabled ? undefined : onDelete}
+            >
+                <Icon icon="trash" />
+                <span>{label}</span>
+            </li>
+        );
+    }
+
     // TODO: When multi-select is implemented, check isInUse per asset and readOnly per asset source
     return (
         <IconButton
-            title={
-                isSingle && asset.isInUse
-                    ? translate('itemActions.delete.disabled', 'Cannot delete an asset that is in use')
-                    : isSingle
-                      ? translate('itemActions.delete', 'Delete asset')
-                      : translate('itemActions.deleteMultiple', 'Delete assets')
-            }
-            disabled={isSingle ? asset.isInUse : assets.length === 0}
+            title={label}
+            disabled={disabled}
             icon="trash"
             size={size}
             style={style}
