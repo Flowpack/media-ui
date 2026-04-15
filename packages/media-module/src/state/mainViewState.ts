@@ -1,11 +1,13 @@
 import { selector } from 'recoil';
 
 import { clipboardVisibleState } from '@media-ui/feature-clipboard';
+import { metadataEditorVisibleState } from '@media-ui/feature-metadata-editing';
 import { showUnusedAssetsState } from '@media-ui/feature-asset-usage';
 
 enum MainViewMode {
     DEFAULT,
     CLIPBOARD,
+    METADATA_EDITOR,
     UNUSED_ASSETS,
 }
 
@@ -14,9 +16,11 @@ const mainViewState = selector<MainViewMode>({
     key: 'mainViewState',
     get: ({ get }) => {
         const clipboardVisible = get(clipboardVisibleState);
+        const metadataEditorVisible = get(metadataEditorVisibleState);
         const showUnusedAssets = get(showUnusedAssetsState);
 
         if (clipboardVisible) return MainViewMode.CLIPBOARD;
+        if (metadataEditorVisible) return MainViewMode.METADATA_EDITOR;
         if (showUnusedAssets) return MainViewMode.UNUSED_ASSETS;
         return MainViewMode.DEFAULT;
     },

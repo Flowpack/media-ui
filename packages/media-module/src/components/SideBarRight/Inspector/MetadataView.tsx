@@ -1,15 +1,22 @@
-import * as React from 'react';
+import React, { useCallback } from 'react';
+import { useRecoilState } from 'recoil';
 
-import { Headline } from '@neos-project/react-ui-components';
+import { Headline, Button } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { humanFileSize } from '@media-ui/core/src/helper';
 import { IconLabel, PropertyList, PropertyListItem } from '@media-ui/core/src/components';
+import { metadataEditorVisibleState } from '@media-ui/feature-metadata-editing';
 
 const MetadataView: React.FC = () => {
     const { translate } = useIntl();
     const selectedAsset = useSelectedAsset();
+    const [metadataEditorVisible, setMetadataEditorVisible] = useRecoilState(metadataEditorVisibleState);
+
+    const toggleMetadataEditor = useCallback(() => {
+        setMetadataEditorVisible((prev) => !prev);
+    }, [setMetadataEditorVisible]);
 
     if (!selectedAsset) return null;
 
@@ -18,6 +25,9 @@ const MetadataView: React.FC = () => {
             <Headline type="h2">
                 <IconLabel icon="info-circle" label={translate('inspector.metadata', 'Metadata')} />
             </Headline>
+            <Button type="button" onClick={toggleMetadataEditor} isActive={metadataEditorVisible}>
+                Edit metadata
+            </Button>
             <PropertyList>
                 <PropertyListItem
                     label={translate('inspector.property.dimensions', 'Dimensions')}
