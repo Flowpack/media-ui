@@ -44,4 +44,11 @@ class MediaController extends AbstractModuleController
     public function indexAction(): void
     {
     }
+
+    /**
+     * Renders the asset metadata editor form
+     */
+    public function editMetadataAction(): void
+    {
+    }
 }
