@@ -7,6 +7,7 @@ Flowpack.Media.Ui.MediaController {
                 package = 'Flowpack.Media.Ui'
                 controller = 'Media'
                 action = 'editMetadata'
+                absolute = true
                 arguments {
                     id = '01fb8392-1223-4c46-9508-fa125efafd07'
                     assetSourceId = 'neos'
@@ -27,60 +28,5 @@ Flowpack.Media.Ui.MediaController {
             {I18n.translate('module.loadingMediaModuleUi', 'Loading media module UI...', [], 'Main', 'Flowpack.Media.Ui')}
           </div>
         `
-    }
-
-    editMetadata = Neos.Fusion:Component {
-        renderer = afx`
-          <Neos.Fusion.Form:Form form.target.action="updateMetadata">
-            <Neos.Fusion.Form:Hidden field.name="asset" field.value={asset}/>
-            <Neos.Fusion:Loop items={Json.parse(formSchema)} itemKey="fieldName" itemName="fieldConfig">
-              <Neos.Fusion.Form:FieldContainer class="neos-control-group" label={fieldConfig.label}>
-                <div class="neos-controls neos-controls-row">
-                  <Flowpack.Media.Ui:EditMetadata.FieldRenderer fieldName={fieldName} fieldConfig={fieldConfig} />
-                </div>
-              </Neos.Fusion.Form:FieldContainer>
-            </Neos.Fusion:Loop>
-            <Neos.Fusion.Form:Button type="submit" />
-          </Neos.Fusion.Form:Form>
-        `
-    }
-}
-
-prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:Component) {
-    fieldName = ''
-    fieldConfig = null
-    asset = null
-
-    renderer = Neos.Fusion:Case {
-        boolean {
-            condition = ${props.fieldConfig.type == 'boolean'}
-            renderer = Neos.Fusion.Form:Checkbox {
-                field.name = ${'postData[' + props.fieldName + ']'}
-                field.value = ${asset[props.fieldName]}
-            }
-        }
-        number {
-            condition = ${props.fieldConfig.type == 'number'}
-            renderer = Neos.Fusion.Form:Input {
-                attributes.type = 'number'
-                field.name = ${'postData[' + props.fieldName + ']'}
-                field.value = ${asset[props.fieldName]}
-            }
-        }
-        textArea {
-            condition = ${props.fieldConfig.type == 'string' && props.fieldConfig.editor == 'textarea'}
-            renderer = Neos.Fusion.Form:Textarea {
-                attributes.rows = 8
-                field.name = ${props.fieldName}
-                field.value = ${asset[props.fieldName]}
-            }
-        }
-        default {
-            condition = ${true}
-            renderer = Neos.Fusion.Form:Input {
-                field.name = ${'postData[' + props.fieldName + ']'}
-                field.value = ${asset[props.fieldName]}
-            }
-        }
     }
 }

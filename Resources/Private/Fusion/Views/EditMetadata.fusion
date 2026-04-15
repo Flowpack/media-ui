@@ -1,0 +1,78 @@
+Flowpack.Media.Ui.MediaController {
+    editMetadata = Neos.Fusion:Join {
+        doctype = '<!DOCTYPE html>'
+        doctype.@position = 'start 100'
+
+        # Only the opening html tag for the page. This is done to avoid deep nesting of Fusion paths for integrators.
+        htmlTag = Neos.Fusion:Tag {
+            @position = 'start'
+            tagName = 'html'
+            omitClosingTag = true
+        }
+
+        # The opening head tag for the page. This is done to avoid deep nesting of Fusion paths for integrators.
+        headTag = Neos.Fusion:Tag {
+            @position = 'after htmlTag'
+            tagName = 'head'
+            omitClosingTag = true
+        }
+
+        head = Neos.Fusion:Join {
+            @position = 'after headTag'
+
+            characterSetMetaTag = Neos.Fusion:Tag {
+                @position = 'start 10'
+                tagName = 'meta'
+                attributes {
+                    charset = 'UTF-8'
+                }
+            }
+
+            titleTag = Neos.Fusion:Tag {
+                tagName = 'title'
+                content = ${q(node).property('title')}
+            }
+
+            stylesheets = Neos.Fusion:Join {
+                neos = ${StaticResource.uri('Neos.Neos', 'Public/Styles/Minimal.css')}
+                neos.@process.wrap = ${'<link rel="stylesheet" href="' + value + '" />'}
+                module = ${StaticResource.uri('Flowpack.Media.Ui', 'Public/Styles/EditMetadataForm.css')}
+                module.@process.wrap = ${'<link rel="stylesheet" href="' + value + '" />'}
+            }
+
+            javascripts = Neos.Fusion:Join {
+                @position = 'after stylesheets'
+            }
+        }
+
+        closingHeadTag = '</head>'
+        closingHeadTag.@position = 'after head'
+        bodyTag = Neos.Fusion:Tag {
+            @position = '20'
+            tagName = 'body'
+            attributes.class = 'neos neos-module'
+            omitClosingTag = true
+            attributes.class.@process.addNeosBackendClass = ${Array.push(value, 'neos-backend')}
+            attributes.class.@process.addNeosBackendClass.@if.onlyRenderWhenNotInLiveWorkspace = ${documentNode.context.inBackend}
+        }
+
+        body = afx`
+            <div class="neos-module-container neos-row-fluid">
+                <Neos.Fusion.Form:Form form.target.action="updateMetadata">
+                    <Neos.Fusion.Form:Hidden field.name="asset" field.value={asset} />
+                    <Neos.Fusion:Loop items={Json.parse(formSchema)} itemKey="fieldName" itemName="fieldConfig">
+                        <Flowpack.Media.Ui:EditMetadata.FieldRenderer fieldName={fieldName} fieldConfig={fieldConfig} />
+                    </Neos.Fusion:Loop>
+                    <Neos.Fusion.Form:Button attributes.class="neos-button">Cancel</Neos.Fusion.Form:Button>
+                    <Neos.Fusion.Form:Button type="submit" attributes.class="neos-button neos-button-success">Save
+                    </Neos.Fusion.Form:Button>
+                </Neos.Fusion.Form:Form>
+            </div>
+        `
+        closingBodyTag = '</body>'
+        closingBodyTag.@position = 'end 100'
+
+        closingHtmlTag = '</html>'
+        closingHtmlTag.@position = 'end 200'
+    }
+}
