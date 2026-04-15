@@ -1,0 +1,55 @@
+prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:Component) {
+    fieldName = ''
+    fieldConfig = null
+    asset = null
+
+    @private.field = Neos.Fusion:Case {
+        boolean {
+            condition = ${props.fieldConfig.type == 'boolean'}
+            renderer = Neos.Fusion.Form:Checkbox {
+                field.name = ${'postData[' + props.fieldName + ']'}
+                field.value = ${asset[props.fieldName]}
+            }
+        }
+        number {
+            condition = ${props.fieldConfig.type == 'number'}
+            renderer = Neos.Fusion.Form:Input {
+                attributes.type = 'number'
+                field.name = ${'postData[' + props.fieldName + ']'}
+                field.value = ${asset[props.fieldName]}
+            }
+        }
+        textArea {
+            condition = ${props.fieldConfig.type == 'string' && props.fieldConfig.editor == 'textarea'}
+            renderer = Neos.Fusion.Form:Textarea {
+                attributes.rows = 8
+                field.name = ${props.fieldName}
+                field.value = ${asset[props.fieldName]}
+            }
+        }
+        default {
+            condition = ${true}
+            renderer = Neos.Fusion.Form:Input {
+                field.name = ${'postData[' + props.fieldName + ']'}
+                field.value = ${asset[props.fieldName]}
+            }
+        }
+    }
+
+    prototype(Neos.Fusion.Form:LabelRenderer) {
+        class = 'neos-control-label'
+    }
+
+    renderer  = afx`
+        <Neos.Fusion.Form:FieldContainer class="neos-control-group neos-span12"
+                                         label={props.fieldConfig.type != 'boolean' ? props.fieldConfig.label : ''}>
+            <div class="neos-controls neos-controls-row">
+                <label class="neos-checkbox neos-inline" @if.isBoolean={props.fieldConfig.type == 'boolean'}>
+                    {private.field}
+                    <span></span> {props.fieldConfig.label}
+                </label>
+                <Neos.Fusion:Fragment @if.isNotBoolean={props.fieldConfig.type != 'boolean'}>{private.field}</Neos.Fusion:Fragment>
+            </div>
+        </Neos.Fusion.Form:FieldContainer>
+    `
+}
