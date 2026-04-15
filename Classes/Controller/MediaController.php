@@ -14,12 +14,14 @@ namespace Flowpack\Media\Ui\Controller;
  * source code.
  */
 
+use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetMutator;
 use Flowpack\Media\Ui\GraphQL\Types\AssetId;
 use Flowpack\Media\Ui\GraphQL\Types\AssetIdentity;
 use Flowpack\Media\Ui\GraphQL\Types\AssetSourceId;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\View\ViewInterface;
 use Neos\Fusion\View\FusionView;
 use Neos\Media\Domain\Model\AssetInterface;
@@ -28,15 +30,10 @@ use Neos\Neos\Controller\Module\AbstractModuleController;
 #[Flow\Scope('singleton')]
 class MediaController extends AbstractModuleController
 {
-    /**
-     * @var AssetSourceContext
-     * @Flow\Inject
-     */
+    #[Flow\Inject]
     protected AssetSourceContext $assetSourceContext;
 
-    /**
-     * @Flow\Inject
-     */
+    #[Flow\Inject]
     protected AssetMutator $assetMutator;
 
 
@@ -46,7 +43,7 @@ class MediaController extends AbstractModuleController
     protected $view;
 
     /**
-     * @var string
+     * @inheritdoc
      */
     protected $defaultViewObjectName = FusionView::class;
 
@@ -65,25 +62,17 @@ class MediaController extends AbstractModuleController
     }
 
     public function editMetadataAction(
-        string $id,
-        string $assetSourceId,
+        AssetId $assetId,
+        AssetSourceId $assetSourceId,
     ): void
     {
-        $assetIdentity = AssetIdentity::fromArray(['id' => AssetId::fromString($id), 'assetSourceId' => new AssetSourceId($assetSourceId)]);
-        $asset = $this->assetSourceContext->getAsset($assetIdentity->id, $assetIdentity->assetSourceId);
+        $assetIdentity = new AssetIdentity($assetId, $assetSourceId);
+        $asset = $this->assetSourceContext->getAsset($assetIdentity->assetId, $assetIdentity->assetSourceId);
         $this->view->assign('asset', $asset);
-        $this->view->assign('formSchema', json_encode([
+        $this->view->assign('formSchema', [
             'title' => [
                 'type' => 'string',
                 'label' => 'Title',
-            ],
-            'number' => [
-                'type' => 'number',
-                'label' => 'Number',
-            ],
-            'boolean' => [
-                'type' => 'boolean',
-                'label' => 'Boolean',
             ],
             'caption' => [
                 'type' => 'string',
@@ -94,28 +83,37 @@ class MediaController extends AbstractModuleController
                 'editor' => 'textarea',
                 'label' => 'Copyright Notice',
             ],
-        ]));
+            'number' => [
+                'type' => 'number',
+                'label' => 'Number',
+            ],
+            'boolean' => [
+                'type' => 'boolean',
+                'label' => 'Boolean',
+            ],
+        ]);
     }
 
     /**
-     * @param AssetInterface $asset
      * @param string[] $postData
+     * @throws Exception
+     * @throws StopActionException
      */
     public function updateMetadataAction(
         AssetInterface $asset,
         array $postData,
     ): void
     {
-        $assetIdentity = AssetIdentity::fromArray([
-            'id' => AssetId::fromString($this->persistenceManager->getIdentifierByObject($asset)),
-            'assetSourceId' => new AssetSourceId($asset->getAssetSourceIdentifier()),
-        ]);
+        $assetIdentity = new AssetIdentity(
+            AssetId::fromString($this->persistenceManager->getIdentifierByObject($asset)),
+            new AssetSourceId($asset->getAssetSourceIdentifier())
+        );
         $this->assetMutator->updateAsset(
-            $assetIdentity->id,
+            $assetIdentity->assetId,
             $assetIdentity->assetSourceId,
             $postData['title'],
             $postData['caption'],
-            $postData['copyright'],
+            $postData['copyrightNotice'],
 
         );
         $this->redirect('index');

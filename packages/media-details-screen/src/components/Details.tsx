@@ -3,6 +3,7 @@ import { useRecoilValue } from 'recoil';
 import cx from 'classnames';
 
 import { InteractionDialogRenderer, useMediaUi } from '@media-ui/core';
+import { selectedAssetIdState } from '@media-ui/core/src/state';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
 import { SimilarAssetsModal, similarAssetsModalState } from '@media-ui/feature-similar-assets';
@@ -16,12 +17,12 @@ import {
     CreateAssetCollectionDialog,
     createAssetCollectionDialogVisibleState,
 } from '@media-ui/feature-asset-collections';
+import { EditMetadataScreen, metadataEditorVisibleState } from '@media-ui/feature-metadata-editing';
 
 import Preview from './Preview';
 
 import theme from '@media-ui/core/src/Theme.module.css';
 import classes from './Details.module.css';
-import { selectedAssetIdState } from '@media-ui/core/src/state';
 
 interface DetailsProps {
     buildLinkToMediaUi: (asset: Asset) => string;
@@ -34,6 +35,7 @@ const Details = ({ buildLinkToMediaUi }: DetailsProps) => {
     const showCreateAssetCollectionDialog = useRecoilValue(createAssetCollectionDialogVisibleState);
     const showAssetUsagesModal = useRecoilValue(assetUsageDetailsModalState);
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
+    const metadataEditorVisible = useRecoilValue(metadataEditorVisibleState);
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
     // FIXME: Adjust useSelectedAssetHook and use its loading state
     const { asset, loading } = useAssetQuery(selectedAssetId);
@@ -47,6 +49,7 @@ const Details = ({ buildLinkToMediaUi }: DetailsProps) => {
                     <div className={classes.inspector}>
                         <AssetInspector />
                     </div>
+                    {metadataEditorVisible && <EditMetadataScreen />}
                     <Preview asset={asset} loading={loading} buildLinkToMediaUi={buildLinkToMediaUi} />
                 </ErrorBoundary>
             </div>

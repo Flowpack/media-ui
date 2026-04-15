@@ -23,8 +23,8 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             condition = ${props.fieldConfig.type == 'string' && props.fieldConfig.editor == 'textarea'}
             renderer = Neos.Fusion.Form:Textarea {
                 attributes.rows = 8
-                field.name = ${props.fieldName}
-                field.value = ${asset[props.fieldName]}
+                field.name = ${'postData[' + props.fieldName + ']'}
+                content = ${asset[props.fieldName]}
             }
         }
         default {
