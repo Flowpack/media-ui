@@ -1,0 +1,8 @@
+- name: 'Edit asset metadata'
+  uriPattern: 'neos/media-ui/{@action}'
+  defaults:
+    '@package': 'Flowpack.Media.Ui'
+    '@controller': 'Media'
+    '@format': 'html'
+    '@action': 'editMetadata'
+  appendExceedingArguments: true
