@@ -4,7 +4,7 @@ import { useIntl } from '@media-ui/core';
 import classes from './ErrorOverlay.module.css';
 import { Icon } from '@neos-project/react-ui-components';
 import { useRecoilValue } from 'recoil';
-import { errorRedirectUrlState } from '@media-ui/core/src/state';
+import { errorRedirectUrlState, errorTitleState, errorMessageState } from '@media-ui/core/src/state';
 
 const ErrorOverlay: React.FC = () => {
     const { translate } = useIntl();
@@ -26,6 +26,7 @@ const ErrorOverlay: React.FC = () => {
         window.location.reload();
     };
 
+    // TODO: Add retry & re-login button in Notification
     return (
         // eslint-disable-next-line react/no-unknown-property
         <div ref={popoverRef} popover="auto" id="error-overlay-popover">
