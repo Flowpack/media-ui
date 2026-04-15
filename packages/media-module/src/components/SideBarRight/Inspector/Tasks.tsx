@@ -40,10 +40,7 @@ const Tasks: React.FC = () => {
 
     return (
         <DropDown className={classes.tasks} onToggle={() => setIsOpen((prev) => !prev)}>
-            <DropDownHeader
-                className={classes.dropdownHeader}
-                showDropDownToggle={false}
-            >
+            <DropDownHeader className={classes.dropdownHeader} showDropDownToggle={false}>
                 <IconLabel icon="tasks" label={translate('inspector.actions', 'Tasks')} />
                 <span className={`${classes.dropdownToggleIcon}${isOpen ? ` ${classes.dropdownToggleIconOpen}` : ''}`}>
                     <Icon icon="ellipsis-v" />
@@ -58,10 +55,7 @@ const Tasks: React.FC = () => {
                     />
                 )}
                 {!isMultiSelection && showSimilarAssets && (
-                    <SimilarAssetsToggleButton
-                        variant="menuItem"
-                        menuItemClassName={menuItemClasses.menuItem}
-                    />
+                    <SimilarAssetsToggleButton variant="menuItem" menuItemClassName={menuItemClasses.menuItem} />
                 )}
                 {!isMultiSelection && (
                     <DownloadAssetButton
@@ -72,14 +66,8 @@ const Tasks: React.FC = () => {
                 )}
                 {!isMultiSelection && !selectedAsset.assetSource.readOnly && applicationContext !== 'details' && (
                     <>
-                        <OpenAssetEditDialogButton
-                            variant="menuItem"
-                            menuItemClassName={menuItemClasses.menuItem}
-                        />
-                        <AssetReplacementButton
-                            variant="menuItem"
-                            menuItemClassName={menuItemClasses.menuItem}
-                        />
+                        <OpenAssetEditDialogButton variant="menuItem" menuItemClassName={menuItemClasses.menuItem} />
+                        <AssetReplacementButton variant="menuItem" menuItemClassName={menuItemClasses.menuItem} />
                     </>
                 )}
                 {isMultiSelection ? (

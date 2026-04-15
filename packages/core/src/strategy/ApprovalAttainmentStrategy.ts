@@ -18,6 +18,8 @@ export interface ApprovalAttainmentStrategy {
     obtainApprovalToDeleteTag: (given: { tag: Tag }) => Promise<boolean>;
     obtainApprovalToReplaceAsset: (given: { asset: Asset }) => Promise<boolean>;
     obtainApprovalToEditAsset: (given: { asset: Asset }) => Promise<boolean>;
+    obtainApprovalToTagAssets: (given: { assets: AssetIdentity[]; tag: Tag }) => Promise<boolean>;
+    obtainApprovalToUntagAssets: (given: { assets: AssetIdentity[]; tag: Tag }) => Promise<boolean>;
     obtainApprovalToFlushClipboard: () => Promise<boolean>;
     obtainApprovalToMoveAssetCollection: (given: { assetCollection: AssetCollection }) => Promise<boolean>;
 }
@@ -35,6 +37,8 @@ export const AssumeApprovalForEveryAction: ApprovalAttainmentStrategy = {
     obtainApprovalToDeleteTag: assumeApproval,
     obtainApprovalToReplaceAsset: assumeApproval,
     obtainApprovalToEditAsset: assumeApproval,
+    obtainApprovalToTagAssets: assumeApproval,
+    obtainApprovalToUntagAssets: assumeApproval,
     obtainApprovalToFlushClipboard: assumeApproval,
     obtainApprovalToMoveAssetCollection: assumeApproval,
 };
@@ -73,16 +77,38 @@ export const DefaultApprovalAttainmentStrategyFactory: ApprovalAttainmentStrateg
                 [assets.length]
             ),
         }),
+    obtainApprovalToTagAssets: ({ assets, tag }) =>
+        deps.interaction.confirm({
+            title: deps.intl.translate('actions.tagAssets.confirm.title', 'Add tag to assets'),
+            message: deps.intl.translate(
+                'actions.tagAssets.confirm.message',
+                `Are you sure you want to add the tag "${tag.label}" to ${assets.length} assets?`,
+                [tag.label, assets.length]
+            ),
+            buttonLabel: deps.intl.translate('actions.tagAssets.confirm.buttonLabel', 'Yes, add tag', [assets.length]),
+        }),
+    obtainApprovalToUntagAssets: ({ assets, tag }) =>
+        deps.interaction.confirm({
+            title: deps.intl.translate('actions.untagAssets.confirm.title', 'Remove tag from assets'),
+            message: deps.intl.translate(
+                'actions.untagAssets.confirm.message',
+                `Are you sure you want to remove the tag "${tag.label}" from ${assets.length} assets?`,
+                [tag.label, assets.length]
+            ),
+            buttonLabel: deps.intl.translate('actions.untagAssets.confirm.buttonLabel', 'Yes, remove tag', [
+                assets.length,
+            ]),
+        }),
     obtainApprovalToShiftAssetsToCollection: ({ assets, assetCollection }) =>
         deps.interaction.confirm({
-            title: deps.intl.translate('actions.shiftToAssetsCollection.confirm.title', 'Shift to collection'),
+            title: deps.intl.translate('actions.moveToAssetsCollection.confirm.title', 'Shift to collection'),
             message: deps.intl.translate(
-                'actions.shiftToAssetsCollection.confirm.message',
+                'actions.moveToAssetsCollection.confirm.message',
                 `Are you sure you want to shift ${assets.length} files into the collection "${assetCollection.title}"?`,
                 [assets.length, assetCollection.title]
             ),
             buttonLabel: deps.intl.translate(
-                'actions.shiftToAssetsCollection.confirm.buttonLabel',
+                'actions.moveToAssetsCollection.confirm.buttonLabel',
                 'Yes, shift assets',
                 [assets.length]
             ),

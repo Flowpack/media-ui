@@ -9,6 +9,7 @@ import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
+import TagSelectBoxMulti from './TagSelectBoxMulti';
 import Property from './Property';
 import Actions from './Actions';
 import InspectorContainer from './InspectorContainer';
@@ -103,8 +104,7 @@ const PropertyInspector = () => {
                     <IconLabel icon="pencil" label={translate('propertyPanel.header', 'Properties')} />
                 </ToggablePanel.Header>
                 <ToggablePanel.Contents className={classes.propertyPanelContents}>
-                    {
-                        !isMultiSelection &&
+                    {!isMultiSelection && (
                         <>
                             <Property label={translate('inspector.title', 'Title')}>
                                 <TextInput
@@ -148,19 +148,15 @@ const PropertyInspector = () => {
                                 />
                             )}
                         </>
-                    }
+                    )}
                 </ToggablePanel.Contents>
             </ToggablePanel>
 
-            {(assetSourceForSelectedAsset?.supportsCollections || isMultiSelection) && (
-                <CollectionSelectBox />
-            )}
+            {(assetSourceForSelectedAsset?.supportsCollections || isMultiSelection) && <CollectionSelectBox />}
             {!isMultiSelection && assetSourceForSelectedAsset?.supportsTagging && <TagSelectBoxAsset />}
+            {isMultiSelection && <TagSelectBoxMulti />}
 
-            {
-                !isMultiSelection &&
-                <MetadataView />
-            }
+            {!isMultiSelection && <MetadataView />}
         </InspectorContainer>
     );
 };

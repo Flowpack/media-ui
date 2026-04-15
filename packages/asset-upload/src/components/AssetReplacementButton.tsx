@@ -12,17 +12,17 @@ interface AssetReplacementButtonProps {
     menuItemClassName?: string;
 }
 
-const AssetReplacementButton: React.FC<AssetReplacementButtonProps> = ({
-    variant = 'button',
-    menuItemClassName,
-}) => {
+const AssetReplacementButton: React.FC<AssetReplacementButtonProps> = ({ variant = 'button', menuItemClassName }) => {
     const [dialogState, setDialogState] = useRecoilState(uploadDialogState);
     const { translate } = useIntl();
     const label = translate('assetReplacement.toggle', 'Replace asset');
 
     if (variant === 'menuItem') {
         return (
-            <li className={menuItemClassName} onClick={() => setDialogState({ visible: true, uploadType: UPLOAD_TYPE.update })}>
+            <li
+                className={menuItemClassName}
+                onClick={() => setDialogState({ visible: true, uploadType: UPLOAD_TYPE.update })}
+            >
                 <Icon icon="exchange-alt" />
                 <span>{label}</span>
             </li>

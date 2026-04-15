@@ -177,7 +177,13 @@ const CollectionSelectBox: React.FC = () => {
                                 ? translate('inspector.collections.multiPlaceholder', 'Move to other collection')
                                 : translate('inspector.collections.placeholder', 'Select a collection')
                         }
-                        value={isMultiSelection ? null : selectedAssetCollectionIds.length ? selectedAssetCollectionIds[0] : null}
+                        value={
+                            isMultiSelection
+                                ? null
+                                : selectedAssetCollectionIds.length
+                                ? selectedAssetCollectionIds[0]
+                                : null
+                        }
                         optionValueField="id"
                         options={filteredSelectBoxOptions}
                         noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}

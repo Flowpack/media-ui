@@ -7,7 +7,7 @@ import {
     featureFlagsState,
     selectedAssetIdsState,
     selectedAssetIdState,
-    selectedInspectorViewState
+    selectedInspectorViewState,
 } from '@media-ui/core/src/state';
 import VariantsInspector from '@media-ui/feature-asset-variants/src/components/VariantsInspector';
 

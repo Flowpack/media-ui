@@ -33,9 +33,7 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
     const disabled = isSingle ? asset.isInUse : assets?.length === 0;
 
     const onDelete = useCallback(async (): Promise<boolean> => {
-        const identities: AssetIdentity[] = assets ?? [
-            { assetId: asset.id, assetSourceId: asset.assetSource.id },
-        ];
+        const identities: AssetIdentity[] = assets ?? [{ assetId: asset.id, assetSourceId: asset.assetSource.id }];
 
         const canDelete = isSingle
             ? await approvalAttainmentStrategy.obtainApprovalToDeleteAsset({ asset })
@@ -65,11 +63,12 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
 
     if (isSingle && asset.assetSource.readOnly) return null;
 
-    const label = isSingle && asset.isInUse
-        ? translate('itemActions.delete.disabled', 'Cannot delete an asset that is in use')
-        : isSingle
-          ? translate('itemActions.delete', 'Delete asset')
-          : translate('itemActions.deleteMultiple', 'Delete assets');
+    const label =
+        isSingle && asset.isInUse
+            ? translate('itemActions.delete.disabled', 'Cannot delete an asset that is in use')
+            : isSingle
+            ? translate('itemActions.delete', 'Delete asset')
+            : translate('itemActions.deleteMultiple', 'Delete assets');
 
     if (variant === 'menuItem') {
         return (

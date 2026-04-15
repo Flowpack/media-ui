@@ -169,6 +169,37 @@
 
             <!-- asset actions -->
 
+            <trans-unit id="actions.tagAssets.confirm.title" xml:space="preserve" approved="yes">
+                <source>Add tag to assets</source>
+            </trans-unit>
+            <trans-unit id="actions.tagAssets.confirm.message" xml:space="preserve" approved="yes">
+                <source>Are you sure you want to add the tag "{0}" to {1} assets?</source>
+            </trans-unit>
+            <trans-unit id="actions.tagAssets.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, add tag</source>
+            </trans-unit>
+            <trans-unit id="actions.untagAssets.confirm.title" xml:space="preserve" approved="yes">
+                <source>Remove tag from assets</source>
+            </trans-unit>
+            <trans-unit id="actions.untagAssets.confirm.message" xml:space="preserve" approved="yes">
+                <source>Are you sure you want to remove the tag "{0}" from {1} assets?</source>
+            </trans-unit>
+            <trans-unit id="actions.untagAssets.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, remove tag</source>
+            </trans-unit>
+            <trans-unit id="actions.bulkTagAssets.success" xml:space="preserve" approved="yes">
+                <source>The tag has been added to the selected assets</source>
+            </trans-unit>
+            <trans-unit id="actions.bulkTagAssets.error" xml:space="preserve" approved="yes">
+                <source>The following assets could not be tagged:</source>
+            </trans-unit>
+            <trans-unit id="actions.bulkUntagAssets.success" xml:space="preserve" approved="yes">
+                <source>The tag has been removed from the selected assets</source>
+            </trans-unit>
+            <trans-unit id="actions.bulkUntagAssets.error" xml:space="preserve" approved="yes">
+                <source>The following assets could not be untagged:</source>
+            </trans-unit>
+
             <trans-unit id="assetActions.import.success" xml:space="preserve" approved="yes">
                 <source>Asset was successfully imported</source>
             </trans-unit>
@@ -235,14 +266,14 @@
             <trans-unit id="actions.setAssetTags.error" xml:space="preserve" approved="yes">
                 <source>Error while tagging the asset</source>
             </trans-unit>
-            <trans-unit id="actions.shiftToAssetsCollection.confirm.title" xml:space="preserve" approved="yes">
-                <source>Shift to collection</source>
+            <trans-unit id="actions.moveToAssetsCollection.confirm.title" xml:space="preserve" approved="yes">
+                <source>Move to collection</source>
             </trans-unit>
-            <trans-unit id="actions.shiftToAssetsCollection.confirm.message" xml:space="preserve" approved="yes">
-                <source>Are you sure you want to shift {0} files into the collection "{1}"?</source>
+            <trans-unit id="actions.moveToAssetsCollection.confirm.message" xml:space="preserve" approved="yes">
+                <source>Are you sure you want to move {0} files into the collection "{1}"?</source>
             </trans-unit>
-            <trans-unit id="actions.shiftToAssetsCollection.confirm.buttonLabel" xml:space="preserve" approved="yes">
-                <source>Yes, shift assets</source>
+            <trans-unit id="actions.moveToAssetsCollection.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, move assets</source>
             </trans-unit>
             <trans-unit id="actions.setAssetCollections.multiSuccess" xml:space="preserve" approved="yes">
                 <source>The collections for the assets have been set</source>
@@ -525,13 +556,19 @@
                 <source>Select a collection</source>
             </trans-unit>
             <trans-unit id="inspector.collections.multiPlaceholder" xml:space="preserve" approved="yes">
-                <source>Shift to other collection</source>
+                <source>Move to other collection</source>
             </trans-unit>
             <trans-unit id="inspector.tags" xml:space="preserve" approved="yes">
                 <source>Tags</source>
             </trans-unit>
             <trans-unit id="inspector.tags.placeholder" xml:space="preserve" approved="yes">
                 <source>Select a tag</source>
+            </trans-unit>
+            <trans-unit id="inspector.tags.addPlaceholder" xml:space="preserve" approved="yes">
+                <source>Add tag to selection</source>
+            </trans-unit>
+            <trans-unit id="inspector.tags.removePlaceholder" xml:space="preserve" approved="yes">
+                <source>Remove tag from selection</source>
             </trans-unit>
             <trans-unit id="inspector.actions" xml:space="preserve" approved="yes">
                 <source>Tasks</source>
