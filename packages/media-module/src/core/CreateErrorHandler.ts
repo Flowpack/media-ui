@@ -1,4 +1,6 @@
 import { onError } from '@apollo/client/link/error';
+import { setErrorStateExternal } from '@media-ui/core/src/state/errorState';
+import { setErrorRiderectUrlStateExternal } from '@media-ui/core/src/state/errorRedirectUrlState';
 
 const createErrorHandler = (notify: NeosNotification) => {
     const translate = (id, value = null, args = {}, packageKey = 'Flowpack.Media.Ui', source = 'Main') => {
@@ -28,6 +30,12 @@ const createErrorHandler = (notify: NeosNotification) => {
                     errorMessageLabel = `errors.${data.extensions.errorCode}.message`;
                 } else if (data.extensions?.debugMessage) {
                     errorMessageLabel = data.extensions.debugMessage;
+                }
+                if (data.extensions?.statusCode === 401) {
+                    setErrorStateExternal(true);
+                    if (data.extensions?.redirectUrl) {
+                        setErrorRiderectUrlStateExternal(data.extensions.redirectUrl);
+                    }
                 }
 
                 console.error('[GraphQL error]:', data);

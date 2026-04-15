@@ -1,26 +1,15 @@
-import React, { useEffect, useRef, HTMLAttributes } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useIntl } from '@media-ui/core';
 
 import classes from './ErrorOverlay.module.css';
 import { Icon } from '@neos-project/react-ui-components';
-
-interface HTMLElementWithPopover extends HTMLDivElement {
-    showPopover(): void;
-    hidePopover(): void;
-    togglePopover(): void;
-}
-
-interface ErrorOverlayProps {
-    asset: Asset;
-    onDeleteAsset: (asset: Asset) => void;
-    size?: string;
-    style?: React.CSSProperties;
-}
+import { useRecoilValue } from 'recoil';
+import { errorRedirectUrlState } from '@media-ui/core/src/state';
 
 const ErrorOverlay: React.FC = () => {
     const { translate } = useIntl();
-    const popoverRef = useRef<HTMLElementWithPopover>(null);
-
+    const popoverRef = useRef<HTMLDivElement>(null);
+    const errorRedirectUrlValue = useRecoilValue(errorRedirectUrlState);
     useEffect(() => {
         if (popoverRef.current) {
             popoverRef.current.showPopover();
@@ -33,22 +22,38 @@ const ErrorOverlay: React.FC = () => {
         }
     };
 
+    const handleReload = () => {
+        window.location.reload();
+    };
+
     return (
+        // @ts-ignore
         // eslint-disable-next-line react/no-unknown-property
-        <div ref={popoverRef as any} popover="auto" id="error-overlay-popover">
+        <div ref={popoverRef} popover="auto" id="error-overlay-popover">
             <button type="button" className={`neos-button ${classes.closeButton}`} onClick={handleClose}>
                 <Icon icon="times" />
             </button>
-            <header className={classes.neosHeader}>
-                <div>Login required</div>
-            </header>
+            <header className={classes.neosHeader}>{translate('errorOverlay.header', 'Login required')}</header>
             <section className={classes.textSection}>
-                <p>Please login to use this asset source</p>
+                <p>{translate('errorOverlay.text', 'This media source requires you to be logged in.')}</p>
             </section>
             <footer className={classes.neosFooter}>
-                <button type="button" className={`neos-button neos-button--danger ${classes.loginButton}`}>
-                    Open login
+                <button type="button" className={`neos-button ${classes.cancelButton}`} onClick={handleClose}>
+                    {translate('errorOverlay.cancelButton', 'Cancel')}
                 </button>
+                <button type="button" className={`neos-button ${classes.reloadButton}`} onClick={handleReload}>
+                    {translate('errorOverlay.reloadButton', 'Reload')}
+                </button>
+                {errorRedirectUrlValue && (
+                    <a
+                        href={errorRedirectUrlValue}
+                        target="_blank"
+                        rel="nofollow, noreferrer"
+                        className={`neos-button  ${classes.loginButton}`}
+                    >
+                        {translate('errorOverlay.loginButton', 'Open login')}
+                    </a>
+                )}
             </footer>
         </div>
     );

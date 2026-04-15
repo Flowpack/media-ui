@@ -168,6 +168,9 @@ final class GraphQLMiddleware implements MiddlewareInterface
         if ($originalException?->getPrevious() instanceof CoerceException) {
             $formattedError['extensions']['issues'] = $originalException->getPrevious()->issues;
         }
+        if (method_exists($originalException, 'getRedirectUrl')) {
+            $formattedError['extensions']['redirectUrl'] = $originalException->getRedirectUrl();
+        }
         return $formattedError;
     }
 

@@ -44,9 +44,14 @@
 }
 
 .loginButton {
-    /* Inherits from neos-button styling */
-}
 
+}
+.cancelButton {
+
+}
+.reloadButton {
+
+}
 .neosFooter {
     background: transparent;
     margin: var(--defaultMargin);
