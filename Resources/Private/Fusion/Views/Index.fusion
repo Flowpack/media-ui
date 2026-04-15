@@ -2,6 +2,10 @@ Flowpack.Media.Ui.MediaController {
     index = Neos.Fusion:Component {
         data-endpoints = Neos.Fusion:DataStructure {
             graphql = '/neos/graphql/media-assets'
+            editMetadata = Neos.Fusion:ActionUri {
+                action = 'editMetadata'
+                absolute = true
+            }
             @process.stringify = ${Json.stringify(value)}
         }
 
@@ -16,6 +20,12 @@ Flowpack.Media.Ui.MediaController {
             <div id="media-ui-app" {...props}>
                 {I18n.translate('module.loadingMediaModuleUi', 'Loading media module UI...', [], 'Main', 'Flowpack.Media.Ui')}
             </div>
+        `
+    }
+
+    editMetadata = Neos.Fusion:Component {
+        renderer = afx`
+            <p>Deine Mutter ist sehr schön!</p>
         `
     }
 }
