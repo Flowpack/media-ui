@@ -57,3 +57,17 @@ type MediaType = `${string}/${string}`;
 
 type ApplicationContext = 'browser' | 'details' | 'selection';
 type InspectorViewMode = 'asset' | 'assetCollection' | 'tag';
+
+/**
+ * Extend React's HTMLAttributes to include popover attributes
+ * TODO remove when updating typescript
+ */
+declare namespace React {
+    // eslint-disable-next-line
+    interface HTMLAttributes<T> {
+        popovertarget?: string;
+        popovertargetaction?: 'hide' | 'show' | 'toggle';
+        popover?: 'auto' | 'manual' | '';
+    }
+}
+

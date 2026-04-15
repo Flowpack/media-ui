@@ -27,7 +27,6 @@ const ErrorOverlay: React.FC = () => {
     };
 
     return (
-        // @ts-ignore
         // eslint-disable-next-line react/no-unknown-property
         <div ref={popoverRef} popover="auto" id="error-overlay-popover">
             <button type="button" className={`neos-button ${classes.closeButton}`} onClick={handleClose}>
