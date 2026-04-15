@@ -1,6 +1,7 @@
 export { availableAssetsState, availableAssetIdentitiesState } from './availableAssetsState';
 export { constraintsState } from './constraintsState';
 export { currentPageState } from './currentPageState';
+export { errorState } from './errorState';
 export { featureFlagsState } from './featureFlagsState';
 export { initialLoadCompleteState } from './initialLoadCompleteState';
 export { loadingState } from './loadingState';

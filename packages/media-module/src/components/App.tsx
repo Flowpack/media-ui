@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { InteractionDialogRenderer, useMediaUi } from '@media-ui/core';
 import { useSelectAsset } from '@media-ui/core/src/hooks';
-import { searchTermState } from '@media-ui/core/src/state';
+import { errorState, searchTermState } from '@media-ui/core/src/state';
 import { AssetUsagesModal, assetUsageDetailsModalState } from '@media-ui/feature-asset-usage';
 import { ClipboardWatcher } from '@media-ui/feature-clipboard';
 import { ConcurrentChangeMonitor } from '@media-ui/feature-concurrent-editing';
@@ -31,6 +31,7 @@ import ErrorBoundary from './ErrorBoundary';
 import theme from '@media-ui/core/src/Theme.module.css';
 import classes from './App.module.css';
 import './Global.module.css';
+import ErrorOverlay from './ErrorOverlay/ErrorOverlay';
 
 const App = () => {
     const { selectionMode, isInNodeCreationDialog, containerRef } = useMediaUi();
@@ -43,6 +44,7 @@ const App = () => {
     const searchTerm = useRecoilValue(searchTermState);
     const selectAsset = useSelectAsset();
     const selectAssetSource = useSetRecoilState(selectedAssetSourceState);
+    const showErrorWindow = useRecoilValue(errorState);
 
     // TODO: Implement asset source selection via recoil an atom effect in `searchTermState` to avoid this dangerous effect
     React.useEffect(() => {
@@ -64,6 +66,8 @@ const App = () => {
             ref={containerRef}
         >
             <LoadingIndicator />
+
+            {showErrorWindow && <ErrorOverlay />}
 
             <div className={classes.gridLeft}>
                 <ErrorBoundary>
