@@ -85,11 +85,11 @@ class MediaController extends AbstractModuleController
             ],
             'number' => [
                 'type' => 'number',
-                'label' => 'Number',
+                'label' => 'Copyright year',
             ],
             'boolean' => [
                 'type' => 'boolean',
-                'label' => 'Boolean',
+                'label' => 'AI generated',
             ],
         ]);
     }
