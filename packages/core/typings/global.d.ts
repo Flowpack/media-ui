@@ -50,6 +50,8 @@ type PaginationConfig = {
 
 type Endpoints = {
     graphql: string;
+    upload: string;
+    editMetadata: string;
 };
 
 type AssetType = 'image' | 'video' | 'audio' | 'document' | 'all';

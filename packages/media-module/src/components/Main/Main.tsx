@@ -9,6 +9,7 @@ import useAssetsQuery from '@media-ui/core/src/hooks/useAssetsQuery';
 import { clipboardState, clipboardVisibleState } from '@media-ui/feature-clipboard';
 import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage';
 import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
+import { EditMetadataScreen } from '@media-ui/feature-metadata-editing';
 
 import { ListView, ThumbnailView } from './index';
 import LoadingLabel from '../LoadingLabel';
@@ -56,7 +57,9 @@ const Main: React.FC = () => {
         }
     }, [Notify, assetsLoadingError]);
 
-    return visibleAssetIdentities.length > 0 ? (
+    return mainView === MainViewMode.METADATA_EDITOR ? (
+        <EditMetadataScreen />
+    ) : visibleAssetIdentities.length > 0 ? (
         viewModeSelection === VIEW_MODES.List ? (
             <ListView assetIdentities={visibleAssetIdentities} />
         ) : (
