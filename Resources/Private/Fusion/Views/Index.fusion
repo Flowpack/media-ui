@@ -3,6 +3,9 @@ Flowpack.Media.Ui.MediaController {
         data-endpoints = Neos.Fusion:DataStructure {
             graphql = '/neos/graphql/media-assets'
             editMetadata = Neos.Fusion:ActionUri {
+                request = ${request.mainRequest}
+                package = 'Flowpack.Media.Ui'
+                controller = 'Media'
                 action = 'editMetadata'
                 absolute = true
             }
