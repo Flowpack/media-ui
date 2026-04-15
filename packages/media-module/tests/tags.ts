@@ -1,4 +1,3 @@
-import { Selector } from 'testcafe';
 import page from './page-model';
 
 fixture('Tags').page('./?reset=1');
