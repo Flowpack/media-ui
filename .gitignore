@@ -29,3 +29,4 @@ yarn-error.log
 .vscode/
 .idea/
 /screenshots
+/packages/dev-server/public/dist

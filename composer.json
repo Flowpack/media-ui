@@ -3,7 +3,7 @@
   "description": "This module allows managing media assets including pictures, videos, audio and documents.",
   "type": "neos-package",
   "require": {
-    "php": "^8.2",
+    "php": ">=8.3",
     "neos/media": "~9.0",
     "neos/neos": "~9.0",
     "neos/neos-ui": "~9.0",
@@ -12,10 +12,8 @@
     "wwwision/types-graphql": "^1.3"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.5"
-  },
-  "suggest": {
-    "phpstan/phpstan": "For running code quality checks"
+    "phpunit/phpunit": "^9.5",
+    "phpstan/phpstan": "^1.12 || ^2"
   },
   "scripts": {
     "test": "../../../bin/phpunit --enforce-time-limit --bootstrap ../../Libraries/autoload.php --testdox Tests",

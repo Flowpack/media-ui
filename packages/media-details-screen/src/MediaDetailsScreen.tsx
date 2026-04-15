@@ -100,7 +100,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
         return this.props.i18nRegistry.translate(id, fallback, params, packageKey, sourceName);
     };
 
-    getInitialState = () => {
+    getInitialApplicationState = () => {
         const { frontendConfiguration, imageIdentity, type, constraints } = this.props;
 
         return {
@@ -139,7 +139,7 @@ export class MediaDetailsScreen extends React.PureComponent<MediaDetailsScreenPr
                     client={this.getApolloClient()}
                     translate={this.translate}
                     notificationApi={Notification}
-                    initialState={this.getInitialState()}
+                    initialState={this.getInitialApplicationState()}
                 >
                     <MediaUiProvider
                         dummyImage={dummyImage}

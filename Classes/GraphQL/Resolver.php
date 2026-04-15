@@ -29,6 +29,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use InvalidArgumentException;
 use UnitEnum;
 use Wwwision\Types\Exception\CoerceException;
+use Wwwision\Types\Options;
 use Wwwision\Types\Parser;
 use Wwwision\Types\Schema\EnumCaseSchema;
 use Wwwision\Types\Schema\EnumSchema;
@@ -94,7 +95,7 @@ class Resolver
             $schema = Parser::getSchema($className);
             if ($schema instanceof EnumSchema) {
                 $typeConfig['values'] = array_map(static fn(EnumCaseSchema $caseSchema
-                ) => $caseSchema->instantiate(null), $schema->caseSchemas);
+                ) => $caseSchema->instantiate(null, Options::create()), $schema->caseSchemas);
             }
         }
         return $typeConfig;

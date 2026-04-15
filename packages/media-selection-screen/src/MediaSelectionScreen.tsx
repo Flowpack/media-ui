@@ -130,7 +130,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         return this.props.i18nRegistry.translate(id, fallback, params, packageKey, sourceName);
     };
 
-    getInitialState = () => {
+    getInitialApplicationState = () => {
         const { frontendConfiguration, constraints, type } = this.props;
 
         return {
@@ -163,7 +163,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                     client={this.getApolloClient()}
                     translate={this.translate}
                     notificationApi={this.notificationHandler}
-                    initialState={this.getInitialState()}
+                    initialState={this.getInitialApplicationState()}
                 >
                     <MediaUiProvider
                         dummyImage={dummyImage}

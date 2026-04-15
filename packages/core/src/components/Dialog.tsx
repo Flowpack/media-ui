@@ -10,6 +10,7 @@ interface DialogProps {
     type?: 'success' | 'warn' | 'error';
     style?: 'wide' | 'jumbo' | 'narrow';
     isOpen: boolean;
+    id?: string;
     title: ReactNode;
     children: ReactNode;
     onRequestClose: () => void;

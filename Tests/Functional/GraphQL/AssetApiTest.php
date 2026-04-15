@@ -18,6 +18,7 @@ use Flowpack\Media\Ui\GraphQL\MediaApi;
 use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
+use Flowpack\Media\Ui\Tests\Functional\TestAssetUsageStrategy;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 
 use function Wwwision\Types\instantiate;
@@ -33,6 +34,11 @@ class AssetApiTest extends AbstractMediaTestCase
      */
     protected static $testablePersistenceEnabled = true;
 
+    protected MediaApi $mediaApi;
+    protected AssetResolver $assetResolver;
+    protected TestAssetUsageStrategy $testAssetUsageStrategy;
+    protected AssetRepository $assetRepository;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -43,6 +49,11 @@ class AssetApiTest extends AbstractMediaTestCase
 
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
         $this->assetResolver = $this->objectManager->get(AssetResolver::class);
+        $this->testAssetUsageStrategy = $this->objectManager->get(TestAssetUsageStrategy::class);
+        $this->assetRepository = $this->objectManager->get(AssetRepository::class);
+
+        // Reset the test strategy before each test
+        $this->testAssetUsageStrategy->reset();
 
         $this->authenticateRoles(['Neos.Neos:Editor']);
     }
@@ -80,8 +91,7 @@ class AssetApiTest extends AbstractMediaTestCase
 
         $this->persistenceManager->persistAll();
 
-        $assets = $this->mediaApi->assets();
-        $asset = $assets->getIterator()->current();
+        $asset = $this->mediaApi->assets()->assets[0];
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
         // Edit the asset
@@ -95,8 +105,48 @@ class AssetApiTest extends AbstractMediaTestCase
         );
 
         $this->assertTrue($editResult->success);
-        $editedAsset = $this->mediaApi->assets()->getIterator()->current();
+        $editedAsset = $this->mediaApi->assets()->assets[0];
         $this->assertEquals('new-name.svg', $editedAsset->filename->value);
+    }
+
+    public function testDeleteUnusedAssetWorks(): void
+    {
+        $file = self::createFile();
+        $result = $this->mediaApi->uploadFiles(Types\UploadedFiles::fromArray([$file]));
+        $this->assertCount(1, $result->values);
+        $this->persistenceManager->persistAll();
+
+        $asset = $this->mediaApi->assets()->assets[0];
+        $this->assertEquals($file->clientFilename, $asset->filename->value);
+
+        // Delete the asset
+        $deleteResult = $this->mediaApi->deleteAsset($asset->id, $asset->assetSource->id);
+        $this->persistenceManager->persistAll();
+
+        $this->assertTrue($deleteResult->success);
+        $assetsAfterDeletion = $this->mediaApi->assets();
+        $this->assertCount(0, $assetsAfterDeletion);
+    }
+
+    public function testDeleteUsedAssetFails(): void
+    {
+        $file = self::createFile();
+        $result = $this->mediaApi->uploadFiles(Types\UploadedFiles::fromArray([$file]));
+        $this->assertCount(1, $result->values);
+        $this->persistenceManager->persistAll();
+        $asset = $this->mediaApi->assets()->assets[0];
+
+        // Get the actual asset entity from repository and mark it as used
+        $assetEntity = $this->assetRepository->findByIdentifier($asset->id->value);
+        $this->testAssetUsageStrategy->markAssetAsUsed($assetEntity);
+
+        // Try to delete the used asset
+        $deleteResult = $this->mediaApi->deleteAsset($asset->id, $asset->assetSource->id);
+        $this->persistenceManager->persistAll();
+
+        $this->assertFalse($deleteResult->success);
+        $assetsAfterDeletion = $this->mediaApi->assets();
+        $this->assertCount(1, $assetsAfterDeletion);
     }
 
     public function testUpdateAsset(): void
@@ -112,7 +162,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $asset = $assets->getIterator()->current();
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
-        $updateAssetResult = $this->mediaApi->updateAsset(
+        $updatedAsset = $this->mediaApi->updateAsset(
             $asset->id,
             $asset->assetSource->id,
             'some label',
@@ -120,8 +170,7 @@ class AssetApiTest extends AbstractMediaTestCase
             'copyright notice',
         );
 
-        /** @var Types\Asset $updatedAsset */
-        $updatedAsset = $this->mediaApi->assets()->getIterator()->current();
+        $this->assertEquals($asset->id, $updatedAsset->id);
         $this->assertEquals('some label', $this->assetResolver->label($updatedAsset));
         $this->assertEquals('some caption', $this->assetResolver->caption($updatedAsset));
         $this->assertEquals('copyright notice', $this->assetResolver->copyrightNotice($updatedAsset));

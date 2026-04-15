@@ -32,6 +32,8 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Http\Exception as HttpException;
 use Neos\Flow\Http\HttpRequestHandlerInterface;
+use Neos\Flow\I18n\Exception\IndexOutOfBoundsException;
+use Neos\Flow\I18n\Exception\InvalidFormatPlaceholderException;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Routing\Exception\MissingActionNameException;
@@ -359,6 +361,15 @@ final class UsageDetailsService
             $serverRequest = $serverRequest->withUri(new Uri((string)$domain));
         }
 
+        // Instead of the live workspace uri we want to link to the user workspace for editing
+        if ($node->getWorkspace()->getBaseWorkspace() === null) {
+            $userWorkspaceContextProperties = [
+                'workspaceName' => $this->userService->getPersonalWorkspaceName(),
+            ];
+            $userWorkspaceContext = $this->contextFactory->create(array_merge($node->getContext()->getProperties(), $userWorkspaceContextProperties));
+            $node = $userWorkspaceContext->getNodeByIdentifier($node->getIdentifier());
+        }
+
         $request = ActionRequest::fromHttpRequest(
             $serverRequest
         );
@@ -366,7 +377,6 @@ final class UsageDetailsService
         $uriBuilder = new UriBuilder();
         $uriBuilder->setRequest($request);
         $uriBuilder->setCreateAbsoluteUri(false);
-
         $requestUri = $serverRequest->getUri();
         $relativeNodeBackendUri = $uriBuilder->uriFor(
             'index',
@@ -498,7 +508,22 @@ final class UsageDetailsService
 
     protected function translateById(string $id): ?string
     {
-        return $this->translator->translateById($id, [], null, null, 'Main', 'Flowpack.Media.Ui') ?? $id;
+        $source = 'Main';
+        $package = 'Flowpack.Media.Ui';
+
+        $shortHandStringParts = explode(':', $id);
+        if (count($shortHandStringParts) === 3) {
+            [$package, $source, $id] = $shortHandStringParts;
+        }
+
+        return $this->translator->translateById(
+            $id,
+            [],
+            null,
+            null,
+            $source,
+            $package,
+        ) ?? $id;
     }
 
     /**

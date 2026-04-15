@@ -1,4 +1,4 @@
-import { ReactSelector } from 'testcafe-react-selectors';
+import { Selector } from 'testcafe';
 
 import page from './page-model';
 
@@ -16,7 +16,7 @@ test('Tagging works', async (t) => {
         .click(page.firstThumbnail)
         .scrollIntoView(page.tagSelection)
         .click(page.tagSelection)
-        .click(ReactSelector('ListPreviewElement').withText('Example tag 1'));
+        .click(Selector('div[class*="listPreviewElement"]').withText('Example tag 1'));
 }).after(async (t) => {
     const { log } = await t.getBrowserConsoleMessages();
     await t
