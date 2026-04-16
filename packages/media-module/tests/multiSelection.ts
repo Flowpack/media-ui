@@ -44,10 +44,7 @@ test('Shift+click selects a range of thumbnails', async (t) => {
 });
 
 test('Switching to list view and clicking row checkboxes selects assets', async (t) => {
-    await t
-        .click(page.viewModeToggle)
-        .expect(page.listRows.count)
-        .gt(0, 'List view rows are rendered after toggling');
+    await t.click(page.viewModeToggle).expect(page.listRows.count).gt(0, 'List view rows are rendered after toggling');
 
     await t
         .click(page.listRows.nth(0).find('.ListViewItem_checkboxColumn'))
@@ -242,9 +239,7 @@ test('Confirming the bulk delete removes all selected assets from the listing', 
         .eql(initialCount - 2, 'Two assets were removed from the listing');
 }).after(async (t) => {
     const { log } = await t.getBrowserConsoleMessages();
-    await t
-        .expect(log.includes('The assets have been deleted'))
-        .ok('A success message confirms the bulk delete');
+    await t.expect(log.includes('The assets have been deleted')).ok('A success message confirms the bulk delete');
 });
 
 test('Bulk-deleting a mix of deletable and in-use assets removes the deletable ones and reports the failed labels', async (t) => {
