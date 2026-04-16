@@ -34,6 +34,6 @@ final class LocalAssetId implements \JsonSerializable
         if (!method_exists($asset, 'getIdentifier')) {
             throw new \Exception('Asset implementations must implement getIdentifier(), whatever the interfaces says', 1776326064);
         }
-        return $asset->getIdentifier();
+        return new self($asset->getIdentifier());
     }
 }

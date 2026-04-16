@@ -38,7 +38,6 @@ use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Media\Exception\AssetServiceException;
 use Neos\Utility\MediaTypes;
-use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 
 use function Wwwision\Types\instantiate;
@@ -83,7 +82,7 @@ class AssetMutator
             $value = $fallback ?: $id;
         }
 
-        return instantiate(MutationResponseMessage::class, ['value' => $value]);
+        return instantiate(MutationResponseMessage::class, $value);
     }
 
     protected function localizedMessageFromException(\Exception $exception): MutationResponseMessage
