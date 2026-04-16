@@ -59,9 +59,7 @@ class AssetCollectionMutator
 
         return instantiate(
             MutationResponseMessage::class,
-            [
-                'value' => $value,
-            ]
+            $value,
         );
     }
 
