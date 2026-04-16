@@ -291,7 +291,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->assertCount(1, $result->values);
         $this->persistenceManager->persistAll();
 
-        $unusedAssets = $this->mediaApi->unusedAssets();
+        $unusedAssets = $this->mediaApi->unusedAssets(Types\AssetSourceId::default());
         $unusedAsset = $unusedAssets->getIterator()->current();
         $this->assertCount(1, $unusedAssets);
         $this->assertEquals($file->clientFilename, $unusedAsset->filename->value);

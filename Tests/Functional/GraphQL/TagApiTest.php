@@ -45,22 +45,26 @@ class TagApiTest extends AbstractMediaTestCase
 
     public function testCreateTag(): void
     {
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), Types\AssetSourceId::default());
         $this->assertEquals('Test Tag', $tag->label);
     }
 
     public function testUpdateTag(): void
     {
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
-        $updatedTag = $this->mediaApi->updateTag($tag->id, Types\TagLabel::fromString('Updated Tag'));
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), Types\AssetSourceId::default());
+        $updatedTag = $this->mediaApi->updateTag(
+            $tag->id,
+            Types\AssetSourceId::default(),
+            Types\TagLabel::fromString('Updated Tag')
+        );
 
         $this->assertEquals('Updated Tag', $updatedTag->label);
     }
 
     public function testDeleteTag(): void
     {
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
-        $result = $this->mediaApi->deleteTag($tag->id);
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), Types\AssetSourceId::default());
+        $result = $this->mediaApi->deleteTag($tag->id, Types\AssetSourceId::default());
 
         $this->assertTrue($result->success);
 
@@ -71,9 +75,14 @@ class TagApiTest extends AbstractMediaTestCase
     public function testTagAssetCollection(): void
     {
         $assetCollection = $this->mediaApi->createAssetCollection(
-            Types\AssetCollectionTitle::fromString('Test Collection')
+            Types\AssetCollectionTitle::fromString('Test Collection'),
+            Types\AssetSourceId::default(),
         );
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), $assetCollection->id);
+        $tag = $this->mediaApi->createTag(
+            Types\TagLabel::fromString('Test Tag'),
+            Types\AssetSourceId::default(),
+            $assetCollection->id
+        );
         $createdTag = $this->mediaApi->tag($tag->id);
 
         $resolvedTags = $this->assetCollectionResolver->tags($assetCollection);
@@ -96,7 +105,7 @@ class TagApiTest extends AbstractMediaTestCase
         /** @var Types\Asset $uploadedAsset */
         $uploadedAsset = $assets->getIterator()->current();
 
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), Types\AssetSourceId::default());
         $this->mediaApi->tagAsset(
             $uploadedAsset->id,
             $uploadedAsset->assetSource->id,
