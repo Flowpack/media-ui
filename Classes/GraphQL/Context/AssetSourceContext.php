@@ -210,7 +210,7 @@ class AssetSourceContext
         $newAssetCollection = new AssetCollection($title->value);
         if ($parent) {
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
-            /** @var HierarchicalAssetCollectionInterface $newAssetCollection */
+            /** @var HierarchicalAssetCollectionInterface&AssetCollection $newAssetCollection */
             $newAssetCollection->setParent($parentCollection);
         }
 
