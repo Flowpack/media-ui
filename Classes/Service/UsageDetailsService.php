@@ -88,7 +88,7 @@ final class UsageDetailsService
     public function resolveUsagesForAsset(AssetInterface $asset): Types\UsageDetailsGroups
     {
         $includeSites = $this->siteRepository->countAll() > 1;
-        $groups = array_filter(array_map(function ($strategy) use ($asset, $includeSites) {
+        $groups = array_map(function ($strategy) use ($asset, $includeSites) {
             $usageByStrategy = [
                 'serviceId' => get_class($strategy),
                 'label' => get_class($strategy),
@@ -134,7 +134,7 @@ final class UsageDetailsService
                 $usageByStrategy['usages']
             );
             return instantiate(Types\UsageDetailsGroup::class, $usageByStrategy);
-        }, $this->getUsageStrategies()));
+        }, $this->getUsageStrategies());
 
         $groups = array_filter($groups, static function (Types\UsageDetailsGroup $usageByStrategy) {
             return !$usageByStrategy->usages->isEmpty();
