@@ -9,17 +9,17 @@ type Query {
   """ Provides a filterable list of asset proxies. These are the main entities for media management. """
   assets(assetSourceId: AssetSourceId assetCollectionId: AssetCollectionId mediaType: MediaType assetType: AssetType tagId: TagId sortBy: SortBy sortDirection: SortDirection searchTerm: String limit: Int = 20 offset: Int = 0): [Asset!]
   """ All asset collections """
-  assetCollections: [AssetCollection!]!
+  assetCollections(assetSourceId: AssetSourceId): [AssetCollection!]!
   """ All configured asset sources (by default only the "neos" source) """
   assetSources: [AssetSource!]!
   """ Provides number of unused assets in local asset source """
-  unusedAssetCount: Int!
+  unusedAssetCount(assetSourceId: AssetSourceId): Int!
   """ Provides a list of all tags """
-  tags: [Tag!]!
+  tags(assetSourceId: AssetSourceId): [Tag!]!
   """ Get tag by id """
-  tag(id: TagId!): Tag
+  tag(id: TagId! assetSourceId: AssetSourceId): Tag
   """ Returns an asset collection by id """
-  assetCollection(id: AssetCollectionId!): AssetCollection
+  assetCollection(id: AssetCollectionId! assetSourceId: AssetSourceId!): AssetCollection
   """ Returns an asset by id """
   asset(id: AssetId! assetSourceId: AssetSourceId!): Asset
   """ Provides configuration values for interacting with the media API """
@@ -29,7 +29,7 @@ type Query {
   """ Returns the total usage count for the given asset """
   assetUsageCount(id: AssetId! assetSourceId: AssetSourceId!): Int!
   """ Provides a list of all unused assets in local asset source """
-  unusedAssets(limit: Int = 20 offset: Int = 0): [Asset!]!
+  unusedAssets(assetSourceId: AssetSourceId! limit: Int = 20 offset: Int = 0): [Asset!]!
   """ Provides a list of changes to assets since a given timestamp """
   changedAssets(since: DateTime @constraint(format: "date_time")): ChangedAssetsResult!
   """ Returns a list of variants for the given asset """
@@ -44,18 +44,18 @@ type Mutation {
   deleteAsset(id: AssetId! assetSourceId: AssetSourceId!): MutationResult!
   setAssetTags(id: AssetId! assetSourceId: AssetSourceId! tagIds: [TagId!]!): Asset
   setAssetCollections(id: AssetId! assetSourceId: AssetSourceId! assetCollectionIds: [AssetCollectionId!]!): MutationResult!
-  createAssetCollection(title: AssetCollectionTitle! parent: AssetCollectionId): AssetCollection
-  deleteAssetCollection(id: AssetCollectionId!): MutationResult!
-  updateAssetCollection(id: AssetCollectionId! title: AssetCollectionTitle tagIds: [TagId!]): MutationResult!
-  setAssetCollectionParent(id: AssetCollectionId! parent: AssetCollectionId): MutationResult!
+  createAssetCollection(title: AssetCollectionTitle! assetSourceId: AssetSourceId! parent: AssetCollectionId): AssetCollection
+  deleteAssetCollection(id: AssetCollectionId! assetSourceId: AssetSourceId!): MutationResult!
+  updateAssetCollection(id: AssetCollectionId! assetSourceId: AssetSourceId! title: AssetCollectionTitle tagIds: [TagId!]): MutationResult!
+  setAssetCollectionParent(id: AssetCollectionId! assetSourceId: AssetSourceId! parent: AssetCollectionId): MutationResult!
   replaceAsset(id: AssetId! assetSourceId: AssetSourceId! file: UploadedFileInput! options: AssetReplacementOptionsInput!): FileUploadResult!
   editAsset(id: AssetId! assetSourceId: AssetSourceId! filename: Filename! options: AssetEditOptionsInput!): MutationResult!
   importAsset(id: AssetId! assetSourceId: AssetSourceId!): Asset
-  uploadFile(file: UploadedFileInput tagId: TagId assetCollectionId: AssetCollectionId): FileUploadResult!
-  uploadFiles(files: [UploadedFileInput!] tagId: TagId assetCollectionId: AssetCollectionId): [FileUploadResult!]!
-  createTag(label: TagLabel! assetCollectionId: AssetCollectionId): Tag!
-  updateTag(id: TagId! label: TagLabel): Tag!
-  deleteTag(id: TagId!): MutationResult!
+  uploadFile(file: UploadedFileInput tagId: TagId assetCollectionId: AssetCollectionId assetSourceId: AssetSourceId): FileUploadResult!
+  uploadFiles(files: [UploadedFileInput!] tagId: TagId assetCollectionId: AssetCollectionId assetSourceId: AssetSourceId): [FileUploadResult!]!
+  createTag(label: TagLabel! assetSourceId: AssetSourceId! assetCollectionId: AssetCollectionId): Tag!
+  updateTag(id: TagId! assetSourceId: AssetSourceId! label: TagLabel): Tag!
+  deleteTag(id: TagId! assetSourceId: AssetSourceId!): MutationResult!
 }
 
 """
@@ -178,6 +178,8 @@ scalar TagLabel
 type Tag {
   """ The id of a tag """
   id: TagId!
+  """ Unique identifier of an Asset source (e.g. "neos") """
+  assetSourceId: AssetSourceId!
   """ The label of a Tag (e.g. "important") """
   label: TagLabel!
 }
@@ -202,6 +204,8 @@ type AssetCollectionParent {
 type AssetCollection {
   """ Unique identifier of an Asset collection (e.g. "neos") """
   id: AssetCollectionId!
+  """ Unique identifier of an Asset source (e.g. "neos") """
+  assetSourceId: AssetSourceId!
   """ The title of an Asset collection (e.g. "slideshows") """
   title: AssetCollectionTitle!
   """ Absolute path of an Asset collection (e.g. "/photos/trees") """

@@ -5,16 +5,18 @@ import { UPDATE_ASSET_COLLECTION } from '../mutations/updateAssetCollection';
 
 interface UpdateAssetCollectionProps {
     assetCollection: AssetCollection;
-    title?: string;
+    assetSourceId: AssetSourceId;
+    title?: AssetCollectionTitle;
     tags?: Tag[];
     parent?: AssetCollection;
 }
 
 interface UpdateAssetCollectionVariables {
-    id: string;
-    title?: string;
-    tagIds?: string[];
-    parent?: string;
+    id: AssetCollectionId;
+    assetSourceId: AssetSourceId;
+    title?: AssetCollectionTitle;
+    tagIds?: TagId[];
+    parent?: AssetCollectionId;
 }
 
 export default function useUpdateAssetCollection() {
@@ -24,10 +26,11 @@ export default function useUpdateAssetCollection() {
     >(UPDATE_ASSET_COLLECTION);
 
     const updateAssetCollection = useCallback(
-        ({ assetCollection, title, tags, parent }: UpdateAssetCollectionProps) =>
+        ({ assetCollection, assetSourceId, title, tags, parent }: UpdateAssetCollectionProps) =>
             action({
                 variables: {
                     id: assetCollection.id,
+                    assetSourceId,
                     title,
                     tagIds: tags?.map((tag) => tag.id),
                     parent: parent === null ? null : parent?.id,

@@ -59,7 +59,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         });
     };
 
-    const sortAssets = (assets: Asset[], sortBy, sortDirection) => {
+    const sortAssets = (assets: Asset[], sortBy: string, sortDirection: string) => {
         const sorted = assets.sort((a, b) => {
             if (sortBy === 'name') {
                 // Using the label here since teh filename is the same in every fixture
@@ -227,6 +227,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 const newCollection: AssetCollection = {
                     __typename: 'AssetCollection',
                     id: `someId_${Date.now()}`,
+                    assetSourceId: 'neos',
                     title,
                     parent: parentCollection
                         ? {

@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { gql, useApolloClient } from '@apollo/client';
 import { isMatch } from 'matcher';
+import { useRecoilValue } from 'recoil';
 
 import { useImportAsset } from '../hooks';
 import { useNotify } from './Notify';
@@ -12,7 +13,6 @@ import {
     ApprovalAttainmentStrategyFactory,
     DefaultApprovalAttainmentStrategyFactory,
 } from '../strategy';
-import { useRecoilValue } from 'recoil';
 import { constraintsState } from '../state';
 
 interface MediaUiProviderProps {

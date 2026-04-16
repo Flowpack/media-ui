@@ -6,13 +6,14 @@ import TAG from '../queries/tag';
 
 interface TagQueryResult {
     tag: Tag;
+    assetSourceId: AssetSourceId;
 }
 
-const useSelectedTag = (): Tag => {
+const useSelectedTag = (assetSourceId: AssetSourceId): Tag => {
     const selectedTagId = useRecoilValue(selectedTagIdState);
 
     const { data } = useQuery<TagQueryResult>(TAG, {
-        variables: { id: selectedTagId },
+        variables: { id: selectedTagId, assetSourceId },
         skip: !selectedTagId,
     });
 
