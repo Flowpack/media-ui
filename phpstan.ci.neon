@@ -9,4 +9,4 @@ parameters:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneBy[a-zA-Z]+\(\)#'
         - '#Constant FLOW_PATH_DATA not found.#'
     scanDirectories:
-        - ../../Framework/Neos.Flow/Tests
+        - Packages/Framework/Neos.Flow/Tests

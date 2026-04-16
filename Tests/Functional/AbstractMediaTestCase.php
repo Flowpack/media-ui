@@ -47,42 +47,36 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
 
     /**
      * Creates an Image object from a file using a mock resource (in order to avoid a database resource pointer entry)
-     * @param string $imagePathAndFilename
-     * @return PersistentResource
      */
-    protected function getMockResourceByImagePath($imagePathAndFilename)
+    protected function getMockResourceByImagePath(string $imagePathAndFilename): PersistentResource
     {
         $imagePathAndFilename = Files::getUnixStylePath($imagePathAndFilename);
         $hash = sha1_file($imagePathAndFilename);
         copy($imagePathAndFilename, 'resource://' . $hash);
-        return $mockResource = $this->createMockResourceAndPointerFromHash($hash);
+        return $this->createMockResourceAndPointerFromHash($hash);
     }
 
     /**
      * Creates a mock ResourcePointer and PersistentResource from a given hash.
      * Make sure that a file representation already exists, e.g. with
      * file_put_content('resource://' . $hash) before
-     *
-     * @param string $hash
-     * @return PersistentResource
      */
-    protected function createMockResourceAndPointerFromHash($hash)
+    protected function createMockResourceAndPointerFromHash(string $hash): PersistentResource
     {
         $mockResource = $this->getMockBuilder(PersistentResource::class)->setMethods(['getHash', 'getUri'])->getMock();
-        $mockResource->expects(self::any())
+        $mockResource
                 ->method('getHash')
-                ->will(self::returnValue($hash));
-        $mockResource->expects(self::any())
+                ->willReturn($hash);
+        $mockResource
             ->method('getUri')
-            ->will(self::returnValue('resource://' . $hash));
+            ->willReturn('resource://' . $hash);
         return $mockResource;
     }
 
     /**
      * Builds a temporary directory to work on.
-     * @return void
      */
-    protected function prepareTemporaryDirectory()
+    protected function prepareTemporaryDirectory(): void
     {
         $this->temporaryDirectory = Files::concatenatePaths([FLOW_PATH_DATA, 'Temporary', 'Testing', str_replace('\\', '_', __CLASS__)]);
         if (!file_exists($this->temporaryDirectory)) {

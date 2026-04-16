@@ -31,6 +31,10 @@ class TagApiTest extends AbstractMediaTestCase
      */
     protected static $testablePersistenceEnabled = true;
 
+    protected MediaApi $mediaApi;
+    protected AssetCollectionResolver $assetCollectionResolver;
+    protected AssetResolver $assetResolver;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -68,7 +72,7 @@ class TagApiTest extends AbstractMediaTestCase
 
         $this->assertTrue($result->success);
 
-        $deletedTag = $this->mediaApi->tag($tag->id);
+        $deletedTag = $this->mediaApi->tag($tag->id, Types\AssetSourceId::default());
         $this->assertNull($deletedTag);
     }
 
@@ -83,7 +87,7 @@ class TagApiTest extends AbstractMediaTestCase
             Types\AssetSourceId::default(),
             $assetCollection->id
         );
-        $createdTag = $this->mediaApi->tag($tag->id);
+        $createdTag = $this->mediaApi->tag($tag->id, Types\AssetSourceId::default());
 
         $resolvedTags = $this->assetCollectionResolver->tags($assetCollection);
         $this->assertCount(1, $resolvedTags->tags);
@@ -97,15 +101,17 @@ class TagApiTest extends AbstractMediaTestCase
     public function testTagAsset(): void
     {
         $file = self::createFile();
-        $result = $this->mediaApi->uploadFile($file);
+        $result = $this->mediaApi->uploadFile($file, Types\AssetSourceId::default());
         $this->assertTrue($result->success);
 
         $this->persistenceManager->persistAll();
-        $assets = $this->mediaApi->assets();
-        /** @var Types\Asset $uploadedAsset */
-        $uploadedAsset = $assets->getIterator()->current();
+        $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        $uploadedAsset = $assets->assets[0];
 
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), Types\AssetSourceId::default());
+        $tag = $this->mediaApi->createTag(
+            Types\TagLabel::fromString('Test Tag'),
+            Types\AssetSourceId::default()
+        );
         $this->mediaApi->tagAsset(
             $uploadedAsset->id,
             $uploadedAsset->assetSource->id,

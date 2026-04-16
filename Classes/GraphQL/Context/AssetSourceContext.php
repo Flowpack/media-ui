@@ -207,17 +207,17 @@ class AssetSourceContext
             return null;
         }
 
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $newAssetCollection */
         $newAssetCollection = new AssetCollection($title->value);
         if ($parent) {
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
-            /** @var HierarchicalAssetCollectionInterface&AssetCollection $newAssetCollection */
             $newAssetCollection->setParent($parentCollection);
         }
 
         // FIXME: Multiple asset collections with the same title can exist, but do we want that?
         $this->assetCollectionRepository->add($newAssetCollection);
         return Types\AssetCollection::create(
-            $this->persistenceManager->getIdentifierByObject($newAssetCollection),
+            Types\AssetCollectionId::fromString($this->persistenceManager->getIdentifierByObject($newAssetCollection)),
             $assetSourceId,
             Types\AssetCollectionTitle::fromString($newAssetCollection->getTitle()),
             Types\AssetCollectionPath::fromString($newAssetCollection->getPath()),

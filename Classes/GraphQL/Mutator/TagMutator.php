@@ -27,8 +27,6 @@ use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 
-use function Wwwision\Types\instantiate;
-
 #[Flow\Scope("singleton")]
 class TagMutator
 {
@@ -90,10 +88,11 @@ class TagMutator
                 throw new Exception('Asset collection not found', 1603921193);
             }
         }
-        return instantiate(Types\Tag::class, [
-            'id' => $this->persistenceManager->getIdentifierByObject($tag),
-            'label' => $tag->getLabel(),
-        ]);
+        return Types\Tag::create(
+            Types\TagId::fromString($this->persistenceManager->getIdentifierByObject($tag)),
+            $assetSourceId,
+            Types\TagLabel::fromString($tag->getLabel()),
+        );
     }
 
     /**
@@ -121,10 +120,11 @@ class TagMutator
 
         $this->tagRepository->update($tag);
 
-        return instantiate(Types\Tag::class, [
-            'id' => $this->persistenceManager->getIdentifierByObject($tag),
-            'label' => $tag->getLabel(),
-        ]);
+        return Types\Tag::create(
+            Types\TagId::fromString($this->persistenceManager->getIdentifierByObject($tag)),
+            $assetSourceId,
+            Types\TagLabel::fromString($tag->getLabel()),
+        );
     }
 
     /**

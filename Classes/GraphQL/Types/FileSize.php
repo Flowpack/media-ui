@@ -17,6 +17,11 @@ final class FileSize implements \JsonSerializable
     {
     }
 
+    public static function fromInteger(int $value): self
+    {
+        return new self($value);
+    }
+
     public function jsonSerialize(): int
     {
         return $this->value;

@@ -77,12 +77,12 @@ final class MediaApi
      */
     #[Query]
     public function assetCount(
-        Types\AssetSourceId $assetSourceId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\MediaType $mediaType = null,
-        Types\AssetType $assetType = null,
-        Types\TagId $tagId = null,
-        string $searchTerm = null,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\AssetCollectionId $assetCollectionId = null,
+        ?Types\MediaType $mediaType = null,
+        ?Types\AssetType $assetType = null,
+        ?Types\TagId $tagId = null,
+        ?string $searchTerm = null,
     ): int {
         $iterator = $this->assetProxyIteratorBuilder->build(
             $assetSourceId,
@@ -103,14 +103,14 @@ final class MediaApi
     #[Description('Provides a filterable list of asset proxies. These are the main entities for media management.')]
     #[Query]
     public function assets(
-        Types\AssetSourceId $assetSourceId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\MediaType $mediaType = null,
-        Types\AssetType $assetType = null,
-        Types\TagId $tagId = null,
-        Types\SortBy $sortBy = null,
-        Types\SortDirection $sortDirection = null,
-        string $searchTerm = null,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\AssetCollectionId $assetCollectionId = null,
+        ?Types\MediaType $mediaType = null,
+        ?Types\AssetType $assetType = null,
+        ?Types\TagId $tagId = null,
+        ?Types\SortBy $sortBy = null,
+        ?Types\SortDirection $sortDirection = null,
+        ?string $searchTerm = null,
         int $limit = 20,
         int $offset = 0,
     ): ?Types\Assets {
@@ -137,7 +137,7 @@ final class MediaApi
 
     #[Description('All asset collections')]
     #[Query]
-    public function assetCollections(Types\AssetSourceId $assetSourceId = null): Types\AssetCollections
+    public function assetCollections(Types\AssetSourceId $assetSourceId): Types\AssetCollections
     {
         return $this->assetSourceContext->getAssetCollections($assetSourceId);
     }
@@ -159,29 +159,29 @@ final class MediaApi
      */
     #[Description('Provides number of unused assets in local asset source')]
     #[Query]
-    public function unusedAssetCount(Types\AssetSourceId $assetSourceId = null): int
+    public function unusedAssetCount(Types\AssetSourceId $assetSourceId): int
     {
         return $this->usageDetailsService->getUnusedAssetCount($assetSourceId);
     }
 
     #[Description('Provides a list of all tags')]
     #[Query]
-    public function tags(Types\AssetSourceId $assetSourceId = null): Types\Tags
+    public function tags(Types\AssetSourceId $assetSourceId): Types\Tags
     {
         return $this->assetSourceContext->getTags($assetSourceId);
     }
 
     #[Description('Get tag by id')]
     #[Query]
-    public function tag(?Types\TagId $id, Types\AssetSourceId $assetSourceId = null): ?Types\Tag
+    public function tag(Types\TagId $id, Types\AssetSourceId $assetSourceId): ?Types\Tag
     {
-        return $id ? $this->assetSourceContext->getTag($id, $assetSourceId) : null;
+        return $this->assetSourceContext->getTag($id, $assetSourceId);
     }
 
     #[Description('Returns an asset collection by id')]
     #[Query]
     public function assetCollection(
-        ?Types\AssetCollectionId $id,
+        Types\AssetCollectionId $id,
         Types\AssetSourceId $assetSourceId
     ): ?Types\AssetCollection {
         return $id ? $this->assetSourceContext->getAssetCollection($id, $assetSourceId) : null;
@@ -270,7 +270,7 @@ final class MediaApi
 
     #[Description('Provides a list of changes to assets since a given timestamp')]
     #[Query]
-    public function changedAssets(Types\DateTime $since = null): Types\ChangedAssetsResult
+    public function changedAssets(?Types\DateTime $since = null): Types\ChangedAssetsResult
     {
         $changes = $this->assetChangeLog->getChanges($since);
         return instantiate(Types\ChangedAssetsResult::class, [
@@ -475,16 +475,16 @@ final class MediaApi
      */
     #[Mutation]
     public function uploadFile(
-        Types\UploadedFile $file = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\AssetSourceId $assetSourceId = null,
+        Types\UploadedFile $file,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResult {
         return $this->assetMutator->uploadFile(
             $file,
+            $assetSourceId,
             $tagId,
             $assetCollectionId,
-            $assetSourceId,
         );
     }
 
@@ -493,16 +493,16 @@ final class MediaApi
      */
     #[Mutation]
     public function uploadFiles(
-        Types\UploadedFiles $files = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\AssetSourceId $assetSourceId = null,
+        Types\UploadedFiles $files,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResults {
         return $this->assetMutator->uploadFiles(
             $files,
+            $assetSourceId,
             $tagId,
             $assetCollectionId,
-            $assetSourceId,
         );
     }
 

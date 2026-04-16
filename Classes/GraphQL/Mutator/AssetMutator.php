@@ -446,17 +446,13 @@ class AssetMutator
      * Stores the given file and returns an array with the result
      */
     public function uploadFile(
-        ?Types\UploadedFile $file,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\AssetSourceId $assetSourceId = null,
+        Types\UploadedFile $file,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResult {
         if ($assetSourceId->value !== 'neos') {
             return Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED);
-        }
-
-        if (!$file) {
-            return Types\FileUploadResult::fromError(self::STATE_ERROR);
         }
 
         $filename = $file->clientFilename;
@@ -503,7 +499,7 @@ class AssetMutator
 
                         $this->assetRepository->add($asset);
                         $result = self::STATE_ADDED;
-                        return Types\FileUploadResult::fromSuccess($result, $filename);
+                        return Types\FileUploadResult::fromSuccess($result, Types\Filename::fromString($filename));
                     }
                 } catch (IllegalObjectTypeException $e) {
                     $this->logger->error('Type of uploaded file cannot be stored: ' . $e->getMessage());
@@ -519,21 +515,19 @@ class AssetMutator
      * Stores all given files and returns an array of results for each upload
      */
     public function uploadFiles(
-        Types\UploadedFiles $files = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\AssetSourceId $assetSourceId = null,
+        Types\UploadedFiles $files,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResults {
         if ($assetSourceId->value !== 'neos') {
             return Types\FileUploadResults::fromArray([Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED)]);
-        }
-        if (!$files) {
-            return Types\FileUploadResults::empty();
         }
         $results = [];
         foreach ($files as $file) {
             $results[$file->clientFilename] = $this->uploadFile(
                 $file,
+                $assetSourceId,
                 $tagId,
                 $assetCollectionId,
             );

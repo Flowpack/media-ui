@@ -17,6 +17,11 @@ final class FileExtension implements \JsonSerializable
     {
     }
 
+    public static function fromString(string $extension): self
+    {
+        return new self($extension);
+    }
+
     public function jsonSerialize(): string
     {
         return $this->value;

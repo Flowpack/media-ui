@@ -51,8 +51,8 @@ type Mutation {
   replaceAsset(id: AssetId! assetSourceId: AssetSourceId! file: UploadedFileInput! options: AssetReplacementOptionsInput!): FileUploadResult!
   editAsset(id: AssetId! assetSourceId: AssetSourceId! filename: Filename! options: AssetEditOptionsInput!): MutationResult!
   importAsset(id: AssetId! assetSourceId: AssetSourceId!): Asset
-  uploadFile(file: UploadedFileInput tagId: TagId assetCollectionId: AssetCollectionId assetSourceId: AssetSourceId): FileUploadResult!
-  uploadFiles(files: [UploadedFileInput!] tagId: TagId assetCollectionId: AssetCollectionId assetSourceId: AssetSourceId): [FileUploadResult!]!
+  uploadFile(file: UploadedFileInput! assetSourceId: AssetSourceId! tagId: TagId assetCollectionId: AssetCollectionId): FileUploadResult!
+  uploadFiles(files: [UploadedFileInput!] assetSourceId: AssetSourceId tagId: TagId assetCollectionId: AssetCollectionId): [FileUploadResult!]!
   createTag(label: TagLabel! assetSourceId: AssetSourceId! assetCollectionId: AssetCollectionId): Tag!
   updateTag(id: TagId! assetSourceId: AssetSourceId! label: TagLabel): Tag!
   deleteTag(id: TagId! assetSourceId: AssetSourceId!): MutationResult!

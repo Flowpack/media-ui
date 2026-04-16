@@ -29,6 +29,8 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
      */
     protected static $testablePersistenceEnabled = true;
 
+    protected MediaApi $mediaApi;
+
     public function setUp(): void
     {
         parent::setUp();
