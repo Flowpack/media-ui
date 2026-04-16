@@ -1,9 +1,15 @@
-import { Selector } from 'testcafe';
+import { ClientFunction, Selector } from 'testcafe';
 
 import page from './page-model';
 
 // Use Cmd (meta) on macOS and Ctrl on Linux/Windows
 const ctrlOrCmd = process.platform === 'darwin' ? { meta: true } : { ctrl: true };
+
+// The clipboard atom is persisted to localStorage and survives page reloads,
+// so clipboard tests must clean up after themselves to keep tests isolated.
+const clearClipboardLocalStorage = ClientFunction(() => {
+    localStorage.removeItem('flowpack.mediaui.ClipboardState');
+});
 
 fixture('Multi-Selection').page('./?reset=1');
 
@@ -260,4 +266,51 @@ test('Bulk-deleting a mix of deletable and in-use assets removes the deletable o
     await t
         .expect(error.some((message) => message.includes('Example asset 2')))
         .ok('An error notification reports "Example asset 2" as the failed asset');
+});
+
+test('"Copy all to clipboard" adds all selected assets and the toggle shows the new count', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .expect(page.clipboardToggle.withText('Clipboard (0)').exists)
+        .ok('The clipboard is initially empty')
+        .click(page.tasksDropdownHeader)
+        .click(page.tasksDropdownItem('Copy all to clipboard'))
+        .expect(page.clipboardToggle.withText('Clipboard (2)').exists)
+        .ok('The clipboard contains the two selected assets after copying');
+}).after(async () => {
+    await clearClipboardLocalStorage();
+});
+
+test('After copying, the dropdown item label switches to "Remove all from clipboard"', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.tasksDropdownHeader)
+        .click(page.tasksDropdownItem('Copy all to clipboard'))
+        .click(page.tasksDropdownHeader) // re-open the dropdown
+        .expect(page.tasksDropdownItem('Remove all from clipboard').exists)
+        .ok('The toggle item now reads "Remove all from clipboard"')
+        .expect(page.tasksDropdownItem('Copy all to clipboard').exists)
+        .notOk('The original "Copy all to clipboard" label is no longer shown');
+}).after(async () => {
+    await clearClipboardLocalStorage();
+});
+
+test('"Remove all from clipboard" empties the clipboard for the selection', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.tasksDropdownHeader)
+        .click(page.tasksDropdownItem('Copy all to clipboard'))
+        .expect(page.clipboardToggle.withText('Clipboard (2)').exists)
+        .ok('Two assets are in the clipboard before removing');
+
+    await t
+        .click(page.tasksDropdownHeader)
+        .click(page.tasksDropdownItem('Remove all from clipboard'))
+        .expect(page.clipboardToggle.withText('Clipboard (0)').exists)
+        .ok('The clipboard is empty after removing all selected assets');
+}).after(async () => {
+    await clearClipboardLocalStorage();
 });
