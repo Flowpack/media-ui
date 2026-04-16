@@ -412,7 +412,7 @@ final class MediaApi
     public function createAssetCollection(
         Types\AssetCollectionTitle $title,
         ?Types\AssetCollectionId $parent = null,
-    ): ?Types\AssetCollection {
+    ): Types\AssetCollection {
         return $this->assetCollectionMutator->createAssetCollection(
             $title,
             $parent,

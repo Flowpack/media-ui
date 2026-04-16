@@ -49,7 +49,6 @@ class AssetCollectionUtility
         $name = '/' . $name;
 
         // Add path of the parent collection
-        /** @var HierarchicalAssetCollectionInterface $parent */
         $parent = $assetCollection->getParent();
         if ($parent !== null) {
             // Recursively build parent path without reusing the stored parent path to ensure correct paths

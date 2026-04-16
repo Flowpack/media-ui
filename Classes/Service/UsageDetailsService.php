@@ -96,10 +96,6 @@ final class UsageDetailsService
                 'usages' => [],
             ];
 
-            if (!$strategy instanceof AssetUsageStrategyInterface) {
-                return instantiate(Types\UsageDetailsGroup::class, $usageByStrategy);
-            }
-
             // Should be solved via an interface in the future
             if (method_exists($strategy, 'getLabel')) {
                 $usageByStrategy['label'] = $strategy->getLabel();
@@ -497,7 +493,7 @@ final class UsageDetailsService
         }, $variantClassNames);
     }
 
-    protected function translateById(string $id): ?string
+    protected function translateById(string $id): string
     {
         $source = 'Main';
         $package = 'Flowpack.Media.Ui';

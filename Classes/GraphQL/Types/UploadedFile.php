@@ -16,7 +16,7 @@ final class UploadedFile implements UploadedFileInterface
     private function __construct(
         public int $size,
         public int $errorStatus,
-        public string $streamOrFile,
+        public StreamInterface|string $streamOrFile,
         public ?string $clientFilename = null,
         public ?string $clientMediaType = null
     )
@@ -32,7 +32,7 @@ final class UploadedFile implements UploadedFileInterface
     {
     }
 
-    public function getSize(): ?int
+    public function getSize(): int
     {
         return $this->size;
     }

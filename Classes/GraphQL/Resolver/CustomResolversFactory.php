@@ -25,7 +25,6 @@ final class CustomResolversFactory
     {
         $customResolvers = [];
         foreach ($customResolversSettings as $typeName => $settingsForType) {
-            Assert::string($typeName);
             Assert::isArray($settingsForType);
             foreach ($settingsForType as $fieldName => $customResolverSettings) {
                 Assert::string($fieldName);
