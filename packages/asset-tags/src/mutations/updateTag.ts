@@ -3,8 +3,8 @@ import { gql } from '@apollo/client';
 import { TAG_FRAGMENT } from '../fragments/tag';
 
 const UPDATE_TAG = gql`
-    mutation UpdateTag($id: TagId!, $label: TagLabel!) {
-        updateTag(id: $id, label: $label) {
+    mutation UpdateTag($id: TagId!, $assetSourceId: AssetSourceId!, $label: TagLabel!) {
+        updateTag(id: $id, assetSourceId: $assetSourceId, label: $label) {
             ...TagProps
         }
     }

@@ -6,7 +6,10 @@ interface AssetCollectionsQueryResult {
     assetCollections: AssetCollection[];
 }
 
-export default function useAssetCollectionsQuery() {
-    const { data, loading } = useQuery<AssetCollectionsQueryResult>(ASSET_COLLECTIONS);
+export default function useAssetCollectionsQuery(assetSourceId?: AssetSourceId) {
+    const { data, loading } = useQuery<AssetCollectionsQueryResult>(ASSET_COLLECTIONS, {
+        variables: { assetSourceId },
+        skip: !assetSourceId,
+    });
     return { assetCollections: data?.assetCollections || [], loading };
 }

@@ -13,8 +13,18 @@ final class AssetCollection
 {
     private function __construct(
         public readonly AssetCollectionId $id,
+        public readonly AssetSourceId $assetSourceId,
         public readonly AssetCollectionTitle $title,
         public readonly ?AssetCollectionPath $path = null,
     ) {
+    }
+
+    public static function create(
+        AssetCollectionId $id,
+        AssetSourceId $assetSourceId,
+        AssetCollectionTitle $title,
+        ?AssetCollectionPath $path = null,
+    ): self {
+        return new self($id, $assetSourceId, $title, $path);
     }
 }

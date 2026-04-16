@@ -5,11 +5,9 @@ import { createUploadLink } from 'apollo-upload-client';
 import cx from 'classnames';
 
 // Neos dependencies are provided by the UI
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-ignores
 import { neos } from '@neos-project/neos-ui-decorators';
 // @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies

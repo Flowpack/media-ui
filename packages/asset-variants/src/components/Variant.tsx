@@ -1,9 +1,8 @@
 import React from 'react';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface VariantProps extends AssetVariant {}
-
 import classes from './Variant.module.css';
+
+type VariantProps = AssetVariant;
 
 const Variant: React.FC<VariantProps> = ({
     presetIdentifier,

@@ -415,7 +415,7 @@ final class UsageDetailsService
      * @throws NonUniqueResultException
      * @throws Exception
      */
-    public function getUnusedAssetCount(): int
+    public function getUnusedAssetCount(Types\AssetSourceId $assetSourceId): int
     {
         // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
         $this->canQueryAssetUsage();
@@ -433,7 +433,7 @@ final class UsageDetailsService
                 )
             ORDER BY a.lastModified DESC
         ', $this->getAssetVariantFilterClause('a')))
-            ->setParameter('assetSourceIdentifier', 'neos')
+            ->setParameter('assetSourceIdentifier', $assetSourceId->value)
             ->getSingleScalarResult();
     }
 

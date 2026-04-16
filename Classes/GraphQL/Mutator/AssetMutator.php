@@ -36,16 +36,17 @@ use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Media\Exception\AssetServiceException;
 use Neos\Utility\MediaTypes;
+use PharIo\Manifest\Type;
 use Psr\Log\LoggerInterface;
-
-use function Wwwision\Types\instantiate;
 
 #[Flow\Scope("singleton")]
 class AssetMutator
 {
-    protected const STATE_ADDED = 'ADDED';
-    protected const STATE_EXISTS = 'EXISTS';
-    protected const STATE_ERROR = 'ERROR';
+    protected const string STATE_ADDED = 'ADDED';
+    protected const string STATE_EXISTS = 'EXISTS';
+    protected const string STATE_ERROR = 'ERROR';
+    protected const string STATE_REPLACED = 'REPLACED';
+    protected const string STATE_UNSUPPORTED = 'UNSUPPORTED';
 
     public function __construct(
         private readonly AssetCollectionRepository $assetCollectionRepository,
@@ -315,8 +316,6 @@ class AssetMutator
             throw new MediaUiException('Asset type "' . $asset::class . '" does not support replacing', 1648046186);
         }
 
-        $success = false;
-        $result = self::STATE_ERROR;
         $sourceMediaType = MediaTypes::parseMediaType($asset->getMediaType());
         $replacementMediaType = MediaTypes::parseMediaType($file->clientMediaType);
         $filename = $file->clientFilename;
@@ -333,11 +332,7 @@ class AssetMutator
                     $replacementMediaType['type']
                 )
             );
-            return instantiate(Types\FileUploadResult::class, [
-                'filename' => $filename,
-                'success' => false,
-                'result' => $result,
-            ]);
+            return Types\FileUploadResult::fromError(self::STATE_ERROR);
         }
 
         try {
@@ -360,8 +355,7 @@ class AssetMutator
                     $resource,
                     $options->toArray()
                 );
-                $success = true;
-                $result = 'REPLACED';
+                return Types\FileUploadResult::fromSuccess(self::STATE_REPLACED, $filename);
             } catch (\Exception $e) {
                 $this->logger->error(
                     sprintf(
@@ -373,11 +367,7 @@ class AssetMutator
             }
         }
 
-        return instantiate(Types\FileUploadResult::class, [
-            'filename' => $filename,
-            'success' => $success,
-            'result' => $result,
-        ]);
+        return Types\FileUploadResult::fromError(self::STATE_ERROR);
     }
 
     /**
@@ -456,19 +446,13 @@ class AssetMutator
      * Stores the given file and returns an array with the result
      */
     public function uploadFile(
-        ?Types\UploadedFile $file,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        Types\UploadedFile $file,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResult {
-        $success = false;
-        $result = self::STATE_ERROR;
-
-        if (!$file) {
-            return instantiate(Types\FileUploadResult::class, [
-                'filename' => null,
-                'success' => false,
-                'result' => $result,
-            ]);
+        if ($assetSourceId->value !== 'neos') {
+            return Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED);
         }
 
         $filename = $file->clientFilename;
@@ -486,9 +470,7 @@ class AssetMutator
             $resource->setFilename($filename);
             $resource->setMediaType($file->clientMediaType);
 
-            if ($this->assetRepository->findOneByResourceSha1($resource->getSha1())) {
-                $result = self::STATE_EXISTS;
-            } else {
+            if (!$this->assetRepository->findOneByResourceSha1($resource->getSha1())) {
                 try {
                     $className = $this->mappingStrategy->map($resource);
                     /** @var Asset $asset */
@@ -517,9 +499,7 @@ class AssetMutator
 
                         $this->assetRepository->add($asset);
                         $result = self::STATE_ADDED;
-                        $success = true;
-                    } else {
-                        $result = self::STATE_EXISTS;
+                        return Types\FileUploadResult::fromSuccess($result, Types\Filename::fromString($filename));
                     }
                 } catch (IllegalObjectTypeException $e) {
                     $this->logger->error('Type of uploaded file cannot be stored: ' . $e->getMessage());
@@ -528,28 +508,26 @@ class AssetMutator
         }
 
         // FIXME: The filename is not unique enough for multiple uploads, we need an id instead or use the sha1
-        return instantiate(Types\FileUploadResult::class, [
-            'filename' => $filename,
-            'success' => $success,
-            'result' => $result,
-        ]);
+        return Types\FileUploadResult::fromError(self::STATE_EXISTS);
     }
 
     /**
      * Stores all given files and returns an array of results for each upload
      */
     public function uploadFiles(
-        Types\UploadedFiles $files = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        Types\UploadedFiles $files,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResults {
-        if (!$files) {
-            return Types\FileUploadResults::empty();
+        if ($assetSourceId->value !== 'neos') {
+            return Types\FileUploadResults::fromArray([Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED)]);
         }
         $results = [];
         foreach ($files as $file) {
             $results[$file->clientFilename] = $this->uploadFile(
                 $file,
+                $assetSourceId,
                 $tagId,
                 $assetCollectionId,
             );

@@ -31,6 +31,10 @@ class TagApiTest extends AbstractMediaTestCase
      */
     protected static $testablePersistenceEnabled = true;
 
+    protected MediaApi $mediaApi;
+    protected AssetCollectionResolver $assetCollectionResolver;
+    protected AssetResolver $assetResolver;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -45,36 +49,45 @@ class TagApiTest extends AbstractMediaTestCase
 
     public function testCreateTag(): void
     {
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), Types\AssetSourceId::default());
         $this->assertEquals('Test Tag', $tag->label);
     }
 
     public function testUpdateTag(): void
     {
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
-        $updatedTag = $this->mediaApi->updateTag($tag->id, Types\TagLabel::fromString('Updated Tag'));
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), Types\AssetSourceId::default());
+        $updatedTag = $this->mediaApi->updateTag(
+            $tag->id,
+            Types\AssetSourceId::default(),
+            Types\TagLabel::fromString('Updated Tag')
+        );
 
         $this->assertEquals('Updated Tag', $updatedTag->label);
     }
 
     public function testDeleteTag(): void
     {
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
-        $result = $this->mediaApi->deleteTag($tag->id);
+        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), Types\AssetSourceId::default());
+        $result = $this->mediaApi->deleteTag($tag->id, Types\AssetSourceId::default());
 
         $this->assertTrue($result->success);
 
-        $deletedTag = $this->mediaApi->tag($tag->id);
+        $deletedTag = $this->mediaApi->tag($tag->id, Types\AssetSourceId::default());
         $this->assertNull($deletedTag);
     }
 
     public function testTagAssetCollection(): void
     {
         $assetCollection = $this->mediaApi->createAssetCollection(
-            Types\AssetCollectionTitle::fromString('Test Collection')
+            Types\AssetCollectionTitle::fromString('Test Collection'),
+            Types\AssetSourceId::default(),
         );
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'), $assetCollection->id);
-        $createdTag = $this->mediaApi->tag($tag->id);
+        $tag = $this->mediaApi->createTag(
+            Types\TagLabel::fromString('Test Tag'),
+            Types\AssetSourceId::default(),
+            $assetCollection->id
+        );
+        $createdTag = $this->mediaApi->tag($tag->id, Types\AssetSourceId::default());
 
         $resolvedTags = $this->assetCollectionResolver->tags($assetCollection);
         $this->assertCount(1, $resolvedTags->tags);
@@ -88,15 +101,17 @@ class TagApiTest extends AbstractMediaTestCase
     public function testTagAsset(): void
     {
         $file = self::createFile();
-        $result = $this->mediaApi->uploadFile($file);
+        $result = $this->mediaApi->uploadFile($file, Types\AssetSourceId::default());
         $this->assertTrue($result->success);
 
         $this->persistenceManager->persistAll();
-        $assets = $this->mediaApi->assets();
-        /** @var Types\Asset $uploadedAsset */
-        $uploadedAsset = $assets->getIterator()->current();
+        $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        $uploadedAsset = $assets->assets[0];
 
-        $tag = $this->mediaApi->createTag(Types\TagLabel::fromString('Test Tag'));
+        $tag = $this->mediaApi->createTag(
+            Types\TagLabel::fromString('Test Tag'),
+            Types\AssetSourceId::default()
+        );
         $this->mediaApi->tagAsset(
             $uploadedAsset->id,
             $uploadedAsset->assetSource->id,

@@ -16,4 +16,9 @@ final class AssetCollectionParent
         public readonly AssetCollectionTitle $title,
     ) {
     }
+
+    public static function create(AssetCollectionId $assetCollectionId, AssetCollectionTitle $assetCollectionTitle): self
+    {
+        return new self($assetCollectionId, $assetCollectionTitle);
+    }
 }

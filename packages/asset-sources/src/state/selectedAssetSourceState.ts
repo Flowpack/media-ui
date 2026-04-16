@@ -5,13 +5,13 @@ import { clipboardVisibleState } from '@media-ui/feature-clipboard';
 
 export const NEOS_ASSET_SOURCE = 'neos';
 
-const selectedAssetSourceIdState = atom<string>({
+const selectedAssetSourceIdState = atom<AssetSourceId>({
     key: 'SelectedAssetSourceIdState',
     default: NEOS_ASSET_SOURCE,
     effects: [localStorageEffect('SelectedAssetSourceIdState')],
 });
 
-export const selectedAssetSourceState = selector<string>({
+export const selectedAssetSourceState = selector<AssetSourceId>({
     key: 'SelectedAssetSourceState',
     get: ({ get }) => {
         const selectedAssetSourceId = get(selectedAssetSourceIdState);

@@ -36,9 +36,9 @@ const DraggedNodeRenderer: React.FC<{
 
 const AssetCollectionTree = () => {
     const { translate } = useIntl();
-    const { assetCollections } = useAssetCollectionsQuery();
     const selectedAssetSource = useSelectedAssetSource();
-    const { tags } = useTagsQuery();
+    const { assetCollections } = useAssetCollectionsQuery(selectedAssetSource?.id);
+    const { tags } = useTagsQuery(selectedAssetSource?.id);
     const { assetCount: totalAssetCount } = useAssetCountQuery(true);
     const [assetCollectionTreeView, setAssetCollectionTreeViewState] = useRecoilState(assetCollectionTreeViewState);
     const favourites = useRecoilValue(assetCollectionFavouritesState);
