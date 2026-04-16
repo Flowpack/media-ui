@@ -38,6 +38,7 @@ use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Media\Exception\AssetServiceException;
 use Neos\Utility\MediaTypes;
+use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
 
 use function Wwwision\Types\instantiate;
@@ -368,7 +369,7 @@ class AssetMutator
 
         try {
             $resource = $this->resourceManager->importResourceFromContent(
-                $file->streamOrFile,
+                ($file->streamOrFile instanceof StreamInterface ? $file->streamOrFile->getContents() : $file->streamOrFile),
                 $filename
             );
         } catch (ResourceManagementException $e) {
@@ -511,7 +512,7 @@ class AssetMutator
         if ($filename !== null) {
             try {
                 $resource = $this->resourceManager->importResourceFromContent(
-                    $file->streamOrFile,
+                    ($file->streamOrFile instanceof StreamInterface ? $file->streamOrFile->getContents() : $file->streamOrFile),
                     $filename,
                 );
             } catch (ResourceManagementException $e) {
