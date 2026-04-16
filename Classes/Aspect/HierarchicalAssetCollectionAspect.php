@@ -70,7 +70,7 @@ class HierarchicalAssetCollectionAspect
         $assetCollection = $joinPoint->getProxy();
         /** @var HierarchicalAssetCollectionInterface $parentAssetCollection */
         $parentAssetCollection = $joinPoint->getMethodArgument('parent');
-        if (!$parentAssetCollection instanceof AssetCollection && $parentAssetCollection !== null) {
+        if (!$parentAssetCollection instanceof AssetCollection) {
             throw new \InvalidArgumentException('Parent must be an AssetCollection', 1678330583);
         }
 
