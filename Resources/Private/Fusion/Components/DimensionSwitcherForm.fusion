@@ -1,0 +1,21 @@
+prototype(Flowpack.Media.Ui:EditMetadata.DimensionSwitcherForm) < prototype(Neos.Fusion:Component) {
+    assetDsps = null
+    currentAssetDsp = null
+
+    renderer  = afx`
+        <Neos.Fusion.Form:Form form.target.action="editMetadata" attributes.id="changeDspHashForm">
+            <h1 style="margin-bottom: .5rem">Select Dimension</h1>
+            <Neos.Fusion.Form:Hidden field.name="assetId" field.value={props.assetIdentity.assetId.value} />
+            <Neos.Fusion.Form:Hidden field.name="assetSourceId" field.value={props.assetIdentity.assetSourceId.value} />
+            <Neos.Fusion.Form:Select field.name="metaDataDimensionSpacePointHash" field.value={props.currentAssetDsp}>
+                <Neos.Fusion:Loop items={props.assetDsps}>
+                    <Neos.Fusion.Form:Select.Option option.value={item.hash} attributes.selected={item.hash == props.currentAssetDsp}>
+                        <Neos.Fusion:Loop items={item.coordinates} itemName="coordinate" @glue=", ">
+                            {Array.join(coordinate, ', ')}
+                        </Neos.Fusion:Loop>
+                    </Neos.Fusion.Form:Select.Option>
+                </Neos.Fusion:Loop>
+            </Neos.Fusion.Form:Select>
+        </Neos.Fusion.Form:Form>
+    `
+}

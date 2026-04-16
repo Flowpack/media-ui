@@ -7,6 +7,10 @@ window.addEventListener('load', () => {
         window.parent.postMessage({type: 'closeDialog'}, '*');
     });
 
+    document.getElementById('changeDspHashForm')?.querySelector('select')?.addEventListener('change', (e) => {
+        const form  = document.getElementById('changeDspHashForm');
+        form.submit();
+    });
     // When the form is successfully submitted, request closing the dialog and show a success message
     document.getElementById('editMetadataForm')?.addEventListener('submit', (e) => {
         e.preventDefault();
