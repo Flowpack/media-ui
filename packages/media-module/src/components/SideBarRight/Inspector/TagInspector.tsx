@@ -8,12 +8,14 @@ import { useIntl, useNotify } from '@media-ui/core';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
 import { useSelectedTag, useUpdateTag } from '@media-ui/feature-asset-tags';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import Actions from './Actions';
 import Property from './Property';
 import InspectorContainer from './InspectorContainer';
 
 const TagInspector = () => {
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
     const selectedTag = useSelectedTag();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();
@@ -35,6 +37,7 @@ const TagInspector = () => {
         if (label !== selectedTag.label) {
             updateTag({
                 tag: selectedTag,
+                assetSourceId: selectedAssetSourceId,
                 label,
             })
                 .then(() => {
@@ -44,7 +47,7 @@ const TagInspector = () => {
                     Notify.error(translate('actions.updateTag.error', 'Error while updating the tag'), message);
                 });
         }
-    }, [Notify, translate, selectedTag, updateTag, label]);
+    }, [label, selectedTag, updateTag, selectedAssetSourceId, Notify, translate]);
 
     useEffect(() => {
         handleDiscard();

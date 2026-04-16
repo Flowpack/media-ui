@@ -23,7 +23,7 @@ const ParentCollectionSelectBox = () => {
     const { approvalAttainmentStrategy } = useMediaUi();
     const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
     const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
-    const selectedAssetCollection = useSelectedAssetCollection(selectedAssetSourceId);
+    const selectedAssetCollection = useSelectedAssetCollection();
     const { setAssetCollectionParent, loading } = useSetAssetCollectionParent();
     const [searchTerm, setSearchTerm] = useState('');
 

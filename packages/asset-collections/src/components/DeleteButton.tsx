@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
@@ -7,6 +7,7 @@ import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { useDeleteTag, useSelectedTag } from '@media-ui/feature-asset-tags';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import useDeleteAssetCollection from '../hooks/useDeleteAssetCollection';
 import useSelectedAssetCollection from '../hooks/useSelectedAssetCollection';
@@ -16,6 +17,7 @@ const DeleteButton: React.FC = () => {
     const { config } = useConfigQuery();
     const Notify = useNotify();
     const { approvalAttainmentStrategy } = useMediaUi();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
     const { deleteTag } = useDeleteTag();
@@ -28,7 +30,7 @@ const DeleteButton: React.FC = () => {
                 tag: selectedTag,
             });
             if (!canDeleteTag) return;
-            deleteTag(selectedTag.id)
+            deleteTag(selectedTag.id, selectedAssetSourceId)
                 .then(() => {
                     Notify.ok(translate('action.deleteTag.success', 'The tag has been deleted'));
                     setSelectedAssetCollectionAndTag(({ assetCollectionId }) => ({ tagId: null, assetCollectionId }));
@@ -42,7 +44,7 @@ const DeleteButton: React.FC = () => {
             });
             if (!canDeleteAssetCollection) return;
 
-            deleteAssetCollection(selectedAssetCollection.id)
+            deleteAssetCollection(selectedAssetCollection.id, selectedAssetSourceId)
                 .then(() => {
                     Notify.ok(
                         translate('assetCollectionActions.delete.success', 'Asset collection was successfully deleted')
@@ -56,11 +58,12 @@ const DeleteButton: React.FC = () => {
     }, [
         selectedTag,
         selectedAssetCollection,
-        translate,
-        deleteTag,
-        Notify,
-        setSelectedAssetCollectionAndTag,
         approvalAttainmentStrategy,
+        deleteTag,
+        selectedAssetSourceId,
+        Notify,
+        translate,
+        setSelectedAssetCollectionAndTag,
         deleteAssetCollection,
     ]);
 

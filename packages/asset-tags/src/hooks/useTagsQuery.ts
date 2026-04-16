@@ -6,7 +6,7 @@ interface TagsQueryResult {
     tags: Tag[];
 }
 
-export default function useAssetTagsQuery(assetSourceId: AssetSourceId|null) {
+export default function useAssetTagsQuery(assetSourceId: AssetSourceId | null) {
     const { data, loading } = useQuery<TagsQueryResult>(TAGS, {
         variables: {
             assetSourceId,
