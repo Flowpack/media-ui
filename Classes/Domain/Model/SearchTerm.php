@@ -39,7 +39,7 @@ final class SearchTerm
         }
     }
 
-    public static function from($any): ?self
+    public static function from(mixed $any): ?self
     {
         if (is_string($any) && !empty($any)) {
             return new self($any);

@@ -81,6 +81,10 @@ class Resolver
         return $objectValue;
     }
 
+    /**
+     * @param array<string,mixed> $typeConfig
+     * @return array<string,mixed>
+     */
     public function typeConfigDecorator(array $typeConfig, TypeDefinitionNode $typeDefinitionNode): array
     {
         if ($typeDefinitionNode instanceof InterfaceTypeDefinitionNode) {
@@ -92,7 +96,7 @@ class Resolver
         }
         if ($typeDefinitionNode instanceof EnumTypeDefinitionNode) {
             $className = $this->resolveClassName($typeConfig['name']);
-            $schema = Parser::getSchema($className);
+            $schema = $className ? Parser::getSchema($className) : null;
             if ($schema instanceof EnumSchema) {
                 $typeConfig['values'] = array_map(static fn(EnumCaseSchema $caseSchema
                 ) => $caseSchema->instantiate(null, Options::create()), $schema->caseSchemas);
@@ -116,6 +120,10 @@ class Resolver
         return $result;
     }
 
+    /**
+     * @param string|bool|int|UnitEnum|array<mixed>|null $argument
+     * @return string|bool|int|array<mixed>|object|null
+     */
     private function convertArgument(
         string|bool|int|UnitEnum|array|null $argument,
         ?Argument $argumentDefinition
@@ -136,7 +144,7 @@ class Resolver
             $argumentType = $type->name . 's';
         } else {
             /** @phpstan-ignore property.notFound */
-            $argumentType = $type->name;
+            $argumentType = $type?->name ?: '';
         }
         if (str_ends_with($argumentType, 'Input')) {
             $argumentType = substr($argumentType, 0, -5);

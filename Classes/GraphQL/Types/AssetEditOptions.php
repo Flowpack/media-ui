@@ -18,6 +18,9 @@ final class AssetEditOptions implements \JsonSerializable
     {
     }
 
+    /**
+     * @return array<string,bool>
+     */
     public function toArray(): array
     {
         return [
@@ -25,6 +28,9 @@ final class AssetEditOptions implements \JsonSerializable
         ];
     }
 
+    /**
+     * @return array<string,bool>
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();

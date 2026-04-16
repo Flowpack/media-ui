@@ -18,11 +18,13 @@ final class CustomResolversFactory
     ) {
     }
 
+    /**
+     * @param array<string,mixed> $customResolversSettings
+     */
     public function create(array $customResolversSettings): CustomResolvers
     {
         $customResolvers = [];
         foreach ($customResolversSettings as $typeName => $settingsForType) {
-            Assert::string($typeName);
             Assert::isArray($settingsForType);
             foreach ($settingsForType as $fieldName => $customResolverSettings) {
                 Assert::string($fieldName);

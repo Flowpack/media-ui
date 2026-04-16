@@ -58,6 +58,9 @@ class AssetCollectionResolver
     #[Flow\Inject]
     protected ContentRepositoryResolver $contentRepositoryResolver;
 
+    /**
+     * @var array<string,bool>|null
+     */
     protected array|null $siteDefaultAssetCollections = null;
 
     public function assetCount(Types\AssetCollection $assetCollection): int
@@ -108,16 +111,17 @@ class AssetCollectionResolver
                 folderId: NodeAggregateId::fromString($assetCollection->id->value),
             );
         } else {
-            /** @var AssetCollection $originalAssetCollection */
             $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
 
-            return $originalAssetCollection ? Types\Tags::fromArray(array_map(
-                fn(Tag $tag) => instantiate(Types\Tag::class, [
-                    'id' => $this->persistenceManager->getIdentifierByObject($tag),
-                    'label' => $tag->getLabel(),
-                ]),
-                $originalAssetCollection->getTags()->toArray()
-            )) : Types\Tags::empty();
+            return $originalAssetCollection instanceof AssetCollection
+                ? Types\Tags::fromArray(array_map(
+                    fn(Tag $tag) => instantiate(Types\Tag::class, [
+                        'id' => $this->persistenceManager->getIdentifierByObject($tag),
+                        'label' => $tag->getLabel(),
+                    ]),
+                    $originalAssetCollection->getTags()->toArray()
+                ))
+                : Types\Tags::empty();
         }
     }
 
@@ -139,26 +143,28 @@ class AssetCollectionResolver
                 childNodeAggregateId: NodeAggregateId::fromString($assetCollection->id->value),
             );
         } else {
-            /** @var HierarchicalAssetCollectionInterface $originalAssetCollection */
             $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
-            if (!$originalAssetCollection) {
+            if (!$originalAssetCollection instanceof HierarchicalAssetCollectionInterface) {
                 return null;
             }
             $parent = $originalAssetCollection->getParent();
-            return $parent ? instantiate(Types\AssetCollectionParent::class, [
-                'id' => $this->persistenceManager->getIdentifierByObject($parent),
-                'title' => $parent->getTitle(),
-            ]) : null;
+            return $parent
+                ? instantiate(Types\AssetCollectionParent::class, [
+                    'id' => $this->persistenceManager->getIdentifierByObject($parent),
+                    'title' => $parent->getTitle(),
+                ])
+                : null;
         }
     }
 
     public function assets(Types\AssetCollection $assetCollection): Types\Assets
     {
-        /** @var AssetCollection $originalAssetCollection */
         $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
-        return $originalAssetCollection ?
-            Types\Assets::fromArray(
+
+        return $originalAssetCollection instanceof AssetCollection
+            ? Types\Assets::fromArray(
                 $this->assetRepository->findByAssetCollection($originalAssetCollection)->toArray()
-            ) : Types\Assets::empty();
+            )
+            : Types\Assets::empty();
     }
 }

@@ -40,6 +40,7 @@ use Neos\Flow\Reflection\ReflectionService;
 use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetInterface;
+use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Model\Dto\UsageReference;
 use Neos\Media\Domain\Strategy\AssetUsageStrategyInterface;
@@ -87,17 +88,13 @@ final class UsageDetailsService
     public function resolveUsagesForAsset(AssetInterface $asset): Types\UsageDetailsGroups
     {
         $includeSites = $this->siteRepository->countAll() > 1;
-        $groups = array_filter(array_map(function ($strategy) use ($asset, $includeSites) {
+        $groups = array_map(function ($strategy) use ($asset, $includeSites) {
             $usageByStrategy = [
                 'serviceId' => get_class($strategy),
                 'label' => get_class($strategy),
                 'metadataSchema' => [],
                 'usages' => [],
             ];
-
-            if (!$strategy instanceof AssetUsageStrategyInterface) {
-                return instantiate(Types\UsageDetailsGroup::class, $usageByStrategy);
-            }
 
             // Should be solved via an interface in the future
             if (method_exists($strategy, 'getLabel')) {
@@ -113,9 +110,9 @@ final class UsageDetailsService
                 // If the strategy does not implement the UsageDetailsProviderInterface, we provide some default usage data
                 $assetUsageReferences = array_filter(
                     $strategy->getUsageReferences($asset),
-                    fn (UsageReference $usageReference) => $usageReference instanceof AssetUsageReference,
+                    fn (UsageReference $usageReference): bool => $usageReference instanceof AssetUsageReference,
                 );
-                if (count($assetUsageReferences)) {
+                if (count($assetUsageReferences) > 0) {
                     $includeDimensions = $this->containsContentRepositoryWithDimensions($assetUsageReferences);
                     $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema(
                         $includeSites,
@@ -137,7 +134,7 @@ final class UsageDetailsService
                 $usageByStrategy['usages']
             );
             return instantiate(Types\UsageDetailsGroup::class, $usageByStrategy);
-        }, $this->getUsageStrategies()));
+        }, $this->getUsageStrategies());
 
         $groups = array_filter($groups, static function (Types\UsageDetailsGroup $usageByStrategy) {
             return !$usageByStrategy->usages->isEmpty();
@@ -163,7 +160,7 @@ final class UsageDetailsService
         $schema
             ->withMetadata(
                 'document',
-                $this->translateById('assetUsage.header.document') ?: ' document',
+                $this->translateById('assetUsage.header.document') ?: 'document',
                 UsageMetadataSchema::TYPE_TEXT
             )
             ->withMetadata(
@@ -433,7 +430,7 @@ final class UsageDetailsService
         }
 
         $assetProxies = array_filter(array_map(
-            fn(string $id) => $this->assetSourceContext->getAssetProxy(
+            fn(string $id): ?AssetProxyInterface => $this->assetSourceContext->getAssetProxy(
                 Types\AssetId::fromString($id),
                 $assetSourceIdentifier
             ),
@@ -496,7 +493,7 @@ final class UsageDetailsService
         }, $variantClassNames);
     }
 
-    protected function translateById(string $id): ?string
+    protected function translateById(string $id): string
     {
         $source = 'Main';
         $package = 'Flowpack.Media.Ui';

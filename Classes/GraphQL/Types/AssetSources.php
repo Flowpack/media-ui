@@ -8,6 +8,9 @@ use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\Description;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<AssetSource>
+ */
 #[Description('All asset sources')]
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: AssetSource::class)]

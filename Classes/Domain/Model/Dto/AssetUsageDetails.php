@@ -60,6 +60,9 @@ final class AssetUsageDetails implements \JsonSerializable
         return $this->url;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function jsonSerialize(): array
     {
         return [

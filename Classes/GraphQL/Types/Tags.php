@@ -7,6 +7,9 @@ namespace Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<Tag>
+ */
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: Tag::class)]
 final class Tags implements \IteratorAggregate
