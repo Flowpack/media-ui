@@ -8,13 +8,12 @@ Plugin.css binary
 /.yarn export-ignore
 /.env export-ignore
 /.github export-ignore
-/.eslintrc.js export-ignore
-/.eslintrc.js export-ignore
 /.mocharc export-ignore
 /.nvmrc export-ignore
 /.testcaferc.json export-ignore
 /.yarn.yml export-ignore
 /.apollo.config.js export-ignore
+/eslint.config.mjs export-ignore
 /package.json export-ignore
 /phpstan.neon export-ignore
 /tsconfig.json export-ignore

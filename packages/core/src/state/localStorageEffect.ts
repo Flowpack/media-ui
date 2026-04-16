@@ -31,7 +31,7 @@ export function localStorageEffect<T = any>(
                 if (savedValue !== null && savedValue !== undefined) {
                     setSelf(savedValue);
                 }
-            } catch (e) {
+            } catch {
                 console.warn(`[MEDIA UI]: Could not parse saved value for stored setting ${fullKey}`);
                 localStorage.removeItem(fullKey);
             }
@@ -41,9 +41,12 @@ export function localStorageEffect<T = any>(
             if (context == 'selection') {
                 return;
             }
-            isReset || newValue == '' || newValue == null
-                ? localStorage.removeItem(fullKey)
-                : localStorage.setItem(fullKey, JSON.stringify(newValue));
+
+            if (isReset || newValue === '' || newValue == null) {
+                localStorage.removeItem(fullKey);
+            } else {
+                localStorage.setItem(fullKey, JSON.stringify(newValue));
+            }
         });
     };
 }

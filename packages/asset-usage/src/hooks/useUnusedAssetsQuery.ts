@@ -3,6 +3,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
 import { currentPageState, featureFlagsState, loadingState } from '@media-ui/core/src/state';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import UNUSED_ASSETS from '../queries/unusedAssets';
 import showUnusedAssetsState from '../state/showUnusedAssetsState';
@@ -12,6 +13,7 @@ interface UnusedAssetsQueryResult {
 }
 
 interface UnusedAssetsQueryVariables {
+    assetSourceId: AssetSourceId;
     limit: number;
     offset: number;
 }
@@ -21,6 +23,7 @@ const useUnusedAssetsQuery = () => {
         pagination: { assetsPerPage },
     } = useRecoilValue(featureFlagsState);
     const currentPage = useRecoilValue(currentPageState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
     const showUnusedAssets = useRecoilValue(showUnusedAssetsState);
     const [assets, setAssets] = useState<Asset[]>([]);
@@ -33,6 +36,7 @@ const useUnusedAssetsQuery = () => {
     >(UNUSED_ASSETS, {
         notifyOnNetworkStatusChange: false,
         variables: {
+            assetSourceId,
             limit: assetsPerPage,
             offset,
         },
@@ -42,6 +46,7 @@ const useUnusedAssetsQuery = () => {
         if (showUnusedAssets && !loading && !isLoading) {
             query({
                 variables: {
+                    assetSourceId,
                     limit: assetsPerPage,
                     offset,
                 },
@@ -51,7 +56,7 @@ const useUnusedAssetsQuery = () => {
             setIsLoading(false);
             setAssets(data.unusedAssets);
 
-            // TODO: Update currentPage if asset count changes and current page exceeds limit
+            // FIXME: Update currentPage if asset count changes and current page exceeds limit
         }
         // Don't include `isLoading` to prevent constant reloads
         // eslint-disable-next-line react-hooks/exhaustive-deps

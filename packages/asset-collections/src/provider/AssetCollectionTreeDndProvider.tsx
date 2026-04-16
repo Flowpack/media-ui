@@ -1,8 +1,10 @@
 import React, { useCallback, useState, createContext, useContext } from 'react';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { useRecoilValue } from 'recoil';
 
 import { useIntl, useNotify } from '@media-ui/core';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import { useSetAssetCollectionParent } from '../hooks/useSetAssetCollectionParent';
 import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';
@@ -27,7 +29,8 @@ export const useAssetCollectionDnd = (): AssetCollectionTreeDndProviderValues =>
 export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTreeDndProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const { assetCollections } = useAssetCollectionsQuery();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const [currentlyDraggedNodes, setCurrentlyDraggedNodes] = useState<string[]>([]);
     const { setAssetCollectionParent } = useSetAssetCollectionParent();
 
@@ -58,6 +61,7 @@ export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTree
                 if (targetParentCollection?.id !== draggedAssetCollection.parent?.id) {
                     setAssetCollectionParent({
                         assetCollection: draggedAssetCollection,
+                        assetSourceId: selectedAssetSourceId,
                         parent: targetParentCollection,
                     })
                         .then(() => {
@@ -82,7 +86,7 @@ export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTree
 
             setCurrentlyDraggedNodes([]);
         },
-        [Notify, assetCollections, currentlyDraggedNodes, setAssetCollectionParent, setCurrentlyDraggedNodes, translate]
+        [Notify, assetCollections, currentlyDraggedNodes, selectedAssetSourceId, setAssetCollectionParent, translate]
     );
 
     const acceptsDraggedNode = useCallback(

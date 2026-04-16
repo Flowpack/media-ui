@@ -456,7 +456,7 @@ final class UsageDetailsService
     /**
      * Returns number of assets which have no usage reference provided by `Flowpack.EntityUsage`
      */
-    public function getUnusedAssetCount(?Types\AssetSourceId $assetSourceId = null): int
+    public function getUnusedAssetCount(Types\AssetSourceId $assetSourceId): int
     {
         $queryBuilder = $this->dbal->createQueryBuilder();
         $assetSourceIdentifier = $assetSourceId ?? Types\AssetSourceId::default();

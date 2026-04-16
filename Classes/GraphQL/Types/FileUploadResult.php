@@ -18,6 +18,16 @@ final class FileUploadResult implements \JsonSerializable
     ) {
     }
 
+    public static function fromSuccess(string $result, ?Filename $filename = null): self
+    {
+        return new self(true, $result, $filename);
+    }
+
+    public static function fromError(string $result): self
+    {
+        return new self(false, $result);
+    }
+
     public function jsonSerialize(): array
     {
         return [

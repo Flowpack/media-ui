@@ -59,7 +59,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         });
     };
 
-    const sortAssets = (assets: Asset[], sortBy, sortDirection) => {
+    const sortAssets = (assets: Asset[], sortBy: string, sortDirection: string) => {
         const sorted = assets.sort((a, b) => {
             if (sortBy === 'name') {
                 // Using the label here since teh filename is the same in every fixture
@@ -87,7 +87,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         Query: {
             asset: ($_, { id, assetSourceId = 'neos' }) =>
                 assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId),
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assets: (
                 $_,
                 {
@@ -126,7 +125,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             similarAssets: ($_, { id, assetSourceId }) => {
                 throw new Error('Not implemented');
             },
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assetCount: (
                 $_,
                 {
@@ -146,7 +144,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             assetUsageCount: ($_, { id, assetSourceId }): number => {
                 throw new Error('Not implemented');
             },
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assetVariants: ($_, { id }): AssetVariant[] => {
                 // TODO: Implement assetVariants
                 return [];
@@ -230,6 +227,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 const newCollection: AssetCollection = {
                     __typename: 'AssetCollection',
                     id: `someId_${Date.now()}`,
+                    assetSourceId: 'neos',
                     title,
                     parent: parentCollection
                         ? {

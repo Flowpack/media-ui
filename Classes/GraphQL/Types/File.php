@@ -19,4 +19,15 @@ final class File
         public readonly Url $url,
     ) {
     }
+
+    public static function fromArray(array $array): self
+    {
+        return new self(
+            FileExtension::fromString($array['extension']),
+            MediaType::fromString($array['mediaType']),
+            Image::fromArray($array['typeIcon']),
+            FileSize::fromInteger($array['size']),
+            Url::fromString($array['url']),
+        );
+    }
 }

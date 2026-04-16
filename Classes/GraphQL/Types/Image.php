@@ -18,4 +18,9 @@ final class Image
         public readonly string $alt,
     ) {
     }
+
+    public static function fromArray(array $fields): self
+    {
+        return new self($fields['width'], $fields['height'], $fields['url'], $fields['alt']);
+    }
 }

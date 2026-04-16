@@ -6,7 +6,12 @@ interface TagsQueryResult {
     tags: Tag[];
 }
 
-export default function useAssetTagsQuery() {
-    const { data, loading } = useQuery<TagsQueryResult>(TAGS);
+export default function useAssetTagsQuery(assetSourceId: AssetSourceId | null) {
+    const { data, loading } = useQuery<TagsQueryResult>(TAGS, {
+        variables: {
+            assetSourceId,
+        },
+        skip: !assetSourceId,
+    });
     return { tags: data?.tags || [], loading };
 }

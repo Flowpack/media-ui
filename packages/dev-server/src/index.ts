@@ -63,7 +63,6 @@ setTimeout(() => {
     window.NeosCMS = {
         I18n: {
             initialized: true,
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
             translate: (id: string, fallback: string, packageKey = null, source = null, args = []) => {
                 Object.keys(args).forEach((key) => (fallback = fallback.replace(`{${key}}`, args[key])));
                 return fallback;

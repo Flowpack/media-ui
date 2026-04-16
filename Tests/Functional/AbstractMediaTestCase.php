@@ -130,12 +130,12 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
     protected function createMockResourceAndPointerFromHash(string $hash): PersistentResource
     {
         $mockResource = $this->getMockBuilder(PersistentResource::class)->setMethods(['getHash', 'getUri'])->getMock();
-        $mockResource->expects(self::any())
-            ->method('getHash')
-            ->will(self::returnValue($hash));
-        $mockResource->expects(self::any())
+        $mockResource
+                ->method('getHash')
+                ->willReturn($hash);
+        $mockResource
             ->method('getUri')
-            ->will(self::returnValue('resource://' . $hash));
+            ->willReturn('resource://' . $hash);
         return $mockResource;
     }
 
