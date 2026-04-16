@@ -1,7 +1,11 @@
 type TagType = 'Tag';
 
+type TagId = string;
+type TagLabel = string;
+
 interface Tag extends GraphQlEntity {
     __typename: TagType;
-    id: string;
-    label: string;
+    id: TagId;
+    assetSourceId: AssetSourceId;
+    label: TagLabel;
 }

@@ -15,14 +15,14 @@ use Wwwision\Types\Attributes\ListBased;
 final class FileUploadResults implements \IteratorAggregate, \JsonSerializable
 {
     /**
-     * @param FileUploadResult[] $values
+     * @param array<FileUploadResult> $values
      */
     private function __construct(public readonly array $values)
     {
     }
 
     /**
-     * @param FileUploadResult[] $results
+     * @param array<FileUploadResult> $results
      */
     public static function fromArray(array $results): self
     {

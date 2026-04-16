@@ -17,6 +17,11 @@ final class IptcPropertyName implements \JsonSerializable
     {
     }
 
+    public static function fromString(string $key): self
+    {
+        return new self($key);
+    }
+
     public function jsonSerialize(): string
     {
         return $this->value;

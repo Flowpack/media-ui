@@ -8,7 +8,7 @@ interface PropertyListItemProps {
 const PropertyListItem: React.FC<PropertyListItemProps> = ({ label, value }: PropertyListItemProps) => {
     const ref = useRef<HTMLElement>(null);
     const handleClick = useCallback(() => {
-        ref.current && window.getSelection().selectAllChildren(ref.current);
+        return ref.current && window.getSelection().selectAllChildren(ref.current);
     }, [ref]);
 
     return (

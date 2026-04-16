@@ -26,8 +26,6 @@ use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Domain\Repository\SiteRepository;
 
-use function Wwwision\Types\instantiate;
-
 #[Flow\Scope('singleton')]
 class AssetCollectionResolver
 {
@@ -89,10 +87,11 @@ class AssetCollectionResolver
 
         return $originalAssetCollection instanceof AssetCollection
             ? Types\Tags::fromArray(array_map(
-                fn(Tag $tag) => instantiate(Types\Tag::class, [
-                    'id' => $this->persistenceManager->getIdentifierByObject($tag),
-                    'label' => $tag->getLabel(),
-                ]),
+                fn  (Tag $tag) => Types\Tag::create(
+                    Types\TagId::fromString($this->persistenceManager->getIdentifierByObject($tag)),
+                    $assetCollection->assetSourceId,
+                    Types\TagLabel::fromString($tag->getLabel()),
+                ),
                 $originalAssetCollection->getTags()->toArray()
             ))
             : Types\Tags::empty();
@@ -105,10 +104,10 @@ class AssetCollectionResolver
             return null;
         }
         $parent = $originalAssetCollection->getParent();
-        return $parent ? instantiate(Types\AssetCollectionParent::class, [
-            'id' => $this->persistenceManager->getIdentifierByObject($parent),
-            'title' => $parent->getTitle(),
-        ]) : null;
+        return $parent ? Types\AssetCollectionParent::create(
+            Types\AssetCollectionId::fromString($this->persistenceManager->getIdentifierByObject($parent)),
+            Types\AssetCollectionTitle::fromString($parent->getTitle()),
+        ) : null;
     }
 
     public function assets(Types\AssetCollection $assetCollection): Types\Assets

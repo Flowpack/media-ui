@@ -6,6 +6,8 @@ import { useTagsQuery } from '@media-ui/feature-asset-tags';
 import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/feature-asset-collections';
 
 import { TagSelectBox } from '.';
+import { useRecoilValue } from 'recoil';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 const tagsMatchAssetCollection = (tags: Tag[], assetCollection: AssetCollection) => {
     return (
@@ -24,7 +26,8 @@ const TagSelectBoxAssetCollection = () => {
     const Notify = useNotify();
     const { config } = useConfigQuery();
     const { translate } = useIntl();
-    const { tags: allTags } = useTagsQuery();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { tags: allTags } = useTagsQuery(selectedAssetSourceId);
     const { updateAssetCollection } = useUpdateAssetCollection();
     const selectedAssetCollection = useSelectedAssetCollection();
 
@@ -38,6 +41,7 @@ const TagSelectBoxAssetCollection = () => {
             if (!tagsMatchAssetCollection(newTags, selectedAssetCollection)) {
                 updateAssetCollection({
                     assetCollection: selectedAssetCollection,
+                    assetSourceId: selectedAssetSourceId,
                     tags: newTags,
                 })
                     .then(() => {
@@ -53,7 +57,7 @@ const TagSelectBoxAssetCollection = () => {
                     });
             }
         },
-        [Notify, selectedAssetCollection, updateAssetCollection, translate]
+        [selectedAssetCollection, updateAssetCollection, selectedAssetSourceId, Notify, translate]
     );
 
     if (!selectedAssetCollection) return null;
