@@ -58,6 +58,10 @@ class Page {
         return this.thumbnails.nth(0);
     }
 
+    public get firstThumbnailLabel() {
+        return this.firstThumbnail.find('.AssetLabel_assetLabel');
+    }
+
     public get firstCollection() {
         return this.assetCollections.nth(0);
     }
