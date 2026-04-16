@@ -314,3 +314,52 @@ test('"Remove all from clipboard" empties the clipboard for the selection', asyn
 }).after(async () => {
     await clearClipboardLocalStorage();
 });
+
+test('Multi-selection persists when paginating to the next page', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .expect(page.multiSelectionBadges.count)
+        .eql(2, 'Two assets are selected on page 1');
+
+    await t
+        .click(page.paginationItems.withText('2'))
+        .expect(page.firstThumbnailLabel.innerText)
+        .eql('Example asset 21', 'Page 2 is now displayed')
+        .expect(page.multiSelectionBadges.count)
+        .eql(2, 'The multi-selection badges still show the two selected assets')
+        .expect(page.selectedThumbnails.count)
+        .eql(0, 'No selected thumbnails are visible on page 2 because the selected assets live on page 1');
+});
+
+test('Multi-selection persists when changing the sort direction', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .expect(page.multiSelectionBadges.count)
+        .eql(2, 'Two assets are selected before changing the sort');
+
+    await t
+        .click(page.sortingButton)
+        .expect(page.firstThumbnailLabel.innerText)
+        .eql('Example asset 20', 'The sort direction has been toggled')
+        .expect(page.multiSelectionBadges.count)
+        .eql(2, 'The multi-selection badges are preserved after the sort change');
+});
+
+test('Multi-selection persists when applying a filter that hides the selected assets', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .expect(page.multiSelectionBadges.count)
+        .eql(2, 'Two image assets are selected before filtering');
+
+    await t
+        .click(page.assetsFilter)
+        .click(page.assetTypeFilter)
+        .click(page.getDropdownElement('Video'))
+        .expect(page.assetCount.innerText)
+        .eql('0 assets', 'The video filter hides every fixture asset (all are images)')
+        .expect(page.multiSelectionBadges.count)
+        .eql(2, 'The multi-selection badges are preserved even though the selected assets are filtered out');
+});
