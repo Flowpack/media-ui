@@ -26,6 +26,8 @@ class Page {
     public applyButton: Selector;
     public confirmDialog: Selector;
     public collectionSelectBox: Selector;
+    public tasksDropdownHeader: Selector;
+    public tasksDropdownContents: Selector;
 
     constructor() {
         // Asset sources
@@ -75,10 +77,18 @@ class Page {
         this.applyButton = this.assetInspector.find('button').withText('Apply');
         this.confirmDialog = Selector('div[class*="dialog"]');
         this.collectionSelectBox = this.assetInspector.find('.collectionSelectBox');
+
+        // Tasks dropdown
+        this.tasksDropdownHeader = this.assetInspector.find('.Tasks_dropdownHeader');
+        this.tasksDropdownContents = Selector('ul[class*="dropDown__contents"]');
     }
 
     public confirmDialogButton(label: string): Selector {
         return this.confirmDialog.find('button').withText(label);
+    }
+
+    public tasksDropdownItem(label: string): Selector {
+        return this.tasksDropdownContents.find('li').withText(label);
     }
 
     public get firstThumbnail() {

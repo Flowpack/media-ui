@@ -288,13 +288,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 });
                 return true;
             },
-            deleteAsset: ($_, { id: id, assetSourceId }): boolean => {
+            deleteAsset: ($_, { id: id, assetSourceId }) => {
                 const inUse = Fixtures.getUsageDetailsForAsset(id).reduce(
                     (prev, { usages }) => prev && usages.length > 0,
                     false
                 );
                 if (inUse) {
-                    return false;
+                    return { success: false, messages: ['Asset is in use'] };
                 }
                 const assetIndex = assets.findIndex(
                     (asset) => asset.id === id && asset.assetSource.id === assetSourceId
@@ -306,9 +306,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                         assetId: id,
                         type: 'ASSET_REMOVED',
                     });
-                    return true;
+                    return { success: true, messages: [] };
                 }
-                return false;
+                return { success: false, messages: ['Asset not found'] };
             },
             createTag: ($_, { tag: newTag }: { tag: Tag }): Tag => {
                 if (tags.find((tag) => tag === newTag)) {

@@ -159,3 +159,54 @@ test('Confirming the move shifts all selected assets to the target collection', 
         .expect(log.includes('The collections for the assets have been set'))
         .ok('A success message confirms the bulk collection move');
 });
+
+test('The Tasks dropdown only shows multi-relevant options when multiple assets are selected', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.tasksDropdownHeader)
+        .expect(page.tasksDropdownItem('Delete assets').exists)
+        .ok('The "Delete assets" option is shown')
+        .expect(page.tasksDropdownItem('Copy all to clipboard').exists)
+        .ok('The "Copy all to clipboard" option is shown')
+        .expect(page.tasksDropdownItem('Show usages').exists)
+        .notOk('The single-asset "Show usages" option is hidden')
+        .expect(page.tasksDropdownItem('Rename asset').exists)
+        .notOk('The single-asset "Rename asset" option is hidden')
+        .expect(page.tasksDropdownItem('Replace asset').exists)
+        .notOk('The single-asset "Replace asset" option is hidden')
+        .expect(page.tasksDropdownItem('Download asset').exists)
+        .notOk('The single-asset "Download asset" option is hidden');
+});
+
+test('Bulk-deleting from the Tasks dropdown opens a confirmation dialog mentioning the asset count', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.tasksDropdownHeader)
+        .click(page.tasksDropdownItem('Delete assets'))
+        .expect(page.confirmDialog.exists)
+        .ok('A confirmation dialog appears')
+        .expect(page.confirmDialog.innerText)
+        .contains('2', 'The dialog mentions the count of assets to delete');
+});
+
+test('Confirming the bulk delete removes all selected assets from the listing', async (t) => {
+    const initialCount = await page.thumbnails.count;
+
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.tasksDropdownHeader)
+        .click(page.tasksDropdownItem('Delete assets'))
+        .click(page.confirmDialogButton('Yes, proceed with deleting the assets'))
+        .expect(page.confirmDialog.exists)
+        .notOk('The dialog closes after confirmation')
+        .expect(page.thumbnails.count)
+        .eql(initialCount - 2, 'Two assets were removed from the listing');
+}).after(async (t) => {
+    const { log } = await t.getBrowserConsoleMessages();
+    await t
+        .expect(log.includes('The assets have been deleted'))
+        .ok('A success message confirms the bulk delete');
+});
