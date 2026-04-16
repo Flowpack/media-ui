@@ -11,6 +11,7 @@ import { selectedAssetIdsState } from '@media-ui/core/src/state';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
 
 import * as classes from './TagSelectBox.module.css';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 const TagSelectBoxMulti: React.FC = () => {
     const { translate } = useIntl();
@@ -21,7 +22,8 @@ const TagSelectBoxMulti: React.FC = () => {
         approvalAttainmentStrategy: { obtainApprovalToTagAssets, obtainApprovalToUntagAssets },
     } = useMediaUi();
     const selectedAssets = useRecoilValue(selectedAssetIdsState);
-    const { tags } = useTagsQuery();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { tags } = useTagsQuery(selectedAssetSourceId);
     const { tagAsset } = useTagAsset();
     const { untagAssetById } = useUntagAssetById();
     const [addSearchTerm, setAddSearchTerm] = useState('');
