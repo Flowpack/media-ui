@@ -634,7 +634,7 @@ final class MediaApi
                 workspaceName: $workspaceName,
                 originDimensionSpacePoint: $originDimensionSpacePoint,
                 label: $label,
-                assetCollectionId: $assetCollectionId
+                folderId: $assetCollectionId
             );
         } else {
             return $this->tagMutator->createTag($label, $assetCollectionId);

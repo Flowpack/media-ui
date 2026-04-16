@@ -15,28 +15,41 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
  */
 
 use Flowpack\Media\Ui\Exception;
+use Flowpack\Media\Ui\Exception as MediaUiException;
+use Flowpack\Media\Ui\GraphQL\Mapping\AssetCollectionMapper;
+use Flowpack\Media\Ui\GraphQL\Mapping\AssetMapper;
+use Flowpack\Media\Ui\GraphQL\Mapping\TagMapper;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
 use Neos\ContentRepository\Core\DimensionSpace\OriginDimensionSpacePoint;
 use Neos\ContentRepository\Core\Feature\NodeCreation\Command\CreateNodeAggregateWithNode;
 use Neos\ContentRepository\Core\Feature\NodeModification\Command\SetNodeProperties;
 use Neos\ContentRepository\Core\Feature\NodeModification\Dto\PropertyValuesToWrite;
+use Neos\ContentRepository\Core\Feature\NodeMove\Command\MoveNodeAggregate;
+use Neos\ContentRepository\Core\Feature\NodeMove\Dto\RelationDistributionStrategy;
 use Neos\ContentRepository\Core\Feature\NodeReferencing\Command\SetNodeReferences;
 use Neos\ContentRepository\Core\Feature\NodeReferencing\Dto\NodeReferencesForName;
 use Neos\ContentRepository\Core\Feature\NodeReferencing\Dto\NodeReferencesToWrite;
 use Neos\ContentRepository\Core\Feature\NodeReferencing\Dto\NodeReferenceToWrite;
+use Neos\ContentRepository\Core\Feature\SubtreeTagging\Command\TagSubtree;
 use Neos\ContentRepository\Core\NodeType\NodeTypeName;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindAncestorNodesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindReferencesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
+use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
+use Neos\ContentRepository\Core\SharedModel\Exception\NodeAggregateCurrentlyDoesNotExist;
 use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateIds;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeVariantSelectionStrategy;
 use Neos\ContentRepository\Core\SharedModel\Node\ReferenceName;
 use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Flow\Annotations as Flow;
-
-use Neos\Media\Domain\Model\Tag;
+use Neos\Flow\I18n\Translator;
+use Neos\Neos\Domain\SubtreeTagging\NeosSubtreeTag;
 use Neos\Neos\Domain\SubtreeTagging\NeosVisibilityConstraints;
 
 use function Wwwision\Types\instantiate;
@@ -46,7 +59,166 @@ class ContentRepositoryMutator
 {
     public function __construct(
         private readonly ContentRepositoryRegistry $contentRepositoryRegistry,
+        private readonly AssetMapper $assetMapper,
+        private readonly AssetCollectionMapper $assetCollectionMapper,
+        private readonly Translator $translator,
     ) {
+    }
+
+    public function updateAsset(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $assetId,
+        OriginDimensionSpacePoint $originDimensionSpacePoint,
+        PropertyValuesToWrite $propertyValuesToWrite,
+    ): Types\Asset {
+        $assetNode = $this->findNodeByIdAndType(
+            $contentRepositoryId,
+            $workspaceName,
+            $assetId,
+            $originDimensionSpacePoint->toDimensionSpacePoint(),
+            NodeTypeName::fromString('Flowpack.Media:Asset'),
+        );
+        if (!$assetNode) {
+            throw new MediaUiException('Cannot update asset that was never imported', 1590659044);
+        }
+
+        $updatedAssetNode = $this->setNodeProperties($assetNode, $propertyValuesToWrite);
+
+        return $this->assetMapper->mapNodeToAsset($updatedAssetNode);
+    }
+
+    public function tagAsset(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $assetId,
+        OriginDimensionSpacePoint $originDimensionSpacePoint,
+        NodeAggregateId $tagId,
+    ): Types\Asset {
+        $assetNode = $this->findNodeByIdAndType(
+            $contentRepositoryId,
+            $workspaceName,
+            $assetId,
+            $originDimensionSpacePoint->toDimensionSpacePoint(),
+            NodeTypeName::fromString('Flowpack.Media:Asset'),
+        );
+        if (!$assetNode) {
+            throw new MediaUiException('Cannot update asset that was never imported', 1590659044);
+        }
+
+        $taggedAssetNode = $this->tagNode($assetNode, $tagId);
+
+        return $this->assetMapper->mapNodeToAsset($taggedAssetNode);
+    }
+
+    public function untagAsset(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $assetId,
+        OriginDimensionSpacePoint $originDimensionSpacePoint,
+        NodeAggregateId $tagId,
+    ): Types\Asset {
+        $assetNode = $this->findNodeByIdAndType(
+            $contentRepositoryId,
+            $workspaceName,
+            $assetId,
+            $originDimensionSpacePoint->toDimensionSpacePoint(),
+            NodeTypeName::fromString('Flowpack.Media:Asset'),
+        );
+        if (!$assetNode) {
+            throw new MediaUiException('Cannot update asset that was never imported', 1590659044);
+        }
+
+        $taggedAssetNode = $this->untagNode($assetNode, $tagId);
+
+        return $this->assetMapper->mapNodeToAsset($taggedAssetNode);
+    }
+
+    public function removeAsset(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $assetId,
+        DimensionSpacePoint $dimensionSpacePoint,
+    ): MutationResult {
+        try {
+            $this->contentRepositoryRegistry->get($contentRepositoryId)
+                ->handle(TagSubtree::create(
+                    $workspaceName,
+                    $assetId,
+                    $dimensionSpacePoint,
+                    NodeVariantSelectionStrategy::STRATEGY_ALL_VARIANTS,
+                    NeosSubtreeTag::removed(),
+                ));
+        } catch (\Throwable) {
+            return MutationResult::fromError([
+                $this->getLocalizedMessage(
+                    'actions.deleteAssets.noProxy',
+                    'Asset could not be resolved',
+                )
+            ]);
+        }
+        return MutationResult::fromSuccess([
+            $this->getLocalizedMessage(
+                'actions.deleteAssets.success',
+                'Asset deleted',
+            )
+        ]);
+    }
+
+    public function setAssetTags(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $assetId,
+        OriginDimensionSpacePoint $originDimensionSpacePoint,
+        NodeAggregateIds $tagIds,
+    ): Types\Asset {
+        $assetNode = $this->findNodeByIdAndType(
+            $contentRepositoryId,
+            $workspaceName,
+            $assetId,
+            $originDimensionSpacePoint->toDimensionSpacePoint(),
+            NodeTypeName::fromString('Flowpack.Media:Asset'),
+        );
+
+        if (!$assetNode) {
+            throw new MediaUiException('Cannot tag asset that was never imported', 1594621322);
+        }
+
+        try {
+            $assetNodeWithNewTags = $this->setNodeTags($assetNode, $tagIds);
+        } catch (NodeAggregateCurrentlyDoesNotExist) {
+            throw new MediaUiException('Cannot tag asset with tag that does not exist', 1594621318);
+        }
+
+        return $this->assetMapper->mapNodeToAsset($assetNodeWithNewTags);
+    }
+
+    public function setAssetCollection(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $assetId,
+        OriginDimensionSpacePoint $originDimensionSpacePoint,
+        NodeAggregateId $folderId,
+    ): Types\Asset {
+        $assetNode = $this->findNodeByIdAndType(
+            $contentRepositoryId,
+            $workspaceName,
+            $assetId,
+            $originDimensionSpacePoint->toDimensionSpacePoint(),
+            NodeTypeName::fromString('Flowpack.Media:Asset'),
+        );
+
+        if (!$assetNode) {
+            throw new MediaUiException('Cannot assign collections to asset that was never imported', 1594621322);
+        }
+
+        try {
+            $assetNodeWithNewTags = $this->moveNode($assetNode, $folderId);
+        } catch (NodeAggregateCurrentlyDoesNotExist) {
+            throw new MediaUiException('Cannot assign non existing assign collection to asset', 1594621318);
+        }
+
+        return $this->assetMapper->mapNodeToAsset($assetNodeWithNewTags);
     }
 
     public function createTag(
@@ -54,74 +226,36 @@ class ContentRepositoryMutator
         WorkspaceName $workspaceName,
         OriginDimensionSpacePoint $originDimensionSpacePoint,
         Types\TagLabel $label,
-        ?Types\AssetCollectionId $assetCollectionId
+        ?NodeAggregateId $folderId,
     ): Types\Tag {
         $tagId = NodeAggregateId::create();
 
-        $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
-        $contentRepository
-            ->handle(CreateNodeAggregateWithNode::create(
-                workspaceName: $workspaceName,
-                nodeAggregateId: $tagId,
-                nodeTypeName: NodeTypeName::fromString('Flowpack.Media:Tag'),
-                originDimensionSpacePoint: $originDimensionSpacePoint,
-                parentNodeAggregateId: $this->requireMediaRootId($contentRepositoryId, $workspaceName),
-                initialPropertyValues: PropertyValuesToWrite::fromArray([
-                    'name' => $label->value,
-                ]),
-            ));
+        $tagNode = $this->createNode(
+            $contentRepositoryId,
+            $workspaceName,
+            NodeTypeName::fromString('Neos.Media:Tag'),
+            $originDimensionSpacePoint,
+            $this->requireMediaRootId($contentRepositoryId, $workspaceName),
+            PropertyValuesToWrite::fromArray([
+                'name' => $label->value,
+            ])
+        );
 
-        if ($assetCollectionId) {
-            $folderId = NodeAggregateId::fromString($assetCollectionId->value);
-            $subgraph = $contentRepository->getContentSubgraph($workspaceName, $originDimensionSpacePoint->toDimensionSpacePoint());
-
-            $nodeReferencesToWrite = [];
-            foreach (
-                $subgraph->findReferences(
-                    $folderId,
-                    FindReferencesFilter::create(
-                        referenceName: ReferenceName::fromString('tags'),
-                    )
-                ) as $existingReference
-            ) {
-                $properties = [];
-                foreach ($existingReference->properties ?: [] as $propertyName => $propertyValue) {
-                    $properties[$propertyName] = $propertyValue;
-
-                }
-                $propertyValuesToWrite = $properties !== []
-                    ? PropertyValuesToWrite::fromArray($properties)
-                    : null;
-                $nodeReferencesToWrite[] = $propertyValuesToWrite
-                    ? NodeReferenceToWrite::fromTargetAndProperties(
-                        $existingReference->node->aggregateId,
-                        $propertyValuesToWrite
-                    )
-                    : NodeReferenceToWrite::fromTarget($existingReference->node->aggregateId);
-            };
-            $nodeReferencesToWrite[] = NodeReferenceToWrite::fromTarget($tagId);
-
-            $contentRepository
-                ->handle(SetNodeReferences::create(
-                    workspaceName: $workspaceName,
-                    sourceNodeAggregateId: NodeAggregateId::fromString($assetCollectionId->value),
-                    sourceOriginDimensionSpacePoint: $originDimensionSpacePoint,
-                    references: NodeReferencesToWrite::create(
-                        NodeReferencesForName::fromReferences(
-                            ReferenceName::fromString('tags'),
-                            $nodeReferencesToWrite
-                       ),
-                    )
-                ));
+        if ($folderId) {
+            $folderNode = $this->findNodeByIdAndType(
+                $contentRepositoryId,
+                $workspaceName,
+                $folderId,
+                $originDimensionSpacePoint->toDimensionSpacePoint(),
+                NodeTypeName::fromString('Flowpack.Media:Folder'),
+            );
+            if (!$folderNode) {
+                throw new Exception('Asset collection not found', 1603921193);
+            }
+            $this->tagNode($folderNode, $tagId);
         }
 
-        return instantiate(
-            Types\Tag::class,
-            [
-                'id' => $tagId->value,
-                'label' => $label->value,
-            ],
-        );
+        return TagMapper::mapNodeToTag($tagNode);
     }
 
     public function updateTag(
@@ -163,48 +297,276 @@ class ContentRepositoryMutator
         WorkspaceName $workspaceName,
         OriginDimensionSpacePoint $originDimensionSpacePoint,
         Types\AssetCollectionTitle $title,
-        ?Types\AssetCollectionId $parent,
+        ?NodeAggregateId $parentNodeAggregateId,
     ): Types\AssetCollection {
+        $parentNodeAggregateId = $parentNodeAggregateId
+            ?: $this->requireMediaRootId($contentRepositoryId, $workspaceName);
+
+        $assetCollectionNode = $this->createNode(
+            contentRepositoryId: $contentRepositoryId,
+            workspaceName: $workspaceName,
+            nodeTypeName: NodeTypeName::fromString('Neos.Media:Folder'),
+            originDimensionSpacePoint: $originDimensionSpacePoint,
+            parentNodeAggregateId: $parentNodeAggregateId,
+            initialProperties: PropertyValuesToWrite::fromArray([
+                'name' => $title->value,
+            ]),
+        );
+
+        return $this->assetCollectionMapper->mapNodeToAssetCollection($assetCollectionNode);
+    }
+
+    private function findNodeByIdAndType(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $nodeAggregateId,
+        DimensionSpacePoint $dimensionSpacePoint,
+        NodeTypeName $nodeTypeName,
+    ): ?Node {
         $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
-        $parentNodeAggregateId = $parent
-            ? NodeAggregateId::fromString($parent->value)
-            : $this->requireMediaRootId($contentRepositoryId, $workspaceName);
+        $subgraph = $contentRepository
+            ->getContentSubgraph($workspaceName, $dimensionSpacePoint);
+
+        $node = $subgraph->findNodeById($nodeAggregateId);
+        if (
+            $node
+            && $contentRepository->getNodeTypeManager()
+                ->getNodeType($node->nodeTypeName)
+                ?->isOfType($nodeTypeName)
+        ) {
+            return $node;
+        }
+
+        return null;
+    }
+
+    private function createNode(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeTypeName $nodeTypeName,
+        OriginDimensionSpacePoint $originDimensionSpacePoint,
+        NodeAggregateId $parentNodeAggregateId,
+        ?PropertyValuesToWrite $initialProperties = null,
+        ?NodeReferencesToWrite $initialReferences = null,
+    ): Node {
+        $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
 
         $nodeAggregateId = NodeAggregateId::create();
         $contentRepository->handle(
             CreateNodeAggregateWithNode::create(
                 workspaceName: $workspaceName,
                 nodeAggregateId: $nodeAggregateId,
-                nodeTypeName: NodeTypeName::fromString('Flowpack.Media:Folder'),
+                nodeTypeName: $nodeTypeName,
                 originDimensionSpacePoint: $originDimensionSpacePoint,
                 parentNodeAggregateId: $parentNodeAggregateId,
-                initialPropertyValues: PropertyValuesToWrite::fromArray([
-                    'name' => $title->value,
-                ])
+                initialPropertyValues: $initialProperties,
+                references: $initialReferences,
             )
         );
-        $subgraph = $contentRepository->getContentGraph($workspaceName)
-            ->getSubgraph($originDimensionSpacePoint->toDimensionSpacePoint(), NeosVisibilityConstraints::excludeRemoved());
 
-        $ancestors = $subgraph->findAncestorNodes($nodeAggregateId, FindAncestorNodesFilter::create());
+        /** @var Node $node (otherwise the command would have failed) */
+        $node = $contentRepository->getContentSubgraph($workspaceName, $originDimensionSpacePoint->toDimensionSpacePoint())
+            ->findNodeById($nodeAggregateId);
 
-        return instantiate(Types\AssetCollection::class, [
-            'id' => $nodeAggregateId->value,
-            'title' => $title->value,
-            'path' => implode('/', $ancestors->toNodeAggregateIds()->toStringArray()),
-        ]);
+        return $node;
+    }
+
+    private function setNodeProperties(Node $node, PropertyValuesToWrite $properties): Node
+    {
+        $subgraph = $this->contentRepositoryRegistry->subgraphForNode($node);
+        $contentRepository = $this->contentRepositoryRegistry->get($node->contentRepositoryId);
+        $contentRepository
+            ->handle(SetNodeProperties::create(
+                workspaceName: $node->workspaceName,
+                nodeAggregateId: $node->aggregateId,
+                originDimensionSpacePoint: $node->originDimensionSpacePoint,
+                propertyValues: $properties,
+            ));
+
+        /** @var Node $node (otherwise the command would have failed) */
+        $node = $subgraph->findNodeById($node->aggregateId);
+
+        return $node;
+    }
+
+    /**
+     * @throws NodeAggregateCurrentlyDoesNotExist
+     */
+    private function setNodeTags(Node $node, NodeAggregateIds $tagIds): Node
+    {
+        $subgraph = $this->contentRepositoryRegistry->subgraphForNode($node);
+        $contentRepository = $this->contentRepositoryRegistry->get($node->contentRepositoryId);
+
+        $contentRepository
+            ->handle(SetNodeReferences::create(
+                workspaceName: $node->workspaceName,
+                sourceNodeAggregateId: $node->aggregateId,
+                sourceOriginDimensionSpacePoint: $node->originDimensionSpacePoint,
+                references: NodeReferencesToWrite::create(
+                    NodeReferencesForName::fromReferences(
+                        ReferenceName::fromString('tags'),
+                        $tagIds->map(
+                            fn (NodeAggregateId $nodeAggregateId): NodeReferenceToWrite => NodeReferenceToWrite::fromTarget($nodeAggregateId),
+                        ),
+                    ),
+                )
+            ));
+
+        /** @var Node $nodeWithNewTags (otherwise the command would have failed) */
+        $nodeWithNewTags = $subgraph->findNodeById($node->aggregateId);
+
+        return $nodeWithNewTags;
+    }
+
+    private function tagNode(Node $node, NodeAggregateId $tagId): Node
+    {
+        $subgraph = $this->contentRepositoryRegistry->subgraphForNode($node);
+        $contentRepository = $this->contentRepositoryRegistry->get($node->contentRepositoryId);
+
+        $nodeReferencesToWrite = [];
+        foreach (
+            $subgraph->findReferences(
+                $node->aggregateId,
+                FindReferencesFilter::create(
+                    referenceName: ReferenceName::fromString('tags'),
+                )
+            ) as $existingReference
+        ) {
+            $properties = [];
+            foreach ($existingReference->properties ?: [] as $propertyName => $propertyValue) {
+                $properties[$propertyName] = $propertyValue;
+
+            }
+            $propertyValuesToWrite = $properties !== []
+                ? PropertyValuesToWrite::fromArray($properties)
+                : null;
+            $nodeReferencesToWrite[] = $propertyValuesToWrite
+                ? NodeReferenceToWrite::fromTargetAndProperties(
+                    $existingReference->node->aggregateId,
+                    $propertyValuesToWrite
+                )
+                : NodeReferenceToWrite::fromTarget($existingReference->node->aggregateId);
+        };
+        $nodeReferencesToWrite[] = NodeReferenceToWrite::fromTarget($tagId);
+
+        $contentRepository
+            ->handle(SetNodeReferences::create(
+                workspaceName: $node->workspaceName,
+                sourceNodeAggregateId: $node->aggregateId,
+                sourceOriginDimensionSpacePoint: $node->originDimensionSpacePoint,
+                references: NodeReferencesToWrite::create(
+                    NodeReferencesForName::fromReferences(
+                        ReferenceName::fromString('tags'),
+                        $nodeReferencesToWrite
+                    ),
+                )
+            ));
+
+        /** @var Node $taggedNode (otherwise the command would have failed) */
+        $taggedNode = $subgraph->findNodeById($node->aggregateId);
+
+        return $taggedNode;
+    }
+
+    private function untagNode(Node $node, NodeAggregateId $tagId): Node
+    {
+        $subgraph = $this->contentRepositoryRegistry->subgraphForNode($node);
+        $contentRepository = $this->contentRepositoryRegistry->get($node->contentRepositoryId);
+
+        $nodeReferencesToWrite = [];
+        foreach (
+            $subgraph->findReferences(
+                $node->aggregateId,
+                FindReferencesFilter::create(
+                    referenceName: ReferenceName::fromString('tags'),
+                )
+            ) as $existingReference
+        ) {
+            if ($existingReference->node->aggregateId->equals($tagId)) {
+                // do not write this reference again
+                continue;
+            }
+            $properties = [];
+            foreach ($existingReference->properties ?: [] as $propertyName => $propertyValue) {
+                $properties[$propertyName] = $propertyValue;
+            }
+            $propertyValuesToWrite = $properties !== []
+                ? PropertyValuesToWrite::fromArray($properties)
+                : null;
+            $nodeReferencesToWrite[] = $propertyValuesToWrite
+                ? NodeReferenceToWrite::fromTargetAndProperties(
+                    $existingReference->node->aggregateId,
+                    $propertyValuesToWrite
+                )
+                : NodeReferenceToWrite::fromTarget($existingReference->node->aggregateId);
+        };
+
+        $contentRepository
+            ->handle(SetNodeReferences::create(
+                workspaceName: $node->workspaceName,
+                sourceNodeAggregateId: $node->aggregateId,
+                sourceOriginDimensionSpacePoint: $node->originDimensionSpacePoint,
+                references: NodeReferencesToWrite::create(
+                    NodeReferencesForName::fromReferences(
+                        ReferenceName::fromString('tags'),
+                        $nodeReferencesToWrite
+                    ),
+                )
+            ));
+
+        /** @var Node $untaggedNode (otherwise the command would have failed) */
+        $untaggedNode = $subgraph->findNodeById($node->aggregateId);
+
+        return $untaggedNode;
+    }
+
+    private function moveNode(Node $node, NodeAggregateId $newParent): Node
+    {
+        $contentRepository = $this->contentRepositoryRegistry->get($node->contentRepositoryId);
+
+        $contentRepository
+            ->handle(MoveNodeAggregate::create(
+                workspaceName: $node->workspaceName,
+                dimensionSpacePoint: $node->dimensionSpacePoint,
+                nodeAggregateId: $node->aggregateId,
+                relationDistributionStrategy: RelationDistributionStrategy::STRATEGY_GATHER_ALL,
+                newParentNodeAggregateId: $newParent,
+            ));
+
+        return $node;
     }
 
     private function requireMediaRootId(ContentRepositoryId $contentRepositoryId, WorkspaceName $workspaceName): NodeAggregateId
     {
         $rootNodeAggregate = $this->contentRepositoryRegistry->get($contentRepositoryId)
             ->getContentGraph($workspaceName)
-            ->findRootNodeAggregateByType(NodeTypeName::fromString('Flowpack.Media:Media'));
+            ->findRootNodeAggregateByType(NodeTypeName::fromString('Neos.Media:Media'));
 
         if (!$rootNodeAggregate) {
             throw new \RuntimeException('Media root node is missing');
         }
 
         return $rootNodeAggregate->nodeAggregateId;
+    }
+
+    /**
+     * @param array<mixed> $arguments
+     */
+    private function getLocalizedMessage(string $id, string $fallback = '', array $arguments = []): MutationResponseMessage
+    {
+        try {
+            $value = $this->translator->translateById(
+                $id,
+                $arguments,
+                null,
+                null,
+                'Main',
+                'Flowpack.Media.Ui'
+            ) ?? $fallback;
+        } catch (\Exception) {
+            $value = $fallback ?: $id;
+        }
+
+        return instantiate(MutationResponseMessage::class, $value);
     }
 }
