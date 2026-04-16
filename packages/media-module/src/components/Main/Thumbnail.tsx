@@ -7,7 +7,7 @@ import { Icon } from '@neos-project/react-ui-components';
 import { useMediaUi } from '@media-ui/core';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
 import { isFocusedAssetState, isAssetSelectedState } from '@media-ui/core/src/state';
-import { AssetLabel } from '@media-ui/core/src/components';
+import { AssetLabel, Badge } from '@media-ui/core/src/components';
 
 import { AssetActions } from './index';
 import MissingAssetActions from './MissingAssetActions';
@@ -62,8 +62,14 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect, onMultiS
             <figcaption className={classes.caption}>
                 {asset && (
                     <>
-                        {!canBeSelected && !asset.file && <Icon icon="ban" color="error" />}
                         <AssetLabel label={asset.label} />
+                        {canBeSelected && asset.file ? (
+                            <Badge variant="inverse" className={classes.fileTypeBadge}>
+                                {asset.file.extension.toUpperCase()}
+                            </Badge>
+                        ) : (
+                            <Icon icon="ban" color="error" />
+                        )}
                     </>
                 )}
             </figcaption>

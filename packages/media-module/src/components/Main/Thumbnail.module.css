@@ -27,6 +27,14 @@
     color: white;
 }
 
+.thumbnail:hover .fileTypeBadge {
+    opacity: 1;
+    max-width: 60px;
+    padding-inline: 4px;
+    border-width: 1px;
+    margin-inline-start: 0;
+}
+
 .picture {
     cursor: pointer;
     height: 250px;
@@ -52,6 +60,8 @@
     padding: var(--theme-spacing-Half);
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: var(--theme-spacing-Half);
     flex: 1;
 }
 
@@ -59,6 +69,25 @@
     width: 1.3rem;
     height: auto;
     margin-right: var(--theme-spacing-Half);
+}
+
+.fileTypeBadge {
+    font-size: var(--theme-fontSize-small);
+    font-weight: normal;
+    border: var(--grayLight) solid 0;
+    background-color: unset;
+    flex-shrink: 0;
+    opacity: 0;
+    max-width: 0;
+    padding-inline: 0;
+    margin-inline-start: calc(-1 * var(--theme-spacing-Half));
+    overflow: hidden;
+    transition:
+        max-width var(--theme-transition-fast) ease-in,
+        opacity var(--theme-transition-fast) ease-in,
+        padding-inline var(--theme-transition-fast) ease-in,
+        border-width var(--theme-transition-fast) ease-in,
+        margin-inline-start var(--theme-transition-fast) ease-in;
 }
 
 .toolBar {
