@@ -111,7 +111,6 @@ final class GraphQLMiddleware implements MiddlewareInterface
         $config = ServerConfig::create()
             ->setSchema($this->getSchema($resolver))
             ->setFieldResolver($resolver)
-            /** @phpstan-ignore argument.type (¯\_(ツ)_/¯) */
             ->setErrorsHandler($this->handleGraphQLErrors(...));
         if ($this->debugMode) {
             $config->setDebugFlag();
@@ -245,7 +244,6 @@ final class GraphQLMiddleware implements MiddlewareInterface
             }
         }
 
-        /** @phpstan-ignore argument.type (¯\_(ツ)_/¯) */
         return BuildSchema::build($documentNode, $resolver->typeConfigDecorator(...));
     }
 }
