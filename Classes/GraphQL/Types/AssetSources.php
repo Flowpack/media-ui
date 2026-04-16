@@ -14,14 +14,14 @@ use Wwwision\Types\Attributes\ListBased;
 final class AssetSources implements \IteratorAggregate
 {
     /**
-     * @param AssetSource[] $collections
+     * @param array<string, AssetSource> $items
      */
-    private function __construct(public readonly array $collections)
+    private function __construct(public readonly array $items)
     {
     }
 
     /**
-     * @param AssetSource[] $assetSources
+     * @param array<string, AssetSource> $assetSources
      */
     public static function fromArray(array $assetSources): self
     {
@@ -33,7 +33,7 @@ final class AssetSources implements \IteratorAggregate
      */
     public function getIterator(): \Traversable
     {
-        yield from $this->collections;
+        yield from $this->items;
     }
 
     public static function empty(): self

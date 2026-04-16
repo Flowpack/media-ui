@@ -1,11 +1,13 @@
-import React from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useCallback } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import cx from 'classnames';
 
 import { Headline } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { IconLabel } from '@media-ui/core/src/components';
+import { selectedAssetIdState } from '@media-ui/core/src/state';
+import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 
 import { selectedAssetSourceState } from '../state/selectedAssetSourceState';
 import { useAssetSourcesQuery } from '../hooks/useAssetSourcesQuery';
@@ -16,6 +18,17 @@ const AssetSourceList: React.FC = () => {
     const { assetSources } = useAssetSourcesQuery();
     const { translate } = useIntl();
     const [selectedAssetSourceId, setSelectedAssetSourceId] = useRecoilState(selectedAssetSourceState);
+    const setSelectedAsset = useSetRecoilState(selectedAssetIdState);
+    const setSelectedAssetCollection = useSetRecoilState(selectedAssetCollectionIdState);
+
+    const chooseSelectedAssetSource = useCallback(
+        (assetSourceId: AssetSourceId) => {
+            setSelectedAsset(null);
+            setSelectedAssetCollection(null);
+            setSelectedAssetSourceId(assetSourceId);
+        },
+        [setSelectedAsset, setSelectedAssetCollection, setSelectedAssetSourceId]
+    );
 
     // We don't show the source selection if there is only one
     if (!assetSources || assetSources.length < 2) return null;
@@ -30,7 +43,7 @@ const AssetSourceList: React.FC = () => {
                     key={assetSource.id}
                     type="button"
                     className={cx(classes.item, selectedAssetSourceId === assetSource.id && classes.itemSelected)}
-                    onClick={() => setSelectedAssetSourceId(assetSource.id)}
+                    onClick={() => chooseSelectedAssetSource(assetSource.id)}
                 >
                     <IconLabel
                         label={assetSource.id === 'neos' ? translate('assetSource.local', 'Local') : assetSource.label}

@@ -24,29 +24,18 @@ use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 
-/**
- * @Flow\Scope("singleton")
- */
+#[Flow\Scope('singleton')]
 class AssetCollectionsCommandController extends CommandController
 {
 
-    /**
-     * @Flow\Inject
-     * @var AssetCollectionRepository
-     */
-    protected $assetCollectionRepository;
+    #[Flow\Inject]
+    protected AssetCollectionRepository $assetCollectionRepository;
 
-    /**
-     * @Flow\Inject
-     * @var PersistenceManagerInterface
-     */
-    protected $persistenceManager;
+    #[Flow\Inject]
+    protected PersistenceManagerInterface $persistenceManager;
 
-    /**
-     * @Flow\Inject
-     * @var AssetCollectionService
-     */
-    protected $assetCollectionService;
+    #[Flow\Inject]
+    protected AssetCollectionService $assetCollectionService;
 
     public function hierarchyCommand(): void
     {
@@ -56,12 +45,18 @@ class AssetCollectionsCommandController extends CommandController
             return [
                 $this->persistenceManager->getIdentifierByObject($assetCollection),
                 $assetCollection->getTitle(),
-                $assetCollection->getParent() ? $this->persistenceManager->getIdentifierByObject($assetCollection->getParent()) : 'None',
+                $assetCollection->getParent() ? $this->persistenceManager->getIdentifierByObject(
+                    $assetCollection->getParent()
+                ) : 'None',
                 $assetCollection->getParent() ? $assetCollection->getParent()->getTitle() : 'None',
-                implode(', ',
-                    array_map(static fn(AssetCollection $assetCollection) => $assetCollection->getTitle(), $children)),
-                implode("\n",
-                    array_map(static fn(Tag $tag) => $tag->getLabel(), $assetCollection->getTags()->toArray())),
+                implode(
+                    ', ',
+                    array_map(static fn(AssetCollection $assetCollection) => $assetCollection->getTitle(), $children)
+                ),
+                implode(
+                    "\n",
+                    array_map(static fn(Tag $tag) => $tag->getLabel(), $assetCollection->getTags()->toArray())
+                ),
                 $assetCollection->getPath(),
             ];
         }, $this->assetCollectionRepository->findAll()->toArray());

@@ -17,6 +17,11 @@ final class MediaType implements \JsonSerializable
     {
     }
 
+    public static function fromString(string $mediaType): self
+    {
+        return new self($mediaType);
+    }
+
     public function jsonSerialize(): string
     {
         return $this->value;

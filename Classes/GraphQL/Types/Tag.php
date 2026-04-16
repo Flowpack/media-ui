@@ -9,11 +9,17 @@ use Wwwision\Types\Attributes\Description;
 
 #[Flow\Proxy(false)]
 #[Description('A tag to which assets can be assigned')]
-final class Tag
+final readonly class Tag
 {
     private function __construct(
-        public readonly TagId $id,
-        public readonly TagLabel $label,
+        public TagId $id,
+        public AssetSourceId $assetSourceId,
+        public TagLabel $label,
     ) {
+    }
+
+    public static function create(TagId $id, AssetSourceId $assetSourceId, TagLabel $label): self
+    {
+        return new self($id, $assetSourceId, $label);
     }
 }
