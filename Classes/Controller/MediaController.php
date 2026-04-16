@@ -16,7 +16,6 @@ namespace Flowpack\Media\Ui\Controller;
 
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
-use Flowpack\Media\Ui\GraphQL\Mutator\AssetMutator;
 use Flowpack\Media\Ui\GraphQL\Types\AssetId;
 use Flowpack\Media\Ui\GraphQL\Types\AssetIdentity;
 use Flowpack\Media\Ui\GraphQL\Types\AssetSourceId;
@@ -28,8 +27,6 @@ use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\MetaData\ConfigurationProvider\ArrayMetaDataConfigurationProvider;
 use Neos\MetaData\Domain\Dto\MetaDataConfiguration;
-use Neos\MetaData\Domain\Dto\MetaDataDimensionSpacePoint;
-use Neos\MetaData\Domain\Dto\MetaDataPropertyDefinition;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyName;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyValue;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyValues;
@@ -41,24 +38,30 @@ class MediaController extends AbstractModuleController
 {
     #[Flow\Inject]
     protected AssetSourceContext $assetSourceContext;
+
     #[Flow\Inject]
     protected AssetService $assetService;
+
     #[Flow\Inject]
     protected Translator $translator;
+
     /**
      * @var FusionView
      */
     protected $view;
+
     /**
      * @inheritdoc
      */
     protected $defaultViewObjectName = FusionView::class;
+
     /**
      * @inheritdoc
      */
     protected $viewFormatToObjectNameMap = [
         'html' => FusionView::class,
     ];
+
     protected ?MetaDataManager $metaDataManager;
     protected ?ArrayMetaDataConfigurationProvider $metaDataConfigurationProvider;
 
@@ -84,11 +87,16 @@ class MediaController extends AbstractModuleController
         $metaDataConfiguration = $this->metaDataConfigurationProvider?->getConfiguration();
         $dsps = $metaDataConfiguration?->dimensions;
 
-        $dimensionSpacePoint = $metaDataDimensionSpacePointHash ? $metaDataConfiguration->dimensions->getByHash($metaDataDimensionSpacePointHash) : $dsps->getIterator()->current();
-        $propertyValues = $this->metaDataManager?->getMetaDataPropertyValues($assetId->value, $dimensionSpacePoint) ?: MetaDataPropertyValues::createEmpty();
+        $dimensionSpacePoint = $metaDataDimensionSpacePointHash ? $metaDataConfiguration->dimensions->getByHash(
+            $metaDataDimensionSpacePointHash
+        ) : $dsps->getIterator()->current();
+        $propertyValues = $this->metaDataManager?->getMetaDataPropertyValues(
+            $assetId->value,
+            $dimensionSpacePoint
+        ) ?: MetaDataPropertyValues::createEmpty();
         $propertyDefinitions = $this->mapPropertyDefinitions($metaDataConfiguration, $propertyValues);
 
-        $assetIdentity = new AssetIdentity($assetId, $assetSourceId);
+        $assetIdentity = AssetIdentity::create($assetId, $assetSourceId);
         $asset = $this->assetSourceContext->getAsset($assetIdentity->assetId, $assetIdentity->assetSourceId);
 
         $this->view->assignMultiple([
@@ -103,9 +111,13 @@ class MediaController extends AbstractModuleController
     /**
      * @return array {type: string, editor: string|null, label: string, value: string|null}[]
      */
-    protected function mapPropertyDefinitions(?MetaDataConfiguration $metaDataConfiguration, MetaDataPropertyValues $propertyValues): array
-    {
-        if (!isset($metaDataConfiguration) || iterator_count($metaDataConfiguration->propertyDefinitions->getIterator()) === 0) {
+    protected function mapPropertyDefinitions(
+        ?MetaDataConfiguration $metaDataConfiguration,
+        MetaDataPropertyValues $propertyValues
+    ): array {
+        if (!isset($metaDataConfiguration) || iterator_count(
+                $metaDataConfiguration->propertyDefinitions->getIterator()
+            ) === 0) {
             return [];
         }
 
@@ -118,7 +130,7 @@ class MediaController extends AbstractModuleController
                 'label' => $this->translateByShortHandString($propertyDefinition->ui->label),
             ];
             foreach ($propertyValues as $propertyValueName => $propertyValue) {
-                if ($propertyValueName->value === $propertyName) {
+                if ($propertyValueName === $propertyName) {
                     $config[$propertyName]['value'] = $propertyValue?->value;
                 }
             }
@@ -153,13 +165,15 @@ class MediaController extends AbstractModuleController
         string $metaDataDimensionSpacePointHash,
         array $postData,
     ): void {
-        $assetIdentity = new AssetIdentity(
+        $assetIdentity = AssetIdentity::create(
             AssetId::fromString($this->persistenceManager->getIdentifierByObject($asset)),
             new AssetSourceId($asset->getAssetSourceIdentifier())
         );
-        $metaDataDimensionSpacePoint = $this->metaDataConfigurationProvider->getConfiguration()->dimensions->getByHash($metaDataDimensionSpacePointHash);
+        $metaDataDimensionSpacePoint = $this->metaDataConfigurationProvider->getConfiguration()->dimensions->getByHash(
+            $metaDataDimensionSpacePointHash
+        );
         foreach ($postData as $propertyName => $propertyValue) {
-             $this->metaDataManager?->setMetaDataPropertyValue(
+            $this->metaDataManager?->setMetaDataPropertyValue(
                 $assetIdentity->assetId->value,
                 MetaDataPropertyName::fromString($propertyName),
                 MetaDataPropertyValue::parse($propertyValue),
