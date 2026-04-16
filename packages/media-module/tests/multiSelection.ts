@@ -37,6 +37,35 @@ test('Shift+click selects a range of thumbnails', async (t) => {
         .eql(4, 'Four assets are selected as a range from the first to the fourth thumbnail');
 });
 
+test('Switching to list view and clicking row checkboxes selects assets', async (t) => {
+    await t
+        .click(page.viewModeToggle)
+        .expect(page.listRows.count)
+        .gt(0, 'List view rows are rendered after toggling');
+
+    await t
+        .click(page.listRows.nth(0).find('.ListViewItem_checkboxColumn'))
+        .click(page.listRows.nth(1).find('.ListViewItem_checkboxColumn'))
+        .expect(page.selectedListRows.count)
+        .eql(2, 'Two list-view rows are marked as selected')
+        .expect(page.multiSelectionBadges.count)
+        .eql(2, 'The CurrentMultiSelection badges also reflect two selected assets');
+}).after(async (t) => {
+    // Restore thumbnail view so subsequent tests in this fixture start in the default mode.
+    await t.click(page.viewModeToggle);
+});
+
+test('List view rows respect Ctrl/Cmd+click multi-selection', async (t) => {
+    await t
+        .click(page.viewModeToggle)
+        .click(page.listRows.nth(0).find('.ListViewItem_labelColumn'))
+        .click(page.listRows.nth(1).find('.ListViewItem_labelColumn'), { modifiers: ctrlOrCmd })
+        .expect(page.selectedListRows.count)
+        .eql(2, 'Two list-view rows are selected after Ctrl/Cmd+click');
+}).after(async (t) => {
+    await t.click(page.viewModeToggle);
+});
+
 test('Multi-selection badges appear and individual assets can be removed', async (t) => {
     await t
         .click(page.firstThumbnail.find('.Thumbnail_checkbox'))

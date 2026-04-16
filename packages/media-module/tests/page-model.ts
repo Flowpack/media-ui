@@ -28,6 +28,9 @@ class Page {
     public collectionSelectBox: Selector;
     public tasksDropdownHeader: Selector;
     public tasksDropdownContents: Selector;
+    public viewModeToggle: Selector;
+    public listRows: Selector;
+    public selectedListRows: Selector;
 
     constructor() {
         // Asset sources
@@ -81,6 +84,11 @@ class Page {
         // Tasks dropdown
         this.tasksDropdownHeader = this.assetInspector.find('.Tasks_dropdownHeader');
         this.tasksDropdownContents = Selector('ul[class*="dropDown__contents"]');
+
+        // List view
+        this.viewModeToggle = Selector('.ViewModeSelector_viewModeSelector').find('button');
+        this.listRows = Selector('tr.ListViewItem_listViewItem');
+        this.selectedListRows = Selector('tr.ListViewItem_selected');
     }
 
     public confirmDialogButton(label: string): Selector {
