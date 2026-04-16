@@ -4,6 +4,7 @@ export { default as useAssetsQuery } from './useAssetsQuery';
 export { default as useConfigQuery } from './useConfigQuery';
 export { default as useDeleteAsset } from './useDeleteAsset';
 export { default as useEvent } from './useEvent';
+export { default as useFailedAssetLabels } from './useFailedAssetLabels';
 export { default as useImportAsset } from './useImportAsset';
 export { default as useSelectAsset } from './useSelectAsset';
 export { default as useSelectAssets } from './useSelectAssets';

@@ -1,27 +1,22 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useTagAsset, useUntagAssetById } from '@media-ui/core/src/hooks';
+import { useFailedAssetLabels, useTagAsset, useUntagAssetById } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { selectedAssetIdsState } from '@media-ui/core/src/state';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
 
 import * as classes from './TagSelectBox.module.css';
 
-const ASSET_LABEL_FRAGMENT = gql`
-    fragment AssetLabel on Asset {
-        label
-    }
-`;
-
 const TagSelectBoxMulti: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
     const client = useApolloClient();
+    const { getFailedAssetLabels } = useFailedAssetLabels();
     const {
         approvalAttainmentStrategy: { obtainApprovalToTagAssets, obtainApprovalToUntagAssets },
     } = useMediaUi();
@@ -31,27 +26,6 @@ const TagSelectBoxMulti: React.FC = () => {
     const { untagAssetById } = useUntagAssetById();
     const [addSearchTerm, setAddSearchTerm] = useState('');
     const [removeSearchTerm, setRemoveSearchTerm] = useState('');
-
-    const getAssetLabel = useCallback(
-        (assetId: string): string => {
-            const data = client.readFragment({
-                fragment: ASSET_LABEL_FRAGMENT,
-                id: client.cache.identify({ __typename: 'Asset', id: assetId }),
-            });
-            return data?.label || assetId;
-        },
-        [client]
-    );
-
-    const getFailedAssetLabels = useCallback(
-        (results: PromiseSettledResult<unknown>[]): string[] =>
-            results
-                .map((result, index) =>
-                    result.status === 'rejected' ? getAssetLabel(selectedAssets[index].assetId) : null
-                )
-                .filter(Boolean),
-        [selectedAssets, getAssetLabel]
-    );
 
     const selectBoxOptions = useMemo(() => tags?.map((tag) => ({ label: tag.label, id: tag.id })) ?? [], [tags]);
 
@@ -83,7 +57,7 @@ const TagSelectBoxMulti: React.FC = () => {
             );
 
             const results = await Promise.allSettled(mutations);
-            const failedLabels = getFailedAssetLabels(results);
+            const failedLabels = getFailedAssetLabels(results, selectedAssets);
 
             await client.reFetchObservableQueries();
 
@@ -117,7 +91,7 @@ const TagSelectBoxMulti: React.FC = () => {
             );
 
             const results = await Promise.allSettled(mutations);
-            const failedLabels = getFailedAssetLabels(results);
+            const failedLabels = getFailedAssetLabels(results, selectedAssets);
 
             await client.reFetchObservableQueries();
 

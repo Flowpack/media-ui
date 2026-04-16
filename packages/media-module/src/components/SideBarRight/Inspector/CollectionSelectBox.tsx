@@ -4,7 +4,12 @@ import { useRecoilValue } from 'recoil';
 import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useConfigQuery, useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
+import {
+    useConfigQuery,
+    useFailedAssetLabels,
+    useSelectedAsset,
+    useSetAssetCollections,
+} from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
@@ -27,6 +32,7 @@ const CollectionSelectBox: React.FC = () => {
     } = useMediaUi();
     const { assetCollections } = useAssetCollectionsQuery();
     const { setAssetCollections, loading } = useSetAssetCollections();
+    const { getFailedAssetLabels } = useFailedAssetLabels();
     const selectedAsset = useSelectedAsset();
     const { limitToSingleAssetCollectionPerAsset } = useRecoilValue(featureFlagsState);
     const [searchTerm, setSearchTerm] = useState('');
@@ -79,28 +85,30 @@ const CollectionSelectBox: React.FC = () => {
                 });
                 if (!canSetCollection) return;
 
-                try {
-                    await Promise.all(
-                        selectedAssets.map((identity) =>
-                            setAssetCollections({
-                                asset: { id: identity.assetId, assetSource: { id: identity.assetSourceId } } as Asset,
-                                assetCollections: newAssetCollections,
-                            })
-                        )
-                    );
+                const results = await Promise.allSettled(
+                    selectedAssets.map((identity) =>
+                        setAssetCollections({
+                            asset: { id: identity.assetId, assetSource: { id: identity.assetSourceId } } as Asset,
+                            assetCollections: newAssetCollections,
+                        })
+                    )
+                );
+                const failedLabels = getFailedAssetLabels(results, selectedAssets);
+
+                if (failedLabels.length === 0) {
                     Notify.ok(
                         translate(
                             'actions.setAssetCollections.multiSuccess',
                             'The collections for the assets have been set'
                         )
                     );
-                } catch ({ message }) {
+                } else {
                     Notify.error(
                         translate(
                             'actions.setAssetCollections.multiError',
                             'Error while setting the collections for the assets'
                         ),
-                        message
+                        failedLabels.join(', ')
                     );
                 }
                 return;
@@ -151,6 +159,7 @@ const CollectionSelectBox: React.FC = () => {
             syncSelectedAssetCollectionIds,
             obtainApprovalToSetAssetCollections,
             obtainApprovalToShiftAssetsToCollection,
+            getFailedAssetLabels,
         ]
     );
 

@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { Icon, IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
-import { useDeleteAsset } from '@media-ui/core/src/hooks';
+import { useDeleteAsset, useFailedAssetLabels } from '@media-ui/core/src/hooks';
 
 interface DeleteAssetButtonProps {
     asset?: Asset;
@@ -27,6 +27,7 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
     const { translate } = useIntl();
     const { approvalAttainmentStrategy } = useMediaUi();
     const { deleteAsset } = useDeleteAsset();
+    const { getFailedAssetLabels } = useFailedAssetLabels();
     const Notify = useNotify();
 
     const isSingle = !assets && !!asset;
@@ -41,25 +42,32 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
 
         if (!canDelete) return false;
 
-        try {
-            await Promise.all(identities.map((identity) => deleteAsset(identity)));
-            Notify.ok(
-                isSingle
-                    ? translate('action.deleteAsset.success', 'The asset has been deleted')
-                    : translate('action.deleteAssets.success', 'The assets have been deleted')
-            );
-            return true;
-        } catch ({ message }) {
-            Notify.error(
-                isSingle
-                    ? translate('action.deleteAsset.error', 'Error while trying to delete the asset')
-                    : translate('action.deleteAssets.error', 'Error while trying to delete the assets'),
-                message
-            );
+        if (isSingle) {
+            try {
+                await deleteAsset(identities[0]);
+                Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
+                return true;
+            } catch ({ message }) {
+                Notify.error(translate('action.deleteAsset.error', 'Error while trying to delete the asset'), message);
+                return false;
+            }
         }
 
+        // Multi-asset process
+        const results = await Promise.allSettled(identities.map((identity) => deleteAsset(identity)));
+        const failedLabels = getFailedAssetLabels(results, identities);
+
+        if (failedLabels.length === 0) {
+            Notify.ok(translate('action.deleteAssets.success', 'The assets have been deleted'));
+            return true;
+        }
+
+        Notify.error(
+            translate('action.deleteAssets.error', 'Error while trying to delete the assets'),
+            failedLabels.join(', ')
+        );
         return false;
-    }, [asset, assets, isSingle, Notify, translate, deleteAsset, approvalAttainmentStrategy]);
+    }, [asset, assets, isSingle, Notify, translate, deleteAsset, approvalAttainmentStrategy, getFailedAssetLabels]);
 
     if (isSingle && asset.assetSource.readOnly) return null;
 

@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
+import { useFailedAssetLabels, useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { UPDATE_ASSET } from '@media-ui/core/src/mutations';
@@ -21,12 +21,6 @@ import Tasks from './Tasks';
 import classes from './PropertyInspector.module.css';
 import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
-const ASSET_LABEL_FRAGMENT = gql`
-    fragment AssetLabel on Asset {
-        label
-    }
-`;
-
 const PropertyInspector = () => {
     const selectedAssets = useRecoilValue(selectedAssetIdsState);
     const isMultiSelection = selectedAssets.length > 1;
@@ -39,6 +33,7 @@ const PropertyInspector = () => {
     } = useMediaUi();
     const { confirm } = useInteraction();
     const client = useApolloClient();
+    const { getFailedAssetLabels } = useFailedAssetLabels();
     const featureFlags = useRecoilValue(featureFlagsState);
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
@@ -61,17 +56,6 @@ const PropertyInspector = () => {
     const assetSourceForSelectedAsset = selectedAsset
         ? assetSources.find(({ id }) => id === selectedAsset.assetSource.id)
         : null;
-
-    const getAssetLabel = useCallback(
-        (assetId: string): string => {
-            const data = client.readFragment({
-                fragment: ASSET_LABEL_FRAGMENT,
-                id: client.cache.identify({ __typename: 'Asset', id: assetId }),
-            });
-            return data?.label || assetId;
-        },
-        [client]
-    );
 
     const handleDiscard = useCallback(() => {
         if (isMultiSelection) {
@@ -143,11 +127,7 @@ const PropertyInspector = () => {
         );
 
         const results = await Promise.allSettled(mutations);
-        const failedLabels = results
-            .map((result, index) =>
-                result.status === 'rejected' ? getAssetLabel(selectedAssets[index].assetId) : null
-            )
-            .filter(Boolean);
+        const failedLabels = getFailedAssetLabels(results, selectedAssets);
 
         await client.reFetchObservableQueries();
 
@@ -164,7 +144,7 @@ const PropertyInspector = () => {
         }
 
         setMultiLoading(false);
-    }, [selectedAssets, copyrightNotice, confirm, translate, client, getAssetLabel, Notify]);
+    }, [selectedAssets, copyrightNotice, confirm, translate, client, getFailedAssetLabels, Notify]);
 
     useEffect(() => {
         handleDiscard();
