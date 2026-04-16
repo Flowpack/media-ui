@@ -5,9 +5,18 @@ declare(strict_types=1);
 namespace Flowpack\Media\Ui\GraphQL\Resolver;
 
 use Flowpack\Media\Ui\GraphQL\Types\AssetCollectionParent;
+use Flowpack\Media\Ui\GraphQL\Types\AssetId;
+use Flowpack\Media\Ui\GraphQL\Types\Assets;
+use Flowpack\Media\Ui\GraphQL\Types\AssetSource;
+use Flowpack\Media\Ui\GraphQL\Types\AssetVariants;
+use Flowpack\Media\Ui\GraphQL\Types\Filename;
+use Flowpack\Media\Ui\GraphQL\Types\LocalAssetId;
 use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
 use Neos\ContentRepository\Core\NodeType\NodeTypeName;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\CountDescendantNodesFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindAncestorNodesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindChildNodesFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindDescendantNodesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindReferencesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindSubtreeFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
@@ -19,9 +28,10 @@ use Neos\ContentRepository\Core\SharedModel\Node\ReferenceName;
 use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Flow\Annotations as Flow;
-use Neos\Neos\Domain\NodeLabel\NodeLabelGeneratorInterface;
 use Neos\Neos\Domain\SubtreeTagging\NeosVisibilityConstraints;
 use Flowpack\Media\Ui\GraphQL\Types;
+
+use Wwwision\Types\Attributes\Description;
 
 use function Wwwision\Types\instantiate;
 
@@ -31,24 +41,88 @@ class ContentRepositoryResolver
     #[Flow\Inject]
     protected ContentRepositoryRegistry $contentRepositoryRegistry;
 
-    #[Flow\Inject]
-    protected NodeLabelGeneratorInterface $nodeLabelGenerator;
+    public function countAssets(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        DimensionSpacePoint $dimensionSpacePoint,
+    ): int {
+        $subgraph = $this->contentRepositoryRegistry->get($contentRepositoryId)
+            ->getContentSubgraph($workspaceName, $dimensionSpacePoint);
+
+        return $subgraph->countDescendantNodes(
+            $this->requireMediaRootId($contentRepositoryId, $workspaceName),
+            CountDescendantNodesFilter::create(nodeTypes: 'Flowpack.Media:Asset')
+        );
+    }
+
+    public function findAssets(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        DimensionSpacePoint $dimensionSpacePoint,
+    ): Types\Assets {
+        $subgraph = $this->contentRepositoryRegistry->get($contentRepositoryId)
+            ->getContentSubgraph($workspaceName, $dimensionSpacePoint);
+
+        return $this->mapNodesToAssets(
+            $subgraph->findDescendantNodes(
+                $this->requireMediaRootId($contentRepositoryId, $workspaceName),
+                FindDescendantNodesFilter::create(nodeTypes: 'Flowpack.Media:Asset'),
+            )
+        );
+    }
+
+    public function findAsset(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        DimensionSpacePoint $dimensionSpacePoint,
+        NodeAggregateId $nodeAggregateId,
+    ): ?Types\Asset {
+        $assetNode = $this->findNodeByIdAndType(
+            $contentRepositoryId,
+            $workspaceName,
+            $dimensionSpacePoint,
+            $nodeAggregateId,
+            NodeTypeName::fromString('Flowpack.Media:Asset'),
+        );
+
+        return $assetNode
+            ? $this->mapNodeToAsset($assetNode)
+            : null;
+    }
 
     public function findAssetCollections(
         ContentRepositoryId $contentRepositoryId,
         WorkspaceName $workspaceName,
         DimensionSpacePoint $dimensionSpacePoint,
     ): Types\AssetCollections {
-        $contentGraph = $this->contentRepositoryRegistry->get($contentRepositoryId)
-            ->getContentGraph($workspaceName);
-        $subgraph = $contentGraph
-            ->getSubgraph($dimensionSpacePoint, NeosVisibilityConstraints::excludeRemoved());
+        $subgraph = $this->contentRepositoryRegistry->get($contentRepositoryId)
+            ->getContentSubgraph($workspaceName, $dimensionSpacePoint);
+
         $subtree = $subgraph->findSubtree(
             $this->requireMediaRootId($contentRepositoryId, $workspaceName),
             FindSubtreeFilter::create(nodeTypes: 'Flowpack.Media:Folder')
         );
 
         return Types\AssetCollections::fromArray($subtree ? $this->mapSubtreeToAssetCollections($subtree, '') : []);
+    }
+
+    public function findAssetCollection(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        DimensionSpacePoint $dimensionSpacePoint,
+        NodeAggregateId $assetCollectionId,
+    ): ?Types\AssetCollection {
+        $assetCollectionNode = $this->findNodeByIdAndType(
+            $contentRepositoryId,
+            $workspaceName,
+            $dimensionSpacePoint,
+            $assetCollectionId,
+            NodeTypeName::fromString('Flowpack.Media:Folder')
+        );
+
+        return $assetCollectionNode
+            ? $this->mapNodeToAssetCollection($assetCollectionNode)
+            : null;
     }
 
     public function findParentAssetCollection(
@@ -71,7 +145,7 @@ class ContentRepositoryResolver
             ?->isOfType(NodeTypeName::fromString('Flowpack.Media:Folder'))
             ? instantiate(AssetCollectionParent ::class, [
                 'id' => $parentNode->aggregateId->value,
-                'title' => $parentNode->getProperty('name') ?: $this->nodeLabelGenerator->getLabel($parentNode),
+                'title' => $parentNode->getProperty('name') ?: '',
             ])
             : null;
     }
@@ -94,13 +168,29 @@ class ContentRepositoryResolver
         );
     }
 
+    public function findAssetVariants(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        DimensionSpacePoint $dimensionSpacePoint,
+        NodeAggregateId $assetId,
+    ): Types\AssetVariants {
+        $subgraph = $this->contentRepositoryRegistry->get($contentRepositoryId)
+            ->getContentSubgraph($workspaceName, $dimensionSpacePoint);
+
+        return $this->mapNodesToAssetVariants(
+            $subgraph->findChildNodes(
+                $assetId,
+                FindChildNodesFilter::create(nodeTypes: 'Flowpack.Media:AssetVariant')
+            )
+        );
+    }
+
     public function findTags(
         ContentRepositoryId $contentRepositoryId,
         WorkspaceName $workspaceName,
         DimensionSpacePoint $dimensionSpacePoint,
     ): Types\Tags {
-        $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
-        $subgraph = $contentRepository
+        $subgraph = $this->contentRepositoryRegistry->get($contentRepositoryId)
             ->getContentSubgraph($workspaceName, $dimensionSpacePoint);
 
         return $this->mapNodesToTags(
@@ -111,6 +201,73 @@ class ContentRepositoryResolver
         );
     }
 
+    public function findTag(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        DimensionSpacePoint $dimensionSpacePoint,
+        NodeAggregateId $tagId,
+    ): ?Types\Tag {
+        $tagNode = $this->findNodeByIdAndType(
+            $contentRepositoryId,
+            $workspaceName,
+            $dimensionSpacePoint,
+            $tagId,
+            NodeTypeName::fromString('Flowpack.Media:Tag')
+        );
+
+        return $tagNode
+            ? $this->mapNodeToTag($tagNode)
+            : null;
+    }
+
+    private function findNodeByIdAndType(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        DimensionSpacePoint $dimensionSpacePoint,
+        NodeAggregateId $nodeAggregateId,
+        NodeTypeName $nodeTypeName,
+    ): ?Node {
+        $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
+        $subgraph = $contentRepository
+            ->getContentSubgraph($workspaceName, $dimensionSpacePoint);
+
+        $node = $subgraph->findNodeById($nodeAggregateId);
+        if (
+            $node
+            && $contentRepository->getNodeTypeManager()
+                ->getNodeType($node->nodeTypeName)
+                ?->isOfType($nodeTypeName)
+        ) {
+            return $node;
+        }
+
+        return null;
+    }
+
+    private function findPath(Node $node): string
+    {
+        return implode(
+            '/',
+            $this->contentRepositoryRegistry->subgraphForNode($node)->findAncestorNodes(
+                $node->aggregateId,
+                FindAncestorNodesFilter::create(nodeTypes: '!Flowpack.Media:Media')
+            )->reverse()->toNodeAggregateIds()->toStringArray(),
+        );
+    }
+
+    private function requireMediaRootId(ContentRepositoryId $contentRepositoryId, WorkspaceName $workspaceName): NodeAggregateId
+    {
+        $rootNodeAggregate = $this->contentRepositoryRegistry->get($contentRepositoryId)
+            ->getContentGraph($workspaceName)
+            ->findRootNodeAggregateByType(NodeTypeName::fromString('Flowpack.Media:Media'));
+
+        if (!$rootNodeAggregate) {
+            throw new \RuntimeException('Media root node is missing');
+        }
+
+        return $rootNodeAggregate->nodeAggregateId;
+    }
+
     /**
      * @return array<int,Types\AssetCollection>
      */
@@ -119,11 +276,7 @@ class ContentRepositoryResolver
         $assetCollections = [];
         if ($subtree->node->nodeTypeName->value !== 'Flowpack.Media:Media') {
             $path = $pathSoFar . '/' . $subtree->node->aggregateId->value;
-            $assetCollections[] = instantiate(Types\AssetCollection::class, [
-                'id' => $subtree->node->aggregateId->value,
-                'title' => $subtree->node->getProperty('name') ?: $this->nodeLabelGenerator->getLabel($subtree->node),
-                'path' => $path,
-            ]);
+            $assetCollections[] = $this->mapNodeToAssetCollection($subtree->node);
         } else {
             $path = $pathSoFar;
         }
@@ -138,29 +291,77 @@ class ContentRepositoryResolver
         return $assetCollections;
     }
 
+    private function mapNodeToAssetCollection(Node $node): Types\AssetCollection
+    {
+        return instantiate(Types\AssetCollection::class, [
+            'id' => $node->aggregateId->value,
+            'title' => $node->getProperty('name') ?: '',
+            'path' => $this->findPath($node),
+        ]);
+    }
+
+    private function mapNodesToAssets(Nodes $nodes): Types\Assets
+    {
+        return Types\Assets::fromArray(
+            $nodes->map(
+                fn (Node $node): Types\Asset => $this->mapNodeToAsset($node)
+            )
+        );
+    }
+
+    private function mapNodeToAsset(Node $node): Types\Asset
+    {
+        return instantiate(
+            Types\Asset::class,
+            [
+                'id' => $node->aggregateId->value,
+                'filename' => 'TODO-implement-me.jpg',
+                'assetSource' => 'cr:' . $node->contentRepositoryId->value,
+                'width' => null, // @todo implement me
+                'height' => null, // @todo implement me
+                'localId' => null,
+            ]
+        );
+    }
+
+    private function mapNodesToAssetVariants(Nodes $nodes): Types\AssetVariants
+    {
+        return AssetVariants::fromArray(
+            $nodes->map(
+                fn (Node $node): Types\AssetVariant => $this->mapNodeToAssetVariant($node)
+            )
+        );
+    }
+
+    private function mapNodeToAssetVariant(Node $node): Types\AssetVariant
+    {
+        return instantiate(
+            Types\AssetVariant::class,
+            [
+                'id' => $node->aggregateId->value,
+                'width' => null, // @todo implement me
+                'height' => null, // @todo implement me
+                'variantName' => $node->getProperty('variantName'),
+                'presetIdentifier' => $node->getProperty('presetIdentifier'),
+            ]
+        );
+    }
+
     private function mapNodesToTags(Nodes $nodes): Types\Tags
     {
         return Types\Tags::fromArray($nodes->map(
-            fn (Node $tag): Types\Tag => instantiate(
-                Types\Tag::class,
-                [
-                    'id' => $tag->aggregateId->value,
-                    'label' => $tag->getProperty('name') ?: $this->nodeLabelGenerator->getLabel($tag),
-                ]
-            )
+            fn (Node $tag): Types\Tag => $this->mapNodeToTag($tag)
         ));
     }
 
-    private function requireMediaRootId(ContentRepositoryId $contentRepositoryId, WorkspaceName $workspaceName): NodeAggregateId
+    private function mapNodeToTag(Node $node): Types\Tag
     {
-        $rootNodeAggregate = $this->contentRepositoryRegistry->get($contentRepositoryId)
-            ->getContentGraph($workspaceName)
-            ->findRootNodeAggregateByType(NodeTypeName::fromString('Flowpack.Media:Media'));
-
-        if (!$rootNodeAggregate) {
-            throw new \RuntimeException('Media root node is missing');
-        }
-
-        return $rootNodeAggregate->nodeAggregateId;
+        return instantiate(
+            Types\Tag::class,
+            [
+                'id' => $node->aggregateId->value,
+                'label' => $node->getProperty('name') ?: '',
+            ]
+        );
     }
 }
