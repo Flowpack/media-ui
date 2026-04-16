@@ -223,9 +223,10 @@ test('Bulk-deleting from the Tasks dropdown opens a confirmation dialog mentioni
 test('Confirming the bulk delete removes all selected assets from the listing', async (t) => {
     const initialCount = await page.thumbnails.count;
 
+    // Pick two deletable assets. Asset N is in-use when (N % 5) > 0; assets 0 and 5 are both deletable.
     await t
         .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
-        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(5).find('.Thumbnail_checkbox'))
         .click(page.tasksDropdownHeader)
         .click(page.tasksDropdownItem('Delete assets'))
         .click(page.confirmDialogButton('Yes, proceed with deleting the assets'))
@@ -238,4 +239,25 @@ test('Confirming the bulk delete removes all selected assets from the listing', 
     await t
         .expect(log.includes('The assets have been deleted'))
         .ok('A success message confirms the bulk delete');
+});
+
+test('Bulk-deleting a mix of deletable and in-use assets removes the deletable ones and reports the failed labels', async (t) => {
+    const initialCount = await page.thumbnails.count;
+
+    // Asset 0 has no usages (deletable). Asset 1 has 1 usage and will fail to delete.
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.tasksDropdownHeader)
+        .click(page.tasksDropdownItem('Delete assets'))
+        .click(page.confirmDialogButton('Yes, proceed with deleting the assets'))
+        .expect(page.confirmDialog.exists)
+        .notOk('The dialog closes after confirmation')
+        .expect(page.thumbnails.count)
+        .eql(initialCount - 1, 'Only the deletable asset was removed; the in-use asset survived');
+}).after(async (t) => {
+    const { error } = await t.getBrowserConsoleMessages();
+    await t
+        .expect(error.some((message) => message.includes('Example asset 2')))
+        .ok('An error notification reports "Example asset 2" as the failed asset');
 });

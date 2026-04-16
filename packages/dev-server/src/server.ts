@@ -290,7 +290,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             },
             deleteAsset: ($_, { id: id, assetSourceId }) => {
                 const inUse = Fixtures.getUsageDetailsForAsset(id).reduce(
-                    (prev, { usages }) => prev && usages.length > 0,
+                    (prev, { usages }) => prev || usages.length > 0,
                     false
                 );
                 if (inUse) {
