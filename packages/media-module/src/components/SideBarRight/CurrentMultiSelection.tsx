@@ -4,6 +4,7 @@ import { Headline, Icon, IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { useAssetQuery, useSelectAssets } from '@media-ui/core/src/hooks';
+import { Badge } from '@media-ui/core/src/components';
 
 import classes from './CurrentMultiSelection.module.css';
 
@@ -16,7 +17,7 @@ const MultiSelectionItem: React.FC<MultiSelectionItemProps> = ({ assetIdentity, 
     const { asset } = useAssetQuery(assetIdentity);
 
     return (
-        <div className={classes.item} title={asset?.label}>
+        <Badge variant="inverse" className={classes.item} title={asset?.label}>
             <p>{asset?.label}</p>
             <button
                 type="button"
@@ -28,7 +29,7 @@ const MultiSelectionItem: React.FC<MultiSelectionItemProps> = ({ assetIdentity, 
             >
                 <Icon icon="times" />
             </button>
-        </div>
+        </Badge>
     );
 };
 
