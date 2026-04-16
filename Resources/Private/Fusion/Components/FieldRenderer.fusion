@@ -1,14 +1,13 @@
 prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:Component) {
     fieldName = ''
     fieldConfig = null
-    asset = null
 
     @private.field = Neos.Fusion:Case {
         boolean {
             condition = ${props.fieldConfig.type == 'boolean'}
             renderer = Neos.Fusion.Form:Checkbox {
                 field.name = ${'postData[' + props.fieldName + ']'}
-                field.value = ${asset[props.fieldName]}
+                field.value = ${props.fieldConfig.value ? props.fieldConfig.value : 1}
             }
         }
         number {
@@ -16,7 +15,7 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             renderer = Neos.Fusion.Form:Input {
                 attributes.type = 'number'
                 field.name = ${'postData[' + props.fieldName + ']'}
-                field.value = ${asset[props.fieldName]}
+                field.value = ${props.fieldConfig.value}
             }
         }
         textArea {
@@ -24,14 +23,14 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             renderer = Neos.Fusion.Form:Textarea {
                 attributes.rows = 8
                 field.name = ${'postData[' + props.fieldName + ']'}
-                content = ${asset[props.fieldName]}
+                content = ${props.fieldConfig.value}
             }
         }
         default {
             condition = ${true}
             renderer = Neos.Fusion.Form:Input {
                 field.name = ${'postData[' + props.fieldName + ']'}
-                field.value = ${asset[props.fieldName]}
+                field.value = ${props.fieldConfig.value}
             }
         }
     }
