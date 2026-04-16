@@ -1,3 +1,5 @@
+import { Selector } from 'testcafe';
+
 import page from './page-model';
 
 // Use Cmd (meta) on macOS and Ctrl on Linux/Windows
@@ -74,4 +76,86 @@ test('Clicking a collection while multi-selecting preserves the selection and in
         .click(page.assetCollections.withText('Example collection 1'))
         .expect(page.multiSelectionBadges.count)
         .eql(2, 'The multi-selection is preserved after switching to another collection');
+});
+
+test('Multi-selection hides the title and caption fields in the property inspector', async (t) => {
+    await t
+        .click(page.firstThumbnail)
+        .expect(page.titleInput.exists)
+        .ok('The title input is shown for a single selection')
+        .expect(page.captionInput.exists)
+        .ok('The caption input is shown for a single selection');
+
+    await t
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .expect(page.titleInput.exists)
+        .notOk('The title input is hidden during multi-selection')
+        .expect(page.captionInput.exists)
+        .notOk('The caption input is hidden during multi-selection')
+        .expect(page.copyrightInput.exists)
+        .ok('The copyright input is still shown during multi-selection');
+});
+
+test('Applying a bulk copyright update opens a confirmation dialog mentioning the asset count', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .typeText(page.copyrightInput, 'Bulk-updated copyright')
+        .click(page.applyButton)
+        .expect(page.confirmDialog.exists)
+        .ok('A confirmation dialog appears after clicking Apply')
+        .expect(page.confirmDialog.innerText)
+        .contains('2', 'The dialog mentions the count of selected assets');
+});
+
+test('Confirming the bulk copyright dialog updates all selected assets', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .typeText(page.copyrightInput, 'Bulk-updated copyright')
+        .click(page.applyButton)
+        .click(page.confirmDialogButton('Yes, update copyright notice'))
+        .expect(page.confirmDialog.exists)
+        .notOk('The dialog closes after confirmation');
+}).after(async (t) => {
+    const { log } = await t.getBrowserConsoleMessages();
+    await t
+        .expect(log.includes('Copyright notice updated for all selected assets'))
+        .ok('A success message confirms the bulk copyright update');
+});
+
+test('Multi-selection switches the collection select box to single-select mode', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .expect(page.collectionSelectBox.find('input[placeholder="Move to other collection"]').exists)
+        .ok('The collection select box uses the multi-selection placeholder');
+});
+
+test('Selecting a target collection while multi-selecting opens a confirmation dialog', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.collectionSelectBox)
+        .click(Selector('div[class*="listPreviewElement"]').withText('Example collection 3'))
+        .expect(page.confirmDialog.exists)
+        .ok('A confirmation dialog appears after selecting a target collection')
+        .expect(page.confirmDialog.innerText)
+        .contains('Example collection 3', 'The dialog mentions the target collection');
+});
+
+test('Confirming the move shifts all selected assets to the target collection', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.collectionSelectBox)
+        .click(Selector('div[class*="listPreviewElement"]').withText('Example collection 3'))
+        .click(page.confirmDialogButton('Yes, shift assets'))
+        .expect(page.confirmDialog.exists)
+        .notOk('The dialog closes after confirmation');
+}).after(async (t) => {
+    const { log } = await t.getBrowserConsoleMessages();
+    await t
+        .expect(log.includes('The collections for the assets have been set'))
+        .ok('A success message confirms the bulk collection move');
 });

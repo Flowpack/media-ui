@@ -17,6 +17,15 @@ class Page {
     public assetSourceList: Selector;
     public assetsFilter: Selector;
     public clipboardToggle: Selector;
+    public selectedThumbnails: Selector;
+    public multiSelectionBadges: Selector;
+    public multiSelectionClearButton: Selector;
+    public titleInput: Selector;
+    public captionInput: Selector;
+    public copyrightInput: Selector;
+    public applyButton: Selector;
+    public confirmDialog: Selector;
+    public collectionSelectBox: Selector;
 
     constructor() {
         // Asset sources
@@ -52,6 +61,24 @@ class Page {
         this.currentSelection = Selector('div[class*="currentSelection"]');
         this.tagSelection = this.assetInspector.find('.TagSelectBox_tagSelectBox');
         this.inspectorActions = this.assetInspector.find('.Actions_actions');
+
+        // Multi-selection
+        this.selectedThumbnails = Selector('.Thumbnail_selected');
+        const multiSelectionWrapper = Selector('.CurrentMultiSelection_currentMultiSelection');
+        this.multiSelectionBadges = multiSelectionWrapper.find('.CurrentMultiSelection_item');
+        this.multiSelectionClearButton = multiSelectionWrapper.find('[title="Clear selection"]');
+
+        // Property inspector
+        this.titleInput = this.assetInspector.find('input[name="label"]');
+        this.captionInput = this.assetInspector.find('textarea[name="caption"]');
+        this.copyrightInput = this.assetInspector.find('textarea[name="copyrightNotice"]');
+        this.applyButton = this.assetInspector.find('button').withText('Apply');
+        this.confirmDialog = Selector('div[class*="dialog"]');
+        this.collectionSelectBox = this.assetInspector.find('.collectionSelectBox');
+    }
+
+    public confirmDialogButton(label: string): Selector {
+        return this.confirmDialog.find('button').withText(label);
     }
 
     public get firstThumbnail() {

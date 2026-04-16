@@ -265,7 +265,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     assetSourceId,
                     assetCollectionIds: newAssetCollectionIds,
                 }: { id: string; assetSourceId: string; assetCollectionIds: string[] }
-            ): boolean => {
+            ) => {
                 const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
                 asset.collections = assetCollections.filter((collection) =>
                     newAssetCollectionIds.includes(collection.id)
@@ -275,7 +275,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     assetId: id,
                     type: 'ASSET_UPDATED',
                 });
-                return true;
+                return { success: true, messages: [] };
             },
             deleteTag: ($_, { id }): boolean => {
                 tags.splice(
