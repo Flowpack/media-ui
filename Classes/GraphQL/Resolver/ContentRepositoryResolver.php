@@ -38,7 +38,7 @@ class ContentRepositoryResolver
         ContentRepositoryId $contentRepositoryId,
         WorkspaceName $workspaceName,
         DimensionSpacePoint $dimensionSpacePoint,
-    ) {
+    ): Types\AssetCollections {
         $contentGraph = $this->contentRepositoryRegistry->get($contentRepositoryId)
             ->getContentGraph($workspaceName);
         $subgraph = $contentGraph
@@ -48,7 +48,7 @@ class ContentRepositoryResolver
             FindSubtreeFilter::create(nodeTypes: 'Flowpack.Media:Folder')
         );
 
-        return Types\AssetCollections::fromArray($this->mapSubtreeToAssetCollections($subtree, ''));
+        return Types\AssetCollections::fromArray($subtree ? $this->mapSubtreeToAssetCollections($subtree, '') : []);
     }
 
     public function findParentAssetCollection(
@@ -68,7 +68,7 @@ class ContentRepositoryResolver
         }
 
         return $contentRepository->getNodeTypeManager()->getNodeType($parentNode->nodeTypeName)
-            ->isOfType(NodeTypeName::fromString('Flowpack.Media:Folder'))
+            ?->isOfType(NodeTypeName::fromString('Flowpack.Media:Folder'))
             ? instantiate(AssetCollectionParent ::class, [
                 'id' => $parentNode->aggregateId->value,
                 'title' => $parentNode->getProperty('name') ?: $this->nodeLabelGenerator->getLabel($parentNode),
@@ -111,6 +111,9 @@ class ContentRepositoryResolver
         );
     }
 
+    /**
+     * @return array<int,Types\AssetCollection>
+     */
     private function mapSubtreeToAssetCollections(Subtree $subtree, string $pathSoFar): array
     {
         $assetCollections = [];

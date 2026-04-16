@@ -100,7 +100,6 @@ final class MediaApi
         private readonly ContentRepositoryMutator $contentRepositoryMutator,
         private readonly ContentRepositoryResolver $contentRepositoryResolver,
         private readonly ContentRepositoryRegistry $contentRepositoryRegistry,
-        private readonly NodeLabelGeneratorInterface $nodeLabelGenerator,
     ) {
     }
 
@@ -212,7 +211,7 @@ final class MediaApi
         return Types\AssetSources::fromArray(array_map(
             static fn(AssetSourceInterface|ContentRepository $assetSource) => $assetSource instanceof AssetSourceInterface
                 ? Types\AssetSource::fromAssetSource($assetSource)
-                : Types\AssetSource::fromContentRepository($contentRepository),
+                : Types\AssetSource::fromContentRepository($assetSource),
             array_merge(
                 $this->assetSourceContext->getAssetSources(),
                 $assetContentRepositories,
@@ -238,7 +237,12 @@ final class MediaApi
         $assetSourceId = $assetSourceId ?: AssetSourceId::fromString('cr:default');
         $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
         if ($contentRepositoryId) {
-            return $this->contentRepositoryResolver->findAssetCollections($contentRepositoryId, $assetSourceId);
+            // @todo send from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo send from UI
+            $dimensionSpacePoint = DimensionSpacePoint::fromArray(['language' => 'de']);
+
+            return $this->contentRepositoryResolver->findTags($contentRepositoryId, $workspaceName, $dimensionSpacePoint);
         } else {
             return Types\Tags::fromArray(array_map(
                 fn(Tag $tag) => instantiate(Types\Tag::class, [

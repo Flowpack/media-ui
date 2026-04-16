@@ -14,6 +14,7 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
  * source code.
  */
 
+use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
 use Neos\ContentRepository\Core\DimensionSpace\OriginDimensionSpacePoint;
@@ -27,6 +28,7 @@ use Neos\ContentRepository\Core\Feature\NodeReferencing\Dto\NodeReferenceToWrite
 use Neos\ContentRepository\Core\NodeType\NodeTypeName;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindAncestorNodesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindReferencesFilter;
+use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
 use Neos\ContentRepository\Core\SharedModel\Node\ReferenceName;
@@ -34,6 +36,7 @@ use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Flow\Annotations as Flow;
 
+use Neos\Media\Domain\Model\Tag;
 use Neos\Neos\Domain\SubtreeTagging\NeosVisibilityConstraints;
 
 use function Wwwision\Types\instantiate;
@@ -142,6 +145,9 @@ class ContentRepositoryMutator
 
         $subgraph = $contentRepository->getContentSubgraph($workspaceName, $originDimensionSpacePoint->toDimensionSpacePoint());
         $tag = $subgraph->findNodeById($tagId);
+        if (!$tag instanceof Node) {
+            throw new Exception('Tag not found', 1590659046);
+        }
 
         return instantiate(
             Types\Tag::class,
