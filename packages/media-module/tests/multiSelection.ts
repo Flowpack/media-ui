@@ -61,3 +61,17 @@ test('The clear button deselects all assets', async (t) => {
         .expect(page.selectedThumbnails.count)
         .eql(0, 'No assets are selected after clicking the clear button');
 });
+
+test('Clicking a collection while multi-selecting preserves the selection and inspector view', async (t) => {
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .expect(page.multiSelectionBadges.count)
+        .eql(2, 'Two assets are selected before clicking a collection');
+
+    await t
+        .scrollIntoView(page.firstCollection)
+        .click(page.assetCollections.withText('Example collection 1'))
+        .expect(page.multiSelectionBadges.count)
+        .eql(2, 'The multi-selection is preserved after switching to another collection');
+});
