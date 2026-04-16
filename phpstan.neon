@@ -3,8 +3,6 @@ parameters:
     phpVersion: 80300
     paths:
         - Classes
-    bootstrapFiles:
-        - vendor/autoload.php
     ignoreErrors:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findBy[a-zA-Z]+\(\)#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneBy[a-zA-Z]+\(\)#'

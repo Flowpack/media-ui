@@ -23,7 +23,7 @@
     "test": "../../../bin/phpunit --enforce-time-limit --bootstrap ../../Libraries/autoload.php --testdox Tests",
     "test:ci": "phpunit --enforce-time-limit --bootstrap vendor/autoload.php --testdox Tests",
     "codestyle": "phpstan analyse --autoload-file ../../Libraries/autoload.php",
-    "codestyle:ci": "phpstan analyse"
+    "codestyle:ci": "phpstan analyse --autoload-file vendor/autoload.php"
   },
   "license": "GPL-3.0-or-later",
   "autoload": {
