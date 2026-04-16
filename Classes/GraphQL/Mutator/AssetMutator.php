@@ -369,7 +369,7 @@ class AssetMutator
 
         try {
             $resource = $this->resourceManager->importResourceFromContent(
-                ($file->streamOrFile instanceof StreamInterface ? $file->streamOrFile->getContents() : $file->streamOrFile),
+                $file->streamOrFile,
                 $filename
             );
         } catch (ResourceManagementException $e) {
@@ -512,7 +512,7 @@ class AssetMutator
         if ($filename !== null) {
             try {
                 $resource = $this->resourceManager->importResourceFromContent(
-                    ($file->streamOrFile instanceof StreamInterface ? $file->streamOrFile->getContents() : $file->streamOrFile),
+                    $file->streamOrFile,
                     $filename,
                 );
             } catch (ResourceManagementException $e) {
