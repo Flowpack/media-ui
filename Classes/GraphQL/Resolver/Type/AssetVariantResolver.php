@@ -39,14 +39,15 @@ class AssetVariantResolver
     public function previewUrl(Types\AssetVariant $assetVariant): ?Types\Url
     {
         $imageVariant = $this->imageVariantRepository->findByIdentifier($assetVariant->id->value);
-        $imageUri = $imageVariant ? $this->resourceManager->getPublicPersistentResourceUri($imageVariant->getResource()) : null;
+        $imageUri = $imageVariant instanceof ImageVariant ? $this->resourceManager->getPublicPersistentResourceUri($imageVariant->getResource()) : null;
         return $imageUri ? Types\Url::fromString($imageUri) : null;
     }
 
     public function hasCrop(Types\AssetVariant $assetVariant): bool
     {
+        /** @var ?ImageVariant $imageVariant */
         $imageVariant = $this->imageVariantRepository->findByIdentifier($assetVariant->id->value);
-        foreach ($imageVariant?->getAdjustments() as $adjustment) {
+        foreach ($imageVariant?->getAdjustments() ?: [] as $adjustment) {
             if ($adjustment instanceof CropImageAdjustment) {
                 return true;
             }

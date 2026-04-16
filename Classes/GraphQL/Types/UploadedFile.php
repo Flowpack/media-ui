@@ -16,7 +16,7 @@ final class UploadedFile implements UploadedFileInterface
     private function __construct(
         public int $size,
         public int $errorStatus,
-        public ?string $streamOrFile = null,
+        public string $streamOrFile,
         public ?string $clientFilename = null,
         public ?string $clientMediaType = null
     )

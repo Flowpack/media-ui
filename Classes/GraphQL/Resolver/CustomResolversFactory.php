@@ -18,6 +18,9 @@ final class CustomResolversFactory
     ) {
     }
 
+    /**
+     * @param array<string,mixed> $customResolversSettings
+     */
     public function create(array $customResolversSettings): CustomResolvers
     {
         $customResolvers = [];

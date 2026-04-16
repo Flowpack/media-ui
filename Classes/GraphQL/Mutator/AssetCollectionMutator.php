@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
@@ -44,14 +45,24 @@ class AssetCollectionMutator
     ) {
     }
 
-    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
+    /**
+     * @param array<mixed> $arguments
+     */
+    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): MutationResponseMessage
     {
         try {
-            return $this->translator->translateById($id, $arguments, null, null, 'Main',
+            $value = $this->translator->translateById($id, $arguments, null, null, 'Main',
                 'Flowpack.Media.Ui') ?? $fallback;
         } catch (\Exception) {
-            return $fallback ?: $id;
+            $value = $fallback ?: $id;
         }
+
+        return instantiate(
+            MutationResponseMessage::class,
+            [
+                'value' => $value,
+            ]
+        );
     }
 
     /**
@@ -61,12 +72,13 @@ class AssetCollectionMutator
         Types\AssetCollectionTitle $title,
         ?Types\AssetCollectionId $parent = null
     ): Types\AssetCollection {
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $newAssetCollection */
         $newAssetCollection = new AssetCollection($title->value);
         if ($parent) {
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
-            /** @var HierarchicalAssetCollectionInterface $newAssetCollection */
-            /** @phpstan-ignore varTag.nativeType */
-            $newAssetCollection->setParent($parentCollection);
+            if ($parentCollection instanceof HierarchicalAssetCollectionInterface) {
+                $newAssetCollection->setParent($parentCollection);
+            }
         }
 
         // FIXME: Multiple asset collections with the same title can exist, but do we want that?
@@ -124,9 +136,8 @@ class AssetCollectionMutator
         ?Types\AssetCollectionTitle $title = null,
         ?Types\TagIds $tagIds = null
     ): MutationResult {
-        /** @var AssetCollection&HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
-        if (!$assetCollection) {
+        if (!($assetCollection instanceof AssetCollection && $assetCollection instanceof HierarchicalAssetCollectionInterface)) {
             return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.updateAssetCollection.notFound',
@@ -168,10 +179,13 @@ class AssetCollectionMutator
         Types\AssetCollectionId $id,
         ?Types\AssetCollectionId $parent = null
     ): MutationResult {
-        /** @var AssetCollection $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
-
-        if (!$assetCollection) {
+        if (
+            !(
+                $assetCollection instanceof HierarchicalAssetCollectionInterface
+                && $assetCollection instanceof AssetCollection
+            )
+        ) {
             return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.setAssetCollectionParent.notFound',
@@ -180,11 +194,9 @@ class AssetCollectionMutator
             ]);
         }
 
-        /** @var HierarchicalAssetCollectionInterface $assetCollection */
         if ($parent) {
-            /** @var HierarchicalAssetCollectionInterface $parentCollection */
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
-            if (!$parentCollection) {
+            if (!$parentCollection instanceof HierarchicalAssetCollectionInterface) {
                 return MutationResult::fromError([
                     $this->localizedMessage(
                         'actions.setAssetCollectionParent.parentNotFound',

@@ -19,6 +19,7 @@ namespace Flowpack\Media\Ui\GraphQL\Middleware;
 use Flowpack\Media\Ui\GraphQL\Resolver;
 use GraphQL\Error\ClientAware;
 use GraphQL\Error\SyntaxError;
+use GraphQL\Executor\Promise\Promise;
 use GraphQL\Language\Parser;
 use GraphQL\Server\ServerConfig;
 use GraphQL\Server\StandardServer;
@@ -51,6 +52,10 @@ use Wwwision\TypesGraphQL\Types\CustomResolvers;
  */
 final class GraphQLMiddleware implements MiddlewareInterface
 {
+    /**
+     * @param class-string $apiObjectName
+     * @param array<mixed> $typeNamespaces
+     */
     public function __construct(
         private readonly string $uriPath,
         private readonly string $apiObjectName,
@@ -106,6 +111,7 @@ final class GraphQLMiddleware implements MiddlewareInterface
         $config = ServerConfig::create()
             ->setSchema($this->getSchema($resolver))
             ->setFieldResolver($resolver)
+            /** @phpstan-ignore argument.type (¯\_(ツ)_/¯) */
             ->setErrorsHandler($this->handleGraphQLErrors(...));
         if ($this->debugMode) {
             $config->setDebugFlag();
@@ -119,6 +125,9 @@ final class GraphQLMiddleware implements MiddlewareInterface
 
         $bodyStream = $this->streamFactory->createStream();
         $newResponse = $server->processPsrRequest($request, $response, $bodyStream);
+        if ($newResponse instanceof Promise) {
+            throw new Exception('Async operations are not supported');
+        }
         $bodyStream->rewind();
 
         // FIXME: We need to manually persist mutations for some reason
@@ -149,11 +158,18 @@ final class GraphQLMiddleware implements MiddlewareInterface
                 'Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range');
     }
 
+    /**
+     * @param array<Throwable> $errors
+     * @return array<array<string,mixed>>
+     */
     private function handleGraphQLErrors(array $errors, callable $formatter): array
     {
         return array_map(fn(Throwable $error) => $this->handleGraphQLError($error, $formatter), $errors);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     private function handleGraphQLError(Throwable $error, callable $formatter): array
     {
         if (!$error instanceof ClientAware || !$error->isClientSafe()) {
@@ -228,6 +244,8 @@ final class GraphQLMiddleware implements MiddlewareInterface
                     $e->getMessage()), 1652975323, $e);
             }
         }
+
+        /** @phpstan-ignore argument.type (¯\_(ツ)_/¯) */
         return BuildSchema::build($documentNode, $resolver->typeConfigDecorator(...));
     }
 }

@@ -33,13 +33,11 @@ final class SearchTerm
         $this->value = $value;
 
         if (preg_match(self::ASSET_IDENTIFIER_PATTERN, $value, $matches) !== false) {
-            if ($assetIdentifier = $matches[1] ?? null) {
-                $this->assetIdentifier = $assetIdentifier;
-            }
+            $this->assetIdentifier = $matches[1];
         }
     }
 
-    public static function from($any): ?self
+    public static function from(mixed $any): ?self
     {
         if (is_string($any) && !empty($any)) {
             return new self($any);

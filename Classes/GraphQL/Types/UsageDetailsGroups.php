@@ -8,6 +8,9 @@ use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\Description;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<UsageDetailsGroup>
+ */
 #[Description('Asset usages grouped by service')]
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: UsageDetailsGroup::class)]

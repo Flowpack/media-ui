@@ -53,6 +53,9 @@ use function Wwwision\Types\instantiate;
 #[Flow\Scope('singleton')]
 final class MediaApi
 {
+    /**
+     * @phpstan-var array<string,mixed>
+     */
     #[Flow\InjectConfiguration]
     protected array $settings = [];
 
@@ -190,25 +193,29 @@ final class MediaApi
     #[Query]
     public function tag(?Types\TagId $id): ?Types\Tag
     {
-        /** @var Tag $tag */
         $tag = $id ? $this->tagRepository->findByIdentifier($id->value) : null;
-        return $tag ? instantiate(Types\Tag::class, [
-            'id' => $id,
-            'label' => $tag->getLabel(),
-        ]) : null;
+
+        return $tag instanceof Tag
+            ? instantiate(Types\Tag::class, [
+                'id' => $id,
+                'label' => $tag->getLabel(),
+            ])
+            : null;
     }
 
     #[Description('Returns an asset collection by id')]
     #[Query]
     public function assetCollection(?Types\AssetCollectionId $id): ?Types\AssetCollection
     {
-        /** @var HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $id ? $this->assetCollectionRepository->findByIdentifier($id->value) : null;
-        return $assetCollection ? instantiate(Types\AssetCollection::class, [
-            'id' => $id,
-            'title' => $assetCollection->getTitle(),
-            'path' => $assetCollection->getPath(),
-        ]) : null;
+
+        return $assetCollection instanceof HierarchicalAssetCollectionInterface
+            ? instantiate(Types\AssetCollection::class, [
+                'id' => $id,
+                'title' => $assetCollection->getTitle(),
+                'path' => $assetCollection->getPath(),
+            ])
+            : null;
     }
 
     #[Description('Returns an asset by id')]
@@ -242,9 +249,13 @@ final class MediaApi
     protected function getMaximumFileUploadSize(): int
     {
         try {
+            /** @var string $postMaxSize */
+            $postMaxSize = ini_get('post_max_size');
+            /** @var string $uploadMaxSize */
+            $uploadMaxSize = ini_get('upload_max_filesize');
             return (int)min(
-                Files::sizeStringToBytes(ini_get('post_max_size')),
-                Files::sizeStringToBytes(ini_get('upload_max_filesize'))
+                Files::sizeStringToBytes($postMaxSize),
+                Files::sizeStringToBytes($uploadMaxSize),
             );
         } catch (FilesException) {
             return 0;
