@@ -122,6 +122,7 @@ jobs:
           composer config repositories.package '{ "type": "path", "url": "../${{ env.PACKAGE_FOLDER }}", "options": { "symlink": false } }'
           composer require --no-update --no-interaction flowpack/media-ui:"dev-build as dev-${PACKAGE_TARGET_VERSION}"
           composer require --no-update --no-interaction neos/contentgraph-doctrinedbaladapter:"~9.0.0"
+          composer require --no-update --no-interaction neos/behat:"~9.0.0"
 
       - name: Composer Install
         run: |

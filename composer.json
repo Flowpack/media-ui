@@ -13,7 +13,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5",
-    "phpstan/phpstan": "^1.12 || ^2"
+    "phpstan/phpstan": "^1.12 || ^2",
+    "neos/behat": "^9.0"
   },
   "scripts": {
     "test": "../../../bin/phpunit --enforce-time-limit --bootstrap ../../Libraries/autoload.php --testdox Tests",

@@ -234,7 +234,6 @@ class AssetSourceContext
             return Types\Assets::empty();
         }
 
-        $assets = $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
-        return Types\Assets::fromAssets($assets);
+        return $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
     }
 }

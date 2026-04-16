@@ -32,16 +32,12 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Http\Exception as HttpException;
 use Neos\Flow\Http\HttpRequestHandlerInterface;
-use Neos\Flow\I18n\Exception\IndexOutOfBoundsException;
-use Neos\Flow\I18n\Exception\InvalidFormatPlaceholderException;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Routing\Exception\MissingActionNameException;
 use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\Package\PackageManager;
-use Neos\Flow\Reflection\Exception\ClassLoadingForReflectionFailedException;
-use Neos\Flow\Reflection\Exception\InvalidClassException;
 use Neos\Flow\Reflection\ReflectionService;
 use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Media\Domain\Model\Asset;
@@ -361,15 +357,6 @@ final class UsageDetailsService
             $serverRequest = $serverRequest->withUri(new Uri((string)$domain));
         }
 
-        // Instead of the live workspace uri we want to link to the user workspace for editing
-        if ($node->getWorkspace()->getBaseWorkspace() === null) {
-            $userWorkspaceContextProperties = [
-                'workspaceName' => $this->userService->getPersonalWorkspaceName(),
-            ];
-            $userWorkspaceContext = $this->contextFactory->create(array_merge($node->getContext()->getProperties(), $userWorkspaceContextProperties));
-            $node = $userWorkspaceContext->getNodeByIdentifier($node->getIdentifier());
-        }
-
         $request = ActionRequest::fromHttpRequest(
             $serverRequest
         );
@@ -459,7 +446,6 @@ final class UsageDetailsService
     public function getUnusedAssetCount(Types\AssetSourceId $assetSourceId): int
     {
         $queryBuilder = $this->dbal->createQueryBuilder();
-        $assetSourceIdentifier = $assetSourceId ?? Types\AssetSourceId::default();
 
         try {
             $queryBuilder
@@ -475,7 +461,7 @@ final class UsageDetailsService
                 ->andWhere('a.dtype NOT IN (:assetVariantFilter)')
                 ->andWhere('u.assetid IS NULL')
                 ->setParameter('assetVariantFilter', implode(',', $this->getAssetVariantNames()))
-                ->setParameter('assetSourceId', $assetSourceIdentifier);
+                ->setParameter('assetSourceId', $assetSourceId);
             return (int)$this->dbal
                 ->fetchOne(
                     'SELECT COUNT(*) FROM (' . $queryBuilder->getSQL() . ') s',
