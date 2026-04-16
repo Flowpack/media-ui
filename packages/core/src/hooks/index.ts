@@ -3,6 +3,7 @@ export { default as useAssetQuery } from './useAssetQuery';
 export { default as useAssetsQuery } from './useAssetsQuery';
 export { default as useConfigQuery } from './useConfigQuery';
 export { default as useDeleteAsset } from './useDeleteAsset';
+export { default as useDownloadAssets } from './useDownloadAssets';
 export { default as useEvent } from './useEvent';
 export { default as useImportAsset } from './useImportAsset';
 export { default as useSelectAsset } from './useSelectAsset';

@@ -54,13 +54,12 @@ const Tasks: React.FC = () => {
                 {!isMultiSelection && showSimilarAssets && (
                     <SimilarAssetsToggleButton variant="menuItem" menuItemClassName={menuItemClasses.menuItem} />
                 )}
-                {!isMultiSelection && (
-                    <DownloadAssetButton
-                        asset={selectedAsset}
-                        variant="menuItem"
-                        menuItemClassName={menuItemClasses.menuItem}
-                    />
-                )}
+                <DownloadAssetButton
+                    assets={isMultiSelection ? selectedAssets : [selectedAsset]}
+                    variant="menuItem"
+                    menuItemClassName={menuItemClasses.menuItem}
+                    menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
+                />
                 {!isMultiSelection && !selectedAsset.assetSource.readOnly && applicationContext !== 'details' && (
                     <>
                         <OpenAssetEditDialogButton variant="menuItem" menuItemClassName={menuItemClasses.menuItem} />
