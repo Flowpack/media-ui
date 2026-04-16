@@ -1,0 +1,96 @@
+name: Create tag
+run-name: Create tag ${{ inputs.tag }} from ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag name (semver, e.g. 1.2.3 or 1.2.3-beta1)'
+        required: true
+        type: string
+      message:
+        description: 'Annotated tag message (leave empty for lightweight tag)'
+        required: false
+        type: string
+
+concurrency:
+  group: create-tag
+  cancel-in-progress: false
+
+# The branch / tag to build is selected via the "Use workflow from" picker
+# in the GitHub Actions UI and is exposed as github.ref_name / github.sha.
+
+jobs:
+  build-and-tag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+
+    steps:
+      - name: Validate tag format
+        run: |
+          if [[ ! "${{ inputs.tag }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Tag must follow semver, e.g. 3.2.0 or 3.2.0-rc.1"
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Check tag does not already exist
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/${{ inputs.tag }}" >/dev/null 2>&1; then
+            echo "::error::Tag ${{ inputs.tag }} already exists on origin"
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Build main module
+        run: yarn build:module
+
+      - name: Build plugin for Neos UI
+        run: yarn build:plugin
+
+      - name: Configure git as triggering user
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+
+      - name: Create release commit with built assets
+        run: |
+          git add -f Resources/Public/Assets Resources/Public/AssetEditor
+          git add -f Resources/Public/Assets Resources/Public/Assets
+          git commit -m "RELEASE: ${{ inputs.tag }}"
+
+      - name: Create tag
+        run: |
+          if [ -n "${{ inputs.message }}" ]; then
+            git tag -a "${{ inputs.tag }}" -m "${{ inputs.message }}"
+          else
+            git tag "${{ inputs.tag }}"
+          fi
+
+      - name: Push tag (without pushing the release commit to any branch)
+        run: git push origin "refs/tags/${{ inputs.tag }}"
+
+      - name: Job summary
+        run: |
+          {
+            echo "## Tag created"
+            echo ""
+            echo "- **Tag:** \`${{ inputs.tag }}\`"
+            echo "- **Source ref:** \`${{ github.ref_name }}\` (\`${{ github.sha }}\`)"
+            echo "- **Triggered by:** @${{ github.actor }}"
+            echo "- **Tag URL:** ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ inputs.tag }}"
+          } >> "$GITHUB_STEP_SUMMARY"
