@@ -18,6 +18,7 @@ use Flowpack\Media\Ui\GraphQL\MediaApi;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
+use PHPUnit\Framework\Assert;
 
 /**
  * Testcase for the Media.Ui API
@@ -49,7 +50,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             Types\AssetCollectionTitle::fromString('Test Collection'),
             Types\AssetSourceId::default(),
         );
-        $this->assertInstanceOf(Types\AssetCollection::class, $assetCollection);
+        Assert::assertNotNull($assetCollection->path);
         $this->assertEquals('Test Collection', $assetCollection->title->value);
 
         $childCollection = $this->mediaApi->createAssetCollection(
@@ -58,7 +59,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             $assetCollection->id,
         );
 
-        $this->assertInstanceOf(Types\AssetCollection::class, $childCollection);
+        Assert::assertNotNull($childCollection->path);
         $this->assertTrue(str_starts_with($childCollection->path->value, $assetCollection->path->value));
 
         $this->persist();
@@ -121,6 +122,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             $assetCollection->id,
             Types\AssetSourceId::default()
         );
+        Assert::assertNotNull($updatedAssetCollection);
 
         $this->assertEquals('Updated Collection', $updatedAssetCollection->title->value);
     }
@@ -135,6 +137,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             Types\AssetCollectionTitle::fromString('Child Collection'),
             Types\AssetSourceId::default(),
         );
+        Assert::assertNotNull($childCollection->path);
 
         $result = $this->mediaApi->setAssetCollectionParent(
             $childCollection->id,
@@ -142,8 +145,11 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             $parentCollection->id,
         );
         $this->assertTrue($result->success);
+        Assert::assertNotNull($parentCollection->path);
 
-        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default(),);
+        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default());
+        Assert::assertNotNull($updatedChildCollection);
+        Assert::assertNotNull($updatedChildCollection->path);
         $this->assertTrue(str_starts_with($updatedChildCollection->path->value, $parentCollection->path->value));
 
         $this->mediaApi->setAssetCollectionParent(
@@ -151,7 +157,12 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             Types\AssetSourceId::default(),
         );
 
-        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default(),);
-        $this->assertEquals($childCollection->path->value, $updatedChildCollection->path->value);
+        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default());
+        Assert::assertNotNull($updatedChildCollection);
+        Assert::assertNotNull($updatedChildCollection->path);
+        $this->assertEquals(
+            $childCollection->path->value,
+            $updatedChildCollection->path->value,
+        );
     }
 }

@@ -23,6 +23,8 @@ use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Model\AssetInterface;
 
+use PHPUnit\Framework\Assert;
+
 use function Wwwision\Types\instantiate;
 
 /**
@@ -67,6 +69,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $result = $this->mediaApi->uploadFile($file, Types\AssetSourceId::default());
 
         $this->assertTrue($result->success);
+        Assert::assertNotNull($result->filename);
         $this->assertEquals('test.svg', $result->filename->value);
     }
 
@@ -82,6 +85,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $uploadResult = $result->values['test.svg'] ?? null;
         $this->assertInstanceOf(Types\FileUploadResult::class, $uploadResult);
         $this->assertTrue($uploadResult->success);
+        Assert::assertNotNull($uploadResult->filename);
         $this->assertEquals('test.svg', $uploadResult->filename->value);
     }
 
@@ -96,7 +100,9 @@ class AssetApiTest extends AbstractMediaTestCase
 
         $this->persistenceManager->persistAll();
 
-        $asset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+        $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($assets);
+        $asset = $assets->assets[0];
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
         // Edit the asset
@@ -110,7 +116,9 @@ class AssetApiTest extends AbstractMediaTestCase
         );
 
         $this->assertTrue($editResult->success);
-        $editedAsset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+        $editedAssets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($editedAssets);
+        $editedAsset = $editedAssets->assets[0];
         $this->assertEquals('new-name.svg', $editedAsset->filename->value);
     }
 
@@ -124,7 +132,9 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->assertCount(1, $result->values);
         $this->persistenceManager->persistAll();
 
-        $asset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+        $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($assets);
+        $asset = $assets->assets[0];
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
         // Delete the asset
@@ -133,6 +143,7 @@ class AssetApiTest extends AbstractMediaTestCase
 
         $this->assertTrue($deleteResult->success);
         $assetsAfterDeletion = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($assetsAfterDeletion);
         $this->assertCount(0, $assetsAfterDeletion);
     }
 
@@ -145,7 +156,9 @@ class AssetApiTest extends AbstractMediaTestCase
         );
         $this->assertCount(1, $result->values);
         $this->persistenceManager->persistAll();
-        $asset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+        $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($assets);
+        $asset = $assets->assets[0];
 
         // Get the actual asset entity from repository and mark it as used
         /** @var AssetInterface $assetEntity */
@@ -158,6 +171,7 @@ class AssetApiTest extends AbstractMediaTestCase
 
         $this->assertFalse($deleteResult->success);
         $assetsAfterDeletion = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($assetsAfterDeletion);
         $this->assertCount(1, $assetsAfterDeletion);
     }
 
@@ -172,6 +186,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->persistenceManager->persistAll();
 
         $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($assets);
         $asset = $assets->assets[0];
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
@@ -182,6 +197,7 @@ class AssetApiTest extends AbstractMediaTestCase
             'some caption',
             'copyright notice',
         );
+        Assert::assertNotNull($updatedAsset);
 
         $this->assertEquals($asset->id, $updatedAsset->id);
         $this->assertEquals('some label', $this->assetResolver->label($updatedAsset));
@@ -200,6 +216,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->persistenceManager->persistAll();
 
         $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($assets);
         $asset = $assets->assets[0];
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
@@ -207,6 +224,7 @@ class AssetApiTest extends AbstractMediaTestCase
             $asset->id,
             $asset->assetSource->id,
         );
+        Assert::assertNotNull($fetchedAsset);
         $this->assertEquals($asset->id, $fetchedAsset->id);
     }
 
@@ -241,7 +259,6 @@ class AssetApiTest extends AbstractMediaTestCase
     public function testConfig(): void
     {
         $config = $this->mediaApi->config();
-        $this->assertNotEmpty($config);
         $this->assertEquals(Types\DateTime::now(), $config->currentServerTime);
         $this->assertGreaterThan(0, $config->uploadMaxFileSize->value);
         $this->assertGreaterThan(0, $config->uploadMaxFileUploadLimit);
@@ -262,6 +279,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->persistenceManager->persistAll();
 
         $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($assets);
         $asset = $assets->assets[0];
         $usageDetails = $this->mediaApi->assetUsageDetails(
             $asset->id,
@@ -283,6 +301,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->persistenceManager->persistAll();
 
         $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        Assert::assertNotNull($assets);
         $asset = $assets->assets[0];
         $usageCount = $this->mediaApi->assetUsageCount(
             $asset->id,

@@ -81,7 +81,7 @@ final class SearchTermTest extends UnitTestCase
 
         $this->assertEquals(
             '68610fa2-bdd1-4d84-80eb-27db56f2889f',
-            $searchTerm->getAssetIdentifierIfPresent()
+            $searchTerm?->getAssetIdentifierIfPresent()
         );
     }
 
