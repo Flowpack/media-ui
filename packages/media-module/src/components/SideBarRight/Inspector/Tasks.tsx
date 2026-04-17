@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { DropDown, Icon } from '@neos-project/react-ui-components';
@@ -34,17 +34,14 @@ const Tasks: React.FC = () => {
     const [allInClipboard, toggleAllClipboardState] = useRecoilState(clipboardItemsState);
 
     const isMultiSelection = selectedAssets.length > 1;
-    const [isOpen, setIsOpen] = useState(false);
 
     if (!selectedAsset && !isMultiSelection) return null;
 
     return (
-        <DropDown className={classes.tasks} onToggle={() => setIsOpen((prev) => !prev)}>
+        <DropDown className={classes.tasks}>
             <DropDownHeader className={classes.dropdownHeader} showDropDownToggle={false}>
                 <IconLabel icon="tasks" label={translate('inspector.actions', 'Tasks')} />
-                <span className={`${classes.dropdownToggleIcon}${isOpen ? ` ${classes.dropdownToggleIconOpen}` : ''}`}>
-                    <Icon icon="ellipsis-v" />
-                </span>
+                <Icon icon="ellipsis-v" />
             </DropDownHeader>
             <DropDownContents className={classes.dropdownContents}>
                 {!isMultiSelection && (

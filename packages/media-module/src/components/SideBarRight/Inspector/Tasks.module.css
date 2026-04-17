@@ -8,8 +8,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: none;
-    padding: 0;
+    background: var(--colors-ContrastDark);
+    padding: 0 14px !important;
+    border-radius: 0;
 }
 
 .dropdownToggleIcon {
@@ -18,12 +19,6 @@
     height: 40px;
     align-items: center;
     justify-content: center;
-}
-
-.dropdownHeader:hover .dropdownToggleIcon,
-.dropdownHeader:active .dropdownToggleIcon,
-.dropdownToggleIconOpen {
-    background-color: var(--colors-ContrastDark) !important;
 }
 
 .dropdownContents {
