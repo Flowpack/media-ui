@@ -181,7 +181,6 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      *
      * @return T
      */
-    /** @phpstan-ignore method.unused */
     private function getObject(string $className): object
     {
         return $this->objectManager->get($className);
