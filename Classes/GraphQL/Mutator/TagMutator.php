@@ -16,16 +16,20 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
 
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
+
+use function Wwwision\Types\instantiate;
 
 #[Flow\Scope("singleton")]
 class TagMutator
@@ -39,10 +43,13 @@ class TagMutator
     ) {
     }
 
-    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
+    /**
+     * @param array<mixed> $arguments
+     */
+    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): MutationResponseMessage
     {
         try {
-            return $this->translator->translateById(
+            $value = $this->translator->translateById(
                 $id,
                 $arguments,
                 null,
@@ -51,8 +58,13 @@ class TagMutator
                 'Flowpack.Media.Ui'
             ) ?? $fallback;
         } catch (\Exception) {
-            return $fallback ?: $id;
+            $value = $fallback ?: $id;
         }
+
+        return instantiate(
+            MutationResponseMessage::class,
+            $value,
+        );
     }
 
     /**
@@ -61,19 +73,20 @@ class TagMutator
     public function createTag(
         Types\TagLabel $label,
         Types\AssetSourceId $assetSourceId,
-        Types\AssetCollectionId $assetCollectionId = null,
-    ): ?Types\Tag {
+        ?Types\AssetCollectionId $assetCollectionId = null,
+    ): Types\Tag {
         if ($assetSourceId->value !== 'neos') {
             // We currently only support managing tags in the neos asset source
             throw new Exception(
-                $this->localizedMessage('actions.assetSourceNotSupported', 'Asset source not supported'),
+                $this->localizedMessage('actions.assetSourceNotSupported', 'Asset source not supported')->value,
                 1776332600
             );
         }
 
+        /** @var ?Tag $tag */
         $tag = $this->tagRepository->findOneByLabel($label->value);
         if ($tag === null) {
-            $tag = new Tag($label);
+            $tag = new Tag($label->value);
             $this->tagRepository->add($tag);
         } else {
             throw new Exception('Tag already exists', 1603921233);
@@ -81,7 +94,7 @@ class TagMutator
 
         if ($assetCollectionId) {
             $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId->value);
-            if ($assetCollection) {
+            if ($assetCollection instanceof AssetCollection) {
                 $assetCollection->addTag($tag);
                 $this->assetCollectionRepository->update($assetCollection);
             } else {
@@ -101,16 +114,14 @@ class TagMutator
     public function updateTag(
         Types\TagId $id,
         Types\AssetSourceId $assetSourceId,
-        Types\TagLabel $label = null
-    ): ?Types\Tag {
+        ?Types\TagLabel $label = null
+    ): Types\Tag {
         if ($assetSourceId->value !== 'neos') {
-            // We currently only support managing tags in the neos asset source
-            return null;
+            throw new \Exception('We currently only support managing tags in the neos asset source');
         }
 
-        /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
-        if (!$tag) {
+        if (!$tag instanceof Tag) {
             throw new Exception('Tag not found', 1590659046);
         }
 
@@ -141,11 +152,10 @@ class TagMutator
             ]);
         }
 
-        /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
-        if (!$tag) {
+        if (!$tag instanceof Tag) {
             return MutationResult::fromError([
-                $this->localizedMessage('actions.deleteTag.notFound', 'Tag not found')
+                $this->localizedMessage('actions.deleteTag.notFound', 'Tag not found'),
             ]);
         }
 

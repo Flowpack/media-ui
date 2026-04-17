@@ -18,7 +18,9 @@ use Neos\Neos\Domain\Repository\DomainRepository;
 #[Flow\Scope('singleton')]
 class AssetCollectionService
 {
-
+    /**
+     * @var array<string,int>
+     */
     protected array $assetCollectAssetCountCache = [];
 
     /**

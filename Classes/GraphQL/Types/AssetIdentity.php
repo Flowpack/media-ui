@@ -22,6 +22,9 @@ final readonly class AssetIdentity implements \JsonSerializable
         return new self($assetId, $assetSourceId);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function jsonSerialize(): array
     {
         return [

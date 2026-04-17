@@ -67,7 +67,7 @@ final class AssetProxyQueryIterator implements AssetProxyIteratorAggregate
 
     public function count(): int
     {
-        return $this->assetProxyQuery->count();
+        return max(0, $this->assetProxyQuery->count());
     }
 
     /**

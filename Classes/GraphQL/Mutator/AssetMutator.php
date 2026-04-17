@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
@@ -28,6 +29,7 @@ use Neos\Flow\ResourceManagement\Exception as ResourceManagementException;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
@@ -36,7 +38,6 @@ use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Media\Exception\AssetServiceException;
 use Neos\Utility\MediaTypes;
-use PharIo\Manifest\Type;
 use Psr\Log\LoggerInterface;
 
 #[Flow\Scope("singleton")]
@@ -63,10 +64,13 @@ class AssetMutator
     ) {
     }
 
-    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
+    /**
+     * @param array<mixed> $arguments
+     */
+    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): MutationResponseMessage
     {
         try {
-            return $this->translator->translateById(
+            $value = $this->translator->translateById(
                 $id,
                 $arguments,
                 null,
@@ -75,11 +79,12 @@ class AssetMutator
                 'Flowpack.Media.Ui'
             ) ?? $fallback;
         } catch (\Exception) {
-            return $fallback ?: $id;
+            $value = $fallback ?: $id;
         }
+        return MutationResponseMessage::fromString($value);
     }
 
-    protected function localizedMessageFromException(\Exception $exception): string
+    protected function localizedMessageFromException(\Exception $exception): MutationResponseMessage
     {
         $labelIdentifier = 'errors.' . $exception->getCode() . '.message';
         return $this->localizedMessage($labelIdentifier, $exception->getMessage());
@@ -119,7 +124,7 @@ class AssetMutator
             throw new MediaUiException('Failed to update asset: ' . $e->getMessage(), 1590659063);
         }
 
-        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
+        return Types\Asset::fromAsset($asset, $this->requireAssetSource($assetSourceId));
     }
 
     /**
@@ -136,9 +141,8 @@ class AssetMutator
             throw new MediaUiException('Asset type does not support tagging', 1619081662);
         }
 
-        /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($tagId->value);
-        if (!$tag) {
+        if (!$tag instanceof Tag) {
             throw new MediaUiException('Cannot tag asset with tag that does not exist', 1591561845);
         }
 
@@ -150,7 +154,7 @@ class AssetMutator
             $this->logger->error('Failed to update asset', [$e->getMessage()]);
             throw new MediaUiException('Failed to update asset', 1591561868);
         }
-        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
+        return Types\Asset::fromAsset($asset, $this->requireAssetSource($assetSourceId));
     }
 
     /**
@@ -229,7 +233,7 @@ class AssetMutator
             throw new MediaUiException('Failed to set asset tags: ' . $e->getMessage(), 1594621296);
         }
 
-        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
+        return Types\Asset::fromAsset($asset, $this->requireAssetSource($assetSourceId));
     }
 
     /**
@@ -280,9 +284,8 @@ class AssetMutator
             throw new MediaUiException('Asset type does not support tagging', 1619081740);
         }
 
-        /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($tagId->value);
-        if (!$tag) {
+        if (!$tag instanceof Tag) {
             throw new MediaUiException('Cannot untag asset from tag that does not exist', 1591561934);
         }
 
@@ -294,7 +297,7 @@ class AssetMutator
             throw new MediaUiException('Failed to update asset: ' . $e->getMessage(), 1591561938);
         }
 
-        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
+        return Types\Asset::fromAsset($asset, $this->requireAssetSource($assetSourceId));
     }
 
     /**
@@ -317,8 +320,21 @@ class AssetMutator
         }
 
         $sourceMediaType = MediaTypes::parseMediaType($asset->getMediaType());
-        $replacementMediaType = MediaTypes::parseMediaType($file->clientMediaType);
         $filename = $file->clientFilename;
+        if (!$file->clientMediaType) {
+            $this->logger->error(
+                sprintf(
+                    'Cannot replace asset of mimetype %s without any given target mimetype',
+                    $sourceMediaType['type'],
+                )
+            );
+            return Types\FileUploadResult::fromError(self::STATE_ERROR);
+        }
+        if (!$filename) {
+            $this->logger->error('Cannot import resource without a filename');
+            return Types\FileUploadResult::fromError(self::STATE_ERROR);
+        }
+        $replacementMediaType = MediaTypes::parseMediaType($file->clientMediaType);
 
         // Prevent replacement of image, audio and video by a different mimetype because of possible rendering issues.
         if ($sourceMediaType['type'] !== $replacementMediaType['type'] && in_array(
@@ -346,7 +362,6 @@ class AssetMutator
         }
 
         if ($resource) {
-            $resource->setFilename($filename);
             $resource->setMediaType($file->clientMediaType);
 
             try {
@@ -355,7 +370,7 @@ class AssetMutator
                     $resource,
                     $options->toArray()
                 );
-                return Types\FileUploadResult::fromSuccess(self::STATE_REPLACED, $filename);
+                return Types\FileUploadResult::fromSuccess(self::STATE_REPLACED, Types\Filename::fromString($resource->getFilename()));
             } catch (\Exception $e) {
                 $this->logger->error(
                     sprintf(
@@ -400,25 +415,35 @@ class AssetMutator
         // Copy the resource to a new one with the new filename
         $originalResource = $asset->getResource();
         $originalResourceStream = $originalResource->getStream();
-        $resource = $this->resourceManager->importResource(
-            $originalResourceStream,
-            $originalResource->getCollectionName()
-        );
-        fclose($originalResourceStream);
-        $resource->setFilename($filename);
-        $resource->setMediaType($originalResource->getMediaType());
-
-        try {
-            $this->assetService->replaceAssetResource($asset, $resource, $options->toArray());
-        } catch (\Exception $exception) {
-            $this->logger->error(
-                sprintf(
-                    'Asset %s could not be replaced: %s',
-                    $asset->getIdentifier(),
-                    $exception->getMessage()
-                )
+        if ($originalResourceStream) {
+            $resource = $this->resourceManager->importResource(
+                $originalResourceStream,
+                $originalResource->getCollectionName()
             );
-            $this->logger->error('', [$exception]);
+            fclose($originalResourceStream);
+            $resource->setFilename($filename->value);
+            $resource->setMediaType($originalResource->getMediaType());
+
+            try {
+                $this->assetService->replaceAssetResource($asset, $resource, $options->toArray());
+            } catch (\Exception $exception) {
+                $this->logger->error(
+                    sprintf(
+                        'Asset %s could not be replaced: %s',
+                        $asset->getIdentifier(),
+                        $exception->getMessage()
+                    )
+                );
+                $this->logger->error('', [$exception]);
+
+                return MutationResult::fromError([
+                    $this->localizedMessage(
+                        'actions.editAsset.cannotRename',
+                        sprintf('Asset "%s" could not be renamed', $asset->getLabel())
+                    ),
+                ]);
+            }
+        } else {
             return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.editAsset.cannotRename',
@@ -456,19 +481,24 @@ class AssetMutator
         }
 
         $filename = $file->clientFilename;
-        try {
-            $resource = $this->resourceManager->importResourceFromContent(
-                $file->streamOrFile,
-                $filename,
-            );
-        } catch (ResourceManagementException $e) {
-            $this->logger->error('Could not import uploaded file: ' . $e->getMessage());
+        if ($filename !== null) {
+            try {
+                $resource = $this->resourceManager->importResourceFromContent(
+                    $file->streamOrFile,
+                    $filename,
+                );
+            } catch (ResourceManagementException $e) {
+                $this->logger->error('Could not import uploaded file: ' . $e->getMessage());
+                $resource = null;
+            }
+        } else {
             $resource = null;
         }
 
         if ($resource) {
-            $resource->setFilename($filename);
-            $resource->setMediaType($file->clientMediaType);
+            if ($file->clientMediaType) {
+                $resource->setMediaType($file->clientMediaType);
+            }
 
             if (!$this->assetRepository->findOneByResourceSha1($resource->getSha1())) {
                 try {
@@ -478,14 +508,13 @@ class AssetMutator
 
                     if ($this->persistenceManager->isNewObject($asset)) {
                         if ($tagId) {
-                            /** @var Tag $tag */
                             $tag = $this->tagRepository->findByIdentifier($tagId->value);
-                            if ($tag) {
+                            if ($tag instanceof Tag) {
                                 $asset->addTag($tag);
                             }
                         }
                         if ($assetCollectionId) {
-                            /** @var AssetCollection $assetCollection */
+                            /** @var ?AssetCollection $assetCollection */
                             $assetCollection = $this->assetCollectionRepository->findByIdentifier(
                                 $assetCollectionId->value
                             );
@@ -499,7 +528,7 @@ class AssetMutator
 
                         $this->assetRepository->add($asset);
                         $result = self::STATE_ADDED;
-                        return Types\FileUploadResult::fromSuccess($result, Types\Filename::fromString($filename));
+                        return Types\FileUploadResult::fromSuccess($result, Types\Filename::fromString($resource->getFilename()));
                     }
                 } catch (IllegalObjectTypeException $e) {
                     $this->logger->error('Type of uploaded file cannot be stored: ' . $e->getMessage());
@@ -533,5 +562,15 @@ class AssetMutator
             );
         }
         return Types\FileUploadResults::fromArray($results);
+    }
+
+    private function requireAssetSource(Types\AssetSourceId $assetSourceId): AssetSourceInterface
+    {
+        $assetSource = $this->assetSourceContext->getAssetSource($assetSourceId);
+        if (!$assetSource) {
+            throw new MediaUiException('Asset source ' . $assetSourceId->value . ' does not exist', 1776326652);
+        }
+
+        return $assetSource;
     }
 }

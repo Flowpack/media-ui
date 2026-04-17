@@ -20,9 +20,8 @@ use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Flowpack\Media\Ui\Tests\Functional\TestAssetUsageStrategy;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
-
-use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
+use Neos\Media\Domain\Model\AssetInterface;
 
 use function Wwwision\Types\instantiate;
 

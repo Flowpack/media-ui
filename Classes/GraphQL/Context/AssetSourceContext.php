@@ -124,7 +124,7 @@ class AssetSourceContext
         return null;
     }
 
-    public function getAssetCollections(?Types\AssetSourceId $assetSourceId): Types\AssetCollections
+    public function getAssetCollections(Types\AssetSourceId $assetSourceId): Types\AssetCollections
     {
         if ($assetSourceId->value !== 'neos') {
             // We currently only know about collections in the neos asset source
@@ -139,7 +139,7 @@ class AssetSourceContext
                     ),
                     $assetSourceId,
                     Types\AssetCollectionTitle::fromString($assetCollection->getTitle()),
-                    Types\AssetCollectionPath::fromString($assetCollection->getPath()),
+                    Types\AssetCollectionPath::fromString($assetCollection->getPath() ?: '/'),
                 ),
                 $this->assetCollectionRepository->findAll()->toArray()
             )
@@ -154,17 +154,18 @@ class AssetSourceContext
             // We currently only know about collections in the neos asset source
             return null;
         }
-        /** @var HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
-        return $assetCollection ? Types\AssetCollection::create(
-            $id,
-            $assetSourceId,
-            Types\AssetCollectionTitle::fromString($assetCollection->getTitle()),
-            Types\AssetCollectionPath::fromString($assetCollection->getPath()),
-        ) : null;
+        return $assetCollection instanceof HierarchicalAssetCollectionInterface
+            ? Types\AssetCollection::create(
+                $id,
+                $assetSourceId,
+                Types\AssetCollectionTitle::fromString($assetCollection->getTitle()),
+                Types\AssetCollectionPath::fromString($assetCollection->getPath() ?: '/'),
+            )
+            : null;
     }
 
-    public function getTags(?Types\AssetSourceId $assetSourceId): Types\Tags
+    public function getTags(Types\AssetSourceId $assetSourceId): Types\Tags
     {
         if ($assetSourceId->value !== 'neos') {
             // We currently only know about tags in the neos asset source
@@ -189,7 +190,7 @@ class AssetSourceContext
             // We currently only support creating collections in the neos asset source
             return null;
         }
-        /** @var Tag $tag */
+        /** @var ?Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         return $tag ? Types\Tag::create($id, $assetSourceId, TagLabel::fromString($tag->getLabel())) : null;
     }
@@ -201,17 +202,18 @@ class AssetSourceContext
         Types\AssetCollectionTitle $title,
         Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionId $parent
-    ): ?Types\AssetCollection {
+    ): Types\AssetCollection {
         if ($assetSourceId->value !== 'neos') {
-            // We currently only support creating collections in the neos asset source
-            return null;
+            throw new \Exception('We currently only support creating collections in the neos asset source');
         }
 
         /** @var HierarchicalAssetCollectionInterface&AssetCollection $newAssetCollection */
         $newAssetCollection = new AssetCollection($title->value);
         if ($parent) {
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
-            $newAssetCollection->setParent($parentCollection);
+            if ($parentCollection instanceof HierarchicalAssetCollectionInterface) {
+                $newAssetCollection->setParent($parentCollection);
+            }
         }
 
         // FIXME: Multiple asset collections with the same title can exist, but do we want that?
@@ -220,7 +222,7 @@ class AssetSourceContext
             Types\AssetCollectionId::fromString($this->persistenceManager->getIdentifierByObject($newAssetCollection)),
             $assetSourceId,
             Types\AssetCollectionTitle::fromString($newAssetCollection->getTitle()),
-            Types\AssetCollectionPath::fromString($newAssetCollection->getPath()),
+            Types\AssetCollectionPath::fromString($newAssetCollection->getPath() ?: '/'),
         );
     }
 

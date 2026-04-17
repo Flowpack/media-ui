@@ -19,6 +19,7 @@ use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
@@ -42,10 +43,13 @@ class AssetCollectionMutator
     ) {
     }
 
-    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
+    /**
+     * @param array<mixed> $arguments
+     */
+    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): MutationResponseMessage
     {
         try {
-            return $this->translator->translateById(
+            $value = $this->translator->translateById(
                 $id,
                 $arguments,
                 null,
@@ -54,8 +58,10 @@ class AssetCollectionMutator
                 'Flowpack.Media.Ui'
             ) ?? $fallback;
         } catch (\Exception) {
-            return $fallback ?: $id;
+            $value = $fallback ?: $id;
         }
+
+        return MutationResponseMessage::fromString($value);
     }
 
     /**
@@ -125,8 +131,8 @@ class AssetCollectionMutator
     public function updateAssetCollection(
         Types\AssetCollectionId $id,
         Types\AssetSourceId $assetSourceId,
-        Types\AssetCollectionTitle $title = null,
-        Types\TagIds $tagIds = null,
+        ?Types\AssetCollectionTitle $title = null,
+        ?Types\TagIds $tagIds = null,
     ): MutationResult {
         if ($assetSourceId->value !== 'neos') {
             // We currently only support managing collections in the neos asset source
@@ -138,9 +144,8 @@ class AssetCollectionMutator
             ]);
         }
 
-        /** @var AssetCollection&HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
-        if (!$assetCollection) {
+        if (!($assetCollection instanceof AssetCollection && $assetCollection instanceof HierarchicalAssetCollectionInterface)) {
             return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.updateAssetCollection.notFound',
@@ -193,10 +198,13 @@ class AssetCollectionMutator
             ]);
         }
 
-        /** @var AssetCollection $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
-
-        if (!$assetCollection) {
+        if (
+            !(
+                $assetCollection instanceof HierarchicalAssetCollectionInterface
+                && $assetCollection instanceof AssetCollection
+            )
+        ) {
             return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.setAssetCollectionParent.notFound',
@@ -205,11 +213,9 @@ class AssetCollectionMutator
             ]);
         }
 
-        /** @var HierarchicalAssetCollectionInterface $assetCollection */
         if ($parent) {
-            /** @var HierarchicalAssetCollectionInterface $parentCollection */
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
-            if (!$parentCollection) {
+            if (!$parentCollection instanceof HierarchicalAssetCollectionInterface) {
                 return MutationResult::fromError([
                     $this->localizedMessage(
                         'actions.setAssetCollectionParent.parentNotFound',

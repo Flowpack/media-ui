@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Flowpack\Media\Ui\GraphQL\Types;
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
+use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Wwwision\Types\Attributes\Description;
 
 /**
@@ -37,6 +39,21 @@ final class Asset
             $assetProxy->getWidthInPixels(),
             $assetProxy->getHeightInPixels(),
             LocalAssetId::fromAssetProxy($assetProxy),
+        );
+    }
+
+    public static function fromAsset(AssetInterface $asset, AssetSourceInterface $assetSource): self
+    {
+        if (!method_exists($asset, 'getIdentifier')) {
+            throw new \Exception('Asset implementations must implement getIdentifier(), whatever the interfaces says', 1776326064);
+        }
+        return new self(
+            AssetId::fromString($asset->getIdentifier()),
+            Filename::fromString($asset->getResource()->getFilename()),
+            AssetSource::fromAssetSource($assetSource),
+            method_exists($asset, 'getWidth') ? $asset->getWidth() : null,
+            method_exists($asset, 'getHeight') ? $asset->getHeight() : null,
+            LocalAssetId::fromAsset($asset),
         );
     }
 }

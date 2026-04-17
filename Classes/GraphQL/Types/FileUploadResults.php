@@ -7,19 +7,22 @@ namespace Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<FileUploadResult>
+ */
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: FileUploadResult::class)]
 final class FileUploadResults implements \IteratorAggregate, \JsonSerializable
 {
     /**
-     * @param array<string, FileUploadResult> $values
+     * @param array<FileUploadResult> $values
      */
     private function __construct(public readonly array $values)
     {
     }
 
     /**
-     * @param array<string, FileUploadResult> $results
+     * @param array<FileUploadResult> $results
      */
     public static function fromArray(array $results): self
     {

@@ -164,7 +164,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
     {
         $fileContent = Files::getFileContents(__DIR__ . '/Fixtures/norman.svg');
         return instantiate(Types\UploadedFile::class, [
-            'streamOrFile' => $fileContent,
+            'streamOrFile' => (string)$fileContent,
             'size' => strlen($fileContent),
             'clientMediaType' => 'image/svg+xml',
             'clientFilename' => 'test.svg',

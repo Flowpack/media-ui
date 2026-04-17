@@ -28,6 +28,9 @@ final class UsageMetadataSchema implements \JsonSerializable
     public const TYPE_URL = 'URL';
     public const TYPE_JSON = 'JSON';
     public const VALID_TYPES = [self::TYPE_TEXT, self::TYPE_DATE, self::TYPE_DATETIME, self::TYPE_URL, self::TYPE_JSON];
+    /**
+     * @var array<string,array<string,mixed>>
+     */
     private array $metadata;
 
     public function withMetadata(string $name, string $label, string $type): self
@@ -43,16 +46,25 @@ final class UsageMetadataSchema implements \JsonSerializable
         return $this;
     }
 
+    /**
+     * @return array<string,array<string,mixed>>
+     */
     public function getMetadata(): array
     {
         return $this->metadata;
     }
 
+    /**
+     * @return array<int,array<string,mixed>>
+     */
     public function jsonSerialize(): array
     {
         return $this->toArray();
     }
 
+    /**
+     * @return array<int,array<string,mixed>>
+     */
     public function toArray(): array
     {
         return array_values($this->metadata);

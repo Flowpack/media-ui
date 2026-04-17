@@ -93,7 +93,7 @@ class AssetResolver
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
         // TODO: Find better way to make sure the asset originates from somewhere outside Neos
-        return $assetProxy?->getLocalAssetIdentifier() && $assetProxy?->getAssetSource()->getIdentifier() !== 'neos';
+        return $assetProxy?->getLocalAssetIdentifier() && $assetProxy->getAssetSource()->getIdentifier() !== 'neos';
     }
 
     /**
@@ -161,7 +161,7 @@ class AssetResolver
     public function lastModified(Types\Asset $asset): ?string
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
-        return $assetProxy?->getLastModified() ? $assetProxy?->getLastModified()->format(DATE_W3C) : null;
+        return $assetProxy?->getLastModified()?->format(DATE_W3C);
     }
 
     public function tags(Types\Asset $asset): Types\Tags

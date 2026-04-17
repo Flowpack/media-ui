@@ -28,6 +28,9 @@ final class FileUploadResult implements \JsonSerializable
         return new self(false, $result);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function jsonSerialize(): array
     {
         return [

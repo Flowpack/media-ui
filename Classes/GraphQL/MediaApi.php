@@ -52,6 +52,9 @@ use function Wwwision\Types\instantiate;
 #[Flow\Scope('singleton')]
 final class MediaApi
 {
+    /**
+     * @phpstan-var array<string,mixed>
+     */
     #[Flow\InjectConfiguration]
     protected array $settings = [];
 
@@ -184,7 +187,7 @@ final class MediaApi
         Types\AssetCollectionId $id,
         Types\AssetSourceId $assetSourceId
     ): ?Types\AssetCollection {
-        return $id ? $this->assetSourceContext->getAssetCollection($id, $assetSourceId) : null;
+        return $this->assetSourceContext->getAssetCollection($id, $assetSourceId);
     }
 
     #[Description('Returns an asset by id')]
@@ -222,9 +225,13 @@ final class MediaApi
     protected function getMaximumFileUploadSize(): int
     {
         try {
+            /** @var string $postMaxSize */
+            $postMaxSize = ini_get('post_max_size');
+            /** @var string $uploadMaxSize */
+            $uploadMaxSize = ini_get('upload_max_filesize');
             return (int)min(
-                Files::sizeStringToBytes(ini_get('post_max_size')),
-                Files::sizeStringToBytes(ini_get('upload_max_filesize'))
+                Files::sizeStringToBytes($postMaxSize),
+                Files::sizeStringToBytes($uploadMaxSize),
             );
         } catch (FilesException) {
             return 0;
@@ -382,7 +389,7 @@ final class MediaApi
         Types\AssetCollectionTitle $title,
         Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionId $parent = null,
-    ): ?Types\AssetCollection {
+    ): Types\AssetCollection {
         return $this->assetCollectionMutator->createAssetCollection(
             $title,
             $assetSourceId,
