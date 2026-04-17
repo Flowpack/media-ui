@@ -28,7 +28,6 @@ use Neos\Media\Domain\Service\AssetService;
 use Neos\MetaData\ConfigurationProvider\ArrayMetaDataConfigurationProvider;
 use Neos\MetaData\Domain\Dto\MetaDataConfiguration;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyName;
-use Neos\MetaData\Domain\Dto\MetaDataPropertyValue;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyValues;
 use Neos\MetaData\MetaDataManager;
 use Neos\Neos\Controller\Module\AbstractModuleController;
