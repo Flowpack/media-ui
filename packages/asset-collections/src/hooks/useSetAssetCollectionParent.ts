@@ -5,12 +5,14 @@ import { SET_ASSET_COLLECTION_PARENT } from '../mutations/setAssetCollectionPare
 
 interface SetAssetCollectionParentProps {
     assetCollection: AssetCollection;
+    assetSourceId: AssetSourceId;
     parent: AssetCollection | null;
 }
 
 interface SetAssetCollectionParentVariables {
-    id: string;
-    parent?: string;
+    id: AssetCollectionId;
+    assetSourceId: AssetSourceId;
+    parent?: AssetCollectionId;
 }
 
 export function useSetAssetCollectionParent() {
@@ -20,10 +22,11 @@ export function useSetAssetCollectionParent() {
     >(SET_ASSET_COLLECTION_PARENT);
 
     const setAssetCollectionParent = useCallback(
-        ({ assetCollection, parent }: SetAssetCollectionParentProps) =>
+        ({ assetCollection, assetSourceId, parent }: SetAssetCollectionParentProps) =>
             action({
                 variables: {
                     id: assetCollection.id,
+                    assetSourceId,
                     parent: parent?.id,
                 },
                 optimisticResponse: {

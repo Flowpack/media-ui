@@ -14,12 +14,15 @@ import {
 import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
 
 import * as classes from './ParentCollectionSelectBox.module.css';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { useRecoilValue } from 'recoil';
 
 const ParentCollectionSelectBox = () => {
     const Notify = useNotify();
     const { translate } = useIntl();
     const { approvalAttainmentStrategy } = useMediaUi();
-    const { assetCollections } = useAssetCollectionsQuery();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const selectedAssetCollection = useSelectedAssetCollection();
     const { setAssetCollectionParent, loading } = useSetAssetCollectionParent();
     const [searchTerm, setSearchTerm] = useState('');
@@ -54,6 +57,7 @@ const ParentCollectionSelectBox = () => {
             if (canMoveCollection && parentCollectionId !== selectedAssetCollection.parent?.id) {
                 setAssetCollectionParent({
                     assetCollection: selectedAssetCollection,
+                    assetSourceId: selectedAssetSourceId,
                     parent: parentCollectionId ? assetCollections.find((c) => c.id === parentCollectionId) : null,
                 })
                     .then(() => {
@@ -79,6 +83,7 @@ const ParentCollectionSelectBox = () => {
             approvalAttainmentStrategy,
             selectedAssetCollection,
             setAssetCollectionParent,
+            selectedAssetSourceId,
             assetCollections,
             Notify,
             translate,

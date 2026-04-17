@@ -8,16 +8,17 @@ import TAGS from '../queries/tags';
 import DELETE_TAG from '../mutations/deleteTag';
 
 interface DeleteTagVariables {
-    id: string;
+    id: TagId;
+    assetSourceId: AssetSourceId;
 }
 
 export default function useDeleteTag() {
     const [action, { error, data }] = useMutation<{ deleteTag: MutationResult }, DeleteTagVariables>(DELETE_TAG);
     const [selectedTagId, setSelectedTagId] = useRecoilState(selectedTagIdState);
 
-    const deleteTag = (id: string) =>
+    const deleteTag = (id: TagId, assetSourceId: AssetSourceId) =>
         action({
-            variables: { id },
+            variables: { id, assetSourceId },
             optimisticResponse: {
                 deleteTag: {
                     success: true,

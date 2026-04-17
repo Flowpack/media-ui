@@ -4,21 +4,24 @@ import UPDATE_TAG from '../mutations/updateTag';
 
 interface UpdateTagProps {
     tag: Tag;
-    label?: string;
+    assetSourceId: AssetSourceId;
+    label?: TagLabel;
 }
 
 interface UpdateTagVariables {
-    id: string;
-    label?: string;
+    id: TagId;
+    assetSourceId: AssetSourceId;
+    label?: TagLabel;
 }
 
 export default function useUpdateTag() {
     const [action, { error, data, loading }] = useMutation<{ updateTag: Tag }, UpdateTagVariables>(UPDATE_TAG);
 
-    const updateTag = ({ tag, label }: UpdateTagProps) =>
+    const updateTag = ({ tag, assetSourceId, label }: UpdateTagProps) =>
         action({
             variables: {
                 id: tag.id,
+                assetSourceId,
                 label,
             },
             optimisticResponse: {

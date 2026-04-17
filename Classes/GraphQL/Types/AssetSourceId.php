@@ -17,6 +17,11 @@ final class AssetSourceId implements \JsonSerializable, \Stringable
     {
     }
 
+    public static function fromString(string $value): self
+    {
+        return new self($value);
+    }
+
     public function jsonSerialize(): string
     {
         return $this->value;
@@ -27,13 +32,13 @@ final class AssetSourceId implements \JsonSerializable, \Stringable
         return new self('neos');
     }
 
-    public static function fromString(string $value): self
-    {
-        return new self($value);
-    }
-
     public function __toString(): string
     {
         return $this->value;
+    }
+
+    public function equals(?self $assetSourceId): bool
+    {
+        return $assetSourceId && $this->value === $assetSourceId->value;
     }
 }

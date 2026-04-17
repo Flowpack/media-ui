@@ -46,21 +46,43 @@ class TagMutator
     /**
      * @param array<mixed> $arguments
      */
-    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
+    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): MutationResponseMessage
     {
         try {
-            return $this->translator->translateById($id, $arguments, null, null, 'Main',
-                'Flowpack.Media.Ui') ?? $fallback;
+            $value = $this->translator->translateById(
+                $id,
+                $arguments,
+                null,
+                null,
+                'Main',
+                'Flowpack.Media.Ui'
+            ) ?? $fallback;
         } catch (\Exception) {
-            return $fallback ?: $id;
+            $value = $fallback ?: $id;
         }
+
+        return instantiate(
+            MutationResponseMessage::class,
+            $value,
+        );
     }
 
     /**
      * @throws Exception|IllegalObjectTypeException
      */
-    public function createTag(Types\TagLabel $label, ?Types\AssetCollectionId $assetCollectionId = null): Types\Tag
-    {
+    public function createTag(
+        Types\TagLabel $label,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\AssetCollectionId $assetCollectionId = null,
+    ): Types\Tag {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support managing tags in the neos asset source
+            throw new Exception(
+                $this->localizedMessage('actions.assetSourceNotSupported', 'Asset source not supported')->value,
+                1776332600
+            );
+        }
+
         /** @var ?Tag $tag */
         $tag = $this->tagRepository->findOneByLabel($label->value);
         if ($tag === null) {
@@ -79,17 +101,25 @@ class TagMutator
                 throw new Exception('Asset collection not found', 1603921193);
             }
         }
-        return instantiate(Types\Tag::class, [
-            'id' => $this->persistenceManager->getIdentifierByObject($tag),
-            'label' => $tag->getLabel(),
-        ]);
+        return Types\Tag::create(
+            Types\TagId::fromString($this->persistenceManager->getIdentifierByObject($tag)),
+            $assetSourceId,
+            Types\TagLabel::fromString($tag->getLabel()),
+        );
     }
 
     /**
      * @throws Exception|IllegalObjectTypeException
      */
-    public function updateTag(Types\TagId $id, ?Types\TagLabel $label = null): Types\Tag
-    {
+    public function updateTag(
+        Types\TagId $id,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagLabel $label = null
+    ): Types\Tag {
+        if ($assetSourceId->value !== 'neos') {
+            throw new \Exception('We currently only support managing tags in the neos asset source');
+        }
+
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag instanceof Tag) {
             throw new Exception('Tag not found', 1590659046);
@@ -101,26 +131,31 @@ class TagMutator
 
         $this->tagRepository->update($tag);
 
-        return instantiate(Types\Tag::class, [
-            'id' => $this->persistenceManager->getIdentifierByObject($tag),
-            'label' => $tag->getLabel(),
-        ]);
+        return Types\Tag::create(
+            Types\TagId::fromString($this->persistenceManager->getIdentifierByObject($tag)),
+            $assetSourceId,
+            Types\TagLabel::fromString($tag->getLabel()),
+        );
     }
 
     /**
      * @throws Exception|IllegalObjectTypeException|InvalidQueryException
      */
-    public function deleteTag(Types\TagId $id): MutationResult
-    {
+    public function deleteTag(
+        Types\TagId $id,
+        Types\AssetSourceId $assetSourceId
+    ): MutationResult {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support managing tags in the neos asset source
+            return MutationResult::fromError([
+                $this->localizedMessage('actions.assetSourceNotSupported', 'Asset source not supported')
+            ]);
+        }
+
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag instanceof Tag) {
             return MutationResult::fromError([
-                instantiate(
-                    MutationResponseMessage::class,
-                    [
-                        'value' => $this->localizedMessage('actions.deleteTag.notFound', 'Tag not found')
-                    ]
-                ),
+                $this->localizedMessage('actions.deleteTag.notFound', 'Tag not found'),
             ]);
         }
 

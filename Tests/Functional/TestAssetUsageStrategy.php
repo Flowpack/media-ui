@@ -15,6 +15,7 @@ namespace Flowpack\Media\Ui\Tests\Functional;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\Dto\UsageReference;
 use Neos\Media\Domain\Strategy\AbstractAssetUsageStrategy;
@@ -51,30 +52,28 @@ class TestAssetUsageStrategy extends AbstractAssetUsageStrategy
 
     /**
      * Mark an asset as being used
-     *
-     * @param AssetInterface $asset
-     * @return void
      */
     public function markAssetAsUsed(AssetInterface $asset): void
     {
+        if (!$asset instanceof Asset) {
+            throw new \InvalidArgumentException('Only Asset entities can be marked as used in TestAssetUsageStrategy');
+        }
         $this->usedAssets[$asset->getIdentifier()] = $asset;
     }
 
     /**
      * Mark an asset as not being used
-     *
-     * @param AssetInterface $asset
-     * @return void
      */
     public function markAssetAsUnused(AssetInterface $asset): void
     {
+        if (!$asset instanceof Asset) {
+            throw new \InvalidArgumentException('Only Asset entities can be marked as used in TestAssetUsageStrategy');
+        }
         unset($this->usedAssets[$asset->getIdentifier()]);
     }
 
     /**
      * Reset all usage markings
-     *
-     * @return void
      */
     public function reset(): void
     {
@@ -84,15 +83,16 @@ class TestAssetUsageStrategy extends AbstractAssetUsageStrategy
     /**
      * Returns an array of usage reference objects.
      *
-     * @param AssetInterface $asset
-     * @return array<\Neos\Media\Domain\Model\Dto\UsageReference>
+     * @return array<UsageReference>
      */
     public function getUsageReferences(AssetInterface $asset): array
     {
+        if (!$asset instanceof Asset) {
+            throw new \InvalidArgumentException('Only Asset entities can be marked as used in TestAssetUsageStrategy');
+        }
         if (isset($this->usedAssets[$asset->getIdentifier()])) {
             return [new UsageReference($asset)];
         }
-
         return [];
     }
 }

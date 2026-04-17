@@ -1,1 +1,1 @@
-require('./manifest');
+import('./manifest');

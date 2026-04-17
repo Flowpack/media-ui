@@ -6,8 +6,9 @@ import TAGS from '../queries/tags';
 import CREATE_TAG from '../mutations/createTag';
 
 interface CreateTagVariables {
-    label: string;
-    assetCollectionId?: string;
+    label: TagLabel;
+    assetSourceId: AssetSourceId;
+    assetCollectionId?: AssetCollectionId;
 }
 
 export default function useCreateTag() {
@@ -15,9 +16,9 @@ export default function useCreateTag() {
         CREATE_TAG
     );
 
-    const createTag = (label: string, assetCollectionId?: string) =>
+    const createTag = (label: TagLabel, assetSourceId: AssetSourceId, assetCollectionId?: AssetCollectionId) =>
         action({
-            variables: { label, assetCollectionId },
+            variables: { label, assetSourceId, assetCollectionId },
             // FIXME: Optimistic response has to be adjusted as we don't know the id of the created tag
             // optimisticResponse: {
             //     __typename: 'Mutation',

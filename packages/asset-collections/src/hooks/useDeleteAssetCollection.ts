@@ -4,7 +4,8 @@ import { ASSET_COLLECTIONS } from '../queries/assetCollections';
 import { DELETE_ASSET_COLLECTION } from '../mutations/deleteAssetCollection';
 
 interface DeleteAssetCollectionVariables {
-    id: string;
+    id: AssetCollectionId;
+    assetSourceId: AssetSourceId;
 }
 
 export default function useDeleteAssetCollection() {
@@ -13,10 +14,11 @@ export default function useDeleteAssetCollection() {
         DeleteAssetCollectionVariables
     >(DELETE_ASSET_COLLECTION);
 
-    const deleteAssetCollection = (id: string) =>
+    const deleteAssetCollection = (id: AssetCollectionId, assetSourceId: AssetSourceId) =>
         action({
             variables: {
                 id,
+                assetSourceId,
             },
             optimisticResponse: {
                 deleteAssetCollection: {

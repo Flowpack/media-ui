@@ -47,11 +47,11 @@ class AssetCollectionRepositoryTest extends AbstractMediaTestCase
      */
     public function parentRemoveRemovesCompleteHierarchy(): void
     {
-        /** @var HierarchicalAssetCollectionInterface $grandchild */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $grandchild */
         $grandchild = new AssetCollection('grandChild');
-        /** @var HierarchicalAssetCollectionInterface $child */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $child */
         $child = new AssetCollection('child');
-        /** @var HierarchicalAssetCollectionInterface $parent */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $parent */
         $parent = new AssetCollection('parent');
         $child->setParent($parent);
         $grandchild->setParent($child);

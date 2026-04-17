@@ -29,6 +29,8 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
      */
     protected static $testablePersistenceEnabled = true;
 
+    protected MediaApi $mediaApi;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -45,12 +47,14 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
     {
         $assetCollection = $this->mediaApi->createAssetCollection(
             Types\AssetCollectionTitle::fromString('Test Collection'),
+            Types\AssetSourceId::default(),
         );
         $this->assertInstanceOf(Types\AssetCollection::class, $assetCollection);
         $this->assertEquals('Test Collection', $assetCollection->title->value);
 
         $childCollection = $this->mediaApi->createAssetCollection(
             Types\AssetCollectionTitle::fromString('Child Collection'),
+            Types\AssetSourceId::default(),
             $assetCollection->id,
         );
 
@@ -59,7 +63,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
 
         $this->persist();
 
-        $assetCollections = $this->mediaApi->assetCollections();
+        $assetCollections = $this->mediaApi->assetCollections(Types\AssetSourceId::default());
         $this->assertNotEmpty($assetCollections->collections);
 
         // Assert that the created asset collection is in the list of asset collections
@@ -77,20 +81,24 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
     {
         $assetCollection = $this->mediaApi->createAssetCollection(
             Types\AssetCollectionTitle::fromString('Test Collection'),
+            Types\AssetSourceId::default(),
         );
+        $result = $this->mediaApi->deleteAssetCollection($assetCollection->id, Types\AssetSourceId::default());
 
-        $result = $this->mediaApi->deleteAssetCollection($assetCollection->id);
         $this->assertTrue($result->success);
 
         $this->persist();
 
-        $deletedAssetCollection = $this->mediaApi->assetCollection($assetCollection->id);
-        $this->assertNull($deletedAssetCollection);
+        $assetCollection = $this->mediaApi->assetCollection($assetCollection->id, Types\AssetSourceId::default());
+        $this->assertNull($assetCollection);
     }
 
     public function testDeleteNonExistingAssetCollection(): void
     {
-        $result = $this->mediaApi->deleteAssetCollection(Types\AssetCollectionId::fromString('non-existing-id'));
+        $result = $this->mediaApi->deleteAssetCollection(
+            Types\AssetCollectionId::fromString('non-existing-id'),
+            Types\AssetSourceId::default(),
+        );
 
         $this->assertFalse($result->success);
     }
@@ -99,15 +107,20 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
     {
         $assetCollection = $this->mediaApi->createAssetCollection(
             Types\AssetCollectionTitle::fromString('Test Collection'),
+            Types\AssetSourceId::default(),
         );
         $result = $this->mediaApi->updateAssetCollection(
             $assetCollection->id,
+            Types\AssetSourceId::default(),
             Types\AssetCollectionTitle::fromString('Updated Collection'),
         );
 
         $this->assertTrue($result->success);
 
-        $updatedAssetCollection = $this->mediaApi->assetCollection($assetCollection->id);
+        $updatedAssetCollection = $this->mediaApi->assetCollection(
+            $assetCollection->id,
+            Types\AssetSourceId::default()
+        );
 
         $this->assertEquals('Updated Collection', $updatedAssetCollection->title->value);
     }
@@ -116,25 +129,29 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
     {
         $parentCollection = $this->mediaApi->createAssetCollection(
             Types\AssetCollectionTitle::fromString('Parent Collection'),
+            Types\AssetSourceId::default(),
         );
         $childCollection = $this->mediaApi->createAssetCollection(
             Types\AssetCollectionTitle::fromString('Child Collection'),
+            Types\AssetSourceId::default(),
         );
 
         $result = $this->mediaApi->setAssetCollectionParent(
             $childCollection->id,
+            Types\AssetSourceId::default(),
             $parentCollection->id,
         );
         $this->assertTrue($result->success);
 
-        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id);
+        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default(),);
         $this->assertTrue(str_starts_with($updatedChildCollection->path->value, $parentCollection->path->value));
 
         $this->mediaApi->setAssetCollectionParent(
             $childCollection->id,
+            Types\AssetSourceId::default(),
         );
 
-        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id);
+        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default(),);
         $this->assertEquals($childCollection->path->value, $updatedChildCollection->path->value);
     }
 }
