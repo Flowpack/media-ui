@@ -74,17 +74,18 @@ const Tasks: React.FC = () => {
                         menuItemClassName={menuItemClasses.menuItem}
                         menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
                     />
-                ) : <>
-                    {
-                        applicationContext !== 'details' &&
-                        <DeleteAssetButton
-                            asset={selectedAsset}
-                            variant="menuItem"
-                            menuItemClassName={menuItemClasses.menuItem}
-                            menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
-                        />
-                    }
-                </>}
+                ) : (
+                    <>
+                        {applicationContext !== 'details' && (
+                            <DeleteAssetButton
+                                asset={selectedAsset}
+                                variant="menuItem"
+                                menuItemClassName={menuItemClasses.menuItem}
+                                menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
+                            />
+                        )}
+                    </>
+                )}
                 {isMultiSelection ? (
                     <li className={menuItemClasses.menuItem} onClick={() => toggleAllClipboardState(!allInClipboard)}>
                         <Icon icon={allInClipboard ? 'clipboard-check' : 'clipboard'} />

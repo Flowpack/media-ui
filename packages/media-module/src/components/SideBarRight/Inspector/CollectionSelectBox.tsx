@@ -175,10 +175,17 @@ const CollectionSelectBox: React.FC = () => {
 
     return (
         <div className="collectionSelectBox">
-            {isMultiSelection || limitToSingleAssetCollectionPerAsset ? (
+            {limitToSingleAssetCollectionPerAsset ? (
                 <>
                     <Headline type="h2">
-                        <IconLabel icon="folder" label={translate('inspector.assetCollection', 'Collection')} />
+                        <IconLabel
+                            icon="folder"
+                            label={
+                                isMultiSelection
+                                    ? translate('inspector.collections.multiPlaceholder', 'Move to other collection')
+                                    : translate('inspector.assetCollection', 'Collection')
+                            }
+                        />
                     </Headline>
                     <SelectBox
                         className={classes.collectionSelectBox}
@@ -208,26 +215,33 @@ const CollectionSelectBox: React.FC = () => {
                 </>
             ) : (
                 <>
-                    <Headline type="h2">
-                        <IconLabel icon="folder" label={translate('inspector.assetCollections', 'Collections')} />
-                    </Headline>
-                    <MultiSelectBox
-                        className={classes.collectionSelectBox}
-                        disabled={loading || selectedAsset.assetSource.readOnly}
-                        placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
-                        values={selectedAssetCollectionIds}
-                        optionValueField="id"
-                        options={selectBoxOptions}
-                        searchOptions={filteredSelectBoxOptions}
-                        noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
-                        onValuesChange={handleChange}
-                        onSearchTermChange={handleSearchTermChange}
-                        ListPreviewElement={AssetCollectionOptionPreviewElement}
-                        displaySearchBox
-                        allowEmpty={!config.defaultAssetCollectionId}
-                        threshold={0}
-                        allowDragging={false}
-                    />
+                    {!isMultiSelection && (
+                        <>
+                            <Headline type="h2">
+                                <IconLabel
+                                    icon="folder"
+                                    label={translate('inspector.assetCollections', 'Collections')}
+                                />
+                            </Headline>
+                            <MultiSelectBox
+                                className={classes.collectionSelectBox}
+                                disabled={loading || selectedAsset.assetSource.readOnly}
+                                placeholder={translate('inspector.collections.placeholder', 'Select a collection')}
+                                values={selectedAssetCollectionIds}
+                                optionValueField="id"
+                                options={selectBoxOptions}
+                                searchOptions={filteredSelectBoxOptions}
+                                noMatchesFoundLabel={translate('general.noMatchesFound', 'No matches found')}
+                                onValuesChange={handleChange}
+                                onSearchTermChange={handleSearchTermChange}
+                                ListPreviewElement={AssetCollectionOptionPreviewElement}
+                                displaySearchBox
+                                allowEmpty={!config.defaultAssetCollectionId}
+                                threshold={0}
+                                allowDragging={false}
+                            />
+                        </>
+                    )}
                 </>
             )}
         </div>
