@@ -178,7 +178,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 });
                 return asset;
             },
-            setAssetCollectionParent: ($_, { id, parent }: { id: string; parent: string }): boolean => {
+            setAssetCollectionParent: (
+                $_,
+                { id, assetSourceId, parent }: { id: string; assetSourceId: string; parent: string }
+            ): boolean => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
                 const parentCollection = assetCollections.find((assetCollection) => assetCollection.id === parent);
                 if (!assetCollection || !parentCollection) return false;
@@ -195,6 +198,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 assetCollection.parent = {
                     __typename: 'AssetCollectionParent',
                     id: parentCollection.id,
+                    assetSourceId: parentCollection.assetSourceId,
                     title: parentCollection.title,
                 };
                 return true;
@@ -233,6 +237,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                         ? {
                               __typename: 'AssetCollectionParent',
                               id: parentCollection.id,
+                              assetSourceId: 'neos',
                               title: parentCollection.title,
                           }
                         : null,

@@ -8,9 +8,11 @@ import { useConfigQuery, useSelectedAsset, useSetAssetCollections } from '@media
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState } from '@media-ui/core/src/state';
 import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+
+import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
 
 import * as classes from './CollectionSelectBox.module.css';
-import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
 
 const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
     return assetCollectionIds.join(',') === asset.collections.map((collection) => collection.id).join(',');
@@ -23,7 +25,8 @@ const CollectionSelectBox: React.FC = () => {
     const {
         approvalAttainmentStrategy: { obtainApprovalToSetAssetCollections },
     } = useMediaUi();
-    const { assetCollections } = useAssetCollectionsQuery();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const { setAssetCollections, loading } = useSetAssetCollections();
     const selectedAsset = useSelectedAsset();
     const { limitToSingleAssetCollectionPerAsset } = useRecoilValue(featureFlagsState);

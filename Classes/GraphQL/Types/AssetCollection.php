@@ -15,7 +15,6 @@ final class AssetCollection
         public readonly AssetCollectionId $id,
         public readonly AssetSourceId $assetSourceId,
         public readonly AssetCollectionTitle $title,
-        public readonly ?AssetCollectionPath $path = null,
     ) {
     }
 
@@ -23,8 +22,12 @@ final class AssetCollection
         AssetCollectionId $id,
         AssetSourceId $assetSourceId,
         AssetCollectionTitle $title,
-        ?AssetCollectionPath $path = null,
     ): self {
-        return new self($id, $assetSourceId, $title, $path);
+        return new self($id, $assetSourceId, $title);
+    }
+
+    public function equals(?AssetCollectionParent $other): bool
+    {
+        return $other && $other->id->value === $this->id->value && $other->assetSourceId->value === $this->assetSourceId->value;
     }
 }
