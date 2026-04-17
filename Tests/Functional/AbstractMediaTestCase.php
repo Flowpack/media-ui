@@ -21,6 +21,8 @@ use Neos\Flow\Tests\Behavior\Features\Bootstrap\SecurityOperationsTrait;
 use Neos\Flow\Tests\FunctionalTestCase;
 use Neos\Utility\Files;
 
+use PHPUnit\Framework\Assert;
+
 use function Wwwision\Types\instantiate;
 
 /**
@@ -118,6 +120,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
     {
         $imagePathAndFilename = Files::getUnixStylePath($imagePathAndFilename);
         $hash = sha1_file($imagePathAndFilename);
+        Assert::assertIsString($hash);
         copy($imagePathAndFilename, 'resource://' . $hash);
         return $this->createMockResourceAndPointerFromHash($hash);
     }
@@ -178,6 +181,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      *
      * @return T
      */
+    /** @phpstan-ignore method.unused */
     private function getObject(string $className): object
     {
         return $this->objectManager->get($className);

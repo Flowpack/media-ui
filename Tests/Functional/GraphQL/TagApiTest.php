@@ -20,6 +20,7 @@ use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
+use PHPUnit\Framework\Assert;
 
 /**
  * Testcase for the Media.Ui API
@@ -109,7 +110,8 @@ class TagApiTest extends AbstractMediaTestCase
 
         $this->persistenceManager->persistAll();
         $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
-        $uploadedAsset = $assets->assets[0];
+        $uploadedAsset = $assets?->assets[0];
+        Assert::assertInstanceOf(Types\Asset::class, $uploadedAsset);
 
         $tag = $this->mediaApi->createTag(
             Types\TagLabel::fromString('Test Tag'),

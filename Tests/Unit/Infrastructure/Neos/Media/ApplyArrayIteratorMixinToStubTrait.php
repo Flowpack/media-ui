@@ -18,6 +18,9 @@ use PHPUnit\Framework\MockObject\Stub;
 
 trait ApplyArrayIteratorMixinToStubTrait
 {
+    /**
+     * @param \ArrayIterator<int|string,mixed> $arrayIterator
+     */
     protected function applyArrayIteratorMixinToStub(Stub $stub, \ArrayIterator $arrayIterator): void
     {
         if (!($stub instanceof \Iterator)) {
