@@ -21,6 +21,13 @@ interface AssetDownloadFragment {
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const triggerBrowserDownload = (url: string, filename: string) => {
+    // Test seam: programmatic <a download> clicks hang TestCafe in headless Chrome.
+    const testHook = (window as any).__testTriggerDownload;
+    if (typeof testHook === 'function') {
+        testHook(url, filename);
+        return;
+    }
+
     const anchor = document.createElement('a');
     anchor.href = url;
     anchor.download = filename;

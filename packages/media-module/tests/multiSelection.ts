@@ -11,6 +11,16 @@ const clearClipboardLocalStorage = ClientFunction(() => {
     localStorage.removeItem('flowpack.mediaui.ClipboardState');
 });
 
+// Installs a no-op on the test seam in useDownloadAssets, bypassing the real
+// anchor click which otherwise hangs TestCafe in headless Chrome.
+const installDownloadStub = ClientFunction(() => {
+    (window as any).__testTriggerDownload = () => undefined;
+});
+
+const restoreDownloadStub = ClientFunction(() => {
+    delete (window as any).__testTriggerDownload;
+});
+
 fixture('Multi-Selection').page('./?reset=1');
 
 test('Clicking a thumbnail checkbox adds the asset to the selection', async (t) => {
@@ -207,7 +217,9 @@ test('The Tasks dropdown only shows multi-relevant options when multiple assets 
         .notOk('The single-asset "Rename asset" option is hidden')
         .expect(page.tasksDropdownItem('Replace asset').exists)
         .notOk('The single-asset "Replace asset" option is hidden')
-        .expect(page.tasksDropdownItem('Download asset').exists)
+        .expect(page.tasksDropdownItem('Download assets').exists)
+        .ok('The multi-asset "Download assets" option is shown')
+        .expect(page.tasksDropdownItemExact('Download asset').exists)
         .notOk('The single-asset "Download asset" option is hidden');
 });
 
@@ -261,6 +273,25 @@ test('Bulk-deleting a mix of deletable and in-use assets removes the deletable o
     await t
         .expect(error.some((message) => message.includes('Example asset 2')))
         .ok('An error notification reports "Example asset 2" as the failed asset');
+});
+
+test('Multi-selecting and triggering "Download assets" completes and logs a success toast', async (t) => {
+    await installDownloadStub();
+
+    await t
+        .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
+        .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
+        .click(page.tasksDropdownHeader)
+        .click(page.tasksDropdownItem('Download assets'));
+
+    // Covers the 200 ms inter-download throttle plus the post-loop success toast.
+    await t.wait(1500);
+}).after(async (t) => {
+    const { log } = await t.getBrowserConsoleMessages();
+    await t
+        .expect(log.includes('The assets have been downloaded'))
+        .ok('A success toast confirms the bulk download completed for all selected assets');
+    await restoreDownloadStub();
 });
 
 test('"Copy all to clipboard" adds all selected assets and the toggle shows the new count', async (t) => {
