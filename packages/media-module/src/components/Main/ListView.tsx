@@ -1,7 +1,9 @@
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 import cx from 'classnames';
 
 import { useIntl, useMediaUi } from '@media-ui/core';
+import { applicationContextState } from '@media-ui/core/src/state';
 
 import { ListViewItem } from './index';
 import { useAssetSelection } from '../../hooks';
@@ -15,6 +17,7 @@ interface ListViewProps {
 const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) => {
     const { isInNodeCreationDialog } = useMediaUi();
     const { translate } = useIntl();
+    const applicationContext = useRecoilValue(applicationContextState);
     const { onSelect, onMultiSelect } = useAssetSelection(assetIdentities);
 
     return (
@@ -22,7 +25,7 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
             <table>
                 <thead>
                     <tr>
-                        <th className={classes.tableHeader} />
+                        {applicationContext === 'browser' && <th className={classes.tableHeader} />}
                         <th className={classes.tableHeader} />
                         <th className={classes.tableHeader}>{translate('thumbnailView.header.name', 'Name')}</th>
                         <th className={classes.tableHeader}>

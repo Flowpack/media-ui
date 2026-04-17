@@ -6,7 +6,7 @@ import { Icon } from '@neos-project/react-ui-components';
 
 import { useMediaUi } from '@media-ui/core';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
-import { isFocusedAssetState, isAssetSelectedState } from '@media-ui/core/src/state';
+import { applicationContextState, isFocusedAssetState, isAssetSelectedState } from '@media-ui/core/src/state';
 import { AssetLabel, Badge } from '@media-ui/core/src/components';
 
 import { AssetActions } from './index';
@@ -23,19 +23,21 @@ interface ThumbnailProps {
 const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect, onMultiSelect }: ThumbnailProps) => {
     const { dummyImage, isAssetSelectable, selectionMode } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
+    const applicationContext = useRecoilValue(applicationContextState);
     const isSelected = useRecoilValue(isFocusedAssetState(assetIdentity.assetId));
     const isMultiSelected = useRecoilValue(isAssetSelectedState(assetIdentity.assetId));
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
+    const isBrowserContext = applicationContext === 'browser';
 
     const handlePictureClick = useCallback(
         (event: React.MouseEvent) => {
-            if (event.ctrlKey || event.metaKey || event.shiftKey) {
+            if (isBrowserContext && (event.ctrlKey || event.metaKey || event.shiftKey)) {
                 onMultiSelect(assetIdentity, event);
             } else {
                 onSelect(assetIdentity, isSelected && !selectionMode);
             }
         },
-        [assetIdentity, isSelected, selectionMode, onSelect, onMultiSelect]
+        [assetIdentity, isSelected, selectionMode, isBrowserContext, onSelect, onMultiSelect]
     );
 
     const handleCheckboxClick = useCallback(
@@ -52,10 +54,12 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect, onMultiS
             className={cx(classes.thumbnail, !canBeSelected && classes.disabled, isMultiSelected && classes.selected)}
             title={asset?.label}
         >
-            <label className={cx('neos-checkbox', classes.checkbox)} onClick={handleCheckboxClick}>
-                <input type="checkbox" checked={isMultiSelected} readOnly />
-                <span></span>
-            </label>
+            {isBrowserContext && (
+                <label className={cx('neos-checkbox', classes.checkbox)} onClick={handleCheckboxClick}>
+                    <input type="checkbox" checked={isMultiSelected} readOnly />
+                    <span></span>
+                </label>
+            )}
             <picture onClick={handlePictureClick} className={classes.picture}>
                 <img src={loading || !asset ? dummyImage : asset.thumbnailUrl} alt={asset?.label} />
             </picture>

@@ -6,7 +6,7 @@ import { Icon } from '@neos-project/react-ui-components';
 
 import { useMediaUi } from '@media-ui/core';
 import { useAssetQuery } from '@media-ui/core/src/hooks';
-import { isAssetSelectedState } from '@media-ui/core/src/state';
+import { applicationContextState, isAssetSelectedState } from '@media-ui/core/src/state';
 import { humanFileSize } from '@media-ui/core/src/helper';
 import { AssetLabel } from '@media-ui/core/src/components';
 
@@ -31,19 +31,21 @@ interface ListViewItemProps {
 const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect, onMultiSelect }: ListViewItemProps) => {
     const { dummyImage, isAssetSelectable, selectionMode } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
+    const applicationContext = useRecoilValue(applicationContextState);
     const isMultiSelected = useRecoilValue(isAssetSelectedState(assetIdentity.assetId));
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
+    const isBrowserContext = applicationContext === 'browser';
 
     const handleClick = useCallback(
         (event: React.MouseEvent, openPreview: boolean) => {
-            if (event.ctrlKey || event.metaKey || event.shiftKey) {
+            if (isBrowserContext && (event.ctrlKey || event.metaKey || event.shiftKey)) {
                 event.preventDefault();
                 onMultiSelect(assetIdentity, event);
             } else {
                 onSelect(assetIdentity, openPreview);
             }
         },
-        [onSelect, onMultiSelect, assetIdentity]
+        [onSelect, onMultiSelect, assetIdentity, isBrowserContext]
     );
 
     const handleRowClick = useCallback((event: React.MouseEvent) => handleClick(event, false), [handleClick]);
@@ -67,23 +69,28 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect, on
 
     return (
         <tr className={cx(classes.listViewItem, isMultiSelected && classes.selected)}>
-            <td className={classes.checkboxColumn} onClick={handleCheckboxClick}>
-                <label className="neos-checkbox">
-                    <input
-                        type="checkbox"
-                        checked={isMultiSelected}
-                        onChange={() => onMultiSelect(assetIdentity, { shiftKey: false })}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                onMultiSelect(assetIdentity, { shiftKey: e.shiftKey });
-                            }
-                        }}
-                    />
-                    <span></span>
-                </label>
-            </td>
-            <td className={classes.previewColumn} onClick={handlePreviewClick}>
+            {isBrowserContext && (
+                <td className={classes.checkboxColumn} onClick={handleCheckboxClick}>
+                    <label className="neos-checkbox">
+                        <input
+                            type="checkbox"
+                            checked={isMultiSelected}
+                            onChange={() => onMultiSelect(assetIdentity, { shiftKey: false })}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    onMultiSelect(assetIdentity, { shiftKey: e.shiftKey });
+                                }
+                            }}
+                        />
+                        <span></span>
+                    </label>
+                </td>
+            )}
+            <td
+                className={cx(classes.previewColumn, !isBrowserContext && classes.previewColumnFirst)}
+                onClick={handlePreviewClick}
+            >
                 <picture>
                     {canBeSelected ? (
                         <img src={asset?.thumbnailUrl || dummyImage} alt={asset?.label} width={40} height={36} />

@@ -63,6 +63,10 @@
     user-select: none;
 }
 
+.previewColumnFirst {
+    padding-left: var(--theme-spacing-Half);
+}
+
 .previewColumn picture {
     display: block;
     width: 100%;
