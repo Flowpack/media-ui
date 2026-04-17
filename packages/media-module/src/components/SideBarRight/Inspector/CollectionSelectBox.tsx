@@ -13,6 +13,7 @@ import {
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import * as classes from './CollectionSelectBox.module.css';
 import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
@@ -30,7 +31,8 @@ const CollectionSelectBox: React.FC = () => {
     const {
         approvalAttainmentStrategy: { obtainApprovalToSetAssetCollections, obtainApprovalToShiftAssetsToCollection },
     } = useMediaUi();
-    const { assetCollections } = useAssetCollectionsQuery();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const { setAssetCollections, loading } = useSetAssetCollections();
     const { getFailedAssetLabels } = useFailedAssetLabels();
     const selectedAsset = useSelectedAsset();

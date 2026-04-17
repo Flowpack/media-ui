@@ -169,7 +169,7 @@ test('Selecting a target collection while multi-selecting opens a confirmation d
         .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
         .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
         .click(page.collectionSelectBox)
-        .click(Selector('div[class*="listPreviewElement"]').withText('Example collection 3'))
+        .click(Selector('[class*="listPreviewElement"]').withText('Example collection 3'))
         .expect(page.confirmDialog.exists)
         .ok('A confirmation dialog appears after selecting a target collection')
         .expect(page.confirmDialog.innerText)
@@ -181,7 +181,7 @@ test('Confirming the move shifts all selected assets to the target collection', 
         .click(page.firstThumbnail.find('.Thumbnail_checkbox'))
         .click(page.thumbnails.nth(1).find('.Thumbnail_checkbox'))
         .click(page.collectionSelectBox)
-        .click(Selector('div[class*="listPreviewElement"]').withText('Example collection 3'))
+        .click(Selector('[class*="listPreviewElement"]').withText('Example collection 3'))
         .click(page.confirmDialogButton('Yes, shift assets'))
         .expect(page.confirmDialog.exists)
         .notOk('The dialog closes after confirmation');
