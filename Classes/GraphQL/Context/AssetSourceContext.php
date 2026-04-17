@@ -139,7 +139,7 @@ class AssetSourceContext
                     ),
                     $assetSourceId,
                     Types\AssetCollectionTitle::fromString($assetCollection->getTitle()),
-                    Types\AssetCollectionPath::fromString($assetCollection->getPath()),
+                    $assetCollection->getPath() ? Types\AssetCollectionPath::fromString($assetCollection->getPath()) : null,
                 ),
                 $this->assetCollectionRepository->findAll()->toArray()
             )
