@@ -4,11 +4,11 @@
     font-size: 0.846em;
     font-weight: bold;
     line-height: 14px;
-    color: #fff;
+    color: var(--theme-colors-ContrastBrightest);
     vertical-align: baseline;
     white-space: nowrap;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    background-color: #999;
+    background-color: var(--theme-colors-ContrastBright);
     border-radius: 3px;
 }
 
@@ -17,21 +17,21 @@
 }
 
 .success {
-    background-color: #46a546;
+    background-color: var(--theme-colors-Success);
 }
 
 .info {
-    background-color: #00adee;
+    background-color: var(--theme-colors-PrimaryBlue);
 }
 
 .warning {
-    background-color: #f89406;
+    background-color: var(--theme-colors-Warn);
 }
 
 .error {
-    background-color: #ff460d;
+    background-color: var(--theme-colors-Error);
 }
 
 .inverse {
-    background-color: #3f3f3f;
+    background-color: var(--theme-grayLight);
 }
