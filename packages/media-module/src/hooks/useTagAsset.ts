@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 
-import { TAG_ASSET } from '../mutations';
+import { TAG_ASSET } from '@media-ui/core/src/mutations';
 
 interface TagAssetProps {
     asset: { id: string; assetSource: { id: string } };

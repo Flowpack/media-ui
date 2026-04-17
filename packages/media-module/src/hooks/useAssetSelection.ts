@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
 
-import { useSelectAsset, useSelectAssets } from '@media-ui/core/src/hooks';
+import { useSelectAsset } from '@media-ui/core/src/hooks';
+import { useSelectAssets } from '@media-ui/media-module/src/hooks';
 import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview';
 
 const useAssetSelection = (assetIdentities: AssetIdentity[]) => {

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { selectedAssetIdsState } from '../state';
+import { selectedAssetIdsState } from '@media-ui/core/src/state';
 
 const useSelectAssets = () => {
     const [selectedAssets, setSelectedAssets] = useRecoilState(selectedAssetIdsState);

@@ -3,7 +3,8 @@ import React, { useCallback } from 'react';
 import { Icon, IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
-import { useDeleteAsset, useFailedAssetLabels } from '@media-ui/core/src/hooks';
+import { useDeleteAsset } from '@media-ui/core/src/hooks';
+import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 
 interface DeleteAssetButtonProps {
     asset?: Asset;

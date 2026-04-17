@@ -5,7 +5,7 @@ import { useApolloClient } from '@apollo/client';
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useFailedAssetLabels, useTagAsset, useUntagAssetById } from '@media-ui/core/src/hooks';
+import { useFailedAssetLabels, useTagAsset, useUntagAssetById } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { selectedAssetIdsState } from '@media-ui/core/src/state';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';

@@ -3,7 +3,8 @@ import React from 'react';
 import { Headline, Icon, IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
-import { useAssetQuery, useSelectAssets } from '@media-ui/core/src/hooks';
+import { useAssetQuery } from '@media-ui/core/src/hooks';
+import { useSelectAssets } from '@media-ui/media-module/src/hooks';
 import { Badge } from '@media-ui/core/src/components';
 
 import classes from './CurrentMultiSelection.module.css';

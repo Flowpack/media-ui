@@ -4,12 +4,8 @@ import { useRecoilValue } from 'recoil';
 import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import {
-    useConfigQuery,
-    useFailedAssetLabels,
-    useSelectedAsset,
-    useSetAssetCollections,
-} from '@media-ui/core/src/hooks';
+import { useConfigQuery, useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
+import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';

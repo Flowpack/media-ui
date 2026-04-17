@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 
-import { UNTAG_ASSET } from '../mutations';
+import { UNTAG_ASSET } from '@media-ui/core/src/mutations';
 
 interface UntagAssetByIdProps {
     asset: { id: string; assetSource: { id: string } };

@@ -5,7 +5,8 @@ import { useApolloClient } from '@apollo/client';
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useFailedAssetLabels, useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
+import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
+import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { UPDATE_ASSET } from '@media-ui/core/src/mutations';
