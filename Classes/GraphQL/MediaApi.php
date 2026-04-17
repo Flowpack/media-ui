@@ -617,10 +617,9 @@ final class MediaApi
     #[Mutation]
     public function updateTag(
         Types\TagId $id,
+        Types\AssetSourceId $assetSourceId,
         ?Types\TagLabel $label = null,
-        ?Types\AssetSourceId $assetSourceId = null,
     ): Types\Tag {
-        $assetSourceId = $assetSourceId ?: AssetSourceId::fromString('cr:default');
         $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
         if ($contentRepositoryId) {
             /** @todo send via request */
