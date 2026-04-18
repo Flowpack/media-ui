@@ -23,12 +23,18 @@ use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetCollectionMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\TagMutator;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryIdExtractor;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryResolver;
+use Flowpack\Media\Ui\GraphQL\Types\AssetSource;
+use Flowpack\Media\Ui\GraphQL\Types\AssetSourceId;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyIteratorBuilder;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
@@ -72,6 +78,7 @@ final class MediaApi
         private readonly SimilarityService $similarityService,
         private readonly TagMutator $tagMutator,
         private readonly UsageDetailsService $usageDetailsService,
+        private readonly ContentRepositoryResolver $contentRepositoryResolver,
     ) {
     }
 
@@ -87,6 +94,15 @@ final class MediaApi
         ?Types\TagId $tagId = null,
         ?string $searchTerm = null,
     ): int {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId !== null) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+
+            return $this->contentRepositoryResolver->countAssets($contentRepositoryId, $workspaceName, $dimensionSpacePoint);
+        }
         $iterator = $this->assetProxyIteratorBuilder->build(
             $assetSourceId,
             $tagId,
@@ -117,6 +133,16 @@ final class MediaApi
         int $limit = 20,
         int $offset = 0,
     ): ?Types\Assets {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId !== null) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+
+            return $this->contentRepositoryResolver->findAssets($contentRepositoryId, $workspaceName, $dimensionSpacePoint);
+        }
+
         $iterator = $this->assetProxyIteratorBuilder->build(
             $assetSourceId,
             $tagId,
@@ -140,19 +166,26 @@ final class MediaApi
 
     #[Description('All asset collections')]
     #[Query]
-    public function assetCollections(Types\AssetSourceId $assetSourceId): Types\AssetCollections
-    {
+    public function assetCollections(
+        AssetSourceId $assetSourceId,
+    ): Types\AssetCollections {
         return $this->assetSourceContext->getAssetCollections($assetSourceId);
     }
 
-    #[Description('All configured asset sources (by default only the "neos" source)')]
+    #[Description('All configured asset sources (by default only the "neos" source) and content repositories with a Media Assets root node')]
     #[Query]
     public function assetSources(): Types\AssetSources
     {
+        // @todo pass from UI
+        $workspaceName = WorkspaceName::forLive();
+
         return Types\AssetSources::fromArray(
-            array_map(
-                static fn(AssetSourceInterface $assetSource) => Types\AssetSource::fromAssetSource($assetSource),
-                $this->assetSourceContext->getAssetSources()
+            array_merge(
+                array_map(
+                    fn (AssetSourceInterface $assetSource): AssetSource => AssetSource::fromAssetSource($assetSource),
+                    $this->assetSourceContext->getAssetSources(),
+                ),
+                iterator_to_array($this->contentRepositoryResolver->findContentRepositoryAssetSources($workspaceName)),
             )
         );
     }
@@ -169,8 +202,9 @@ final class MediaApi
 
     #[Description('Provides a list of all tags')]
     #[Query]
-    public function tags(Types\AssetSourceId $assetSourceId): Types\Tags
-    {
+    public function tags(
+        AssetSourceId $assetSourceId,
+    ): Types\Tags {
         return $this->assetSourceContext->getTags($assetSourceId);
     }
 
@@ -194,6 +228,19 @@ final class MediaApi
     #[Query]
     public function asset(Types\AssetId $id, Types\AssetSourceId $assetSourceId): ?Types\Asset
     {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+            return $this->contentRepositoryResolver->findAsset(
+                $contentRepositoryId,
+                $workspaceName,
+                NodeAggregateId::fromString($id->value),
+                $dimensionSpacePoint,
+            );
+        }
         $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
         return $assetProxy ? Types\Asset::fromAssetProxy($assetProxy) : null;
     }
@@ -290,6 +337,19 @@ final class MediaApi
     #[Query]
     public function assetVariants(Types\AssetId $id, Types\AssetSourceId $assetSourceId): Types\AssetVariants
     {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+            return $this->contentRepositoryResolver->findAssetVariants(
+                $contentRepositoryId,
+                $workspaceName,
+                NodeAggregateId::fromString($id->value),
+                $dimensionSpacePoint,
+            );
+        }
         $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!($assetProxy instanceof NeosAssetProxy) || !($assetProxy->getAsset() instanceof VariantSupportInterface)) {
             return Types\AssetVariants::empty();
@@ -326,7 +386,7 @@ final class MediaApi
         ?string $label = null,
         ?string $caption = null,
         ?string $copyrightNotice = null
-    ): ?Types\Asset {
+    ): Types\Asset {
         return $this->assetMutator->updateAsset($id, $assetSourceId, $label, $caption, $copyrightNotice);
     }
 
@@ -520,7 +580,7 @@ final class MediaApi
     public function createTag(
         Types\TagLabel $label,
         Types\AssetSourceId $assetSourceId,
-        ?Types\AssetCollectionId $assetCollectionId = null
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\Tag {
         return $this->tagMutator->createTag($label, $assetSourceId, $assetCollectionId);
     }
@@ -532,7 +592,7 @@ final class MediaApi
     public function updateTag(
         Types\TagId $id,
         Types\AssetSourceId $assetSourceId,
-        ?Types\TagLabel $label = null
+        ?Types\TagLabel $label = null,
     ): Types\Tag {
         return $this->tagMutator->updateTag($id, $assetSourceId, $label);
     }

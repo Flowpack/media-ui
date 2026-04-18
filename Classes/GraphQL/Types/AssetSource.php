@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Types;
 
+use Neos\ContentRepository\Core\ContentRepository;
 use Wwwision\Types\Attributes\Description;
 use Neos\Flow\Annotations as Flow;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
@@ -37,6 +38,19 @@ final class AssetSource
             'readOnly' => $assetSource->isReadonly(),
             'supportsTagging' => $assetSource->getAssetProxyRepository() instanceof SupportsTaggingInterface,
             'supportsCollections' => $assetSource->getAssetProxyRepository() instanceof SupportsCollectionsInterface,
+        ]);
+    }
+
+    public static function fromContentRepository(ContentRepository $contentRepository): self
+    {
+        return instantiate(self::class, [
+            'id' => 'cr:' . $contentRepository->id->value,
+            'label' => $contentRepository->id->value,
+            'description' => '',
+            'iconUri' => null,
+            'readOnly' => false,
+            'supportsTagging' => true,
+            'supportsCollections' => true,
         ]);
     }
 }
