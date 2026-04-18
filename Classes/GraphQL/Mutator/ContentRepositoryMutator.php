@@ -340,7 +340,7 @@ class ContentRepositoryMutator
                 'resourceUri' => new Uri(
                     'persistentResource://'
                     . $resourceCollectionName
-                    /** @phpstan-ignore property.nonObject (it's magic) */
+                    /** @phpstan-ignore property.notFound (it's magic) */
                     . '/' . $resource->Persistent_Object_Identifier
                 ),
             ])
