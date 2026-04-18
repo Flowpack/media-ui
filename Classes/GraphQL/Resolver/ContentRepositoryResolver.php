@@ -9,6 +9,7 @@ use Flowpack\Media\Ui\GraphQL\Mapping\AssetMapper;
 use Flowpack\Media\Ui\GraphQL\Mapping\AssetVariantMapper;
 use Flowpack\Media\Ui\GraphQL\Mapping\TagMapper;
 use Flowpack\Media\Ui\GraphQL\Types\AssetCollectionParent;
+use Neos\ContentRepository\Core\ContentRepository;
 use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
 use Neos\ContentRepository\Core\NodeType\NodeTypeName;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\CountDescendantNodesFilter;
@@ -43,6 +44,32 @@ class ContentRepositoryResolver
     #[Flow\Inject]
     protected AssetVariantMapper $assetVariantMapper;
 
+    public function getArbitraryDimensionSpacePoint(ContentRepositoryId $contentRepositoryId): DimensionSpacePoint
+    {
+        $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
+        $dimensionSpacePoints = $contentRepository->getVariationGraph()->getDimensionSpacePoints()->points;
+
+        return reset($dimensionSpacePoints) ?: DimensionSpacePoint::createWithoutDimensions();
+    }
+
+    public function findContentRepositoryAssetSources(WorkspaceName $workspaceName): Types\AssetSources
+    {
+        $assetContentRepositories = [];
+        foreach ($this->contentRepositoryRegistry->getContentRepositoryIds() as $contentRepositoryId) {
+            $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
+            if ($contentRepository->getContentGraph($workspaceName)
+                ->findRootNodeAggregateByType(NodeTypeName::fromString('Neos.Media:Media'))
+            ) {
+                $assetContentRepositories['cr:' . $contentRepository->id->value] = $contentRepository;
+            }
+        }
+
+        return Types\AssetSources::fromArray(array_map(
+            static fn (ContentRepository $contentRepository) => Types\AssetSource::fromContentRepository($contentRepository),
+            $assetContentRepositories,
+        ));
+    }
+
     public function countAssets(
         ContentRepositoryId $contentRepositoryId,
         WorkspaceName $workspaceName,
@@ -53,7 +80,7 @@ class ContentRepositoryResolver
 
         return $subgraph->countDescendantNodes(
             $this->requireMediaRootId($contentRepositoryId, $workspaceName),
-            CountDescendantNodesFilter::create(nodeTypes: 'Flowpack.Media:Asset')
+            CountDescendantNodesFilter::create(nodeTypes: 'Neos.Media:Asset')
         );
     }
 
@@ -68,7 +95,7 @@ class ContentRepositoryResolver
         return $this->assetMapper->mapNodesToAssets(
             $subgraph->findDescendantNodes(
                 $this->requireMediaRootId($contentRepositoryId, $workspaceName),
-                FindDescendantNodesFilter::create(nodeTypes: 'Flowpack.Media:Asset'),
+                FindDescendantNodesFilter::create(nodeTypes: 'Neos.Media:Asset'),
             )
         );
     }
@@ -76,15 +103,15 @@ class ContentRepositoryResolver
     public function findAsset(
         ContentRepositoryId $contentRepositoryId,
         WorkspaceName $workspaceName,
+        NodeAggregateId $assetId,
         DimensionSpacePoint $dimensionSpacePoint,
-        NodeAggregateId $nodeAggregateId,
     ): ?Types\Asset {
         $assetNode = $this->findNodeByIdAndType(
             $contentRepositoryId,
             $workspaceName,
             $dimensionSpacePoint,
-            $nodeAggregateId,
-            NodeTypeName::fromString('Flowpack.Media:Asset'),
+            $assetId,
+            NodeTypeName::fromString('Neos.Media:Asset'),
         );
 
         return $assetNode
@@ -102,7 +129,7 @@ class ContentRepositoryResolver
 
         $subtree = $subgraph->findSubtree(
             $this->requireMediaRootId($contentRepositoryId, $workspaceName),
-            FindSubtreeFilter::create(nodeTypes: 'Flowpack.Media:Folder')
+            FindSubtreeFilter::create(nodeTypes: 'Neos.Media:Folder')
         );
 
         return Types\AssetCollections::fromArray($subtree
@@ -114,15 +141,15 @@ class ContentRepositoryResolver
     public function findAssetCollection(
         ContentRepositoryId $contentRepositoryId,
         WorkspaceName $workspaceName,
-        DimensionSpacePoint $dimensionSpacePoint,
         NodeAggregateId $assetCollectionId,
+        DimensionSpacePoint $dimensionSpacePoint,
     ): ?Types\AssetCollection {
         $assetCollectionNode = $this->findNodeByIdAndType(
             $contentRepositoryId,
             $workspaceName,
             $dimensionSpacePoint,
             $assetCollectionId,
-            NodeTypeName::fromString('Flowpack.Media:Folder')
+            NodeTypeName::fromString('Neos.Media:Folder')
         );
 
         return $assetCollectionNode
@@ -147,11 +174,11 @@ class ContentRepositoryResolver
         }
 
         return $contentRepository->getNodeTypeManager()->getNodeType($parentNode->nodeTypeName)
-            ?->isOfType(NodeTypeName::fromString('Flowpack.Media:Folder'))
-            ? instantiate(AssetCollectionParent ::class, [
-                'id' => $parentNode->aggregateId->value,
-                'title' => $parentNode->getProperty('name') ?: '',
-            ])
+            ?->isOfType(NodeTypeName::fromString('Neos.Media:Folder'))
+            ? AssetCollectionParent::create(
+                Types\AssetCollectionId::fromString($parentNode->aggregateId->value),
+                Types\AssetCollectionTitle::fromString($parentNode->getProperty('name') ?: '')
+            )
             : null;
     }
 
@@ -176,8 +203,8 @@ class ContentRepositoryResolver
     public function findAssetVariants(
         ContentRepositoryId $contentRepositoryId,
         WorkspaceName $workspaceName,
-        DimensionSpacePoint $dimensionSpacePoint,
         NodeAggregateId $assetId,
+        DimensionSpacePoint $dimensionSpacePoint,
     ): Types\AssetVariants {
         $subgraph = $this->contentRepositoryRegistry->get($contentRepositoryId)
             ->getContentSubgraph($workspaceName, $dimensionSpacePoint);
@@ -185,7 +212,7 @@ class ContentRepositoryResolver
         return $this->assetVariantMapper->mapNodesToAssetVariants(
             $subgraph->findChildNodes(
                 $assetId,
-                FindChildNodesFilter::create(nodeTypes: 'Flowpack.Media:AssetVariant')
+                FindChildNodesFilter::create(nodeTypes: 'Neos.Media:AssetVariant')
             )
         );
     }
@@ -201,7 +228,7 @@ class ContentRepositoryResolver
         return TagMapper::mapNodesToTags(
             $subgraph->findChildNodes(
                 $this->requireMediaRootId($contentRepositoryId, $workspaceName),
-                FindChildNodesFilter::create(nodeTypes: 'Flowpack.Media:Tag'),
+                FindChildNodesFilter::create(nodeTypes: 'Neos.Media:Tag'),
             )
         );
     }
@@ -209,15 +236,15 @@ class ContentRepositoryResolver
     public function findTag(
         ContentRepositoryId $contentRepositoryId,
         WorkspaceName $workspaceName,
-        DimensionSpacePoint $dimensionSpacePoint,
         NodeAggregateId $tagId,
+        DimensionSpacePoint $dimensionSpacePoint,
     ): ?Types\Tag {
         $tagNode = $this->findNodeByIdAndType(
             $contentRepositoryId,
             $workspaceName,
             $dimensionSpacePoint,
             $tagId,
-            NodeTypeName::fromString('Flowpack.Media:Tag')
+            NodeTypeName::fromString('Neos.Media:Tag')
         );
 
         return $tagNode
@@ -249,11 +276,11 @@ class ContentRepositoryResolver
         return null;
     }
 
-    private function requireMediaRootId(ContentRepositoryId $contentRepositoryId, WorkspaceName $workspaceName): NodeAggregateId
+    public function requireMediaRootId(ContentRepositoryId $contentRepositoryId, WorkspaceName $workspaceName): NodeAggregateId
     {
         $rootNodeAggregate = $this->contentRepositoryRegistry->get($contentRepositoryId)
             ->getContentGraph($workspaceName)
-            ->findRootNodeAggregateByType(NodeTypeName::fromString('Flowpack.Media:Media'));
+            ->findRootNodeAggregateByType(NodeTypeName::fromString('Neos.Media:Media'));
 
         if (!$rootNodeAggregate) {
             throw new \RuntimeException('Media root node is missing');

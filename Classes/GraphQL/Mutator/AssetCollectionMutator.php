@@ -18,10 +18,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryIdExtractor;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
+use Neos\ContentRepository\Core\DimensionSpace\OriginDimensionSpacePoint;
+use Neos\ContentRepository\Core\Feature\NodeModification\Dto\PropertyValuesToWrite;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateIds;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
@@ -40,6 +47,8 @@ class AssetCollectionMutator
         private readonly TagRepository $tagRepository,
         private readonly SiteRepository $siteRepository,
         private readonly Translator $translator,
+        private readonly ContentRepositoryResolver $contentRepositoryResolver,
+        private readonly ContentRepositoryMutator $contentRepositoryMutator,
     ) {
     }
 
@@ -82,6 +91,21 @@ class AssetCollectionMutator
         Types\AssetCollectionId $id,
         Types\AssetSourceId $assetSourceId,
     ): MutationResult {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo send from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo send from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+
+            // @todo save site-related default asset collections from removal
+            return $this->contentRepositoryMutator->removeAssetCollection(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                folderId: NodeAggregateId::fromString($id->value),
+                dimensionSpacePoint: $dimensionSpacePoint,
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             // We currently only support managing collections in the neos asset source
             return MutationResult::fromError([
@@ -134,6 +158,32 @@ class AssetCollectionMutator
         ?Types\AssetCollectionTitle $title = null,
         ?Types\TagIds $tagIds = null,
     ): MutationResult {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo send from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo send from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+
+            // @todo save site-related default asset collections from removal
+            return $this->contentRepositoryMutator->updateAssetCollection(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                folderId: NodeAggregateId::fromString($id->value),
+                dimensionSpacePoint: $dimensionSpacePoint,
+                properties: $title
+                    ? PropertyValuesToWrite::fromArray([
+                        'title' => $title->value,
+                    ])
+                    : null,
+                tagIds: $tagIds
+                    ? NodeAggregateIds::fromArray(array_map(
+                        fn (Types\TagId $id): string => $id->value,
+                        $tagIds->values,
+                    ))
+                    : null,
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             // We currently only support managing collections in the neos asset source
             return MutationResult::fromError([
@@ -188,6 +238,23 @@ class AssetCollectionMutator
         Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionId $parent = null
     ): MutationResult {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo send from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo send from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+
+            return $this->contentRepositoryMutator->setParentAssetCollection(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                folderId: NodeAggregateId::fromString($id->value),
+                dimensionSpacePoint: $dimensionSpacePoint,
+                parentFolderId: $parent
+                    ? NodeAggregateId::fromString($parent->value)
+                    : $this->contentRepositoryResolver->requireMediaRootId($contentRepositoryId, $workspaceName),
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             // We currently only support managing collections in the neos asset source
             return MutationResult::fromError([

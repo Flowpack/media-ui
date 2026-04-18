@@ -16,9 +16,16 @@ namespace Flowpack\Media\Ui\GraphQL\Context;
 
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception as MediaUiException;
+use Flowpack\Media\Ui\GraphQL\Mutator\ContentRepositoryMutator;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryIdExtractor;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\GraphQL\Types\TagLabel;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
+use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
+use Neos\ContentRepository\Core\DimensionSpace\OriginDimensionSpacePoint;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\Asset;
@@ -39,12 +46,12 @@ use Neos\Media\Exception\AssetSourceServiceException;
 class AssetSourceContext
 {
     /**
-     * @var AssetSourceInterface[]
+     * @var array<string,AssetSourceInterface> indexed by id
      */
     protected array $assetSources = [];
 
     /**
-     * @var AssetInterface[]
+     * @var array<string,?AssetInterface>
      */
     protected array $localAssetData = [];
 
@@ -57,12 +64,14 @@ class AssetSourceContext
         protected readonly AssetCollectionRepository $assetCollectionRepository,
         protected readonly TagRepository $tagRepository,
         protected readonly UsageDetailsService $usageDetailsService,
+        protected readonly ContentRepositoryResolver $contentRepositoryResolver,
+        protected readonly ContentRepositoryMutator $contentRepositoryMutator,
     ) {
         $this->assetSources = $this->assetSourceService->getAssetSources();
     }
 
     /**
-     * @return AssetSourceInterface[]
+     * @return array<string,AssetSourceInterface>
      */
     public function getAssetSources(): array
     {
@@ -101,7 +110,7 @@ class AssetSourceContext
         if (array_key_exists($localAssetIdentifier->value, $this->localAssetData)) {
             return $this->localAssetData[$localAssetIdentifier->value];
         }
-        /** @var Asset $asset */
+        /** @var ?Asset $asset */
         $asset = $this->assetRepository->findByIdentifier($localAssetIdentifier->value);
         return $this->localAssetData[$localAssetIdentifier->value] = $asset;
     }
@@ -126,6 +135,18 @@ class AssetSourceContext
 
     public function getAssetCollections(Types\AssetSourceId $assetSourceId): Types\AssetCollections
     {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+            return $this->contentRepositoryResolver->findAssetCollections(
+                $contentRepositoryId,
+                $workspaceName,
+                $dimensionSpacePoint
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             // We currently only know about collections in the neos asset source
             return Types\AssetCollections::empty();
@@ -150,6 +171,19 @@ class AssetSourceContext
         Types\AssetCollectionId $id,
         Types\AssetSourceId $assetSourceId
     ): ?Types\AssetCollection {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+            return $this->contentRepositoryResolver->findAssetCollection(
+                $contentRepositoryId,
+                $workspaceName,
+                NodeAggregateId::fromString($id->value),
+                $dimensionSpacePoint,
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             // We currently only know about collections in the neos asset source
             return null;
@@ -167,6 +201,15 @@ class AssetSourceContext
 
     public function getTags(Types\AssetSourceId $assetSourceId): Types\Tags
     {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo send from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo send from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+
+            return $this->contentRepositoryResolver->findTags($contentRepositoryId, $workspaceName, $dimensionSpacePoint);
+        }
         if ($assetSourceId->value !== 'neos') {
             // We currently only know about tags in the neos asset source
             return Types\Tags::empty();
@@ -186,6 +229,20 @@ class AssetSourceContext
 
     public function getTag(Types\TagId $id, Types\AssetSourceId $assetSourceId): ?Types\Tag
     {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo send from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo send from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+
+            return $this->contentRepositoryResolver->findTag(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                tagId: NodeAggregateId::fromString($id->value),
+                dimensionSpacePoint: $dimensionSpacePoint,
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             // We currently only support creating collections in the neos asset source
             return null;
@@ -203,6 +260,25 @@ class AssetSourceContext
         Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionId $parent
     ): Types\AssetCollection {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo send from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo send from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+
+            return $this->contentRepositoryMutator->createAssetCollection(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                title: $title,
+                parentNodeAggregateId: $parent
+                    ? NodeAggregateId::fromString($parent->value)
+                    : $this->contentRepositoryMutator->requireMediaRootId($contentRepositoryId, $workspaceName),
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             throw new \Exception('We currently only support creating collections in the neos asset source');
         }

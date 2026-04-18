@@ -19,9 +19,12 @@ use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Mapping\AssetCollectionMapper;
 use Flowpack\Media\Ui\GraphQL\Mapping\AssetMapper;
 use Flowpack\Media\Ui\GraphQL\Mapping\TagMapper;
+use Flowpack\Media\Ui\GraphQL\Resolver\ResourceResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\FileUploadResult;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
+use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Core\DimensionSpace\DimensionSpacePoint;
 use Neos\ContentRepository\Core\DimensionSpace\OriginDimensionSpacePoint;
 use Neos\ContentRepository\Core\Feature\NodeCreation\Command\CreateNodeAggregateWithNode;
@@ -35,10 +38,8 @@ use Neos\ContentRepository\Core\Feature\NodeReferencing\Dto\NodeReferencesToWrit
 use Neos\ContentRepository\Core\Feature\NodeReferencing\Dto\NodeReferenceToWrite;
 use Neos\ContentRepository\Core\Feature\SubtreeTagging\Command\TagSubtree;
 use Neos\ContentRepository\Core\NodeType\NodeTypeName;
-use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindAncestorNodesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Filter\FindReferencesFilter;
 use Neos\ContentRepository\Core\Projection\ContentGraph\Node;
-use Neos\ContentRepository\Core\Projection\ContentGraph\VisibilityConstraints;
 use Neos\ContentRepository\Core\SharedModel\ContentRepository\ContentRepositoryId;
 use Neos\ContentRepository\Core\SharedModel\Exception\NodeAggregateCurrentlyDoesNotExist;
 use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
@@ -49,10 +50,10 @@ use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\ContentRepositoryRegistry\ContentRepositoryRegistry;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
+use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Neos\Domain\SubtreeTagging\NeosSubtreeTag;
-use Neos\Neos\Domain\SubtreeTagging\NeosVisibilityConstraints;
-
-use function Wwwision\Types\instantiate;
+use Neos\Utility\MediaTypes;
+use Psr\Http\Message\UriInterface;
 
 #[Flow\Scope("singleton")]
 class ContentRepositoryMutator
@@ -62,7 +63,60 @@ class ContentRepositoryMutator
         private readonly AssetMapper $assetMapper,
         private readonly AssetCollectionMapper $assetCollectionMapper,
         private readonly Translator $translator,
+        private readonly ResourceMutator $resourceMutator,
+        private readonly ResourceResolver $resourceResolver,
     ) {
+    }
+
+    public function createAsset(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        OriginDimensionSpacePoint $originDimensionSpacePoint,
+        NodeAggregateId $parentNodeAggregateId,
+        Types\UploadedFile $file,
+        ?NodeAggregateIds $tags,
+    ): Types\FileUploadResult {
+        $resource = $this->resourceMutator->importResource($file);
+        if (!$resource) {
+            return Types\FileUploadResult::fromError('WAT');
+        }
+
+        /** @var string $mediaType (already checked) */
+        $mediaType = $file->clientMediaType;
+        $this->createNode(
+            contentRepositoryId: $contentRepositoryId,
+            workspaceName: $workspaceName,
+            nodeTypeName: NodeTypeName::fromString(match (MediaTypes::parseMediaType($mediaType)['type']) {
+                'audio' => 'Neos.Media:Audio',
+                'document' => 'Neos.Document:Document',
+                'image' => 'Neos.Media:Image',
+                'video' => 'Neos.Media:Video',
+                default => throw new \Exception('Unsupported media type ' . $mediaType),
+            }),
+            originDimensionSpacePoint: $originDimensionSpacePoint,
+            parentNodeAggregateId: $parentNodeAggregateId,
+            initialProperties: PropertyValuesToWrite::fromArray([
+                'resourceUri' => new Uri(
+                    'persistentResource://'
+                    . $resource->getCollectionName()
+                    /** @phpstan-ignore property.notFound (it's magic) */
+                    . '/' . $resource->Persistent_Object_Identifier
+                ),
+            ]),
+            initialReferences: $tags
+                ? NodeReferencesToWrite::create(
+                    NodeReferencesForName::fromTargets(
+                        name: ReferenceName::fromString('tags'),
+                        nodeAggregateIds: $tags,
+                    )
+                )
+                : null,
+        );
+
+        return FileUploadResult::fromSuccess(
+            'SUCCESS',
+            $file->clientFilename ? Types\Filename::fromString($file->clientFilename) : null
+        );
     }
 
     public function updateAsset(
@@ -77,7 +131,7 @@ class ContentRepositoryMutator
             $workspaceName,
             $assetId,
             $originDimensionSpacePoint->toDimensionSpacePoint(),
-            NodeTypeName::fromString('Flowpack.Media:Asset'),
+            NodeTypeName::fromString('Neos.Media:Asset'),
         );
         if (!$assetNode) {
             throw new MediaUiException('Cannot update asset that was never imported', 1590659044);
@@ -100,7 +154,7 @@ class ContentRepositoryMutator
             $workspaceName,
             $assetId,
             $originDimensionSpacePoint->toDimensionSpacePoint(),
-            NodeTypeName::fromString('Flowpack.Media:Asset'),
+            NodeTypeName::fromString('Neos.Media:Asset'),
         );
         if (!$assetNode) {
             throw new MediaUiException('Cannot update asset that was never imported', 1590659044);
@@ -123,7 +177,7 @@ class ContentRepositoryMutator
             $workspaceName,
             $assetId,
             $originDimensionSpacePoint->toDimensionSpacePoint(),
-            NodeTypeName::fromString('Flowpack.Media:Asset'),
+            NodeTypeName::fromString('Neos.Media:Asset'),
         );
         if (!$assetNode) {
             throw new MediaUiException('Cannot update asset that was never imported', 1590659044);
@@ -140,6 +194,23 @@ class ContentRepositoryMutator
         NodeAggregateId $assetId,
         DimensionSpacePoint $dimensionSpacePoint,
     ): MutationResult {
+        $assetNode = $this->findNodeByIdAndType(
+            contentRepositoryId: $contentRepositoryId,
+            workspaceName: $workspaceName,
+            nodeAggregateId: $assetId,
+            dimensionSpacePoint: $dimensionSpacePoint,
+            nodeTypeName: NodeTypeName::fromString('Neos.Media:Asset'),
+        );
+
+        if (!$assetNode) {
+            return MutationResult::fromError([
+                $this->getLocalizedMessage(
+                    'actions.deleteAssets.noProxy',
+                    'Asset could not be resolved',
+                )
+            ]);
+        }
+
         try {
             $this->contentRepositoryRegistry->get($contentRepositoryId)
                 ->handle(TagSubtree::create(
@@ -177,7 +248,7 @@ class ContentRepositoryMutator
             $workspaceName,
             $assetId,
             $originDimensionSpacePoint->toDimensionSpacePoint(),
-            NodeTypeName::fromString('Flowpack.Media:Asset'),
+            NodeTypeName::fromString('Neos.Media:Asset'),
         );
 
         if (!$assetNode) {
@@ -205,7 +276,7 @@ class ContentRepositoryMutator
             $workspaceName,
             $assetId,
             $originDimensionSpacePoint->toDimensionSpacePoint(),
-            NodeTypeName::fromString('Flowpack.Media:Asset'),
+            NodeTypeName::fromString('Neos.Media:Asset'),
         );
 
         if (!$assetNode) {
@@ -219,6 +290,111 @@ class ContentRepositoryMutator
         }
 
         return $this->assetMapper->mapNodeToAsset($assetNodeWithNewTags);
+    }
+
+    public function replaceAssetResource(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $assetId,
+        OriginDimensionSpacePoint $originDimensionSpacePoint,
+        Types\UploadedFile $file,
+        Types\AssetReplacementOptions $options,
+    ): Types\FileUploadResult {
+        $asset = $this->findNodeByIdAndType(
+            contentRepositoryId: $contentRepositoryId,
+            workspaceName: $workspaceName,
+            nodeAggregateId: $assetId,
+            dimensionSpacePoint: $originDimensionSpacePoint->toDimensionSpacePoint(),
+            nodeTypeName: NodeTypeName::fromString('Neos.Media:Asset'),
+        );
+        if (!$asset) {
+            throw new MediaUiException('Cannot replace resource of asset that was never imported', 1648046173);
+        }
+        $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
+        /** @todo resolve resource collection from CR, folder or similar */
+        $resourceCollectionName = ResourceManager::DEFAULT_PERSISTENT_COLLECTION_NAME;
+        try {
+            $overrideFilename = null;
+            if (
+                $options->keepOriginalFilename
+                && ($currentResourceUri = $asset->getProperty('resourceUri')) instanceof UriInterface
+            ) {
+                $overrideFilename = $this->resourceResolver->getFilename($currentResourceUri);
+            }
+            $resource = $this->resourceMutator->importResource(
+                file: $file,
+                assetNodeType: $this->contentRepositoryRegistry->get($contentRepositoryId)
+                    ->getNodeTypeManager()->getNodeType($asset->nodeTypeName),
+                resourceCollectionName: $resourceCollectionName,
+                overrideFilename: $overrideFilename,
+            );
+        } catch (\Throwable $e) {
+            throw new MediaUiException($e->getMessage(), $e->getCode(), $e);
+        }
+
+        $contentRepository->handle(SetNodeProperties::create(
+            workspaceName: $workspaceName,
+            nodeAggregateId: $assetId,
+            originDimensionSpacePoint: $originDimensionSpacePoint,
+            propertyValues: PropertyValuesToWrite::fromArray([
+                'resourceUri' => new Uri(
+                    'persistentResource://'
+                    . $resourceCollectionName
+                    /** @phpstan-ignore property.nonObject (it's magic) */
+                    . '/' . $resource->Persistent_Object_Identifier
+                ),
+            ])
+        ));
+
+        return Types\FileUploadResult::fromSuccess('SUCCESS');
+    }
+
+    public function renameAssetResource(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $assetId,
+        OriginDimensionSpacePoint $originDimensionSpacePoint,
+        string $filename,
+        Types\AssetEditOptions $options,
+    ): Types\MutationResult {
+        $asset = $this->findNodeByIdAndType(
+            contentRepositoryId: $contentRepositoryId,
+            workspaceName: $workspaceName,
+            nodeAggregateId: $assetId,
+            dimensionSpacePoint: $originDimensionSpacePoint->toDimensionSpacePoint(),
+            nodeTypeName: NodeTypeName::fromString('Neos.Media:Asset'),
+        );
+        if (!$asset) {
+            throw new MediaUiException('Cannot rename resource of non-existing asset', 1776526847);
+        }
+
+        $originalResourceUri = $asset->getProperty('resourceUri');
+        $originalResource = $originalResourceUri ? $this->resourceResolver->findResource($originalResourceUri) : null;
+        if (!$originalResource) {
+            throw new MediaUiException('Cannot rename non-existing resource', 1776527017);
+        }
+        $renamedResource = $this->resourceMutator->renameResource(
+            originalResource: $originalResource,
+            filename: $filename,
+            assetLabel: $asset->getProperty('name') ?: ''
+        );
+        $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
+
+        $contentRepository->handle(SetNodeProperties::create(
+            workspaceName: $workspaceName,
+            nodeAggregateId: $assetId,
+            originDimensionSpacePoint: $originDimensionSpacePoint,
+            propertyValues: PropertyValuesToWrite::fromArray([
+                'resourceUri' => new Uri(
+                    'persistentResource://'
+                    . $renamedResource->getCollectionName()
+                    /** @phpstan-ignore property.notFound (it's magic) */
+                    . '/' . $renamedResource->Persistent_Object_Identifier
+                ),
+            ])
+        ));
+
+        return Types\MutationResult::fromSuccess();
     }
 
     public function createTag(
@@ -247,7 +423,7 @@ class ContentRepositoryMutator
                 $workspaceName,
                 $folderId,
                 $originDimensionSpacePoint->toDimensionSpacePoint(),
-                NodeTypeName::fromString('Flowpack.Media:Folder'),
+                NodeTypeName::fromString('Neos.Media:Folder'),
             );
             if (!$folderNode) {
                 throw new Exception('Asset collection not found', 1603921193);
@@ -265,31 +441,75 @@ class ContentRepositoryMutator
         NodeAggregateId $tagId,
         ?Types\TagLabel $label,
     ): Types\Tag {
-        $contentRepository = $this->contentRepositoryRegistry->get($contentRepositoryId);
-        if ($label) {
-            $contentRepository->handle(SetNodeProperties::create(
-                workspaceName: $workspaceName,
-                nodeAggregateId: $tagId,
-                originDimensionSpacePoint: $originDimensionSpacePoint,
-                propertyValues: PropertyValuesToWrite::fromArray([
-                    'name' => $label->value,
-                ])
-            ));
-        }
-
-        $subgraph = $contentRepository->getContentSubgraph($workspaceName, $originDimensionSpacePoint->toDimensionSpacePoint());
-        $tag = $subgraph->findNodeById($tagId);
-        if (!$tag instanceof Node) {
+        $tagNode = $this->findNodeByIdAndType(
+            contentRepositoryId: $contentRepositoryId,
+            workspaceName: $workspaceName,
+            nodeAggregateId: $tagId,
+            dimensionSpacePoint: $originDimensionSpacePoint->toDimensionSpacePoint(),
+            nodeTypeName: NodeTypeName::fromString('Neos.Media:Tag'),
+        );
+        if (!$tagNode) {
             throw new Exception('Tag not found', 1590659046);
         }
 
-        return instantiate(
-            Types\Tag::class,
-            [
-                'id' => $tag->aggregateId->value,
-                'label' => $tag->getProperty('name'),
-            ],
+        if ($label) {
+            $tagNode = $this->setNodeProperties(
+                $tagNode,
+                PropertyValuesToWrite::fromArray([
+                    'name' => $label->value,
+                ])
+            );
+        }
+
+        return TagMapper::mapNodeToTag($tagNode);
+    }
+
+    public function removeTag(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $tagId,
+        DimensionSpacePoint $dimensionSpacePoint,
+    ): MutationResult {
+        $tagNode = $this->findNodeByIdAndType(
+            contentRepositoryId: $contentRepositoryId,
+            workspaceName: $workspaceName,
+            nodeAggregateId: $tagId,
+            dimensionSpacePoint: $dimensionSpacePoint,
+            nodeTypeName: NodeTypeName::fromString('Neos.Media:Tag'),
         );
+
+        if (!$tagNode) {
+            return MutationResult::fromError([
+                $this->getLocalizedMessage(
+                    'actions.deleteTag.notFound',
+                    'Tag not found'
+                )
+            ]);
+        }
+
+        try {
+            $this->contentRepositoryRegistry->get($contentRepositoryId)
+                ->handle(TagSubtree::create(
+                    $workspaceName,
+                    $tagId,
+                    $dimensionSpacePoint,
+                    NodeVariantSelectionStrategy::STRATEGY_ALL_VARIANTS,
+                    NeosSubtreeTag::removed(),
+                ));
+        } catch (\Throwable) {
+            return MutationResult::fromError([
+                $this->getLocalizedMessage(
+                    'actions.deleteTag.notFound',
+                    'Tag not found'
+                )
+            ]);
+        }
+        return MutationResult::fromSuccess([
+            $this->getLocalizedMessage(
+                'actions.deleteTag.success',
+                'Tag deleted',
+            )
+        ]);
     }
 
     public function createAssetCollection(
@@ -314,6 +534,127 @@ class ContentRepositoryMutator
         );
 
         return $this->assetCollectionMapper->mapNodeToAssetCollection($assetCollectionNode);
+    }
+
+    public function updateAssetCollection(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $folderId,
+        DimensionSpacePoint $dimensionSpacePoint,
+        ?PropertyValuesToWrite $properties,
+        ?NodeAggregateIds $tagIds,
+    ): MutationResult {
+        $folderNode = $this->findNodeByIdAndType(
+            contentRepositoryId: $contentRepositoryId,
+            workspaceName: $workspaceName,
+            nodeAggregateId: $folderId,
+            dimensionSpacePoint: $dimensionSpacePoint,
+            nodeTypeName: NodeTypeName::fromString('Neos.Media:Folder'),
+        );
+
+        if (!$folderNode) {
+            return MutationResult::fromError([
+                $this->getLocalizedMessage(
+                    'actions.updateAssetCollection.notFound',
+                    'Asset collection not found'
+                )
+            ]);
+        }
+
+        if ($properties) {
+            $this->setNodeProperties($folderNode, $properties);
+        }
+        if ($tagIds) {
+            $this->setNodeTags($folderNode, $tagIds);
+        }
+
+        return MutationResult::fromSuccess();
+    }
+
+    public function setParentAssetCollection(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $folderId,
+        DimensionSpacePoint $dimensionSpacePoint,
+        NodeAggregateId $parentFolderId,
+    ): MutationResult {
+        $folderNode = $this->findNodeByIdAndType(
+            $contentRepositoryId,
+            $workspaceName,
+            $folderId,
+            $dimensionSpacePoint,
+            NodeTypeName::fromString('Neos.Media:Folder'),
+        );
+
+        if (!$folderNode) {
+            return MutationResult::fromError([
+                $this->getLocalizedMessage(
+                    'actions.setAssetCollectionParent.notFound',
+                    'Asset collection not found'
+                )
+            ]);
+        }
+
+        try {
+            $this->moveNode($folderNode, $parentFolderId);
+        } catch (NodeAggregateCurrentlyDoesNotExist) {
+            return MutationResult::fromError([
+                $this->getLocalizedMessage(
+                    'actions.setAssetCollectionParent.parentNotFound',
+                    'Parent asset collection not found'
+                )
+            ]);
+        }
+
+        return MutationResult::fromSuccess();
+    }
+
+    public function removeAssetCollection(
+        ContentRepositoryId $contentRepositoryId,
+        WorkspaceName $workspaceName,
+        NodeAggregateId $folderId,
+        DimensionSpacePoint $dimensionSpacePoint,
+    ): MutationResult {
+        $folderNode = $this->findNodeByIdAndType(
+            contentRepositoryId: $contentRepositoryId,
+            workspaceName: $workspaceName,
+            nodeAggregateId: $folderId,
+            dimensionSpacePoint: $dimensionSpacePoint,
+            nodeTypeName: NodeTypeName::fromString('Neos.Media:Folder'),
+        );
+
+        if (!$folderNode) {
+            return MutationResult::fromError([
+                $this->getLocalizedMessage(
+                    'actions.deleteAssetCollection.notFound',
+                    'Asset collection not found'
+                )
+            ]);
+        }
+
+        try {
+            $this->contentRepositoryRegistry->get($contentRepositoryId)
+                ->handle(TagSubtree::create(
+                    $workspaceName,
+                    $folderId,
+                    $dimensionSpacePoint,
+                    NodeVariantSelectionStrategy::STRATEGY_ALL_VARIANTS,
+                    NeosSubtreeTag::removed(),
+                ));
+        } catch (\Throwable) {
+            return MutationResult::fromError([
+                $this->getLocalizedMessage(
+                    'actions.deleteAssetCollection.notFound',
+                    'Asset collection not found'
+                )
+            ]);
+        }
+        return MutationResult::fromSuccess([
+            $this->getLocalizedMessage(
+                'actions.deleteAssetCollection.success',
+                'Asset collection deleted',
+            )
+        ]);
     }
 
     private function findNodeByIdAndType(
@@ -536,7 +877,7 @@ class ContentRepositoryMutator
         return $node;
     }
 
-    private function requireMediaRootId(ContentRepositoryId $contentRepositoryId, WorkspaceName $workspaceName): NodeAggregateId
+    public function requireMediaRootId(ContentRepositoryId $contentRepositoryId, WorkspaceName $workspaceName): NodeAggregateId
     {
         $rootNodeAggregate = $this->contentRepositoryRegistry->get($contentRepositoryId)
             ->getContentGraph($workspaceName)
@@ -567,6 +908,6 @@ class ContentRepositoryMutator
             $value = $fallback ?: $id;
         }
 
-        return instantiate(MutationResponseMessage::class, $value);
+        return MutationResponseMessage::fromString($value);
     }
 }

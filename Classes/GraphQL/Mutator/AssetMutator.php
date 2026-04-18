@@ -17,10 +17,17 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryIdExtractor;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
+use Neos\ContentRepository\Core\DimensionSpace\OriginDimensionSpacePoint;
+use Neos\ContentRepository\Core\Feature\NodeModification\Dto\PropertyValuesToWrite;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateIds;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
@@ -61,6 +68,8 @@ class AssetMutator
         private readonly ResourceManager $resourceManager,
         private readonly TagRepository $tagRepository,
         private readonly Translator $translator,
+        private readonly ContentRepositoryMutator $contentRepositoryMutator,
+        private readonly ContentRepositoryResolver $contentRepositoryResolver,
     ) {
     }
 
@@ -99,7 +108,27 @@ class AssetMutator
         ?string $label = null,
         ?string $caption = null,
         ?string $copyrightNotice = null
-    ): ?Types\Asset {
+    ): Types\Asset {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            return $this->contentRepositoryMutator->updateAsset(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                assetId: NodeAggregateId::fromString($id->value),
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                propertyValuesToWrite: PropertyValuesToWrite::fromArray([
+                    'name' => $label,
+                    'caption' => $caption,
+                    'copyrightNotice' => $copyrightNotice,
+                ])
+            );
+        }
         $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot update asset that was never imported', 1590659044);
@@ -132,6 +161,22 @@ class AssetMutator
      */
     public function tagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): ?Types\Asset
     {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            return $this->contentRepositoryMutator->tagAsset(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                assetId: NodeAggregateId::fromString($id->value),
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                tagId: NodeAggregateId::fromString($tagId->value),
+            );
+        }
         $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot tag asset that was never imported', 1591561758);
@@ -162,6 +207,19 @@ class AssetMutator
      */
     public function deleteAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId): MutationResult
     {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $dimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+            return $this->contentRepositoryMutator->removeAsset(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                assetId: NodeAggregateId::fromString($id->value),
+                dimensionSpacePoint: $dimensionSpacePoint,
+            );
+        }
         $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
             return MutationResult::fromError([
@@ -206,6 +264,25 @@ class AssetMutator
         Types\AssetSourceId $assetSourceId,
         Types\TagIds $tagIds
     ): ?Types\Asset {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            return $this->contentRepositoryMutator->setAssetTags(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                assetId: NodeAggregateId::fromString($id->value),
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                tagIds: NodeAggregateIds::fromArray(array_map(
+                    fn (Types\TagId $tagId): NodeAggregateId => NodeAggregateId::fromString($tagId->value),
+                    iterator_to_array($tagIds),
+                )),
+            );
+        }
         $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot tag asset that was never imported', 1594621322);
@@ -242,8 +319,33 @@ class AssetMutator
     public function setAssetCollections(
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
-        Types\AssetCollectionIds $assetCollectionIds
+        Types\AssetCollectionIds $assetCollectionIds,
     ): MutationResult {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            $values = $assetCollectionIds->values;
+            if (count($values) > 1) {
+                throw new \Exception('Cannot set more than one asset collection to an asset');
+            }
+            if (count($values) < 1) {
+                throw new \Exception('Cannot unset an asset\'s collection');
+            }
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            $this->contentRepositoryMutator->setAssetCollection(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                assetId: NodeAggregateId::fromString($id->value),
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                folderId: NodeAggregateId::fromString(reset($values)->value),
+            );
+
+            return MutationResult::fromSuccess();
+        }
         $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot assign collections to asset that was never imported', 1594621322);
@@ -276,6 +378,22 @@ class AssetMutator
      */
     public function untagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): ?Types\Asset
     {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            return $this->contentRepositoryMutator->untagAsset(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                assetId: NodeAggregateId::fromString($id->value),
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                tagId: NodeAggregateId::fromString($tagId->value),
+            );
+        }
         $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot untag asset that was never imported', 1591561930);
@@ -311,6 +429,23 @@ class AssetMutator
         Types\UploadedFile $file,
         Types\AssetReplacementOptions $options,
     ): Types\FileUploadResult {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            return $this->contentRepositoryMutator->replaceAssetResource(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                assetId: NodeAggregateId::fromString($id->value),
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                file: $file,
+                options: $options,
+            );
+        }
         $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot replace asset that was never imported', 1648046173);
@@ -399,6 +534,24 @@ class AssetMutator
             throw new MediaUiException('Filename was empty', 1678156902);
         }
 
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            return $this->contentRepositoryMutator->renameAssetResource(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                assetId: NodeAggregateId::fromString($id->value),
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                filename: $filename->value,
+                options: $options,
+            );
+        }
+
         $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot rename asset that was never imported', 1678155884);
@@ -476,6 +629,26 @@ class AssetMutator
         ?Types\TagId $tagId = null,
         ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResult {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            return $this->contentRepositoryMutator->createAsset(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                parentNodeAggregateId: $assetCollectionId
+                    ? NodeAggregateId::fromString($assetCollectionId->value)
+                    : $this->contentRepositoryResolver->requireMediaRootId($contentRepositoryId, $workspaceName),
+                file: $file,
+                tags: $tagId ? NodeAggregateIds::fromArray([NodeAggregateId::fromString($tagId->value)]) : null,
+            );
+        }
+
         if ($assetSourceId->value !== 'neos') {
             return Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED);
         }
@@ -549,6 +722,30 @@ class AssetMutator
         ?Types\TagId $tagId = null,
         ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResults {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            // @todo pass from UI
+            $workspaceName = WorkspaceName::forLive();
+            // @todo pass from UI
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            $results = [];
+
+            foreach ($files as $file) {
+                $results[$file->clientFilename] = $this->contentRepositoryMutator->createAsset(
+                    contentRepositoryId: $contentRepositoryId,
+                    workspaceName: $workspaceName,
+                    originDimensionSpacePoint: $originDimensionSpacePoint,
+                    parentNodeAggregateId: $assetCollectionId
+                        ? NodeAggregateId::fromString($assetCollectionId->value)
+                        : $this->contentRepositoryResolver->requireMediaRootId($contentRepositoryId, $workspaceName),
+                    file: $file,
+                    tags: $tagId ? NodeAggregateIds::fromArray([NodeAggregateId::fromString($tagId->value)]) : null,
+                );
+            }
+            return Types\FileUploadResults::fromArray($results);
+        }
         if ($assetSourceId->value !== 'neos') {
             return Types\FileUploadResults::fromArray([Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED)]);
         }
