@@ -11,8 +11,9 @@ import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/sta
 import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
 import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
-import * as classes from './CollectionSelectBox.module.css';
 import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
+
+import * as classes from './CollectionSelectBox.module.css';
 
 const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
     return assetCollectionIds.join(',') === asset.collections.map((collection) => collection.id).join(',');
