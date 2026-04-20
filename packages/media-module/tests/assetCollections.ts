@@ -6,7 +6,7 @@ test('Clicking first collection updates list and only assets should be shown tha
     await t
         .scrollIntoView(page.firstCollection)
         .click(page.assetCollections.withText('Example collection 1'))
-        .expect(page.firstThumbnail.innerText)
+        .expect(page.firstThumbnailLabel.innerText)
         .eql('Example asset 4')
         .expect(page.paginationItems.count)
         .eql(3) // one item and the two navigation buttons

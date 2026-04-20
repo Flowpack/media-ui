@@ -11,11 +11,37 @@
 }
 
 .selected {
-    background-color: var(--theme-colors-PrimaryBlue);
+    box-shadow: inset 3px 0 0 var(--theme-colors-PrimaryBlue);
 }
 
-.selected:nth-of-type(2n) {
-    background-color: var(--theme-colors-PrimaryBlue);
+.checkboxColumn {
+    width: 1px;
+    padding: 0 var(--theme-spacing-Half);
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkboxColumn :global(.neos-checkbox) span {
+    margin-right: 0 !important;
+}
+
+.checkboxColumn :global(.neos-checkbox):has(input:focus) {
+    opacity: 1;
+    outline: 1px solid #00adee;
+}
+
+.checkboxColumn label {
+    pointer-events: none;
+}
+
+.checkboxColumn :global(.neos-checkbox) {
+    opacity: 0;
+}
+
+.listViewItem:hover .checkboxColumn :global(.neos-checkbox),
+.checkboxColumn :global(.neos-checkbox:has(input:checked)) {
+    opacity: 1;
 }
 
 .textColumn {
@@ -34,6 +60,11 @@
     min-width: var(--theme-spacing-GoldenUnit);
     width: var(--theme-spacing-GoldenUnit);
     cursor: pointer;
+    user-select: none;
+}
+
+.previewColumnFirst {
+    padding-left: var(--theme-spacing-Half);
 }
 
 .previewColumn picture {
@@ -56,7 +87,6 @@
     table-layout: fixed;
     width: 100%;
     line-height: var(--theme-spacing-GoldenUnit);
-    user-select: text;
 }
 
 .labelColumn > * {

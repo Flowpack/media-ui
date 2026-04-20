@@ -9,5 +9,4 @@ export { default as useSelectAsset } from './useSelectAsset';
 export { default as useSelectedAsset } from './useSelectedAsset';
 export { default as useSetAssetCollections } from './useSetAssetCollections';
 export { default as useSetAssetTags } from './useSetAssetTags';
-export { default as useUntagAsset } from './useUntagAsset';
 export { default as useUpdateAsset } from './useUpdateAsset';

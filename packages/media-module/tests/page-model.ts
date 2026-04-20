@@ -17,6 +17,20 @@ class Page {
     public assetSourceList: Selector;
     public assetsFilter: Selector;
     public clipboardToggle: Selector;
+    public selectedThumbnails: Selector;
+    public multiSelectionBadges: Selector;
+    public multiSelectionClearButton: Selector;
+    public titleInput: Selector;
+    public captionInput: Selector;
+    public copyrightInput: Selector;
+    public applyButton: Selector;
+    public confirmDialog: Selector;
+    public collectionSelectBox: Selector;
+    public tasksDropdownHeader: Selector;
+    public tasksDropdownContents: Selector;
+    public viewModeToggle: Selector;
+    public listRows: Selector;
+    public selectedListRows: Selector;
 
     constructor() {
         // Asset sources
@@ -52,10 +66,45 @@ class Page {
         this.currentSelection = Selector('div[class*="currentSelection"]');
         this.tagSelection = this.assetInspector.find('.TagSelectBox_tagSelectBox');
         this.inspectorActions = this.assetInspector.find('.Actions_actions');
+
+        // Multi-selection
+        this.selectedThumbnails = Selector('.Thumbnail_selected');
+        const multiSelectionWrapper = Selector('.CurrentMultiSelection_currentMultiSelection');
+        this.multiSelectionBadges = multiSelectionWrapper.find('.CurrentMultiSelection_item');
+        this.multiSelectionClearButton = multiSelectionWrapper.find('[title="Clear selection"]');
+
+        // Property inspector
+        this.titleInput = this.assetInspector.find('input[name="label"]');
+        this.captionInput = this.assetInspector.find('textarea[name="caption"]');
+        this.copyrightInput = this.assetInspector.find('textarea[name="copyrightNotice"]');
+        this.applyButton = this.assetInspector.find('button').withText('Apply');
+        this.confirmDialog = Selector('div[class*="dialog"]');
+        this.collectionSelectBox = this.assetInspector.find('.collectionSelectBox');
+
+        // Tasks dropdown
+        this.tasksDropdownHeader = this.assetInspector.find('.Tasks_dropdownHeader');
+        this.tasksDropdownContents = Selector('ul[class*="dropDown__contents"]');
+
+        // List view
+        this.viewModeToggle = Selector('.ViewModeSelector_viewModeSelector').find('button');
+        this.listRows = Selector('tr.ListViewItem_listViewItem');
+        this.selectedListRows = Selector('tr.ListViewItem_selected');
+    }
+
+    public confirmDialogButton(label: string): Selector {
+        return this.confirmDialog.find('button').withText(label);
+    }
+
+    public tasksDropdownItem(label: string): Selector {
+        return this.tasksDropdownContents.find('li').withText(label);
     }
 
     public get firstThumbnail() {
         return this.thumbnails.nth(0);
+    }
+
+    public get firstThumbnailLabel() {
+        return this.firstThumbnail.find('.AssetLabel_assetLabel');
     }
 
     public get firstCollection() {
