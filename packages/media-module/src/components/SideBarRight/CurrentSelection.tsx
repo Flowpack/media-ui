@@ -21,7 +21,7 @@ const CurrentSelection = () => {
     const setSelectedAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const { translate } = useIntl();
-    const { assetCollections } = useAssetCollectionsQuery();
+    const { assetCollections } = useAssetCollectionsQuery(selectedAssetCollection?.assetSourceId);
 
     const selection = useMemo(() => {
         let icon = 'question';

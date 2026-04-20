@@ -189,14 +189,11 @@ The title of an Asset collection (e.g. "slideshows")
 """
 scalar AssetCollectionTitle
 
-"""
-Absolute path of an Asset collection (e.g. "/photos/trees")
-"""
-scalar AssetCollectionPath
-
 type AssetCollectionParent {
   """ Unique identifier of an Asset collection (e.g. "neos") """
   id: AssetCollectionId!
+  """ Unique identifier of an Asset source (e.g. "neos") """
+  assetSourceId: AssetSourceId!
   """ The title of an Asset collection (e.g. "slideshows") """
   title: AssetCollectionTitle!
 }
@@ -208,8 +205,6 @@ type AssetCollection {
   assetSourceId: AssetSourceId!
   """ The title of an Asset collection (e.g. "slideshows") """
   title: AssetCollectionTitle!
-  """ Absolute path of an Asset collection (e.g. "/photos/trees") """
-  path: AssetCollectionPath
   assetCount: Int!
   canDelete: Boolean!
   tags: [Tag!]!
