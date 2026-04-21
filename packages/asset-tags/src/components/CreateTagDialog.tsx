@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Button, Label, TextInput, Tooltip } from '@neos-project/react-ui-components';
 
@@ -12,14 +12,16 @@ import { Dialog } from '@media-ui/core/src/components';
 import createTagDialogState from '../state/createTagDialogState';
 
 import classes from './CreateTagDialog.module.css';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 const CreateTagDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const [dialogState, setDialogState] = useRecoilState(createTagDialogState);
     const { createTag } = useCreateTag();
-    const { tags } = useTagsQuery();
+    const { tags } = useTagsQuery(selectedAssetSourceId);
 
     const handleRequestClose = useCallback(
         () =>
@@ -43,35 +45,41 @@ const CreateTagDialog: React.FC = () => {
                 return;
             });
     }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetCollection]);
-    const validate = (label) => {
-        const validationErrors = [];
-        const trimmedLabel = label.trim();
-        const tagWithLabelExist = tags?.some((tag) => tag.label === trimmedLabel);
+    const validate = useCallback(
+        (label) => {
+            const validationErrors = [];
+            const trimmedLabel = label.trim();
+            const tagWithLabelExist = tags?.some((tag) => tag.label === trimmedLabel);
 
-        if (trimmedLabel.length === 0) {
-            validationErrors.push(translate('tagActions.validation.emptyTagLabel', 'Please provide a tag label'));
-        }
+            if (trimmedLabel.length === 0) {
+                validationErrors.push(translate('tagActions.validation.emptyTagLabel', 'Please provide a tag label'));
+            }
 
-        if (tagWithLabelExist) {
-            validationErrors.push(translate('tagActions.validation.tagExists', 'A tag with this label already exists'));
-        }
+            if (tagWithLabelExist) {
+                validationErrors.push(
+                    translate('tagActions.validation.tagExists', 'A tag with this label already exists')
+                );
+            }
 
-        const validation = {
-            errors: validationErrors,
-            valid: validationErrors.length === 0,
-        };
-        setDialogState((state) => ({ ...state, validation }));
-    };
+            const validation = {
+                errors: validationErrors,
+                valid: validationErrors.length === 0,
+            };
+            setDialogState((state) => ({ ...state, validation }));
+        },
+        [setDialogState, tags, translate]
+    );
     const setLabel = useCallback(
         (label) => {
             validate(label);
             setDialogState((state) => ({ ...state, label }));
         },
-        [setDialogState]
+        [setDialogState, validate]
     );
 
     return (
         <Dialog
+            id="CreateTagDialog"
             isOpen={dialogState.visible}
             title={translate('createTagDialog.title', 'Create tag')}
             onRequestClose={handleRequestClose}
@@ -91,8 +99,9 @@ const CreateTagDialog: React.FC = () => {
             ]}
         >
             <div className={classes.formBody}>
-                <Label>{translate('general.label', 'Label')}</Label>
+                <Label htmlFor="tag-label">{translate('general.label', 'Label')}</Label>
                 <TextInput
+                    id="tag-label"
                     setFocus
                     validationerrors={dialogState.validation?.valid ? null : ['This input is invalid']}
                     required={true}

@@ -13,8 +13,21 @@ final class AssetCollection
 {
     private function __construct(
         public readonly AssetCollectionId $id,
+        public readonly AssetSourceId $assetSourceId,
         public readonly AssetCollectionTitle $title,
-        public readonly ?AssetCollectionPath $path = null,
     ) {
+    }
+
+    public static function create(
+        AssetCollectionId $id,
+        AssetSourceId $assetSourceId,
+        AssetCollectionTitle $title,
+    ): self {
+        return new self($id, $assetSourceId, $title);
+    }
+
+    public function equals(?AssetCollectionParent $other): bool
+    {
+        return $other && $other->id->value === $this->id->value && $other->assetSourceId->value === $this->assetSourceId->value;
     }
 }

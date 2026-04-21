@@ -53,11 +53,11 @@ class AssetCollectionTest extends AbstractMediaTestCase
      */
     public function parentChildrenRelation(): void
     {
-        /** @var HierarchicalAssetCollectionInterface $child1 */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $child1 */
         $child1 = new AssetCollection('child1');
-        /** @var HierarchicalAssetCollectionInterface $child2 */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $child2 */
         $child2 = new AssetCollection('child2');
-        /** @var HierarchicalAssetCollectionInterface $parent */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $parent */
         $parent = new AssetCollection('parent');
 
         $child1->setParent($parent);
@@ -90,11 +90,11 @@ class AssetCollectionTest extends AbstractMediaTestCase
      */
     public function circularParentChildrenRelationThrowsErrorWhenSettingParent(): void
     {
-        /** @var HierarchicalAssetCollectionInterface $firstCollection */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $firstCollection */
         $firstCollection = new AssetCollection('first');
-        /** @var HierarchicalAssetCollectionInterface $secondCollection */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $secondCollection */
         $secondCollection = new AssetCollection('second');
-        /** @var HierarchicalAssetCollectionInterface $thirdCollection */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $thirdCollection */
         $thirdCollection = new AssetCollection('third');
 
         $secondCollection->setParent($firstCollection);
@@ -109,9 +109,9 @@ class AssetCollectionTest extends AbstractMediaTestCase
      */
     public function unsettingTheParentRemovesChildFromParent(): void
     {
-        /** @var HierarchicalAssetCollectionInterface $child */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $child */
         $child = new AssetCollection('child');
-        /** @var HierarchicalAssetCollectionInterface $parent */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $parent */
         $parent = new AssetCollection('parent');
 
         $child->setParent($parent);
@@ -122,7 +122,7 @@ class AssetCollectionTest extends AbstractMediaTestCase
         $this->persistenceManager->persistAll();
         $this->persistenceManager->clearState();
 
-        /** @var HierarchicalAssetCollectionInterface $persistedChild */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $persistedChild */
         $persistedChild = $this->assetCollectionRepository->findOneByTitle('child');
         $persistedChild->setParent(null);
 
@@ -144,9 +144,9 @@ class AssetCollectionTest extends AbstractMediaTestCase
      */
     public function deletingTheParentDeletesTheChild(): void
     {
-        /** @var HierarchicalAssetCollectionInterface $child */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $child */
         $child = new AssetCollection('child');
-        /** @var HierarchicalAssetCollectionInterface $parent */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $parent */
         $parent = new AssetCollection('parent');
 
         $child->setParent($parent);
@@ -175,9 +175,9 @@ class AssetCollectionTest extends AbstractMediaTestCase
      */
     public function hasParentReturnsTrueIfParentIsSet(): void
     {
-        /** @var HierarchicalAssetCollectionInterface $child */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $child */
         $child = new AssetCollection('child');
-        /** @var HierarchicalAssetCollectionInterface $parent */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $parent */
         $parent = new AssetCollection('parent');
 
         $child->setParent($parent);
@@ -234,9 +234,9 @@ class AssetCollectionTest extends AbstractMediaTestCase
      */
     public function pathOfSubCollectionContainsPathOfParentCollection(): void
     {
-        /** @var HierarchicalAssetCollectionInterface $parent */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $parent */
         $parent = new AssetCollection('Parent');
-        /** @var HierarchicalAssetCollectionInterface $child */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $child */
         $child = new AssetCollection('Child');
         $child->setParent($parent);
 
@@ -257,9 +257,9 @@ class AssetCollectionTest extends AbstractMediaTestCase
      */
     public function pathOfSubCollectionUpdatesWhenParentIsRenamed(): void
     {
-        /** @var HierarchicalAssetCollectionInterface $parent */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $parent */
         $parent = new AssetCollection('Parent');
-        /** @var HierarchicalAssetCollectionInterface $child */
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $child */
         $child = new AssetCollection('Child');
         $child->setParent($parent);
 

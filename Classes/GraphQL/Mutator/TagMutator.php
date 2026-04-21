@@ -14,9 +14,9 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
  * source code.
  */
 
-use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
@@ -26,8 +26,6 @@ use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
-
-use function Wwwision\Types\instantiate;
 
 #[Flow\Scope("singleton")]
 class TagMutator
@@ -44,8 +42,14 @@ class TagMutator
     protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
     {
         try {
-            return $this->translator->translateById($id, $arguments, null, null, 'Main',
-                'Flowpack.Media.Ui') ?? $fallback;
+            return $this->translator->translateById(
+                $id,
+                $arguments,
+                null,
+                null,
+                'Main',
+                'Flowpack.Media.Ui'
+            ) ?? $fallback;
         } catch (\Exception) {
             return $fallback ?: $id;
         }
@@ -54,8 +58,19 @@ class TagMutator
     /**
      * @throws Exception|IllegalObjectTypeException
      */
-    public function createTag(Types\TagLabel $label, Types\AssetCollectionId $assetCollectionId = null): Types\Tag
-    {
+    public function createTag(
+        Types\TagLabel $label,
+        Types\AssetSourceId $assetSourceId,
+        Types\AssetCollectionId $assetCollectionId = null,
+    ): ?Types\Tag {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support managing tags in the neos asset source
+            throw new Exception(
+                $this->localizedMessage('actions.assetSourceNotSupported', 'Asset source not supported'),
+                1776332600
+            );
+        }
+
         $tag = $this->tagRepository->findOneByLabel($label->value);
         if ($tag === null) {
             $tag = new Tag($label);
@@ -73,17 +88,26 @@ class TagMutator
                 throw new Exception('Asset collection not found', 1603921193);
             }
         }
-        return instantiate(Types\Tag::class, [
-            'id' => $this->persistenceManager->getIdentifierByObject($tag),
-            'label' => $tag->getLabel(),
-        ]);
+        return Types\Tag::create(
+            Types\TagId::fromString($this->persistenceManager->getIdentifierByObject($tag)),
+            $assetSourceId,
+            Types\TagLabel::fromString($tag->getLabel()),
+        );
     }
 
     /**
      * @throws Exception|IllegalObjectTypeException
      */
-    public function updateTag(Types\TagId $id, Types\TagLabel $label = null): Types\Tag
-    {
+    public function updateTag(
+        Types\TagId $id,
+        Types\AssetSourceId $assetSourceId,
+        Types\TagLabel $label = null
+    ): ?Types\Tag {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support managing tags in the neos asset source
+            return null;
+        }
+
         /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag) {
@@ -96,21 +120,31 @@ class TagMutator
 
         $this->tagRepository->update($tag);
 
-        return instantiate(Types\Tag::class, [
-            'id' => $this->persistenceManager->getIdentifierByObject($tag),
-            'label' => $tag->getLabel(),
-        ]);
+        return Types\Tag::create(
+            Types\TagId::fromString($this->persistenceManager->getIdentifierByObject($tag)),
+            $assetSourceId,
+            Types\TagLabel::fromString($tag->getLabel()),
+        );
     }
 
     /**
      * @throws Exception|IllegalObjectTypeException|InvalidQueryException
      */
-    public function deleteTag(Types\TagId $id): MutationResult
-    {
+    public function deleteTag(
+        Types\TagId $id,
+        Types\AssetSourceId $assetSourceId
+    ): MutationResult {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support managing tags in the neos asset source
+            return MutationResult::fromError([
+                $this->localizedMessage('actions.assetSourceNotSupported', 'Asset source not supported')
+            ]);
+        }
+
         /** @var Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage('actions.deleteTag.notFound', 'Tag not found')
             ]);
         }
@@ -121,6 +155,6 @@ class TagMutator
             $this->assetRepository->update($asset);
         }
         $this->tagRepository->remove($tag);
-        return MutationResult::success();
+        return MutationResult::fromSuccess();
     }
 }

@@ -1,41 +1,31 @@
-import React, { useCallback } from 'react';
-import { useSetRecoilState } from 'recoil';
+import React from 'react';
+import { useRecoilValue } from 'recoil';
 import cx from 'classnames';
 
 import { useIntl, useMediaUi } from '@media-ui/core';
-import { useSelectAsset } from '@media-ui/core/src/hooks';
-import { selectedAssetForPreviewState } from '@media-ui/feature-asset-preview';
+import { applicationContextState } from '@media-ui/core/src/state';
 
 import { ListViewItem } from './index';
+import { useAssetSelection } from '../../hooks';
+
+import classes from './ListView.module.css';
 
 interface ListViewProps {
     assetIdentities: AssetIdentity[];
 }
 
-import classes from './ListView.module.css';
-
 const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) => {
     const { isInNodeCreationDialog } = useMediaUi();
     const { translate } = useIntl();
-    const setSelectedAssetForPreview = useSetRecoilState(selectedAssetForPreviewState);
-    const selectAsset = useSelectAsset();
-
-    const onSelect = useCallback(
-        (assetIdentity: AssetIdentity, openPreview = false) => {
-            if (openPreview) {
-                setSelectedAssetForPreview(assetIdentity);
-            } else {
-                selectAsset(assetIdentity);
-            }
-        },
-        [setSelectedAssetForPreview, selectAsset]
-    );
+    const applicationContext = useRecoilValue(applicationContextState);
+    const { onSelect, onMultiSelect } = useAssetSelection(assetIdentities);
 
     return (
         <section className={cx(classes.listView, isInNodeCreationDialog && classes.listViewFullHeight)}>
             <table>
                 <thead>
                     <tr>
+                        {applicationContext === 'browser' && <th className={classes.tableHeader} />}
                         <th className={classes.tableHeader} />
                         <th className={classes.tableHeader}>{translate('thumbnailView.header.name', 'Name')}</th>
                         <th className={classes.tableHeader}>
@@ -49,8 +39,13 @@ const ListView: React.FC<ListViewProps> = ({ assetIdentities }: ListViewProps) =
                     </tr>
                 </thead>
                 <tbody>
-                    {assetIdentities.map((assetIdentity, index) => (
-                        <ListViewItem key={index} assetIdentity={assetIdentity} onSelect={onSelect} />
+                    {assetIdentities.map((assetIdentity) => (
+                        <ListViewItem
+                            key={assetIdentity.assetId}
+                            assetIdentity={assetIdentity}
+                            onSelect={onSelect}
+                            onMultiSelect={onMultiSelect}
+                        />
                     ))}
                 </tbody>
             </table>

@@ -17,6 +17,11 @@ final class AssetSourceId implements \JsonSerializable
     {
     }
 
+    public static function fromString(string $value): self
+    {
+        return new self($value);
+    }
+
     public function jsonSerialize(): string
     {
         return $this->value;

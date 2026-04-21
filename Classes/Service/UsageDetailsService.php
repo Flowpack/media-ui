@@ -26,6 +26,7 @@ use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
+use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
 use Neos\ContentRepository\Exception\NodeConfigurationException;
 use Neos\Flow\Annotations as Flow;
@@ -33,6 +34,8 @@ use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Exception as FlowException;
 use Neos\Flow\Http\Exception as HttpException;
 use Neos\Flow\Http\HttpRequestHandlerInterface;
+use Neos\Flow\I18n\Exception\IndexOutOfBoundsException;
+use Neos\Flow\I18n\Exception\InvalidFormatPlaceholderException;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Routing\Exception\MissingActionNameException;
@@ -65,6 +68,9 @@ final class UsageDetailsService
 
     #[Flow\InjectConfiguration('contentDimensions', 'Neos.ContentRepository')]
     protected array $contentDimensionsConfiguration = [];
+
+    #[Flow\Inject]
+    protected ContextFactoryInterface $contextFactory;
 
     private array $accessibleWorkspaces = [];
 
@@ -228,7 +234,9 @@ final class UsageDetailsService
     {
         $dimensionValues = [];
         foreach ($node->getDimensions() as $dimensionName => $dimensionValuesForName) {
-            $dimensionValues[$this->contentDimensionsConfiguration[$dimensionName]['label'] ?? $dimensionName] = array_map(function (
+            $dimensionLabel = $this->translateById(
+                $this->contentDimensionsConfiguration[$dimensionName]['label'] ?? $dimensionName);
+            $dimensionValues[$dimensionLabel] = array_map(function (
                 $dimensionValue
             ) use ($dimensionName) {
                 return $this->contentDimensionsConfiguration[$dimensionName]['presets'][$dimensionValue]['label'] ?? $dimensionValue;
@@ -300,12 +308,20 @@ final class UsageDetailsService
             $serverRequest = $serverRequest->withUri(new Uri((string)$domain));
         }
 
-        $request = ActionRequest::fromHttpRequest($serverRequest);//$this->getActionRequestForUriBuilder($domain ? $domain->getHostname() : null);
+        // Instead of the live workspace uri we want to link to the user workspace for editing
+        if ($node->getWorkspace()->getBaseWorkspace() === null) {
+            $userWorkspaceContextProperties = [
+                'workspaceName' => $this->userService->getPersonalWorkspaceName(),
+            ];
+            $userWorkspaceContext = $this->contextFactory->create(array_merge($node->getContext()->getProperties(), $userWorkspaceContextProperties));
+            $node = $userWorkspaceContext->getNodeByIdentifier($node->getIdentifier());
+        }
+
+        $request = ActionRequest::fromHttpRequest($serverRequest);
 
         $uriBuilder = new UriBuilder();
         $uriBuilder->setRequest($request);
         $uriBuilder->setCreateAbsoluteUri(false);
-
         $requestUri = $serverRequest->getUri();
         $relativeNodeBackendUri = $uriBuilder->uriFor(
             'index',
@@ -399,7 +415,7 @@ final class UsageDetailsService
      * @throws NonUniqueResultException
      * @throws Exception
      */
-    public function getUnusedAssetCount(): int
+    public function getUnusedAssetCount(Types\AssetSourceId $assetSourceId): int
     {
         // TODO: This method has to be implemented in a more generic way at some point to increase support with other implementations
         $this->canQueryAssetUsage();
@@ -417,13 +433,32 @@ final class UsageDetailsService
                 )
             ORDER BY a.lastModified DESC
         ', $this->getAssetVariantFilterClause('a')))
-            ->setParameter('assetSourceIdentifier', 'neos')
+            ->setParameter('assetSourceIdentifier', $assetSourceId->value)
             ->getSingleScalarResult();
     }
 
+    /**
+     * @throws InvalidFormatPlaceholderException
+     * @throws IndexOutOfBoundsException
+     */
     protected function translateById(string $id): ?string
     {
-        return $this->translator->translateById($id, [], null, null, 'Main', 'Flowpack.Media.Ui') ?? $id;
+        $source = 'Main';
+        $package = 'Flowpack.Media.Ui';
+
+        $shortHandStringParts = explode(':', $id);
+        if (count($shortHandStringParts) === 3) {
+            [$package, $source, $id] = $shortHandStringParts;
+        }
+
+        return $this->translator->translateById(
+            $id,
+            [],
+            null,
+            null,
+            $source,
+            $package,
+        ) ?? $id;
     }
 
     /**

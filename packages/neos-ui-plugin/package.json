@@ -7,18 +7,14 @@
     "node": ">=12"
   },
   "scripts": {
-    "build": "NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production neos-react-scripts build",
-    "watch": "NODE_OPTIONS=--openssl-legacy-provider neos-react-scripts watch"
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch"
   },
   "dependencies": {
     "@media-ui/media-details-screen": "workspace:*",
     "@media-ui/media-selection-screen": "workspace:*",
-    "@neos-project/neos-ui-extensibility": "^8.3.0",
-    "@neos-project/neos-ui-extensibility-webpack-adapter": "^8.3.0"
-  },
-  "devDependencies": {
-    "webpack": "^4.46.0",
-    "webpack-graphql-loader": "^1.0.2"
+    "@neos-project/neos-ui-extensibility": "^8.4.0",
+    "esbuild-css-modules-plugin": "^3.1.5"
   },
   "browserslist": [
     "> 0.5%",

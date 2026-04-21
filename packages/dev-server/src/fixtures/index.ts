@@ -60,18 +60,21 @@ const assetSources: AssetSource[] = [
 const tags: Tag[] = range(10).map((index) => ({
     __typename: 'Tag',
     id: `index ${index + 1}`,
+    assetSourceId: assetSources[0].id,
     label: `Example tag ${index + 1}`,
 }));
 
 const assetCollections: AssetCollection[] = range(3).map((index) => ({
     __typename: 'AssetCollection',
     id: `someId_${index}`,
+    assetSourceId: assetSources[0].id,
     title: `Example collection ${index + 1}`,
     tags: range(index % 3).map((i) => tags[(i * 3 + index) % tags.length]),
     parent:
         index == 1
             ? {
                   id: `someId_0`,
+                  assetSourceId: 'neos',
                   title: `Example collection 1`,
                   __typename: 'AssetCollectionParent',
               }

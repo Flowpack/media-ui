@@ -4,6 +4,7 @@ import { TAG_FRAGMENT } from '@media-ui/feature-asset-tags/src/fragments/tag';
 export const ASSET_COLLECTION_FRAGMENT = gql`
     fragment AssetCollectionProps on AssetCollection {
         id
+        assetSourceId
         title
         parent {
             id
@@ -13,7 +14,6 @@ export const ASSET_COLLECTION_FRAGMENT = gql`
             ...TagProps
         }
         assetCount
-        path
         canDelete
     }
     ${TAG_FRAGMENT}

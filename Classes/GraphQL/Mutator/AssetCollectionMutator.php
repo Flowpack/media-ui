@@ -15,21 +15,19 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
  */
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
+use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
-use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Neos\Domain\Repository\SiteRepository;
-
-use function Wwwision\Types\instantiate;
 
 #[Flow\Scope("singleton")]
 class AssetCollectionMutator
@@ -37,7 +35,7 @@ class AssetCollectionMutator
     public function __construct(
         private readonly AssetCollectionRepository $assetCollectionRepository,
         private readonly AssetCollectionService $assetCollectionService,
-        private readonly PersistenceManagerInterface $persistenceManager,
+        private readonly AssetSourceContext $assetSourceContext,
         private readonly TagRepository $tagRepository,
         private readonly SiteRepository $siteRepository,
         private readonly Translator $translator,
@@ -47,8 +45,14 @@ class AssetCollectionMutator
     protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
     {
         try {
-            return $this->translator->translateById($id, $arguments, null, null, 'Main',
-                'Flowpack.Media.Ui') ?? $fallback;
+            return $this->translator->translateById(
+                $id,
+                $arguments,
+                null,
+                null,
+                'Main',
+                'Flowpack.Media.Ui'
+            ) ?? $fallback;
         } catch (\Exception) {
             return $fallback ?: $id;
         }
@@ -59,33 +63,32 @@ class AssetCollectionMutator
      */
     public function createAssetCollection(
         Types\AssetCollectionTitle $title,
+        Types\AssetSourceId $assetSourceId,
         Types\AssetCollectionId $parent = null
     ): Types\AssetCollection {
-        $newAssetCollection = new AssetCollection($title->value);
-        if ($parent) {
-            $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
-            /** @var HierarchicalAssetCollectionInterface $newAssetCollection */
-            /** @phpstan-ignore varTag.nativeType */
-            $newAssetCollection->setParent($parentCollection);
-        }
-
-        // FIXME: Multiple asset collections with the same title can exist, but do we want that?
-        $this->assetCollectionRepository->add($newAssetCollection);
-        return instantiate(Types\AssetCollection::class, [
-            'id' => $this->persistenceManager->getIdentifierByObject($newAssetCollection),
-            'title' => $newAssetCollection->getTitle(),
-            'path' => $newAssetCollection->getPath(),
-        ]);
+        return $this->assetSourceContext->createAssetCollection($title, $assetSourceId, $parent);
     }
 
     /**
      * @throws Exception|IllegalObjectTypeException
      */
-    public function deleteAssetCollection(Types\AssetCollectionId $id): MutationResult
-    {
+    public function deleteAssetCollection(
+        Types\AssetCollectionId $id,
+        Types\AssetSourceId $assetSourceId,
+    ): MutationResult {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support managing collections in the neos asset source
+            return MutationResult::fromError([
+                $this->localizedMessage(
+                    'actions.assetSourceNotSupported',
+                    'Asset source not supported'
+                )
+            ]);
+        }
+
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
         if (!$assetCollection) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.deleteAssetCollection.notFound',
                     'Asset collection not found'
@@ -94,7 +97,7 @@ class AssetCollectionMutator
         }
 
         if ($this->assetCollectionService->getAssetCollectionAssetCount($id) > 0) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.deleteAssetCollection.notEmpty',
                     'Asset collection is not empty'
@@ -104,7 +107,7 @@ class AssetCollectionMutator
 
         /** @noinspection PhpUndefinedMethodInspection */
         if ($this->siteRepository->findOneByAssetCollection($assetCollection)) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.deleteAssetCollection.isDefaultCollection',
                     'Asset collection is referenced as default collection of a site'
@@ -113,7 +116,7 @@ class AssetCollectionMutator
         }
 
         $this->assetCollectionRepository->remove($assetCollection);
-        return MutationResult::success();
+        return MutationResult::fromSuccess();
     }
 
     /**
@@ -121,13 +124,24 @@ class AssetCollectionMutator
      */
     public function updateAssetCollection(
         Types\AssetCollectionId $id,
+        Types\AssetSourceId $assetSourceId,
         Types\AssetCollectionTitle $title = null,
-        Types\TagIds $tagIds = null
+        Types\TagIds $tagIds = null,
     ): MutationResult {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support managing collections in the neos asset source
+            return MutationResult::fromError([
+                $this->localizedMessage(
+                    'actions.assetSourceNotSupported',
+                    'Asset source not supported'
+                )
+            ]);
+        }
+
         /** @var AssetCollection&HierarchicalAssetCollectionInterface $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
         if (!$assetCollection) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.updateAssetCollection.notFound',
                     'Asset collection not found'
@@ -144,7 +158,7 @@ class AssetCollectionMutator
             foreach ($tagIds as $tagId) {
                 $tag = $this->tagRepository->findByIdentifier($tagId->value);
                 if (!$tag) {
-                    return MutationResult::error([
+                    return MutationResult::fromError([
                         $this->localizedMessage(
                             'actions.updateAssetCollection.tagNotFound',
                             'Cannot tag asset collection with tag that does not exist'
@@ -158,7 +172,7 @@ class AssetCollectionMutator
 
         $this->assetCollectionRepository->update($assetCollection);
         $this->assetCollectionService->updatePathForNestedAssetCollections($assetCollection);
-        return new MutationResult(true);
+        return MutationResult::fromSuccess();
     }
 
     /**
@@ -166,13 +180,24 @@ class AssetCollectionMutator
      */
     public function setAssetCollectionParent(
         Types\AssetCollectionId $id,
+        Types\AssetSourceId $assetSourceId,
         Types\AssetCollectionId $parent = null
     ): MutationResult {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support managing collections in the neos asset source
+            return MutationResult::fromError([
+                $this->localizedMessage(
+                    'actions.assetSourceNotSupported',
+                    'Asset source not supported'
+                )
+            ]);
+        }
+
         /** @var AssetCollection $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
 
         if (!$assetCollection) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.setAssetCollectionParent.notFound',
                     'Asset collection not found'
@@ -185,7 +210,7 @@ class AssetCollectionMutator
             /** @var HierarchicalAssetCollectionInterface $parentCollection */
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
             if (!$parentCollection) {
-                return MutationResult::error([
+                return MutationResult::fromError([
                     $this->localizedMessage(
                         'actions.setAssetCollectionParent.parentNotFound',
                         'Parent asset collection not found'
@@ -198,6 +223,6 @@ class AssetCollectionMutator
         }
         $this->assetCollectionRepository->update($assetCollection);
         $this->assetCollectionService->updatePathForNestedAssetCollections($assetCollection);
-        return new MutationResult(true);
+        return MutationResult::fromSuccess();
     }
 }

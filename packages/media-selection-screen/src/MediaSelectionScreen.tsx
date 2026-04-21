@@ -5,11 +5,9 @@ import { createUploadLink } from 'apollo-upload-client';
 import cx from 'classnames';
 
 // Neos dependencies are provided by the UI
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-ignores
 import { neos } from '@neos-project/neos-ui-decorators';
 // @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { actions } from '@neos-project/neos-ui-redux-store';
 
 // Media UI dependencies
@@ -125,7 +123,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
         return this.props.i18nRegistry.translate(id, fallback, params, packageKey, sourceName);
     };
 
-    getInitialState = () => {
+    getInitialApplicationState = () => {
         const { frontendConfiguration, constraints, type } = this.props;
 
         return {
@@ -154,7 +152,7 @@ class MediaSelectionScreen extends React.PureComponent<MediaSelectionScreenProps
                     client={this.getApolloClient()}
                     translate={this.translate}
                     notificationApi={this.notificationHandler}
-                    initialState={this.getInitialState()}
+                    initialState={this.getInitialApplicationState()}
                 >
                     <MediaUiProvider
                         dummyImage={dummyImage}

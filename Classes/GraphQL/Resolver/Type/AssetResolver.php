@@ -28,8 +28,6 @@ use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Service\FileTypeIconService;
 
-use function Wwwision\Types\instantiate;
-
 #[Flow\Scope('singleton')]
 class AssetResolver
 {
@@ -57,7 +55,9 @@ class AssetResolver
      */
     public function label(Types\Asset $asset): ?string
     {
-        $localAssetData = $asset->localId ? $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId) : null;
+        $localAssetData = $asset->localId ? $this->assetSourceContext->getAssetByLocalIdentifier(
+            $asset->localId
+        ) : null;
         if ($localAssetData && $localAssetData->getTitle()) {
             return $localAssetData->getTitle();
         }
@@ -115,7 +115,7 @@ class AssetResolver
             $url = (string)$assetProxy->getPreviewUri();
         }
 
-        return instantiate(Types\File::class, [
+        return Types\File::fromArray([
             'extension' => $icon['alt'],
             'mediaType' => $assetProxy->getMediaType(),
             'typeIcon' => [
@@ -139,9 +139,9 @@ class AssetResolver
             $properties = $assetProxy->getIptcProperties();
             return Types\IptcProperties::fromArray(
                 array_map(static function ($key) use ($properties) {
-                    return instantiate(
-                        Types\IptcProperty::class,
-                        ['propertyName' => $key, 'value' => $properties[$key]]
+                    return Types\IptcProperty::create(
+                        Types\IptcPropertyName::fromString($key),
+                        $properties[$key]
                     );
                 }, array_keys($properties))
             );
@@ -172,11 +172,12 @@ class AssetResolver
         $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
         return $localAssetData instanceof Asset ?
             Types\Tags::fromArray(
-                array_map(function (Tag $tag) {
-                    return instantiate(Types\Tag::class, [
-                        'id' => $this->persistenceManager->getIdentifierByObject($tag),
-                        'label' => $tag->getLabel(),
-                    ]);
+                array_map(function (Tag $tag) use ($asset) {
+                    return Types\Tag::create(
+                        Types\TagId::fromString($this->persistenceManager->getIdentifierByObject($tag)),
+                        $asset->assetSource->id,
+                        Types\TagLabel::fromString($tag->getLabel()),
+                    );
                 }, $localAssetData->getTags()->toArray())
             ) : Types\Tags::empty();
     }
@@ -189,13 +190,14 @@ class AssetResolver
         $localAssetData = $this->assetSourceContext->getAssetByLocalIdentifier($asset->localId);
         return $localAssetData instanceof Asset ?
             Types\AssetCollections::fromArray(
-                array_map(function (HierarchicalAssetCollectionInterface $assetCollection) {
-                    return instantiate(Types\AssetCollection::class, [
-                        'id' => $this->persistenceManager->getIdentifierByObject($assetCollection),
-                        'title' => $assetCollection->getTitle(),
-                        'path' => $assetCollection->getPath() ?
-                            Types\AssetCollectionPath::fromString($assetCollection->getPath()) : '',
-                    ]);
+                array_map(function (HierarchicalAssetCollectionInterface $assetCollection) use ($asset) {
+                    return Types\AssetCollection::create(
+                        Types\AssetCollectionId::fromString(
+                            $this->persistenceManager->getIdentifierByObject($assetCollection)
+                        ),
+                        $asset->assetSource->id,
+                        Types\AssetCollectionTitle::fromString($assetCollection->getTitle()),
+                    );
                 },
                     $localAssetData->getAssetCollections()->toArray())
             ) : Types\AssetCollections::empty();

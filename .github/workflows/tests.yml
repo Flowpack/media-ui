@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, '2.x', '2.x-dev' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, '2.x', '2.x-dev' ]
 
 env:
   YARN_ENABLE_IMMUTABLE_INSTALLS: false
@@ -15,14 +15,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Run linting
         run: yarn lint
@@ -30,16 +30,21 @@ jobs:
   codestyle:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['8.3']
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: ${{ matrix.php-versions }}
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/.composer/cache
           key: dependencies-composer-${{ hashFiles('composer.json') }}
@@ -47,16 +52,14 @@ jobs:
       - name: Install dependencies
         uses: php-actions/composer@v6
         with:
-          php_version: 8.1
+          php_version: ${{ matrix.php-versions }}
           version: 2
 
       - name: PHPStan
         uses: php-actions/phpstan@v3
         with:
-          php_version: 8.1
-          version: 2.1.17
-          command: analyse
-          path: 'Classes/'
+          php_version: ${{ matrix.php-versions }}
+          configuration: phpstan.ci.neon
 
   php-unit-tests:
     env:
@@ -68,11 +71,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['8.1']
+        php-versions: ['8.3']
         flow-versions: ['8.3']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
       - name: Set package branch name
         run: echo "PACKAGE_TARGET_VERSION=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
@@ -87,7 +90,7 @@ jobs:
           ini-values: opcache.fast_shutdown=0
 
       - name: Cache dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/.composer/cache
           key: dependencies-composer-${{ hashFiles('composer.json') }}
@@ -122,35 +125,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Run mocha tests
         run: yarn test:unit
 
   e2e:
     env:
-      # Solves error when parcel tries to count cpus via lscpu
-      PARCEL_WORKERS: 1
       DEBUG: 'testcafe:tested-app:*'
 
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Build main module
         run: yarn build:module
@@ -159,7 +160,7 @@ jobs:
         run: yarn build:plugin
 
       - name: Run TestCafe
-        run: yarn test:e2e:github-actions
+        run: yarn testcafe --config-file .testcaferc.ci.json
 
       - name: Archive failure screenshots
         if: ${{ failure() }}

@@ -1,11 +1,10 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-import { Parcel } from '@parcel/core';
 import { gql } from '@apollo/client';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import esbuild from 'esbuild';
 
 import * as Fixtures from './fixtures/index';
 
@@ -15,30 +14,28 @@ import * as Fixtures from './fixtures/index';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 (async () => {
-    const bundlerPort = 8001;
     const frontendPort = 8000;
 
-    const bundler = new Parcel({
-        defaultConfig: '@parcel/config-default',
-        entries: path.resolve(__dirname, './index.html'),
-        defaultTargetOptions: {
-            distDir: path.resolve(__dirname, '../dist'),
-            publicUrl: '/',
-        },
-        mode: 'development',
-        // cache: false,
+    const options: esbuild.BuildOptions = {
         logLevel: 'info',
-        serveOptions: {
-            publicUrl: '/',
-            port: bundlerPort,
-            host: 'localhost',
+        bundle: true,
+        minify: false,
+        keepNames: true,
+        sourcemap: 'linked',
+        mainFields: ['browser', 'module', 'main'],
+        target: 'es2020',
+        entryPoints: {
+            server: path.resolve(__dirname, './index.ts'),
+            main: '@media-ui/media-module/src/index',
         },
-        hmrOptions: {
-            port: bundlerPort,
-            host: 'localhost',
+        outdir: path.resolve(__dirname, '../public/dist'),
+        define: {
+            // react-image-lightbox
+            global: 'window',
         },
-    });
-    bundler.watch();
+    };
+
+    esbuild.context(options).then((ctx) => ctx.watch());
 
     let { assets, assetCollections, assetSources, tags } = Fixtures.loadFixtures();
 
@@ -62,7 +59,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         });
     };
 
-    const sortAssets = (assets: Asset[], sortBy, sortDirection) => {
+    const sortAssets = (assets: Asset[], sortBy: string, sortDirection: string) => {
         const sorted = assets.sort((a, b) => {
             if (sortBy === 'name') {
                 // Using the label here since teh filename is the same in every fixture
@@ -90,7 +87,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         Query: {
             asset: ($_, { id, assetSourceId = 'neos' }) =>
                 assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId),
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assets: (
                 $_,
                 {
@@ -129,7 +125,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             similarAssets: ($_, { id, assetSourceId }) => {
                 throw new Error('Not implemented');
             },
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assetCount: (
                 $_,
                 {
@@ -149,7 +144,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             assetUsageCount: ($_, { id, assetSourceId }): number => {
                 throw new Error('Not implemented');
             },
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             assetVariants: ($_, { id }): AssetVariant[] => {
                 // TODO: Implement assetVariants
                 return [];
@@ -184,7 +178,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 });
                 return asset;
             },
-            setAssetCollectionParent: ($_, { id, parent }: { id: string; parent: string }): boolean => {
+            setAssetCollectionParent: (
+                $_,
+                { id, assetSourceId, parent }: { id: string; assetSourceId: string; parent: string }
+            ): boolean => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
                 const parentCollection = assetCollections.find((assetCollection) => assetCollection.id === parent);
                 if (!assetCollection || !parentCollection) return false;
@@ -201,6 +198,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 assetCollection.parent = {
                     __typename: 'AssetCollectionParent',
                     id: parentCollection.id,
+                    assetSourceId: parentCollection.assetSourceId,
                     title: parentCollection.title,
                 };
                 return true;
@@ -233,11 +231,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 const newCollection: AssetCollection = {
                     __typename: 'AssetCollection',
                     id: `someId_${Date.now()}`,
+                    assetSourceId: 'neos',
                     title,
                     parent: parentCollection
                         ? {
                               __typename: 'AssetCollectionParent',
                               id: parentCollection.id,
+                              assetSourceId: 'neos',
                               title: parentCollection.title,
                           }
                         : null,
@@ -268,7 +268,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     assetSourceId,
                     assetCollectionIds: newAssetCollectionIds,
                 }: { id: string; assetSourceId: string; assetCollectionIds: string[] }
-            ): boolean => {
+            ) => {
                 const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
                 asset.collections = assetCollections.filter((collection) =>
                     newAssetCollectionIds.includes(collection.id)
@@ -278,7 +278,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     assetId: id,
                     type: 'ASSET_UPDATED',
                 });
-                return true;
+                return { success: true, messages: [] };
             },
             deleteTag: ($_, { id }): boolean => {
                 tags.splice(
@@ -291,13 +291,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 });
                 return true;
             },
-            deleteAsset: ($_, { id: id, assetSourceId }): boolean => {
+            deleteAsset: ($_, { id: id, assetSourceId }) => {
                 const inUse = Fixtures.getUsageDetailsForAsset(id).reduce(
-                    (prev, { usages }) => prev && usages.length > 0,
+                    (prev, { usages }) => prev || usages.length > 0,
                     false
                 );
                 if (inUse) {
-                    return false;
+                    return { success: false, messages: ['Asset is in use'] };
                 }
                 const assetIndex = assets.findIndex(
                     (asset) => asset.id === id && asset.assetSource.id === assetSourceId
@@ -309,16 +309,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                         assetId: id,
                         type: 'ASSET_REMOVED',
                     });
-                    return true;
+                    return { success: true, messages: [] };
                 }
-                return false;
+                return { success: false, messages: ['Asset not found'] };
             },
             createTag: ($_, { tag: newTag }: { tag: Tag }): Tag => {
-                if (!tags.find((tag) => tag === newTag)) {
-                    tags.push(newTag);
-                    return newTag;
+                if (tags.find((tag) => tag === newTag)) {
+                    throw new Error('Tag with this id already exists');
                 }
-                return null;
+                tags.push(newTag);
+                return newTag;
             },
             updateTag: ($_, { id, label }): Tag => {
                 throw new Error('Not implemented');
@@ -370,11 +370,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         next();
     });
     app.use(express.static(path.join(__dirname, '../public')));
-
-    const parcelMiddleware = createProxyMiddleware({
-        target: `http://localhost:${bundlerPort}`,
-    });
-    app.use('/', parcelMiddleware);
 
     app.listen(frontendPort, () => {
         console.info(

@@ -1,5 +1,4 @@
 import page from './page-model';
-import { ReactSelector } from 'testcafe-react-selectors';
 
 fixture('Tags').page('./?reset=1');
 
@@ -14,7 +13,7 @@ test('Clicking first tag updates list and only assets should be shown that are a
         // FIXME: For some reason it only works when we click the element twice
         .click(page.tags.withExactText('Example tag 1'))
         .click(page.tags.withExactText('Example tag 1'))
-        .expect(page.firstThumbnail.innerText)
+        .expect(page.firstThumbnailLabel.innerText)
         .eql('Example asset 11')
         .expect(page.paginationItems.count)
         .eql(3) // one item and the two navigation buttons
@@ -26,29 +25,25 @@ test('Create a new tag and test validation', async (t) => {
     subSection('Check existing tag label validation');
     await t
         .click(page.assetCollections.withText('All'))
-        .click(page.collectionTree.findReact('AddTagButton'))
-        .typeText(ReactSelector('CreateTagDialog').findReact('TextInput'), 'Example tag 1')
-        .expect(
-            ReactSelector('CreateTagDialog')
-                .findReact('TextInput')
-                .withProps({ validationerrors: ['This input is invalid'] }).exists
-        )
+        .click(page.collectionTreeToolbar.find('button').withAttribute('title', 'Create new tag'))
+        .typeText(page.createTagDialog.find('input[class*="textInput"]'), 'Example tag 1')
+        .expect(page.createTagDialog.find('input').withAttribute('validationerrors').exists)
         .ok('Text input should have validation errors')
-        .expect(ReactSelector('CreateTagDialog').findReact('Button').withProps({ disabled: true }).exists)
+        .expect(page.createTagDialog.find('button').withText('Create').hasAttribute('disabled'))
         .ok('Create button should be disabled')
-        .expect(ReactSelector('CreateTagDialog').find('ul li').textContent)
+        .expect(page.createTagDialog.find('ul li').textContent)
         .eql('A tag with this label already exists')
-        .typeText(ReactSelector('CreateTagDialog').findReact('TextInput'), '00')
-        .expect(ReactSelector('CreateTagDialog').find('ul li').exists)
+        .typeText(page.createTagDialog.find('input[class*="textInput"]'), '00')
+        .expect(page.createTagDialog.find('ul li').exists)
         .notOk('The tooltip should not be visible anymore')
-        .expect(ReactSelector('CreateTagDialog').findReact('Button').withProps({ disabled: false }).exists)
+        .expect(page.createTagDialog.find('button:not([disabled])').exists)
         .ok('Create button should be enabled');
 
     subSection('Check empty tag label validation');
     await t
-        .typeText(ReactSelector('CreateTagDialog').findReact('TextInput'), ' ', { replace: true })
-        .expect(ReactSelector('CreateTagDialog').findReact('Button').withProps({ disabled: true }).exists)
+        .typeText(page.createTagDialog.find('input[class*="textInput"]'), ' ', { replace: true })
+        .expect(page.createTagDialog.find('button[disabled]').exists)
         .ok('Create button should be disabled')
-        .expect(ReactSelector('CreateTagDialog').find('ul li').textContent)
+        .expect(page.createTagDialog.find('ul li').textContent)
         .eql('Please provide a tag label');
 });

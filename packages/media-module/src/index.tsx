@@ -38,7 +38,13 @@ window.onload = async (): Promise<void> => {
 
     const { Notification } = window.NeosCMS;
 
-    const translate = (id, value = null, args = {}, packageKey = 'Flowpack.Media.Ui', source = 'Main') => {
+    const translate: TranslateFunction = (
+        id,
+        value = null,
+        args = {},
+        packageKey = 'Flowpack.Media.Ui',
+        source = 'Main'
+    ) => {
         return window.NeosCMS.I18n.translate(id, value, packageKey, source, args);
     };
 
@@ -46,8 +52,8 @@ window.onload = async (): Promise<void> => {
         connectToDevTools: true,
         cache,
         link: ApolloLink.from([
-            createErrorHandler(Notification),
-            createRetryHandler(),
+            createRetryHandler(), // Retry first, BEFORE showing errors
+            createErrorHandler(Notification), // Then handle errors (only shown after retries exhausted)
             createUploadLink({
                 uri: endpoints.graphql,
                 credentials: 'same-origin',

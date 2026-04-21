@@ -4,8 +4,9 @@ import { CREATE_ASSET_COLLECTION } from '../mutations/createAssetCollection';
 import { ASSET_COLLECTIONS } from '../queries/assetCollections';
 
 interface CreateAssetCollectionVariables {
-    title: string;
-    parent: string | null;
+    title: AssetCollectionTitle;
+    assetSourceId: AssetSourceId;
+    parent: AssetCollectionId | null;
 }
 
 export default function useCreateAssetCollection() {
@@ -14,10 +15,15 @@ export default function useCreateAssetCollection() {
         CreateAssetCollectionVariables
     >(CREATE_ASSET_COLLECTION);
 
-    const createAssetCollection = (title: string, parentCollectionId: string = null) =>
+    const createAssetCollection = (
+        title: AssetCollectionTitle,
+        assetSourceId: AssetSourceId,
+        parentCollectionId: AssetCollectionId = null
+    ) =>
         action({
             variables: {
                 title,
+                assetSourceId,
                 parent: parentCollectionId,
             },
             update(cache, { data }) {

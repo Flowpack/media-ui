@@ -16,4 +16,9 @@ final class IptcProperty
         public readonly string $value,
     ) {
     }
+
+    public static function create(IptcPropertyName $propertyName, string $value): self
+    {
+        return new self($propertyName, $value);
+    }
 }

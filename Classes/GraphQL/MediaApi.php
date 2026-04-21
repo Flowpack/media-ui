@@ -14,8 +14,8 @@ namespace Flowpack\Media\Ui\GraphQL;
  * source code.
  */
 
-use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
-use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Flowpack\Media\Ui\Domain\Model\SearchTerm;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\Exception as MediaUiException;
@@ -23,6 +23,7 @@ use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetCollectionMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetMutator;
 use Flowpack\Media\Ui\GraphQL\Mutator\TagMutator;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\AssetProxyIteratorBuilder;
 use Flowpack\Media\Ui\Service\AssetChangeLog;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
@@ -30,16 +31,14 @@ use Flowpack\Media\Ui\Service\SimilarityService;
 use Flowpack\Media\Ui\Service\UsageDetailsService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
+use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\Exception as ResourceManagementException;
 use Neos\Flow\Security\Authorization\PrivilegeManagerInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
 use Neos\Media\Domain\Model\AssetVariantInterface;
-use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Model\VariantSupportInterface;
-use Neos\Media\Domain\Repository\AssetCollectionRepository;
-use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
@@ -58,7 +57,6 @@ final class MediaApi
 
     public function __construct(
         private readonly AssetChangeLog $assetChangeLog,
-        private readonly AssetCollectionRepository $assetCollectionRepository,
         private readonly AssetCollectionService $assetCollectionService,
         private readonly AssetCollectionMutator $assetCollectionMutator,
         private readonly AssetMutator $assetMutator,
@@ -70,7 +68,6 @@ final class MediaApi
         private readonly PrivilegeManagerInterface $privilegeManager,
         private readonly SimilarityService $similarityService,
         private readonly TagMutator $tagMutator,
-        private readonly TagRepository $tagRepository,
         private readonly UsageDetailsService $usageDetailsService,
     ) {
     }
@@ -80,12 +77,12 @@ final class MediaApi
      */
     #[Query]
     public function assetCount(
-        Types\AssetSourceId $assetSourceId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\MediaType $mediaType = null,
-        Types\AssetType $assetType = null,
-        Types\TagId $tagId = null,
-        string $searchTerm = null,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\AssetCollectionId $assetCollectionId = null,
+        ?Types\MediaType $mediaType = null,
+        ?Types\AssetType $assetType = null,
+        ?Types\TagId $tagId = null,
+        ?string $searchTerm = null,
     ): int {
         $iterator = $this->assetProxyIteratorBuilder->build(
             $assetSourceId,
@@ -106,14 +103,14 @@ final class MediaApi
     #[Description('Provides a filterable list of asset proxies. These are the main entities for media management.')]
     #[Query]
     public function assets(
-        Types\AssetSourceId $assetSourceId = null,
-        Types\AssetCollectionId $assetCollectionId = null,
-        Types\MediaType $mediaType = null,
-        Types\AssetType $assetType = null,
-        Types\TagId $tagId = null,
-        Types\SortBy $sortBy = null,
-        Types\SortDirection $sortDirection = null,
-        string $searchTerm = null,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\AssetCollectionId $assetCollectionId = null,
+        ?Types\MediaType $mediaType = null,
+        ?Types\AssetType $assetType = null,
+        ?Types\TagId $tagId = null,
+        ?Types\SortBy $sortBy = null,
+        ?Types\SortDirection $sortDirection = null,
+        ?string $searchTerm = null,
         int $limit = 20,
         int $offset = 0,
     ): ?Types\Assets {
@@ -140,75 +137,54 @@ final class MediaApi
 
     #[Description('All asset collections')]
     #[Query]
-    public function assetCollections(): Types\AssetCollections
+    public function assetCollections(Types\AssetSourceId $assetSourceId): Types\AssetCollections
     {
-        return Types\AssetCollections::fromArray(
-            array_map(
-                fn(HierarchicalAssetCollectionInterface $assetCollection) => instantiate(Types\AssetCollection::class, [
-                    'id' => $this->persistenceManager->getIdentifierByObject($assetCollection),
-                    'title' => $assetCollection->getTitle(),
-                    'path' => $assetCollection->getPath(),
-                ]), $this->assetCollectionRepository->findAll()->toArray()
-            )
-        );
+        return $this->assetSourceContext->getAssetCollections($assetSourceId);
     }
 
     #[Description('All configured asset sources (by default only the "neos" source)')]
     #[Query]
     public function assetSources(): Types\AssetSources
     {
-        return Types\AssetSources::fromArray(array_map(
+        return Types\AssetSources::fromArray(
+            array_map(
                 static fn(AssetSourceInterface $assetSource) => Types\AssetSource::fromAssetSource($assetSource),
-                $this->assetSourceContext->getAssetSources())
+                $this->assetSourceContext->getAssetSources()
+            )
         );
     }
 
     /**
-     * @throws MediaUiException
+     * @throws NonUniqueResultException|MediaUiException|NoResultException
      */
     #[Description('Provides number of unused assets in local asset source')]
     #[Query]
-    public function unusedAssetCount(): int
+    public function unusedAssetCount(Types\AssetSourceId $assetSourceId): int
     {
-        return $this->usageDetailsService->getUnusedAssetCount();
+        return $this->usageDetailsService->getUnusedAssetCount($assetSourceId);
     }
 
     #[Description('Provides a list of all tags')]
     #[Query]
-    public function tags(): Types\Tags
+    public function tags(Types\AssetSourceId $assetSourceId): Types\Tags
     {
-        return Types\Tags::fromArray(array_map(
-            fn(Tag $tag) => instantiate(Types\Tag::class, [
-                'id' => $this->persistenceManager->getIdentifierByObject($tag),
-                'label' => $tag->getLabel(),
-            ]),
-            $this->tagRepository->findAll()->toArray()
-        ));
+        return $this->assetSourceContext->getTags($assetSourceId);
     }
 
     #[Description('Get tag by id')]
     #[Query]
-    public function tag(?Types\TagId $id): ?Types\Tag
+    public function tag(Types\TagId $id, Types\AssetSourceId $assetSourceId): ?Types\Tag
     {
-        /** @var Tag $tag */
-        $tag = $id ? $this->tagRepository->findByIdentifier($id->value) : null;
-        return $tag ? instantiate(Types\Tag::class, [
-            'id' => $id,
-            'label' => $tag->getLabel(),
-        ]) : null;
+        return $this->assetSourceContext->getTag($id, $assetSourceId);
     }
 
     #[Description('Returns an asset collection by id')]
     #[Query]
-    public function assetCollection(?Types\AssetCollectionId $id): ?Types\AssetCollection
-    {
-        /** @var HierarchicalAssetCollectionInterface $assetCollection */
-        $assetCollection = $id ? $this->assetCollectionRepository->findByIdentifier($id->value) : null;
-        return $assetCollection ? instantiate(Types\AssetCollection::class, [
-            'id' => $id,
-            'title' => $assetCollection->getTitle(),
-            'path' => $assetCollection->getPath(),
-        ]) : null;
+    public function assetCollection(
+        Types\AssetCollectionId $id,
+        Types\AssetSourceId $assetSourceId
+    ): ?Types\AssetCollection {
+        return $id ? $this->assetSourceContext->getAssetCollection($id, $assetSourceId) : null;
     }
 
     #[Description('Returns an asset by id')]
@@ -229,9 +205,13 @@ final class MediaApi
             'uploadMaxFileSize' => $this->getMaximumFileUploadSize(),
             'uploadMaxFileUploadLimit' => $this->getMaximumFileUploadLimit(),
             'currentServerTime' => Types\DateTime::now(),
-            'defaultAssetCollectionId' => $defaultAssetCollection ? $this->persistenceManager->getIdentifierByObject($defaultAssetCollection) : null,
+            'defaultAssetCollectionId' => $defaultAssetCollection ? $this->persistenceManager->getIdentifierByObject(
+                $defaultAssetCollection
+            ) : null,
             'canManageTags' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageTags'),
-            'canManageAssetCollections' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageAssetCollections'),
+            'canManageAssetCollections' => $this->privilegeManager->isPrivilegeTargetGranted(
+                'Flowpack.Media.Ui:ManageAssetCollections'
+            ),
             'canManageAssets' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageAssets'),
         ]);
     }
@@ -278,20 +258,19 @@ final class MediaApi
 
     #[Description('Provides a list of all unused assets in local asset source')]
     #[Query]
-    public function unusedAssets(int $limit = 20, int $offset = 0): Types\Assets
+    public function unusedAssets(Types\AssetSourceId $assetSourceId, int $limit = 20, int $offset = 0): Types\Assets
     {
-        $assets = [];
         try {
-            $assets = $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
+            return $this->assetSourceContext->getUnusedAssets($assetSourceId, $limit, $offset);
         } catch (MediaUiException $e) {
             $this->logger->error('Could not retrieve unused assets', ['exception' => $e]);
         }
-        return Types\Assets::fromAssets($assets);
+        return Types\Assets::empty();
     }
 
     #[Description('Provides a list of changes to assets since a given timestamp')]
     #[Query]
-    public function changedAssets(Types\DateTime $since = null): Types\ChangedAssetsResult
+    public function changedAssets(?Types\DateTime $since = null): Types\ChangedAssetsResult
     {
         $changes = $this->assetChangeLog->getChanges($since);
         return instantiate(Types\ChangedAssetsResult::class, [
@@ -401,10 +380,12 @@ final class MediaApi
     #[Mutation]
     public function createAssetCollection(
         Types\AssetCollectionTitle $title,
+        Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionId $parent = null,
     ): ?Types\AssetCollection {
         return $this->assetCollectionMutator->createAssetCollection(
             $title,
+            $assetSourceId,
             $parent,
         );
     }
@@ -416,8 +397,9 @@ final class MediaApi
     #[Mutation]
     public function deleteAssetCollection(
         Types\AssetCollectionId $id,
+        Types\AssetSourceId $assetSourceId,
     ): MutationResult {
-        return $this->assetCollectionMutator->deleteAssetCollection($id);
+        return $this->assetCollectionMutator->deleteAssetCollection($id, $assetSourceId);
     }
 
     /**
@@ -427,10 +409,11 @@ final class MediaApi
     #[Mutation]
     public function updateAssetCollection(
         Types\AssetCollectionId $id,
+        Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionTitle $title = null,
         ?Types\TagIds $tagIds = null,
     ): MutationResult {
-        return $this->assetCollectionMutator->updateAssetCollection($id, $title, $tagIds);
+        return $this->assetCollectionMutator->updateAssetCollection($id, $assetSourceId, $title, $tagIds);
     }
 
     /**
@@ -439,9 +422,10 @@ final class MediaApi
     #[Mutation]
     public function setAssetCollectionParent(
         Types\AssetCollectionId $id,
+        Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionId $parent = null,
     ): MutationResult {
-        return $this->assetCollectionMutator->setAssetCollectionParent($id, $parent);
+        return $this->assetCollectionMutator->setAssetCollectionParent($id, $assetSourceId, $parent);
     }
 
     /**
@@ -491,14 +475,16 @@ final class MediaApi
      */
     #[Mutation]
     public function uploadFile(
-        Types\UploadedFile $file = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        Types\UploadedFile $file,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResult {
         return $this->assetMutator->uploadFile(
             $file,
+            $assetSourceId,
             $tagId,
-            $assetCollectionId
+            $assetCollectionId,
         );
     }
 
@@ -507,14 +493,16 @@ final class MediaApi
      */
     #[Mutation]
     public function uploadFiles(
-        Types\UploadedFiles $files = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        Types\UploadedFiles $files,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResults {
         return $this->assetMutator->uploadFiles(
             $files,
+            $assetSourceId,
             $tagId,
-            $assetCollectionId
+            $assetCollectionId,
         );
     }
 
@@ -522,26 +510,32 @@ final class MediaApi
      * @throws Exception|IllegalObjectTypeException
      */
     #[Mutation]
-    public function createTag(Types\TagLabel $label, Types\AssetCollectionId $assetCollectionId = null): Types\Tag
-    {
-        return $this->tagMutator->createTag($label, $assetCollectionId);
+    public function createTag(
+        Types\TagLabel $label,
+        Types\AssetSourceId $assetSourceId,
+        Types\AssetCollectionId $assetCollectionId = null
+    ): Types\Tag {
+        return $this->tagMutator->createTag($label, $assetSourceId, $assetCollectionId);
     }
 
     /**
      * @throws Exception|IllegalObjectTypeException
      */
     #[Mutation]
-    public function updateTag(Types\TagId $id, Types\TagLabel $label = null): Types\Tag
-    {
-        return $this->tagMutator->updateTag($id, $label);
+    public function updateTag(
+        Types\TagId $id,
+        Types\AssetSourceId $assetSourceId,
+        Types\TagLabel $label = null
+    ): Types\Tag {
+        return $this->tagMutator->updateTag($id, $assetSourceId, $label);
     }
 
     /**
-     * @throws Exception|IllegalObjectTypeException
+     * @throws Exception|IllegalObjectTypeException|InvalidQueryException
      */
     #[Mutation]
-    public function deleteTag(Types\TagId $id): MutationResult
+    public function deleteTag(Types\TagId $id, Types\AssetSourceId $assetSourceId): MutationResult
     {
-        return $this->tagMutator->deleteTag($id);
+        return $this->tagMutator->deleteTag($id, $assetSourceId);
     }
 }

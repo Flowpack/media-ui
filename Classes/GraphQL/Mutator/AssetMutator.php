@@ -15,10 +15,10 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
  */
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Flowpack\Media\Ui\Domain\Model\Dto\MutationResult;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
@@ -36,16 +36,17 @@ use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetModelMappingStrategyInterface;
 use Neos\Media\Exception\AssetServiceException;
 use Neos\Utility\MediaTypes;
+use PharIo\Manifest\Type;
 use Psr\Log\LoggerInterface;
-
-use function Wwwision\Types\instantiate;
 
 #[Flow\Scope("singleton")]
 class AssetMutator
 {
-    protected const STATE_ADDED = 'ADDED';
-    protected const STATE_EXISTS = 'EXISTS';
-    protected const STATE_ERROR = 'ERROR';
+    protected const string STATE_ADDED = 'ADDED';
+    protected const string STATE_EXISTS = 'EXISTS';
+    protected const string STATE_ERROR = 'ERROR';
+    protected const string STATE_REPLACED = 'REPLACED';
+    protected const string STATE_UNSUPPORTED = 'UNSUPPORTED';
 
     public function __construct(
         private readonly AssetCollectionRepository $assetCollectionRepository,
@@ -65,8 +66,14 @@ class AssetMutator
     protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
     {
         try {
-            return $this->translator->translateById($id, $arguments, null, null, 'Main',
-                'Flowpack.Media.Ui') ?? $fallback;
+            return $this->translator->translateById(
+                $id,
+                $arguments,
+                null,
+                null,
+                'Main',
+                'Flowpack.Media.Ui'
+            ) ?? $fallback;
         } catch (\Exception) {
             return $fallback ?: $id;
         }
@@ -153,7 +160,7 @@ class AssetMutator
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($id, $assetSourceId);
         if (!$assetProxy) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.deleteAssets.noProxy',
                     'Asset could not be resolved'
@@ -163,7 +170,7 @@ class AssetMutator
         $asset = $this->assetSourceContext->getAssetForProxy($assetProxy);
 
         if (!$asset) {
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.deleteAssets.noImportExists',
                     'Cannot delete asset that was never imported'
@@ -174,19 +181,16 @@ class AssetMutator
         try {
             $this->assetRepository->remove($asset);
         } catch (AssetServiceException $e) {
-            return MutationResult::error([$this->localizedMessageFromException($e)]);
+            return MutationResult::fromError([$this->localizedMessageFromException($e)]);
         } catch (\Exception $e) {
             throw new MediaUiException('Failed to delete asset: ' . $e->getMessage(), 1591537315);
         }
 
-        return instantiate(MutationResult::class, [
-            'success' => true,
-            'messages' => [
-                $this->localizedMessage(
-                    'actions.deleteAssets.success',
-                    'Asset deleted'
-                )
-            ]
+        return MutationResult::fromSuccess([
+            $this->localizedMessage(
+                'actions.deleteAssets.success',
+                'Asset deleted'
+            )
         ]);
     }
 
@@ -260,7 +264,7 @@ class AssetMutator
             throw new MediaUiException('Failed to assign asset collections: ' . $e->getMessage(), 1594621296);
         }
 
-        return MutationResult::success();
+        return MutationResult::fromSuccess();
     }
 
     /**
@@ -312,22 +316,23 @@ class AssetMutator
             throw new MediaUiException('Asset type "' . $asset::class . '" does not support replacing', 1648046186);
         }
 
-        $success = false;
-        $result = self::STATE_ERROR;
         $sourceMediaType = MediaTypes::parseMediaType($asset->getMediaType());
         $replacementMediaType = MediaTypes::parseMediaType($file->clientMediaType);
         $filename = $file->clientFilename;
 
         // Prevent replacement of image, audio and video by a different mimetype because of possible rendering issues.
-        if ($sourceMediaType['type'] !== $replacementMediaType['type'] && in_array($sourceMediaType['type'],
-                ['image', 'audio', 'video'])) {
-            $this->logger->error(sprintf('Cannot replace asset of mimetype %s with mimetype %s',
-                $sourceMediaType['type'], $replacementMediaType['type']));
-            return instantiate(Types\FileUploadResult::class, [
-                'filename' => $filename,
-                'success' => false,
-                'result' => $result,
-            ]);
+        if ($sourceMediaType['type'] !== $replacementMediaType['type'] && in_array(
+                $sourceMediaType['type'],
+                ['image', 'audio', 'video']
+            )) {
+            $this->logger->error(
+                sprintf(
+                    'Cannot replace asset of mimetype %s with mimetype %s',
+                    $sourceMediaType['type'],
+                    $replacementMediaType['type']
+                )
+            );
+            return Types\FileUploadResult::fromError(self::STATE_ERROR);
         }
 
         try {
@@ -350,20 +355,19 @@ class AssetMutator
                     $resource,
                     $options->toArray()
                 );
-                $success = true;
-                $result = 'REPLACED';
+                return Types\FileUploadResult::fromSuccess(self::STATE_REPLACED, $filename);
             } catch (\Exception $e) {
-                $this->logger->error(sprintf(
-                    'Asset %s could not be replaced: %s', $asset->getIdentifier(), $e->getMessage()
-                ));
+                $this->logger->error(
+                    sprintf(
+                        'Asset %s could not be replaced: %s',
+                        $asset->getIdentifier(),
+                        $e->getMessage()
+                    )
+                );
             }
         }
 
-        return instantiate(Types\FileUploadResult::class, [
-            'filename' => $filename,
-            'success' => $success,
-            'result' => $result,
-        ]);
+        return Types\FileUploadResult::fromError(self::STATE_ERROR);
     }
 
     /**
@@ -396,8 +400,10 @@ class AssetMutator
         // Copy the resource to a new one with the new filename
         $originalResource = $asset->getResource();
         $originalResourceStream = $originalResource->getStream();
-        $resource = $this->resourceManager->importResource($originalResourceStream,
-            $originalResource->getCollectionName());
+        $resource = $this->resourceManager->importResource(
+            $originalResourceStream,
+            $originalResource->getCollectionName()
+        );
         fclose($originalResourceStream);
         $resource->setFilename($filename);
         $resource->setMediaType($originalResource->getMediaType());
@@ -405,13 +411,15 @@ class AssetMutator
         try {
             $this->assetService->replaceAssetResource($asset, $resource, $options->toArray());
         } catch (\Exception $exception) {
-            $this->logger->error(sprintf(
-                'Asset %s could not be replaced: %s',
-                $asset->getIdentifier(),
-                $exception->getMessage()
-            ));
+            $this->logger->error(
+                sprintf(
+                    'Asset %s could not be replaced: %s',
+                    $asset->getIdentifier(),
+                    $exception->getMessage()
+                )
+            );
             $this->logger->error('', [$exception]);
-            return MutationResult::error([
+            return MutationResult::fromError([
                 $this->localizedMessage(
                     'actions.editAsset.cannotRename',
                     sprintf('Asset "%s" could not be renamed', $asset->getLabel())
@@ -419,7 +427,7 @@ class AssetMutator
             ]);
         }
 
-        return MutationResult::success();
+        return MutationResult::fromSuccess();
     }
 
     /**
@@ -438,19 +446,13 @@ class AssetMutator
      * Stores the given file and returns an array with the result
      */
     public function uploadFile(
-        ?Types\UploadedFile $file,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        Types\UploadedFile $file,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResult {
-        $success = false;
-        $result = self::STATE_ERROR;
-
-        if (!$file) {
-            return instantiate(Types\FileUploadResult::class, [
-                'filename' => null,
-                'success' => false,
-                'result' => $result,
-            ]);
+        if ($assetSourceId->value !== 'neos') {
+            return Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED);
         }
 
         $filename = $file->clientFilename;
@@ -468,9 +470,7 @@ class AssetMutator
             $resource->setFilename($filename);
             $resource->setMediaType($file->clientMediaType);
 
-            if ($this->assetRepository->findOneByResourceSha1($resource->getSha1())) {
-                $result = self::STATE_EXISTS;
-            } else {
+            if (!$this->assetRepository->findOneByResourceSha1($resource->getSha1())) {
                 try {
                     $className = $this->mappingStrategy->map($resource);
                     /** @var Asset $asset */
@@ -486,7 +486,9 @@ class AssetMutator
                         }
                         if ($assetCollectionId) {
                             /** @var AssetCollection $assetCollection */
-                            $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId->value);
+                            $assetCollection = $this->assetCollectionRepository->findByIdentifier(
+                                $assetCollectionId->value
+                            );
                         } else {
                             // Assign the asset to the asset collection of the site it has been uploaded to
                             $assetCollection = $this->assetCollectionService->getDefaultCollectionForCurrentSite();
@@ -497,9 +499,7 @@ class AssetMutator
 
                         $this->assetRepository->add($asset);
                         $result = self::STATE_ADDED;
-                        $success = true;
-                    } else {
-                        $result = self::STATE_EXISTS;
+                        return Types\FileUploadResult::fromSuccess($result, Types\Filename::fromString($filename));
                     }
                 } catch (IllegalObjectTypeException $e) {
                     $this->logger->error('Type of uploaded file cannot be stored: ' . $e->getMessage());
@@ -508,28 +508,26 @@ class AssetMutator
         }
 
         // FIXME: The filename is not unique enough for multiple uploads, we need an id instead or use the sha1
-        return instantiate(Types\FileUploadResult::class, [
-            'filename' => $filename,
-            'success' => $success,
-            'result' => $result,
-        ]);
+        return Types\FileUploadResult::fromError(self::STATE_EXISTS);
     }
 
     /**
      * Stores all given files and returns an array of results for each upload
      */
     public function uploadFiles(
-        Types\UploadedFiles $files = null,
-        Types\TagId $tagId = null,
-        Types\AssetCollectionId $assetCollectionId = null
+        Types\UploadedFiles $files,
+        Types\AssetSourceId $assetSourceId,
+        ?Types\TagId $tagId = null,
+        ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResults {
-        if (!$files) {
-            return Types\FileUploadResults::empty();
+        if ($assetSourceId->value !== 'neos') {
+            return Types\FileUploadResults::fromArray([Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED)]);
         }
         $results = [];
         foreach ($files as $file) {
             $results[$file->clientFilename] = $this->uploadFile(
                 $file,
+                $assetSourceId,
                 $tagId,
                 $assetCollectionId,
             );

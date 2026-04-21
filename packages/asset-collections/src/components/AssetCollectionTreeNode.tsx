@@ -7,6 +7,7 @@ import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { IconStack } from '@media-ui/core/src/components';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import TagTreeNode from './TagTreeNode';
 import { useAssetCollectionQuery, UNASSIGNED_COLLECTION_ID } from '../hooks/useAssetCollectionQuery';
@@ -32,8 +33,9 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     renderChildCollections = true,
 }) => {
     const { config } = useConfigQuery();
-    const { assetCollection } = useAssetCollectionQuery(assetCollectionId);
-    const { assetCollections } = useAssetCollectionsQuery();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { assetCollection } = useAssetCollectionQuery(assetCollectionId, selectedAssetSourceId);
+    const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const [collapsed, setCollapsed] = useRecoilState(assetCollectionTreeCollapsedItemState(assetCollectionId));
     const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
     const isFocused = useRecoilValue(assetCollectionFocusedState(assetCollectionId));
@@ -88,7 +90,7 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
         !config.canManageAssetCollections || !assetCollectionId || assetCollectionId === UNASSIGNED_COLLECTION_ID;
 
     return (
-        <Tree.Node>
+        <Tree.Node className="AssetCollectionTreeNode">
             <Tree.Node.Header
                 isActive={isActive || isFocused}
                 isFocused={isFocused && !isActive}
