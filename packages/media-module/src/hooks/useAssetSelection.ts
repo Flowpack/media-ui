@@ -12,10 +12,25 @@ const useAssetSelection = (assetIdentities: AssetIdentity[]) => {
     const lastClickedIndexRef = useRef<number>(-1);
 
     useEffect(() => {
+        // Reset last clicked index when the selection is empty
         if (selectedAssets.length === 0) {
             lastClickedIndexRef.current = -1;
-        } else if (selectedAssets.length === 1 && lastClickedIndexRef.current === -1) {
+            return;
+        }
+        // Set last clicked index when a single asset is selected and no previous index is set
+        if (selectedAssets.length === 1 && lastClickedIndexRef.current === -1) {
             lastClickedIndexRef.current = assetIdentities.findIndex((a) => a.assetId === selectedAssets[0].assetId);
+            return;
+        }
+        // Update last clicked index when the selection changes externally (e.g. by deselecting an asset in the sidebar or clearing the selection)
+        if (lastClickedIndexRef.current >= 0) {
+            const lastSelectedAssetId = assetIdentities[lastClickedIndexRef.current]?.assetId;
+            if (lastSelectedAssetId && !selectedAssets.some((a) => a.assetId === lastSelectedAssetId)) {
+                const nextHighestSelectionIndex = selectedAssets.at(-1)?.assetId;
+                lastClickedIndexRef.current =
+                    assetIdentities.findIndex((a) => a.assetId === nextHighestSelectionIndex) ?? -1;
+                return;
+            }
         }
     }, [selectedAssets, assetIdentities]);
 
