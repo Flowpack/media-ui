@@ -24,6 +24,12 @@ final class Image
      */
     public static function fromArray(array $fields): self
     {
+        $url = $fields['url'] ?? null;
+        if (is_string($url)) {
+            $fields['url'] = Url::fromString($url);
+        } elseif (!$url instanceof Url) {
+            throw new \InvalidArgumentException('The "url" field must be a string or an instance of Url', 1776411039);
+        }
         return new self($fields['width'], $fields['height'], $fields['url'], $fields['alt']);
     }
 }

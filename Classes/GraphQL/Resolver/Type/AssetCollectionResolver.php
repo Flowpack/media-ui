@@ -106,6 +106,7 @@ class AssetCollectionResolver
         $parent = $originalAssetCollection->getParent();
         return $parent ? Types\AssetCollectionParent::create(
             Types\AssetCollectionId::fromString($this->persistenceManager->getIdentifierByObject($parent)),
+            $assetCollection->assetSourceId,
             Types\AssetCollectionTitle::fromString($parent->getTitle()),
         ) : null;
     }

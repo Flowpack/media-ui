@@ -15,6 +15,7 @@ namespace Flowpack\Media\Ui\Tests\Functional\GraphQL;
  */
 
 use Flowpack\Media\Ui\GraphQL\MediaApi;
+use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetCollectionResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
@@ -31,6 +32,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
     protected static $testablePersistenceEnabled = true;
 
     protected MediaApi $mediaApi;
+    protected AssetCollectionResolver $assetCollectionResolver;
 
     public function setUp(): void
     {
@@ -42,6 +44,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
 
         $this->authenticateRoles(['Neos.Neos:Editor']);
+        $this->assetCollectionResolver = $this->objectManager->get(AssetCollectionResolver::class);
     }
 
     public function testCreateAssetCollection(): void
@@ -50,7 +53,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             Types\AssetCollectionTitle::fromString('Test Collection'),
             Types\AssetSourceId::default(),
         );
-        Assert::assertNotNull($assetCollection->path);
+        $this->assertInstanceOf(Types\AssetCollection::class, $assetCollection);
         $this->assertEquals('Test Collection', $assetCollection->title->value);
 
         $childCollection = $this->mediaApi->createAssetCollection(
@@ -59,8 +62,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             $assetCollection->id,
         );
 
-        Assert::assertNotNull($childCollection->path);
-        $this->assertTrue(str_starts_with($childCollection->path->value, $assetCollection->path->value));
+        $this->assertInstanceOf(Types\AssetCollection::class, $childCollection);
 
         $this->persist();
 
@@ -137,7 +139,6 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             Types\AssetCollectionTitle::fromString('Child Collection'),
             Types\AssetSourceId::default(),
         );
-        Assert::assertNotNull($childCollection->path);
 
         $result = $this->mediaApi->setAssetCollectionParent(
             $childCollection->id,
@@ -145,24 +146,27 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             $parentCollection->id,
         );
         $this->assertTrue($result->success);
-        Assert::assertNotNull($parentCollection->path);
 
-        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default());
-        Assert::assertNotNull($updatedChildCollection);
-        Assert::assertNotNull($updatedChildCollection->path);
-        $this->assertTrue(str_starts_with($updatedChildCollection->path->value, $parentCollection->path->value));
-
-        $this->mediaApi->setAssetCollectionParent(
+        $updatedChildCollection = $this->mediaApi->assetCollection(
             $childCollection->id,
             Types\AssetSourceId::default(),
         );
-
-        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default());
         Assert::assertNotNull($updatedChildCollection);
-        Assert::assertNotNull($updatedChildCollection->path);
-        $this->assertEquals(
-            $childCollection->path->value,
-            $updatedChildCollection->path->value,
+        $updatedChildCollectionParent = $this->assetCollectionResolver->parent($updatedChildCollection);
+        $this->assertNotNull($updatedChildCollectionParent);
+        $this->assertTrue($parentCollection->id->equals($updatedChildCollectionParent->id));
+
+        $this->mediaApi->setAssetCollectionParent(
+            $childCollection->id,
+            Types\AssetSourceId::default()
         );
+
+        $updatedChildCollection = $this->mediaApi->assetCollection(
+            $childCollection->id,
+            Types\AssetSourceId::default(),
+        );
+        Assert::assertNotNull($updatedChildCollection);
+        $updatedChildCollectionParent = $this->assetCollectionResolver->parent($updatedChildCollection);
+        $this->assertNull($updatedChildCollectionParent);
     }
 }
