@@ -63,7 +63,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect, onMultiS
             <picture onClick={handlePictureClick} className={classes.picture}>
                 <img src={loading || !asset ? dummyImage : asset.thumbnailUrl} alt={asset?.label} />
             </picture>
-            <figcaption className={classes.caption}>
+            <figcaption onClick={handlePictureClick} className={classes.caption}>
                 {asset && (
                     <>
                         <AssetLabel label={asset.label} />

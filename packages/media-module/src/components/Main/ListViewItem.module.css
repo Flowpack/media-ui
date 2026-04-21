@@ -7,7 +7,7 @@
 }
 
 .listViewItem:hover {
-    background-color: var(--theme-colors-PrimaryBlue);
+    color: var(--theme-colors-PrimaryBlueHover);
 }
 
 .selected {

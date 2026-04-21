@@ -3,6 +3,8 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    user-select: none;
+    cursor: pointer;
 }
 
 .thumbnail:hover {
@@ -36,7 +38,6 @@
 }
 
 .picture {
-    cursor: pointer;
     height: 250px;
     display: flex;
     align-items: center;
