@@ -230,6 +230,9 @@
             <trans-unit id="itemActions.download" xml:space="preserve" approved="yes">
                 <source>Download asset</source>
             </trans-unit>
+            <trans-unit id="itemActions.downloadMultiple" xml:space="preserve" approved="yes">
+                <source>Download assets</source>
+            </trans-unit>
             <trans-unit id="itemActions.copyToClipboard" xml:space="preserve" approved="yes">
                 <source>Copy to clipboard</source>
             </trans-unit>
@@ -247,6 +250,12 @@
             </trans-unit>
             <trans-unit id="action.deleteAssets.error" xml:space="preserve" approved="yes">
                 <source>Error while trying to delete the assets</source>
+            </trans-unit>
+            <trans-unit id="action.downloadAssets.success" xml:space="preserve" approved="yes">
+                <source>The assets have been downloaded</source>
+            </trans-unit>
+            <trans-unit id="action.downloadAssets.error" xml:space="preserve" approved="yes">
+                <source>The following assets could not be downloaded:</source>
             </trans-unit>
             <trans-unit id="actions.updateAsset.success" xml:space="preserve" approved="yes">
                 <source>The asset has been updated</source>

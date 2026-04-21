@@ -73,7 +73,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
                 />
             )}
             <DeleteAssetButton asset={asset} size="small" />
-            <DownloadAssetButton asset={asset} size="small" />
+            <DownloadAssetButton assets={[asset]} size="small" />
             {asset.localId && (
                 <IconButton
                     title={

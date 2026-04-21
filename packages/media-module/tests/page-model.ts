@@ -99,6 +99,10 @@ class Page {
         return this.tasksDropdownContents.find('li').withText(label);
     }
 
+    public tasksDropdownItemExact(label: string): Selector {
+        return this.tasksDropdownContents.find('li').withExactText(label);
+    }
+
     public get firstThumbnail() {
         return this.thumbnails.nth(0);
     }
