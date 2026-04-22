@@ -874,6 +874,21 @@
             <trans-unit id="errors.1462196420.message" xml:space="preserve" approved="yes">
                 <source>Asset could not be deleted, because it is still in use.</source>
             </trans-unit>
+            <trans-unit id="errorOverlay.header" xml:space="preserve" approved="yes">
+                <source>Login required</source>
+            </trans-unit>
+            <trans-unit id="errorOverlay.text" xml:space="preserve" approved="yes">
+                <source>This media source requires you to be logged in.</source>
+            </trans-unit>
+            <trans-unit id="errorOverlay.loginButton" xml:space="preserve" approved="yes">
+                <source>Open login</source>
+            </trans-unit>
+            <trans-unit id="errorOverlay.cancelButton" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+            </trans-unit>
+            <trans-unit id="errorOverlay.reloadButton" xml:space="preserve" approved="yes">
+                <source>Reload</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

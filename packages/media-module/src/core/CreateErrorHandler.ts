@@ -1,4 +1,8 @@
 import { onError } from '@apollo/client/link/error';
+import { setErrorStateExternal } from '@media-ui/core/src/state/errorState';
+import { setErrorRiderectUrlStateExternal } from '@media-ui/core/src/state/errorRedirectUrlState';
+import { setErrorTitleStateExternal } from '@media-ui/core/src/state/errorTitleState';
+import { setErrorMessageStateExternal } from '@media-ui/core/src/state/errorMessageState';
 
 const createErrorHandler = (notify: NeosNotification) => {
     const translate = (id, value = null, args = {}, packageKey = 'Flowpack.Media.Ui', source = 'Main') => {
@@ -8,6 +12,8 @@ const createErrorHandler = (notify: NeosNotification) => {
     return onError(({ graphQLErrors, networkError, operation }) => {
         const context = operation.getContext();
         const isRetrying = context.isRetrying;
+        let errorTitle = '';
+        let errorMessage = '';
 
         // Don't show notifications while retrying - only after max retries exhausted
         if (isRetrying) {
@@ -30,21 +36,28 @@ const createErrorHandler = (notify: NeosNotification) => {
                     errorMessageLabel = data.extensions.debugMessage;
                 }
 
-                console.error('[GraphQL error]:', data);
+                errorTitle = translate(errorTitleLabel, defaultErrorTitle);
+                errorMessage = errorMessageLabel.length ? translate(errorMessageLabel) : data.message;
 
-                notify.error(
-                    translate(errorTitleLabel, defaultErrorTitle),
-                    errorMessageLabel.length ? translate(errorMessageLabel) : data.message
-                );
+                if (data.extensions?.statusCode === 401) {
+                    if (data.extensions?.redirectUrl) {
+                        setErrorRiderectUrlStateExternal(data.extensions.redirectUrl);
+                    }
+                    errorTitle = translate('errorOverlay.header', 'Login required');
+                    errorMessage = translate('errorOverlay.text', 'This media source requires you to be logged in.');
+                }
             });
         }
 
         if (networkError) {
             console.error('[Network error]:', networkError);
-            notify.warning('Network error', 'Please check your connection.');
+            errorTitle = translate('errors.network.title', 'Network error');
+            errorMessage = translate('errors.network.message', 'Please check your connection.');
         }
 
-        // TODO: Show error overlay and ask the user on how to continue (retry, reload, re-login)
+        setErrorTitleStateExternal(errorTitle);
+        setErrorMessageStateExternal(errorMessage);
+        setErrorStateExternal(true);
     });
 };
 
