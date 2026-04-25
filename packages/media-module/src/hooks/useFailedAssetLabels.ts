@@ -31,5 +31,13 @@ export default function useFailedAssetLabels() {
         [getAssetLabel]
     );
 
-    return { getAssetLabel, getFailedAssetLabels };
+    const getFailedAssetLabelsFromResults = useCallback(
+        (results: MutationResult[], identities: AssetIdentity[]): string[] =>
+            results
+                .map((result, index) => (!result.success ? getAssetLabel(identities[index].assetId) : null))
+                .filter(Boolean),
+        [getAssetLabel]
+    );
+
+    return { getAssetLabel, getFailedAssetLabels, getFailedAssetLabelsFromResults };
 }

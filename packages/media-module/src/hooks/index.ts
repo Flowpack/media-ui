@@ -3,4 +3,6 @@ export { default as useAssetSelection } from './useAssetSelection';
 export { default as useFailedAssetLabels } from './useFailedAssetLabels';
 export { default as useSelectAssets } from './useSelectAssets';
 export { default as useTagAsset } from './useTagAsset';
+export { default as useTagAssets } from './useTagAssets';
 export { default as useUntagAssetById } from './useUntagAssetById';
+export { default as useUntagAssets } from './useUntagAssets';

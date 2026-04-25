@@ -1,7 +1,12 @@
+export { default as ASSIGN_ASSETS_TO_COLLECTION } from './assignAssetsToCollection';
 export { default as DELETE_ASSET } from './deleteAsset';
+export { default as DELETE_ASSETS } from './deleteAssets';
 export { default as IMPORT_ASSET } from './importAsset';
 export { default as SET_ASSET_COLLECTIONS } from './setAssetCollections';
 export { default as SET_ASSET_TAGS } from './setAssetTags';
 export { default as TAG_ASSET } from './tagAsset';
+export { default as TAG_ASSETS } from './tagAssets';
 export { default as UNTAG_ASSET } from './untagAsset';
+export { default as UNTAG_ASSETS } from './untagAssets';
 export { default as UPDATE_ASSET } from './updateAsset';
+export { default as UPDATE_ASSETS } from './updateAssets';

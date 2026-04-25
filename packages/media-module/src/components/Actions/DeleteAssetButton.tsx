@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { Icon, IconButton } from '@neos-project/react-ui-components';
 
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
-import { useDeleteAsset } from '@media-ui/core/src/hooks';
+import { useDeleteAsset, useDeleteAssets } from '@media-ui/core/src/hooks';
 import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 
 interface DeleteAssetButtonProps {
@@ -28,7 +28,8 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
     const { translate } = useIntl();
     const { approvalAttainmentStrategy } = useMediaUi();
     const { deleteAsset } = useDeleteAsset();
-    const { getFailedAssetLabels } = useFailedAssetLabels();
+    const { deleteAssets } = useDeleteAssets();
+    const { getFailedAssetLabelsFromResults } = useFailedAssetLabels();
     const Notify = useNotify();
 
     const isSingle = !assets && !!asset;
@@ -55,8 +56,8 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
         }
 
         // Multi-asset process
-        const results = await Promise.allSettled(identities.map((identity) => deleteAsset(identity)));
-        const failedLabels = getFailedAssetLabels(results, identities);
+        const results = await deleteAssets(identities);
+        const failedLabels = getFailedAssetLabelsFromResults(results, identities);
 
         if (failedLabels.length === 0) {
             Notify.ok(translate('action.deleteAssets.success', 'The assets have been deleted'));
@@ -68,7 +69,17 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
             failedLabels.join(', ')
         );
         return false;
-    }, [asset, assets, isSingle, Notify, translate, deleteAsset, approvalAttainmentStrategy, getFailedAssetLabels]);
+    }, [
+        asset,
+        assets,
+        isSingle,
+        Notify,
+        translate,
+        deleteAsset,
+        deleteAssets,
+        approvalAttainmentStrategy,
+        getFailedAssetLabelsFromResults,
+    ]);
 
     if (isSingle && asset.assetSource.readOnly) return null;
 

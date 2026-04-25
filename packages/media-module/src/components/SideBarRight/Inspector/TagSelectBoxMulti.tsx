@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { useApolloClient } from '@apollo/client';
 
 import { Headline, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useFailedAssetLabels, useTagAsset, useUntagAssetById } from '@media-ui/media-module/src/hooks';
+import { useFailedAssetLabels, useTagAssets, useUntagAssets } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { selectedAssetIdsState } from '@media-ui/core/src/state';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
@@ -16,16 +15,15 @@ import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 const TagSelectBoxMulti: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const client = useApolloClient();
-    const { getFailedAssetLabels } = useFailedAssetLabels();
+    const { getFailedAssetLabelsFromResults } = useFailedAssetLabels();
     const {
         approvalAttainmentStrategy: { obtainApprovalToTagAssets, obtainApprovalToUntagAssets },
     } = useMediaUi();
     const selectedAssets = useRecoilValue(selectedAssetIdsState);
     const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
     const { tags } = useTagsQuery(selectedAssetSourceId);
-    const { tagAsset } = useTagAsset();
-    const { untagAssetById } = useUntagAssetById();
+    const { tagAssets } = useTagAssets();
+    const { untagAssets } = useUntagAssets();
     const [addSearchTerm, setAddSearchTerm] = useState('');
     const [removeSearchTerm, setRemoveSearchTerm] = useState('');
 
@@ -51,17 +49,8 @@ const TagSelectBoxMulti: React.FC = () => {
             const canTag = await obtainApprovalToTagAssets({ assets: selectedAssets, tag });
             if (!canTag) return;
 
-            const mutations = selectedAssets.map((identity) =>
-                tagAsset({
-                    asset: { id: identity.assetId, assetSource: { id: identity.assetSourceId } },
-                    tagId,
-                })
-            );
-
-            const results = await Promise.allSettled(mutations);
-            const failedLabels = getFailedAssetLabels(results, selectedAssets);
-
-            await client.reFetchObservableQueries();
+            const results = await tagAssets(selectedAssets, tagId);
+            const failedLabels = getFailedAssetLabelsFromResults(results, selectedAssets);
 
             if (failedLabels.length === 0) {
                 Notify.ok(translate('actions.bulkTagAssets.success', 'The tag has been added to the selected assets'));
@@ -72,7 +61,7 @@ const TagSelectBoxMulti: React.FC = () => {
                 );
             }
         },
-        [selectedAssets, tags, tagAsset, client, Notify, translate, obtainApprovalToTagAssets, getFailedAssetLabels]
+        [selectedAssets, tags, tagAssets, Notify, translate, obtainApprovalToTagAssets, getFailedAssetLabelsFromResults]
     );
 
     const handleRemove = useCallback(
@@ -85,17 +74,8 @@ const TagSelectBoxMulti: React.FC = () => {
             const canUntag = await obtainApprovalToUntagAssets({ assets: selectedAssets, tag });
             if (!canUntag) return;
 
-            const mutations = selectedAssets.map((identity) =>
-                untagAssetById({
-                    asset: { id: identity.assetId, assetSource: { id: identity.assetSourceId } },
-                    tagId,
-                })
-            );
-
-            const results = await Promise.allSettled(mutations);
-            const failedLabels = getFailedAssetLabels(results, selectedAssets);
-
-            await client.reFetchObservableQueries();
+            const results = await untagAssets(selectedAssets, tagId);
+            const failedLabels = getFailedAssetLabelsFromResults(results, selectedAssets);
 
             if (failedLabels.length === 0) {
                 Notify.ok(
@@ -111,12 +91,11 @@ const TagSelectBoxMulti: React.FC = () => {
         [
             selectedAssets,
             tags,
-            untagAssetById,
-            client,
+            untagAssets,
             Notify,
             translate,
             obtainApprovalToUntagAssets,
-            getFailedAssetLabels,
+            getFailedAssetLabelsFromResults,
         ]
     );
 
