@@ -165,18 +165,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             }),
         },
         Mutation: {
-            updateAsset: ($_, { id, assetSourceId, label, caption, copyrightNotice }): Asset => {
+            updateAsset: ($_, { id, assetSourceId, label, caption, copyrightNotice }) => {
                 const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
-                asset.label = label;
-                asset.caption = caption;
-                asset.copyrightNotice = copyrightNotice;
+                if (!asset) return { success: false, messages: ['Asset not found'] };
+                if (label !== undefined) asset.label = label;
+                if (caption !== undefined) asset.caption = caption;
+                if (copyrightNotice !== undefined) asset.copyrightNotice = copyrightNotice;
                 asset.lastModified = new Date();
                 addAssetChange({
                     lastModified: asset.lastModified,
                     assetId: id,
                     type: 'ASSET_UPDATED',
                 });
-                return asset;
+                return { success: true, messages: [] };
             },
             setAssetCollectionParent: (
                 $_,
@@ -251,15 +252,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             setAssetTags: (
                 $_,
                 { id, assetSourceId, tagIds }: { id: string; assetSourceId: string; tagIds: string[] }
-            ): Asset => {
+            ) => {
                 const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
+                if (!asset) return { success: false, messages: ['Asset not found'] };
                 asset.tags = tags.filter((tag) => tagIds.includes(tag.id));
                 addAssetChange({
                     lastModified: asset.lastModified,
                     assetId: id,
                     type: 'ASSET_UPDATED',
                 });
-                return asset;
+                return { success: true, messages: [] };
             },
             setAssetCollections: (
                 $_,
@@ -329,11 +331,84 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             editAsset: ($_, { id, assetSourceId, filename, options }): boolean => {
                 throw new Error('Not implemented');
             },
-            tagAsset: ($_, { id, assetSourceId, tagId }): Asset => {
-                throw new Error('Not implemented');
+            tagAsset: ($_, { id, assetSourceId, tagId }) => {
+                const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
+                if (!asset) return { success: false, messages: ['Asset not found'] };
+                const tag = tags.find((tag) => tag.id === tagId);
+                if (!tag) return { success: false, messages: ['Tag not found'] };
+                if (!asset.tags.find((t) => t.id === tagId)) {
+                    asset.tags.push(tag);
+                }
+                addAssetChange({ lastModified: new Date(), assetId: id, type: 'ASSET_UPDATED' });
+                return { success: true, messages: [] };
             },
-            untagAsset: ($_, { id, assetSourceId, tagId }): Asset => {
-                throw new Error('Not implemented');
+            untagAsset: ($_, { id, assetSourceId, tagId }) => {
+                const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
+                if (!asset) return { success: false, messages: ['Asset not found'] };
+                asset.tags = asset.tags.filter((tag) => tag.id !== tagId);
+                addAssetChange({ lastModified: new Date(), assetId: id, type: 'ASSET_UPDATED' });
+                return { success: true, messages: [] };
+            },
+            deleteAssets: ($_, { identities }) => {
+                return identities.map(({ assetId, assetSourceId }) => {
+                    const inUse = Fixtures.getUsageDetailsForAsset(assetId).reduce(
+                        (prev, { usages }) => prev || usages.length > 0,
+                        false
+                    );
+                    if (inUse) {
+                        return { success: false, messages: ['Asset is in use'] };
+                    }
+                    const assetIndex = assets.findIndex(
+                        (asset) => asset.id === assetId && asset.assetSource.id === assetSourceId
+                    );
+                    if (assetIndex >= 0) {
+                        assets.splice(assetIndex, 1);
+                        addAssetChange({ lastModified: new Date(), assetId, type: 'ASSET_REMOVED' });
+                        return { success: true, messages: [] };
+                    }
+                    return { success: false, messages: ['Asset not found'] };
+                });
+            },
+            tagAssets: ($_, { identities, tagId }) => {
+                const tag = tags.find((tag) => tag.id === tagId);
+                if (!tag) return [{ success: false, messages: ['Tag not found'] }];
+                return identities.map(({ assetId, assetSourceId }) => {
+                    const asset = assets.find((a) => a.id === assetId && a.assetSource.id === assetSourceId);
+                    if (!asset) return { success: false, messages: ['Asset not found'] };
+                    if (!asset.tags.find((t) => t.id === tagId)) {
+                        asset.tags.push(tag);
+                    }
+                    return { success: true, messages: [] };
+                });
+            },
+            untagAssets: ($_, { identities, tagId }) => {
+                const tag = tags.find((tag) => tag.id === tagId);
+                if (!tag) return [{ success: false, messages: ['Tag not found'] }];
+                return identities.map(({ assetId, assetSourceId }) => {
+                    const asset = assets.find((a) => a.id === assetId && a.assetSource.id === assetSourceId);
+                    if (!asset) return { success: false, messages: ['Asset not found'] };
+                    asset.tags = asset.tags.filter((t) => t.id !== tagId);
+                    return { success: true, messages: [] };
+                });
+            },
+            assignAssetsToCollection: ($_, { identities, assetCollectionId }) => {
+                const collection = assetCollections.find((c) => c.id === assetCollectionId);
+                if (!collection) return [{ success: false, messages: ['Collection not found'] }];
+                return identities.map(({ assetId, assetSourceId }) => {
+                    const asset = assets.find((a) => a.id === assetId && a.assetSource.id === assetSourceId);
+                    if (!asset) return { success: false, messages: ['Asset not found'] };
+                    asset.collections = [collection];
+                    return { success: true, messages: [] };
+                });
+            },
+            updateAssets: ($_, { identities, copyrightNotice }) => {
+                return identities.map(({ assetId, assetSourceId }) => {
+                    const asset = assets.find((a) => a.id === assetId && a.assetSource.id === assetSourceId);
+                    if (!asset) return { success: false, messages: ['Asset not found'] };
+                    if (copyrightNotice !== undefined) asset.copyrightNotice = copyrightNotice;
+                    asset.lastModified = new Date();
+                    return { success: true, messages: [] };
+                });
             },
             uploadFiles: ($_, { files, tagId, assetCollectionId }): FileUploadResult[] => {
                 throw new Error('Not implemented');
