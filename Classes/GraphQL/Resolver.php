@@ -42,6 +42,17 @@ class Resolver
     private readonly CustomResolvers $customResolvers;
 
     /**
+     * Mapping of type names that cannot be resolved by the default pluralization
+     * (appending 's') to their actual class names. For example, 'AssetIdentity' + 's'
+     * yields 'AssetIdentitys' but the actual class is 'AssetIdentities'.
+     *
+     * @var array<string, string>
+     */
+    private const array TYPE_ALIASES = [
+        'AssetIdentitys' => 'AssetIdentities',
+    ];
+
+    /**
      * @param array<class-string> $typeNamespaces
      */
     public function __construct(
@@ -163,6 +174,7 @@ class Resolver
      */
     private function resolveClassName(string $argumentType): ?string
     {
+        $argumentType = self::TYPE_ALIASES[$argumentType] ?? $argumentType;
         foreach ($this->typeNamespaces as $namespace) {
             $className = rtrim($namespace, '\\') . '\\' . $argumentType;
             if (class_exists($className)) {

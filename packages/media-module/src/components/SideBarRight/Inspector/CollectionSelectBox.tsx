@@ -4,7 +4,12 @@ import { useRecoilValue } from 'recoil';
 import { Headline, MultiSelectBox, SelectBox } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useConfigQuery, useSelectedAsset, useSetAssetCollections } from '@media-ui/core/src/hooks';
+import {
+    useAssignAssetsToCollection,
+    useConfigQuery,
+    useSelectedAsset,
+    useSetAssetCollections,
+} from '@media-ui/core/src/hooks';
 import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
@@ -31,7 +36,8 @@ const CollectionSelectBox: React.FC = () => {
     const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
     const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const { setAssetCollections, loading } = useSetAssetCollections();
-    const { getFailedAssetLabels } = useFailedAssetLabels();
+    const { assignAssetsToCollection } = useAssignAssetsToCollection();
+    const { getFailedAssetLabelsFromResults } = useFailedAssetLabels();
     const selectedAsset = useSelectedAsset();
     const { limitToSingleAssetCollectionPerAsset } = useRecoilValue(featureFlagsState);
     const [searchTerm, setSearchTerm] = useState('');
@@ -84,15 +90,8 @@ const CollectionSelectBox: React.FC = () => {
                 });
                 if (!canSetCollection) return;
 
-                const results = await Promise.allSettled(
-                    selectedAssets.map((identity) =>
-                        setAssetCollections({
-                            asset: { id: identity.assetId, assetSource: { id: identity.assetSourceId } } as Asset,
-                            assetCollections: newAssetCollections,
-                        })
-                    )
-                );
-                const failedLabels = getFailedAssetLabels(results, selectedAssets);
+                const results = await assignAssetsToCollection(selectedAssets, targetCollection.id);
+                const failedLabels = getFailedAssetLabelsFromResults(results, selectedAssets);
 
                 if (failedLabels.length === 0) {
                     Notify.ok(
@@ -153,12 +152,13 @@ const CollectionSelectBox: React.FC = () => {
             selectedAssets,
             selectedAsset,
             setAssetCollections,
+            assignAssetsToCollection,
             assetCollections,
             translate,
             syncSelectedAssetCollectionIds,
             obtainApprovalToSetAssetCollections,
             obtainApprovalToShiftAssetsToCollection,
-            getFailedAssetLabels,
+            getFailedAssetLabelsFromResults,
         ]
     );
 

@@ -38,12 +38,22 @@ type Query {
 }
 
 type Mutation {
-  updateAsset(id: AssetId! assetSourceId: AssetSourceId! label: String caption: String copyrightNotice: String): Asset
-  tagAsset(id: AssetId! assetSourceId: AssetSourceId! tagId: TagId!): Asset
-  untagAsset(id: AssetId! assetSourceId: AssetSourceId! tagId: TagId!): Asset
+  updateAsset(id: AssetId! assetSourceId: AssetSourceId! label: String caption: String copyrightNotice: String): MutationResult!
+  tagAsset(id: AssetId! assetSourceId: AssetSourceId! tagId: TagId!): MutationResult!
+  untagAsset(id: AssetId! assetSourceId: AssetSourceId! tagId: TagId!): MutationResult!
   deleteAsset(id: AssetId! assetSourceId: AssetSourceId!): MutationResult!
-  setAssetTags(id: AssetId! assetSourceId: AssetSourceId! tagIds: [TagId!]!): Asset
+  setAssetTags(id: AssetId! assetSourceId: AssetSourceId! tagIds: [TagId!]!): MutationResult!
   setAssetCollections(id: AssetId! assetSourceId: AssetSourceId! assetCollectionIds: [AssetCollectionId!]!): MutationResult!
+  """ Delete multiple assets at once """
+  deleteAssets(identities: [AssetIdentityInput!]!): [MutationResult!]!
+  """ Add a tag to multiple assets at once """
+  tagAssets(identities: [AssetIdentityInput!]! tagId: TagId!): [MutationResult!]!
+  """ Remove a tag from multiple assets at once """
+  untagAssets(identities: [AssetIdentityInput!]! tagId: TagId!): [MutationResult!]!
+  """ Assign multiple assets to a collection """
+  assignAssetsToCollection(identities: [AssetIdentityInput!]! assetCollectionId: AssetCollectionId!): [MutationResult!]!
+  """ Update properties of multiple assets at once """
+  updateAssets(identities: [AssetIdentityInput!]! copyrightNotice: String): [MutationResult!]!
   createAssetCollection(title: AssetCollectionTitle! assetSourceId: AssetSourceId! parent: AssetCollectionId): AssetCollection
   deleteAssetCollection(id: AssetCollectionId! assetSourceId: AssetSourceId!): MutationResult!
   updateAssetCollection(id: AssetCollectionId! assetSourceId: AssetSourceId! title: AssetCollectionTitle tagIds: [TagId!]): MutationResult!
@@ -359,6 +369,13 @@ scalar MutationResponseMessage
 type MutationResult {
   success: Boolean!
   messages: [MutationResponseMessage!]
+}
+
+input AssetIdentityInput {
+  """ Unique identifier (UUID) of an Asset """
+  assetId: AssetId!
+  """ Unique identifier of an Asset source (e.g. "neos") """
+  assetSourceId: AssetSourceId!
 }
 
 input UploadedFileInput {

@@ -1,15 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { useApolloClient } from '@apollo/client';
 
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
+import { useSelectedAsset, useUpdateAsset, useUpdateAssets } from '@media-ui/core/src/hooks';
 import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
-import { UPDATE_ASSET } from '@media-ui/core/src/mutations';
 import { useInteraction } from '@media-ui/core/src/provider';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
@@ -33,8 +31,8 @@ const PropertyInspector = () => {
         approvalAttainmentStrategy: { obtainApprovalToUpdateAsset },
     } = useMediaUi();
     const { confirm } = useInteraction();
-    const client = useApolloClient();
-    const { getFailedAssetLabels } = useFailedAssetLabels();
+    const { updateAssets } = useUpdateAssets();
+    const { getFailedAssetLabelsFromResults } = useFailedAssetLabels();
     const featureFlags = useRecoilValue(featureFlagsState);
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
@@ -116,21 +114,8 @@ const PropertyInspector = () => {
 
         setMultiLoading(true);
 
-        const mutations = selectedAssets.map((identity) =>
-            client.mutate({
-                mutation: UPDATE_ASSET,
-                variables: {
-                    id: identity.assetId,
-                    assetSourceId: identity.assetSourceId,
-                    copyrightNotice,
-                },
-            })
-        );
-
-        const results = await Promise.allSettled(mutations);
-        const failedLabels = getFailedAssetLabels(results, selectedAssets);
-
-        await client.reFetchObservableQueries();
+        const results = await updateAssets(selectedAssets, copyrightNotice);
+        const failedLabels = getFailedAssetLabelsFromResults(results, selectedAssets);
 
         if (failedLabels.length === 0) {
             Notify.ok(
@@ -145,7 +130,7 @@ const PropertyInspector = () => {
         }
 
         setMultiLoading(false);
-    }, [selectedAssets, copyrightNotice, confirm, translate, client, getFailedAssetLabels, Notify]);
+    }, [selectedAssets, copyrightNotice, confirm, translate, updateAssets, getFailedAssetLabelsFromResults, Notify]);
 
     useEffect(() => {
         handleDiscard();

@@ -14,10 +14,9 @@ interface UntagAssetByIdVariables {
 }
 
 export default function useUntagAssetById() {
-    const [action, { error, data, loading }] = useMutation<
-        { __typename: string; untagAsset: Asset },
-        UntagAssetByIdVariables
-    >(UNTAG_ASSET);
+    const [action, { error, data, loading }] = useMutation<{ untagAsset: MutationResult }, UntagAssetByIdVariables>(
+        UNTAG_ASSET
+    );
 
     const untagAssetById = ({ asset, tagId }: UntagAssetByIdProps) =>
         action({
@@ -26,6 +25,7 @@ export default function useUntagAssetById() {
                 assetSourceId: asset.assetSource.id,
                 tagId,
             },
+            refetchQueries: ['ASSETS'],
         });
 
     return { untagAssetById, data, error, loading };

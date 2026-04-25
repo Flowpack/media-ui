@@ -319,52 +319,37 @@ final class MediaApi
         string $label = null,
         string $caption = null,
         string $copyrightNotice = null
-    ): ?Types\Asset {
+    ): MutationResult {
         return $this->assetMutator->updateAsset($id, $assetSourceId, $label, $caption, $copyrightNotice);
     }
 
-    /**
-     * @throws MediaUiException
-     */
     #[Mutation]
-    public function tagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): ?Types\Asset
+    public function tagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): MutationResult
     {
         return $this->assetMutator->tagAsset($id, $assetSourceId, $tagId);
     }
 
-    /**
-     * @throws MediaUiException
-     */
     #[Mutation]
-    public function untagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): ?Types\Asset
+    public function untagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): MutationResult
     {
         return $this->assetMutator->untagAsset($id, $assetSourceId, $tagId);
     }
 
-    /**
-     * @throws MediaUiException
-     */
     #[Mutation]
     public function deleteAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId): MutationResult
     {
         return $this->assetMutator->deleteAsset($id, $assetSourceId);
     }
 
-    /**
-     * @throws MediaUiException
-     */
     #[Mutation]
     public function setAssetTags(
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
         Types\TagIds $tagIds
-    ): ?Types\Asset {
+    ): MutationResult {
         return $this->assetMutator->setAssetTags($id, $assetSourceId, $tagIds);
     }
 
-    /**
-     * @throws MediaUiException
-     */
     #[Mutation]
     public function setAssetCollections(
         Types\AssetId $id,
@@ -372,6 +357,45 @@ final class MediaApi
         Types\AssetCollectionIds $assetCollectionIds
     ): MutationResult {
         return $this->assetMutator->setAssetCollections($id, $assetSourceId, $assetCollectionIds);
+    }
+
+    #[Mutation]
+    #[Description('Delete multiple assets at once')]
+    public function deleteAssets(Types\AssetIdentities $identities): Types\MutationResults
+    {
+        return $this->assetMutator->deleteAssets($identities);
+    }
+
+    #[Mutation]
+    #[Description('Add a tag to multiple assets at once')]
+    public function tagAssets(Types\AssetIdentities $identities, Types\TagId $tagId): Types\MutationResults
+    {
+        return $this->assetMutator->tagAssets($identities, $tagId);
+    }
+
+    #[Mutation]
+    #[Description('Remove a tag from multiple assets at once')]
+    public function untagAssets(Types\AssetIdentities $identities, Types\TagId $tagId): Types\MutationResults
+    {
+        return $this->assetMutator->untagAssets($identities, $tagId);
+    }
+
+    #[Mutation]
+    #[Description('Assign multiple assets to a collection')]
+    public function assignAssetsToCollection(
+        Types\AssetIdentities $identities,
+        Types\AssetCollectionId $assetCollectionId
+    ): Types\MutationResults {
+        return $this->assetMutator->assignAssetsToCollection($identities, $assetCollectionId);
+    }
+
+    #[Mutation]
+    #[Description('Update properties of multiple assets at once')]
+    public function updateAssets(
+        Types\AssetIdentities $identities,
+        string $copyrightNotice = null
+    ): Types\MutationResults {
+        return $this->assetMutator->updateAssets($identities, $copyrightNotice);
     }
 
     /**

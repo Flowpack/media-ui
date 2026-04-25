@@ -14,9 +14,9 @@ use Wwwision\Types\Attributes\ListBased;
 final class AssetIdentities implements \IteratorAggregate
 {
     /**
-     * @param AssetIdentity[] $collections
+     * @param AssetIdentity[] $identities
      */
-    private function __construct(public readonly array $collections)
+    private function __construct(public readonly array $identities)
     {
     }
 
@@ -33,7 +33,7 @@ final class AssetIdentities implements \IteratorAggregate
      */
     public function getIterator(): \Traversable
     {
-        yield from $this->collections;
+        yield from $this->identities;
     }
 
     public static function empty(): self

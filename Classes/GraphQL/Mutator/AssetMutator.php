@@ -88,13 +88,41 @@ class AssetMutator
     /**
      * @throws MediaUiException
      */
+    protected function resolveAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, string $action): Asset
+    {
+        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
+        if (!$asset) {
+            throw new MediaUiException("Cannot $action asset that was never imported", 1590659044);
+        }
+        if (!$asset instanceof Asset) {
+            throw new MediaUiException("Asset type does not support \"$action\" action", 1619081662);
+        }
+        return $asset;
+    }
+
+    /**
+     * @throws MediaUiException
+     */
+    protected function resolveTag(Types\TagId $tagId): Tag
+    {
+        /** @var Tag|null $tag */
+        $tag = $this->tagRepository->findByIdentifier($tagId->value);
+        if (!$tag) {
+            throw new MediaUiException('Cannot resolve tag that does not exist', 1591561845);
+        }
+        return $tag;
+    }
+
+    /**
+     * @throws MediaUiException
+     */
     public function updateAsset(
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
         string $label = null,
         string $caption = null,
         string $copyrightNotice = null
-    ): ?Types\Asset {
+    ): MutationResult {
         $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
         if (!$asset) {
             throw new MediaUiException('Cannot update asset that was never imported', 1590659044);
@@ -119,28 +147,16 @@ class AssetMutator
             throw new MediaUiException('Failed to update asset: ' . $e->getMessage(), 1590659063);
         }
 
-        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
+        return MutationResult::fromSuccess();
     }
 
     /**
      * @throws MediaUiException
      */
-    public function tagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): ?Types\Asset
+    public function tagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): MutationResult
     {
-        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
-        if (!$asset) {
-            throw new MediaUiException('Cannot tag asset that was never imported', 1591561758);
-        }
-
-        if (!$asset instanceof Asset) {
-            throw new MediaUiException('Asset type does not support tagging', 1619081662);
-        }
-
-        /** @var Tag $tag */
-        $tag = $this->tagRepository->findByIdentifier($tagId->value);
-        if (!$tag) {
-            throw new MediaUiException('Cannot tag asset with tag that does not exist', 1591561845);
-        }
+        $asset = $this->resolveAsset($id, $assetSourceId, 'tag');
+        $tag = $this->resolveTag($tagId);
 
         $asset->addTag($tag);
 
@@ -150,7 +166,7 @@ class AssetMutator
             $this->logger->error('Failed to update asset', [$e->getMessage()]);
             throw new MediaUiException('Failed to update asset', 1591561868);
         }
-        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
+        return MutationResult::fromSuccess();
     }
 
     /**
@@ -201,25 +217,12 @@ class AssetMutator
         Types\AssetId $id,
         Types\AssetSourceId $assetSourceId,
         Types\TagIds $tagIds
-    ): ?Types\Asset {
-        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
-        if (!$asset) {
-            throw new MediaUiException('Cannot tag asset that was never imported', 1594621322);
-        }
-        if (!$asset instanceof Asset) {
-            throw new MediaUiException(
-                sprintf('Asset type %s does not support tagging', $asset::class),
-                1619081714
-            );
-        }
+    ): MutationResult {
+        $asset = $this->resolveAsset($id, $assetSourceId, 'tag');
 
         $tags = new ArrayCollection();
         foreach ($tagIds as $tagId) {
-            $tag = $this->tagRepository->findByIdentifier($tagId->value);
-            if (!$tag) {
-                throw new MediaUiException('Cannot tag asset with tag that does not exist', 1594621318);
-            }
-            $tags->add($tag);
+            $tags->add($this->resolveTag($tagId));
         }
         $asset->setTags($tags);
 
@@ -229,7 +232,7 @@ class AssetMutator
             throw new MediaUiException('Failed to set asset tags: ' . $e->getMessage(), 1594621296);
         }
 
-        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
+        return MutationResult::fromSuccess();
     }
 
     /**
@@ -240,19 +243,13 @@ class AssetMutator
         Types\AssetSourceId $assetSourceId,
         Types\AssetCollectionIds $assetCollectionIds
     ): MutationResult {
-        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
-        if (!$asset) {
-            throw new MediaUiException('Cannot assign collections to asset that was never imported', 1594621322);
-        }
-        if (!$asset instanceof Asset) {
-            throw new MediaUiException('Asset type does not support collections', 1619081722);
-        }
+        $asset = $this->resolveAsset($id, $assetSourceId, 'assign collections to');
 
         $assetCollections = new ArrayCollection();
         foreach ($assetCollectionIds as $assetCollectionId) {
             $collection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId->value);
             if (!$collection) {
-                throw new MediaUiException('Cannot assign non existing assign collection to asset', 1594621318);
+                throw new MediaUiException('Cannot assign non existing collection to asset', 1594621318);
             }
             $assetCollections->add($collection);
         }
@@ -270,21 +267,10 @@ class AssetMutator
     /**
      * @throws MediaUiException
      */
-    public function untagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): ?Types\Asset
+    public function untagAsset(Types\AssetId $id, Types\AssetSourceId $assetSourceId, Types\TagId $tagId): MutationResult
     {
-        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
-        if (!$asset) {
-            throw new MediaUiException('Cannot untag asset that was never imported', 1591561930);
-        }
-        if (!$asset instanceof Asset) {
-            throw new MediaUiException('Asset type does not support tagging', 1619081740);
-        }
-
-        /** @var Tag $tag */
-        $tag = $this->tagRepository->findByIdentifier($tagId->value);
-        if (!$tag) {
-            throw new MediaUiException('Cannot untag asset from tag that does not exist', 1591561934);
-        }
+        $asset = $this->resolveAsset($id, $assetSourceId, 'untag');
+        $tag = $this->resolveTag($tagId);
 
         $asset->removeTag($tag);
 
@@ -294,7 +280,110 @@ class AssetMutator
             throw new MediaUiException('Failed to update asset: ' . $e->getMessage(), 1591561938);
         }
 
-        return Types\Asset::fromAssetProxy($asset->getAssetProxy());
+        return MutationResult::fromSuccess();
+    }
+
+    public function deleteAssets(Types\AssetIdentities $identities): Types\MutationResults
+    {
+        $results = [];
+        foreach ($identities as $identity) {
+            try {
+                $results[] = $this->deleteAsset($identity->assetId, $identity->assetSourceId);
+            } catch (\Exception $e) {
+                $results[] = MutationResult::fromError([$e->getMessage()]);
+            }
+        }
+        return Types\MutationResults::fromArray($results);
+    }
+
+    public function tagAssets(Types\AssetIdentities $identities, Types\TagId $tagId): Types\MutationResults
+    {
+        try {
+            $tag = $this->resolveTag($tagId);
+        } catch (MediaUiException $e) {
+            return Types\MutationResults::fromArray([MutationResult::fromError([$e->getMessage()])]);
+        }
+
+        $results = [];
+        foreach ($identities as $identity) {
+            try {
+                $asset = $this->resolveAsset($identity->assetId, $identity->assetSourceId, 'tag');
+                $asset->addTag($tag);
+                $this->assetRepository->update($asset);
+                $results[] = MutationResult::fromSuccess();
+            } catch (\Exception $e) {
+                $results[] = MutationResult::fromError([$e->getMessage()]);
+            }
+        }
+        return Types\MutationResults::fromArray($results);
+    }
+
+    public function untagAssets(Types\AssetIdentities $identities, Types\TagId $tagId): Types\MutationResults
+    {
+        try {
+            $tag = $this->resolveTag($tagId);
+        } catch (MediaUiException $e) {
+            return Types\MutationResults::fromArray([MutationResult::fromError([$e->getMessage()])]);
+        }
+
+        $results = [];
+        foreach ($identities as $identity) {
+            try {
+                $asset = $this->resolveAsset($identity->assetId, $identity->assetSourceId, 'untag');
+                $asset->removeTag($tag);
+                $this->assetRepository->update($asset);
+                $results[] = MutationResult::fromSuccess();
+            } catch (\Exception $e) {
+                $results[] = MutationResult::fromError([$e->getMessage()]);
+            }
+        }
+        return Types\MutationResults::fromArray($results);
+    }
+
+    public function assignAssetsToCollection(
+        Types\AssetIdentities $identities,
+        Types\AssetCollectionId $assetCollectionId
+    ): Types\MutationResults {
+        /** @var AssetCollection|null $collection */
+        $collection = $this->assetCollectionRepository->findByIdentifier($assetCollectionId->value);
+        if (!$collection) {
+            return Types\MutationResults::fromArray([
+                MutationResult::fromError([
+                    $this->localizedMessage('errors.collectionNotFound', 'Asset collection does not exist')
+                ])
+            ]);
+        }
+
+        $assetCollections = new ArrayCollection([$collection]);
+
+        $results = [];
+        foreach ($identities as $identity) {
+            try {
+                $asset = $this->resolveAsset($identity->assetId, $identity->assetSourceId, 'assign collection to');
+                $asset->setAssetCollections(clone $assetCollections);
+                $this->assetRepository->update($asset);
+                $results[] = MutationResult::fromSuccess();
+            } catch (\Exception $e) {
+                $results[] = MutationResult::fromError([$e->getMessage()]);
+            }
+        }
+        return Types\MutationResults::fromArray($results);
+    }
+
+    public function updateAssets(
+        Types\AssetIdentities $identities,
+        string $copyrightNotice = null
+    ): Types\MutationResults {
+        $results = [];
+        foreach ($identities as $identity) {
+            try {
+                $this->updateAsset($identity->assetId, $identity->assetSourceId, null, null, $copyrightNotice);
+                $results[] = MutationResult::fromSuccess();
+            } catch (\Exception $e) {
+                $results[] = MutationResult::fromError([$e->getMessage()]);
+            }
+        }
+        return Types\MutationResults::fromArray($results);
     }
 
     /**
@@ -308,13 +397,7 @@ class AssetMutator
         Types\UploadedFile $file,
         Types\AssetReplacementOptions $options,
     ): Types\FileUploadResult {
-        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
-        if (!$asset) {
-            throw new MediaUiException('Cannot replace asset that was never imported', 1648046173);
-        }
-        if (!$asset instanceof Asset) {
-            throw new MediaUiException('Asset type "' . $asset::class . '" does not support replacing', 1648046186);
-        }
+        $asset = $this->resolveAsset($id, $assetSourceId, 'replace');
 
         $sourceMediaType = MediaTypes::parseMediaType($asset->getMediaType());
         $replacementMediaType = MediaTypes::parseMediaType($file->clientMediaType);
@@ -384,13 +467,7 @@ class AssetMutator
             throw new MediaUiException('Filename was empty', 1678156902);
         }
 
-        $asset = $this->assetSourceContext->getAsset($id, $assetSourceId);
-        if (!$asset) {
-            throw new MediaUiException('Cannot rename asset that was never imported', 1678155884);
-        }
-        if (!$asset instanceof Asset) {
-            throw new MediaUiException('Asset type does not support renaming', 1678155887);
-        }
+        $asset = $this->resolveAsset($id, $assetSourceId, 'rename');
 
         // Make sure the filename has the same extension as before
         if (!strpos($filename->value, $asset->getFileExtension())) {

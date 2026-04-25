@@ -14,9 +14,7 @@ interface TagAssetVariables {
 }
 
 export default function useTagAsset() {
-    const [action, { error, data, loading }] = useMutation<{ __typename: string; tagAsset: Asset }, TagAssetVariables>(
-        TAG_ASSET
-    );
+    const [action, { error, data, loading }] = useMutation<{ tagAsset: MutationResult }, TagAssetVariables>(TAG_ASSET);
 
     const tagAsset = ({ asset, tagId }: TagAssetProps) =>
         action({
@@ -25,6 +23,7 @@ export default function useTagAsset() {
                 assetSourceId: asset.assetSource.id,
                 tagId,
             },
+            refetchQueries: ['ASSETS'],
         });
 
     return { tagAsset, data, error, loading };

@@ -1,7 +1,5 @@
 import { gql } from '@apollo/client';
 
-import { ASSET_FRAGMENT } from '../fragments/asset';
-
 const UPDATE_ASSET = gql`
     mutation UpdateAsset(
         $id: AssetId!
@@ -9,9 +7,7 @@ const UPDATE_ASSET = gql`
         $label: String
         $caption: String
         $copyrightNotice: String
-        $includeUsage: Boolean = false
     ) {
-        includeUsage @client(always: true) @export(as: "includeUsage")
         updateAsset(
             id: $id
             assetSourceId: $assetSourceId
@@ -19,10 +15,10 @@ const UPDATE_ASSET = gql`
             caption: $caption
             copyrightNotice: $copyrightNotice
         ) {
-            ...AssetProps
+            success
+            messages
         }
     }
-    ${ASSET_FRAGMENT}
 `;
 
 export default UPDATE_ASSET;

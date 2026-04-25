@@ -175,7 +175,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $asset = $assets->assets[0];
         $this->assertEquals($file->clientFilename, $asset->filename->value);
 
-        $updatedAsset = $this->mediaApi->updateAsset(
+        $updateResult = $this->mediaApi->updateAsset(
             $asset->id,
             $asset->assetSource->id,
             'some label',
@@ -183,6 +183,9 @@ class AssetApiTest extends AbstractMediaTestCase
             'copyright notice',
         );
 
+        $this->assertTrue($updateResult->success);
+
+        $updatedAsset = $this->mediaApi->asset($asset->id, $asset->assetSource->id);
         $this->assertEquals($asset->id, $updatedAsset->id);
         $this->assertEquals('some label', $this->assetResolver->label($updatedAsset));
         $this->assertEquals('some caption', $this->assetResolver->caption($updatedAsset));
