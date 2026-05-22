@@ -20,7 +20,8 @@ const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
 };
 
 const CollectionSelectBox: React.FC = () => {
-    const selectedAssets = useRecoilValue(selectedAssetIdsState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssets = useRecoilValue(selectedAssetIdsState(selectedAssetSourceId));
     const isMultiSelection = selectedAssets.length > 1;
     const Notify = useNotify();
     const { translate } = useIntl();
@@ -28,7 +29,6 @@ const CollectionSelectBox: React.FC = () => {
     const {
         approvalAttainmentStrategy: { obtainApprovalToSetAssetCollections, obtainApprovalToShiftAssetsToCollection },
     } = useMediaUi();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
     const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const { setAssetCollections, loading } = useSetAssetCollections();
     const { getFailedAssetLabels } = useFailedAssetLabels();

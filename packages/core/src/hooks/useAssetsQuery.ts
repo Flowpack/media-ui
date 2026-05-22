@@ -46,9 +46,9 @@ const useAssetsQuery = () => {
         pagination: { assetsPerPage },
     } = useRecoilValue(featureFlagsState);
     const searchTerm = useRecoilValue(searchTermState);
-    const assetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
     const assetSourceId = useRecoilValue(selectedAssetSourceState);
-    const selectedTagId = useRecoilValue(selectedTagIdState);
+    const assetCollectionId = useRecoilValue(selectedAssetCollectionIdState(assetSourceId));
+    const selectedTagId = useRecoilValue(selectedTagIdState(assetSourceId));
     const mediaType = useRecoilValue(selectedMediaTypeState);
     const assetType = useRecoilValue(selectedAssetTypeState);
     const sortOrderState = useRecoilValue(selectedSortOrderState);

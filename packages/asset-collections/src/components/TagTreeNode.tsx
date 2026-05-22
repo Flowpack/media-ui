@@ -7,6 +7,7 @@ import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 import { selectedTagIdState } from '@media-ui/feature-asset-tags';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 export interface TagTreeNodeProps extends TreeNodeProps {
     tagId: string;
@@ -18,12 +19,16 @@ export interface TagTreeNodeProps extends TreeNodeProps {
 }
 
 // This state selector provides the focused state for each individual asset collection
-const tagFocusedState = selectorFamily<boolean, { assetCollectionId: string; tagId: string }>({
+const tagFocusedState = selectorFamily<
+    boolean,
+    { assetCollectionId: string; tagId: string; assetSourceId: AssetSourceId }
+>({
     key: 'TagFocusedState',
     get:
-        ({ assetCollectionId, tagId }) =>
+        ({ assetCollectionId, tagId, assetSourceId }) =>
         ({ get }) =>
-            get(selectedAssetCollectionIdState) === assetCollectionId && get(selectedTagIdState) === tagId,
+            get(selectedAssetCollectionIdState(assetSourceId)) === assetCollectionId &&
+            get(selectedTagIdState(assetSourceId)) === tagId,
 });
 
 const TagTreeNode: React.FC<TagTreeNodeProps> = ({
@@ -34,8 +39,9 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
     icon = 'tag',
     customIconComponent,
 }: TagTreeNodeProps) => {
-    const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
-    const isFocused = useRecoilValue(tagFocusedState({ assetCollectionId, tagId }));
+    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState(assetSourceId));
+    const isFocused = useRecoilValue(tagFocusedState({ assetCollectionId, tagId, assetSourceId }));
 
     return (
         <Tree.Node className="TagTreeNode">

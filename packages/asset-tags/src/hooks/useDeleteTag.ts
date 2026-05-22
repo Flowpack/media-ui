@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { ASSET_COLLECTIONS } from '@media-ui/feature-asset-collections';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import selectedTagIdState from '../state/selectedTagIdState';
 import TAGS from '../queries/tags';
@@ -14,7 +15,8 @@ interface DeleteTagVariables {
 
 export default function useDeleteTag() {
     const [action, { error, data }] = useMutation<{ deleteTag: MutationResult }, DeleteTagVariables>(DELETE_TAG);
-    const [selectedTagId, setSelectedTagId] = useRecoilState(selectedTagIdState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const [selectedTagId, setSelectedTagId] = useRecoilState(selectedTagIdState(assetSourceId));
 
     const deleteTag = (id: TagId, assetSourceId: AssetSourceId) =>
         action({

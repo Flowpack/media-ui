@@ -1,4 +1,4 @@
-import { atom, selector, selectorFamily } from 'recoil';
+import { atomFamily, selectorFamily } from 'recoil';
 
 import { selectedAssetIdState } from './selectedAssetIdState';
 import { selectedInspectorViewState } from './selectedInspectorViewState';
@@ -7,15 +7,17 @@ import { selectedInspectorViewState } from './selectedInspectorViewState';
  * Default value: if a single asset was persisted via selectedAssetIdState,
  * initialize the selection array with it on first load.
  */
-const selectedAssetIdsDefaultState = selector<AssetIdentity[]>({
+const selectedAssetIdsDefaultState = selectorFamily<AssetId[], AssetSourceId>({
     key: 'SelectedAssetIdsDefaultState',
-    get: ({ get }) => {
-        const selectedAsset = get(selectedAssetIdState);
-        return selectedAsset ? [selectedAsset] : [];
-    },
+    get:
+        (assetSourceId: AssetSourceId) =>
+        ({ get }) => {
+            const selectedAsset = get(selectedAssetIdState);
+            return selectedAsset && selectedAsset.assetSourceId === assetSourceId ? [selectedAsset.assetId] : [];
+        },
 });
 
-const selectedAssetIdsInternalState = atom<AssetIdentity[]>({
+const selectedAssetIdsInternalState = atomFamily<AssetId[], AssetSourceId>({
     key: 'SelectedAssetIdsInternalState',
     default: selectedAssetIdsDefaultState,
 });
@@ -26,24 +28,32 @@ const selectedAssetIdsInternalState = atom<AssetIdentity[]>({
  * - 1 asset: set it as the active asset in the inspector
  * - 0 or >1: clear the active asset
  */
-export const selectedAssetIdsState = selector<AssetIdentity[]>({
+export const selectedAssetIdsState = selectorFamily<AssetIdentity[], AssetSourceId>({
     key: 'SelectedAssetIdsState',
-    get: ({ get }) => get(selectedAssetIdsInternalState),
-    set: ({ set }, newValue: AssetIdentity[]) => {
-        set(selectedAssetIdsInternalState, newValue);
-        if (newValue.length === 1) {
-            set(selectedAssetIdState, newValue[0]);
-            set(selectedInspectorViewState, 'asset');
-        } else {
-            set(selectedAssetIdState, null);
-        }
-    },
+    get:
+        (assetSourceId: AssetSourceId) =>
+        ({ get }) =>
+            get(selectedAssetIdsInternalState(assetSourceId)).map((assetId) => ({ assetId, assetSourceId })),
+    set:
+        (assetSourceId) =>
+        ({ set }, newValue: AssetIdentity[]) => {
+            set(
+                selectedAssetIdsInternalState(assetSourceId),
+                newValue.map(({ assetId }) => assetId)
+            );
+            if (newValue.length === 1) {
+                set(selectedAssetIdState, newValue[0]);
+                set(selectedInspectorViewState, 'asset');
+            } else {
+                set(selectedAssetIdState, null);
+            }
+        },
 });
 
-export const isAssetSelectedState = selectorFamily<boolean, string>({
+export const isAssetSelectedState = selectorFamily<boolean, { assetId: AssetId; assetSourceId: AssetSourceId }>({
     key: 'IsAssetSelectedState',
     get:
-        (assetId) =>
+        (assetIdentity: AssetIdentity) =>
         ({ get }) =>
-            get(selectedAssetIdsState).some((a) => a.assetId === assetId),
+            get(selectedAssetIdsState(assetIdentity.assetSourceId)).some((a) => a.assetId === assetIdentity.assetId),
 });

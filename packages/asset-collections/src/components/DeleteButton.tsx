@@ -22,7 +22,9 @@ const DeleteButton: React.FC = () => {
     const selectedTag = useSelectedTag();
     const { deleteTag } = useDeleteTag();
     const { deleteAssetCollection } = useDeleteAssetCollection();
-    const setSelectedAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
+    const setSelectedAssetCollectionAndTag = useSetRecoilState(
+        selectedAssetCollectionAndTagState(selectedAssetSourceId)
+    );
 
     const onClickDelete = useCallback(async () => {
         if (selectedTag) {

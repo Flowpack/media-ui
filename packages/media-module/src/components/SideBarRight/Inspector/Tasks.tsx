@@ -18,12 +18,14 @@ import DeleteAssetButton from '../../Actions/DeleteAssetButton';
 
 import classes from './Tasks.module.css';
 import menuItemClasses from './TaskMenuItem.module.css';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 const DropDownHeader = (DropDown as any).Header;
 const DropDownContents = (DropDown as any).Contents;
 
 const Tasks: React.FC = () => {
-    const selectedAssets = useRecoilValue(selectedAssetIdsState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssets = useRecoilValue(selectedAssetIdsState(assetSourceId));
     const { translate } = useIntl();
     const selectedAsset = useSelectedAsset();
     const applicationContext = useRecoilValue(applicationContextState);
@@ -31,7 +33,7 @@ const Tasks: React.FC = () => {
     const [isInClipboard, toggleClipboardState] = useRecoilState(
         clipboardItemState({ assetId: selectedAsset?.id ?? '', assetSourceId: selectedAsset?.assetSource?.id ?? '' })
     );
-    const [allInClipboard, toggleAllClipboardState] = useRecoilState(clipboardItemsState);
+    const [allInClipboard, toggleAllClipboardState] = useRecoilState(clipboardItemsState(assetSourceId));
 
     const isMultiSelection = selectedAssets.length > 1;
 

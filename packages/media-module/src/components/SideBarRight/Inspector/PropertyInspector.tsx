@@ -11,6 +11,7 @@ import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { UPDATE_ASSET } from '@media-ui/core/src/mutations';
 import { useInteraction } from '@media-ui/core/src/provider';
+import { selectedAssetSourceState, useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import TagSelectBoxMulti from './TagSelectBoxMulti';
@@ -20,10 +21,10 @@ import InspectorContainer from './InspectorContainer';
 import Tasks from './Tasks';
 
 import classes from './PropertyInspector.module.css';
-import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
 const PropertyInspector = () => {
-    const selectedAssets = useRecoilValue(selectedAssetIdsState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssets = useRecoilValue(selectedAssetIdsState(selectedAssetSourceId));
     const isMultiSelection = selectedAssets.length > 1;
     const selectedAsset = useSelectedAsset();
     const { assetSources } = useAssetSourcesQuery();

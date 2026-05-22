@@ -1,4 +1,4 @@
 interface AssetIdentity {
-    assetId: string;
-    assetSourceId: string;
+    assetId: AssetId;
+    assetSourceId: AssetSourceId;
 }

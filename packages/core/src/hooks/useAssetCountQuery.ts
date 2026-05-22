@@ -26,8 +26,8 @@ interface AssetCountVariables {
 
 export default function useAssetCountQuery(total = false) {
     const searchTerm = useRecoilValue(searchTermState);
-    const { tagId, assetCollectionId } = useRecoilValue(selectedAssetCollectionAndTagState);
     const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { tagId, assetCollectionId } = useRecoilValue(selectedAssetCollectionAndTagState(assetSourceId));
     const mediaType = useRecoilValue(selectedMediaTypeState);
     const assetType = useRecoilValue(selectedAssetTypeState);
     const { data, loading } = useQuery<AssetCountQueryResult, AssetCountVariables>(ASSET_COUNT, {

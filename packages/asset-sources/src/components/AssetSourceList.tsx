@@ -19,7 +19,7 @@ const AssetSourceList: React.FC = () => {
     const { translate } = useIntl();
     const [selectedAssetSourceId, setSelectedAssetSourceId] = useRecoilState(selectedAssetSourceState);
     const setSelectedAsset = useSetRecoilState(selectedAssetIdState);
-    const setSelectedAssetCollection = useSetRecoilState(selectedAssetCollectionIdState);
+    const setSelectedAssetCollection = useSetRecoilState(selectedAssetCollectionIdState(selectedAssetSourceId));
 
     const chooseSelectedAssetSource = useCallback(
         (assetSourceId: AssetSourceId) => {

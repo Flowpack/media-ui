@@ -7,10 +7,12 @@ import { useIntl } from '@media-ui/core';
 
 import { selectedAssetCollectionIdState } from '../state/selectedAssetCollectionIdState';
 import { assetCollectionFavouriteState } from '../state/assetCollectionFavouritesState';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 const FavouriteButton: React.FC = () => {
     const { translate } = useIntl();
-    const selectedAssetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetCollectionId = useRecoilValue(selectedAssetCollectionIdState(assetSourceId));
     const [isFavourite, setIsFavourite] = useRecoilState(assetCollectionFavouriteState(selectedAssetCollectionId));
 
     const toggleFavourite = useCallback(() => {

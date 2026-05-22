@@ -12,7 +12,7 @@ interface TagQueryResult {
 
 const useSelectedTag = (): Tag => {
     const assetSourceId = useRecoilValue(selectedAssetSourceState);
-    const selectedTagId = useRecoilValue(selectedTagIdState);
+    const selectedTagId = useRecoilValue(selectedTagIdState(assetSourceId));
 
     const { data } = useQuery<TagQueryResult>(TAG, {
         variables: { id: selectedTagId, assetSourceId },

@@ -1,7 +1,7 @@
-import { atom } from 'recoil';
+import { atomFamily } from 'recoil';
 import { localStorageEffect } from '@media-ui/core/src/state';
 
-const selectedTagIdState = atom<string>({
+const selectedTagIdState = atomFamily<TagId, AssetSourceId>({
     key: 'SelectedTagIdState',
     default: null,
     effects: [localStorageEffect('SelectedTagIdState')],

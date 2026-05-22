@@ -33,14 +33,14 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     renderChildCollections = true,
 }) => {
     const { config } = useConfigQuery();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
-    const { assetCollection } = useAssetCollectionQuery(assetCollectionId, selectedAssetSourceId);
-    const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
+    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { assetCollection } = useAssetCollectionQuery(assetCollectionId, assetSourceId);
+    const { assetCollections } = useAssetCollectionsQuery(assetSourceId);
     const [collapsed, setCollapsed] = useRecoilState(assetCollectionTreeCollapsedItemState(assetCollectionId));
-    const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
-    const isFocused = useRecoilValue(assetCollectionFocusedState(assetCollectionId));
+    const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState(assetSourceId));
+    const isFocused = useRecoilValue(assetCollectionFocusedState({ assetCollectionId, assetSourceId }));
     const isFavourite = useRecoilValue(assetCollectionFavouriteState(assetCollectionId));
-    const isActive = useRecoilValue(assetCollectionActiveState(assetCollectionId));
+    const isActive = useRecoilValue(assetCollectionActiveState({ assetCollectionId, assetSourceId }));
 
     const { currentlyDraggedNodes, handeEndDrag, handleDrag, handleDrop, acceptsDraggedNode } = useAssetCollectionDnd();
 

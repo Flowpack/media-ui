@@ -19,7 +19,7 @@ const AssetInspector = () => {
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const { showVariantsEditor } = useRecoilValue(featureFlagsState);
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
-    const isMultiSelection = useRecoilValue(selectedAssetIdsState).length > 1;
+    const isMultiSelection = useRecoilValue(selectedAssetIdsState(selectedAssetId?.assetSourceId)).length > 1;
 
     if ((!selectedAssetId && !isMultiSelection) || selectedInspectorView !== 'asset') return null;
 
