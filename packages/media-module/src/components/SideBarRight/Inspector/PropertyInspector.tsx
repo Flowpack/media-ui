@@ -8,10 +8,10 @@ import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
-import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
+import { featureFlagsState, multiSelectionState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { UPDATE_ASSET } from '@media-ui/core/src/mutations';
 import { useInteraction } from '@media-ui/core/src/provider';
-import { selectedAssetSourceState, useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState, useSelectedAssetSource } from '@media-ui/feature-asset-sources';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import TagSelectBoxMulti from './TagSelectBoxMulti';
@@ -23,11 +23,11 @@ import Tasks from './Tasks';
 import classes from './PropertyInspector.module.css';
 
 const PropertyInspector = () => {
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectedAssets = useRecoilValue(selectedAssetIdsState(selectedAssetSourceId));
-    const isMultiSelection = selectedAssets.length > 1;
+    const isMultiSelection = useRecoilValue(multiSelectionState(selectedAssetSourceId));
+    const selectedAssetSource = useSelectedAssetSource();
     const selectedAsset = useSelectedAsset();
-    const { assetSources } = useAssetSourcesQuery();
     const Notify = useNotify();
     const { translate } = useIntl();
     const {

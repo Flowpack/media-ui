@@ -7,7 +7,7 @@ import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { useDeleteTag, useSelectedTag } from '@media-ui/feature-asset-tags';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import useDeleteAssetCollection from '../hooks/useDeleteAssetCollection';
 import useSelectedAssetCollection from '../hooks/useSelectedAssetCollection';
@@ -17,7 +17,7 @@ const DeleteButton: React.FC = () => {
     const { config } = useConfigQuery();
     const Notify = useNotify();
     const { approvalAttainmentStrategy } = useMediaUi();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
     const { deleteTag } = useDeleteTag();

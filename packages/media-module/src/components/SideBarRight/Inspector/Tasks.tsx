@@ -12,24 +12,25 @@ import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { applicationContextState, featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { clipboardItemState, clipboardItemsState } from '@media-ui/feature-clipboard';
+import { selectedAssetSourceIdState, useSelectedAssetSource } from '@media-ui/feature-asset-sources';
 
 import DownloadAssetButton from '../../Actions/DownloadAssetButton';
 import DeleteAssetButton from '../../Actions/DeleteAssetButton';
 
 import classes from './Tasks.module.css';
 import menuItemClasses from './TaskMenuItem.module.css';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 const DropDownHeader = (DropDown as any).Header;
 const DropDownContents = (DropDown as any).Contents;
 
 const Tasks: React.FC = () => {
-    const assetSourceId = useRecoilValue(selectedAssetSourceState);
-    const selectedAssets = useRecoilValue(selectedAssetIdsState(assetSourceId));
     const { translate } = useIntl();
-    const selectedAsset = useSelectedAsset();
+    const assetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const selectedAssets = useRecoilValue(selectedAssetIdsState(assetSourceId));
     const applicationContext = useRecoilValue(applicationContextState);
     const { showSimilarAssets } = useRecoilValue(featureFlagsState);
+    const selectedAssetSource = useSelectedAssetSource();
+    const selectedAsset = useSelectedAsset();
     const [isInClipboard, toggleClipboardState] = useRecoilState(
         clipboardItemState({ assetId: selectedAsset?.id ?? '', assetSourceId: selectedAsset?.assetSource?.id ?? '' })
     );

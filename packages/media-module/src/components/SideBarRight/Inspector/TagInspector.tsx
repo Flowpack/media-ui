@@ -8,14 +8,14 @@ import { useIntl, useNotify } from '@media-ui/core';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
 import { useSelectedTag, useUpdateTag } from '@media-ui/feature-asset-tags';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import Actions from './Actions';
 import Property from './Property';
 import InspectorContainer from './InspectorContainer';
 
 const TagInspector = () => {
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectedTag = useSelectedTag();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();

@@ -7,7 +7,7 @@ import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/
 
 import { TagSelectBox } from '.';
 import { useRecoilValue } from 'recoil';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 const tagsMatchAssetCollection = (tags: Tag[], assetCollection: AssetCollection) => {
     return (
@@ -26,7 +26,7 @@ const TagSelectBoxAssetCollection = () => {
     const Notify = useNotify();
     const { config } = useConfigQuery();
     const { translate } = useIntl();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const { tags: allTags } = useTagsQuery(selectedAssetSourceId);
     const { updateAssetCollection } = useUpdateAssetCollection();
     const selectedAssetCollection = useSelectedAssetCollection();

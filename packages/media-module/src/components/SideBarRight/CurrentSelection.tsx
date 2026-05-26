@@ -12,12 +12,12 @@ import {
     useSelectedAssetCollection,
 } from '@media-ui/feature-asset-collections';
 import { useSelectedTag } from '@media-ui/feature-asset-tags';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import classes from './CurrentSelection.module.css';
 
 const CurrentSelection = () => {
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
     const setSelectedAssetCollectionAndTag = useSetRecoilState(

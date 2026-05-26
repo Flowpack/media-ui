@@ -7,7 +7,7 @@ import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 import { selectedTagIdState } from '@media-ui/feature-asset-tags';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 export interface TagTreeNodeProps extends TreeNodeProps {
     tagId: string;
@@ -39,7 +39,7 @@ const TagTreeNode: React.FC<TagTreeNodeProps> = ({
     icon = 'tag',
     customIconComponent,
 }: TagTreeNodeProps) => {
-    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState(assetSourceId));
     const isFocused = useRecoilValue(tagFocusedState({ assetCollectionId, tagId, assetSourceId }));
 

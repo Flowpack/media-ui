@@ -9,7 +9,7 @@ import { IconLabel } from '@media-ui/core/src/components';
 import { selectedAssetIdState } from '@media-ui/core/src/state';
 import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
 
-import { selectedAssetSourceState } from '../state/selectedAssetSourceState';
+import { selectedAssetSourceIdState } from '../state/selectedAssetSourceIdState';
 import { useAssetSourcesQuery } from '../hooks/useAssetSourcesQuery';
 
 import classes from './AssetSourceList.module.css';
@@ -17,7 +17,7 @@ import classes from './AssetSourceList.module.css';
 const AssetSourceList: React.FC = () => {
     const { assetSources } = useAssetSourcesQuery();
     const { translate } = useIntl();
-    const [selectedAssetSourceId, setSelectedAssetSourceId] = useRecoilState(selectedAssetSourceState);
+    const [selectedAssetSourceId, setSelectedAssetSourceId] = useRecoilState(selectedAssetSourceIdState);
     const setSelectedAsset = useSetRecoilState(selectedAssetIdState);
     const setSelectedAssetCollection = useSetRecoilState(selectedAssetCollectionIdState(selectedAssetSourceId));
 

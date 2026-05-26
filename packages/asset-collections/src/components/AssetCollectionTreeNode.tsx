@@ -7,7 +7,7 @@ import dndTypes from '@media-ui/core/src/constants/dndTypes';
 import { selectedAssetCollectionAndTagState } from '@media-ui/core/src/state';
 import { IconStack } from '@media-ui/core/src/components';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import TagTreeNode from './TagTreeNode';
 import { useAssetCollectionQuery, UNASSIGNED_COLLECTION_ID } from '../hooks/useAssetCollectionQuery';
@@ -33,7 +33,7 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     renderChildCollections = true,
 }) => {
     const { config } = useConfigQuery();
-    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const { assetCollection } = useAssetCollectionQuery(assetCollectionId, assetSourceId);
     const { assetCollections } = useAssetCollectionsQuery(assetSourceId);
     const [collapsed, setCollapsed] = useRecoilState(assetCollectionTreeCollapsedItemState(assetCollectionId));

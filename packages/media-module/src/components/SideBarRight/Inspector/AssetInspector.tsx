@@ -5,11 +5,12 @@ import { Tabs } from '@neos-project/react-ui-components';
 
 import {
     featureFlagsState,
-    selectedAssetIdsState,
+    multiSelectionState,
     selectedAssetIdState,
     selectedInspectorViewState,
 } from '@media-ui/core/src/state';
 import VariantsInspector from '@media-ui/feature-asset-variants/src/components/VariantsInspector';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import PropertyInspector from './PropertyInspector';
 
@@ -17,9 +18,10 @@ import classes from './AssetInspector.module.css';
 
 const AssetInspector = () => {
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const { showVariantsEditor } = useRecoilValue(featureFlagsState);
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
-    const isMultiSelection = useRecoilValue(selectedAssetIdsState(selectedAssetId?.assetSourceId)).length > 1;
+    const isMultiSelection = useRecoilValue(multiSelectionState(selectedAssetSourceId));
 
     if ((!selectedAssetId && !isMultiSelection) || selectedInspectorView !== 'asset') return null;
 

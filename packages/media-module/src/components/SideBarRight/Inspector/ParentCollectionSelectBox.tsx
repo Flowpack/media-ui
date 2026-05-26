@@ -14,14 +14,14 @@ import {
 import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
 
 import * as classes from './ParentCollectionSelectBox.module.css';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 import { useRecoilValue } from 'recoil';
 
 const ParentCollectionSelectBox = () => {
     const Notify = useNotify();
     const { translate } = useIntl();
     const { approvalAttainmentStrategy } = useMediaUi();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const selectedAssetCollection = useSelectedAssetCollection();
     const { setAssetCollectionParent, loading } = useSetAssetCollectionParent();

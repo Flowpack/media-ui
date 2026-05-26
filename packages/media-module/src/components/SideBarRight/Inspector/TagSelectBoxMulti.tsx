@@ -9,7 +9,7 @@ import { useFailedAssetLabels, useTagAsset, useUntagAssetById } from '@media-ui/
 import { IconLabel } from '@media-ui/core/src/components';
 import { selectedAssetIdsState } from '@media-ui/core/src/state';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import * as classes from './TagSelectBox.module.css';
 
@@ -21,7 +21,7 @@ const TagSelectBoxMulti: React.FC = () => {
     const {
         approvalAttainmentStrategy: { obtainApprovalToTagAssets, obtainApprovalToUntagAssets },
     } = useMediaUi();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectedAssets = useRecoilValue(selectedAssetIdsState(selectedAssetSourceId));
     const { tags } = useTagsQuery(selectedAssetSourceId);
     const { tagAsset } = useTagAsset();

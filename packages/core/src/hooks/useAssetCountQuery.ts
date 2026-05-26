@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useRecoilValue } from 'recoil';
 
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import { ASSET_COUNT } from '../queries';
 import {
@@ -26,7 +26,7 @@ interface AssetCountVariables {
 
 export default function useAssetCountQuery(total = false) {
     const searchTerm = useRecoilValue(searchTermState);
-    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const { tagId, assetCollectionId } = useRecoilValue(selectedAssetCollectionAndTagState(assetSourceId));
     const mediaType = useRecoilValue(selectedMediaTypeState);
     const assetType = useRecoilValue(selectedAssetTypeState);

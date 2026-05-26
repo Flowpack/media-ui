@@ -18,7 +18,7 @@ import {
     CreateAssetCollectionDialog,
     createAssetCollectionDialogVisibleState,
 } from '@media-ui/feature-asset-collections';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import SideBarLeft from './SideBarLeft/SideBarLeft';
 import { SideBarRight } from './SideBarRight';
@@ -42,7 +42,7 @@ const App = () => {
     const showSimilarAssetsModal = useRecoilValue(similarAssetsModalState);
     const searchTerm = useRecoilValue(searchTermState);
     const selectAsset = useSelectAsset();
-    const selectAssetSource = useSetRecoilState(selectedAssetSourceState);
+    const selectAssetSource = useSetRecoilState(selectedAssetSourceIdState);
 
     // TODO: Implement asset source selection via recoil an atom effect in `searchTermState` to avoid this dangerous effect
     React.useEffect(() => {

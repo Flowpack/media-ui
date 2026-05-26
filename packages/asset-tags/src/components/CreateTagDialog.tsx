@@ -12,12 +12,12 @@ import { Dialog } from '@media-ui/core/src/components';
 import createTagDialogState from '../state/createTagDialogState';
 
 import classes from './CreateTagDialog.module.css';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 const CreateTagDialog: React.FC = () => {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const [dialogState, setDialogState] = useRecoilState(createTagDialogState);
     const { createTag } = useCreateTag();
