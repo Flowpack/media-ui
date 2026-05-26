@@ -11,7 +11,7 @@ const selectedAssetIdForContextState = atomFamily<AssetIdentity, ApplicationCont
     ],
 });
 
-export const selectedAssetIdState = selector<AssetIdentity>({
+export const selectedAssetIdState = selector<AssetIdentity | null>({
     key: 'selectedAssetIdState',
     get: ({ get }) => get(selectedAssetIdForContextState(get(applicationContextState))),
     set: ({ get, set }, assetIdentity) =>

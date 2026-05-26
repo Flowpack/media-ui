@@ -8,9 +8,10 @@ import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
-import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
+import { featureFlagsState, multiSelectionState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { UPDATE_ASSET } from '@media-ui/core/src/mutations';
 import { useInteraction } from '@media-ui/core/src/provider';
+import { selectedAssetSourceIdState, useSelectedAssetSource } from '@media-ui/feature-asset-sources';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import TagSelectBoxMulti from './TagSelectBoxMulti';
@@ -20,13 +21,13 @@ import InspectorContainer from './InspectorContainer';
 import Tasks from './Tasks';
 
 import classes from './PropertyInspector.module.css';
-import { useAssetSourcesQuery } from '@media-ui/feature-asset-sources';
 
 const PropertyInspector = () => {
-    const selectedAssets = useRecoilValue(selectedAssetIdsState);
-    const isMultiSelection = selectedAssets.length > 1;
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const selectedAssets = useRecoilValue(selectedAssetIdsState(selectedAssetSourceId));
+    const isMultiSelection = useRecoilValue(multiSelectionState(selectedAssetSourceId));
+    const selectedAssetSource = useSelectedAssetSource();
     const selectedAsset = useSelectedAsset();
-    const { assetSources } = useAssetSourcesQuery();
     const Notify = useNotify();
     const { translate } = useIntl();
     const {
@@ -46,17 +47,14 @@ const PropertyInspector = () => {
 
     const { updateAsset, loading } = useUpdateAsset();
 
-    const isEditable = isMultiSelection ? !multiLoading : selectedAsset?.localId && !loading;
+    const isReadOnly = selectedAssetSource ? selectedAssetSource.readOnly : true;
+    const isEditable = !isReadOnly && (isMultiSelection ? !multiLoading : selectedAsset?.localId && !loading);
     const hasUnpublishedChanges = isMultiSelection
         ? copyrightNotice !== '' && copyrightNotice !== null
         : selectedAsset &&
           (label !== selectedAsset.label ||
               caption !== selectedAsset.caption ||
               copyrightNotice !== selectedAsset.copyrightNotice);
-
-    const assetSourceForSelectedAsset = selectedAsset
-        ? assetSources.find(({ id }) => id === selectedAsset.assetSource.id)
-        : null;
 
     const handleDiscard = useCallback(() => {
         if (isMultiSelection) {
@@ -158,73 +156,78 @@ const PropertyInspector = () => {
         }
     }, [isMultiSelection]);
 
-    if (!selectedAsset && !isMultiSelection) return null;
+    if (!selectedAssetSource || (!selectedAsset && !isMultiSelection)) return null;
 
     return (
         <InspectorContainer>
             <Tasks />
 
-            <ToggablePanel
-                closesToBottom={true}
-                className={classes.propertyPanel}
-                isOpen={!propertyEditorCollapsed}
-                onPanelToggle={() => setPropertyEditorCollapsed((prev) => !prev)}
-            >
-                <ToggablePanel.Header className={classes.propertyPanelHeader}>
-                    <IconLabel icon="pencil" label={translate('propertyPanel.header', 'Properties')} />
-                </ToggablePanel.Header>
-                <ToggablePanel.Contents className={classes.propertyPanelContents}>
-                    {!isMultiSelection && (
-                        <>
-                            <Property label={translate('inspector.title', 'Title')}>
-                                <TextInput
-                                    name="label"
-                                    disabled={!isEditable}
-                                    type="text"
-                                    value={label || ''}
-                                    onChange={setLabel}
-                                    onEnterKey={handleApply}
-                                />
-                            </Property>
-                            <Property label={translate('inspector.caption', 'Caption')}>
-                                <TextArea
-                                    name="caption"
-                                    className={classes.textArea}
-                                    disabled={!isEditable}
-                                    minRows={3}
-                                    expandedRows={6}
-                                    value={caption || ''}
-                                    onChange={setCaption}
-                                />
-                            </Property>
-                        </>
-                    )}
-                    <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
-                        <TextArea
-                            name="copyrightNotice"
-                            className={classes.textArea}
-                            disabled={!isEditable}
-                            minRows={2}
-                            expandedRows={4}
-                            value={copyrightNotice || ''}
-                            onChange={setCopyrightNotice}
-                        />
-                    </Property>
+            {!selectedAssetSource.readOnly && (
+                <ToggablePanel
+                    closesToBottom={true}
+                    className={classes.propertyPanel}
+                    isOpen={!propertyEditorCollapsed}
+                    onPanelToggle={() => setPropertyEditorCollapsed((prev) => !prev)}
+                >
+                    <ToggablePanel.Header className={classes.propertyPanelHeader}>
+                        <IconLabel icon="pencil" label={translate('propertyPanel.header', 'Properties')} />
+                    </ToggablePanel.Header>
+                    <ToggablePanel.Contents className={classes.propertyPanelContents}>
+                        {!isMultiSelection && (
+                            <>
+                                <Property label={translate('inspector.title', 'Title')}>
+                                    <TextInput
+                                        name="label"
+                                        disabled={!isEditable}
+                                        type="text"
+                                        value={label || ''}
+                                        onChange={setLabel}
+                                        onEnterKey={handleApply}
+                                    />
+                                </Property>
+                                <Property label={translate('inspector.caption', 'Caption')}>
+                                    <TextArea
+                                        name="caption"
+                                        className={classes.textArea}
+                                        disabled={!isEditable}
+                                        minRows={3}
+                                        expandedRows={6}
+                                        value={caption || ''}
+                                        onChange={setCaption}
+                                    />
+                                </Property>
+                            </>
+                        )}
+                        <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
+                            <TextArea
+                                name="copyrightNotice"
+                                className={classes.textArea}
+                                disabled={!isEditable}
+                                minRows={2}
+                                expandedRows={4}
+                                value={copyrightNotice || ''}
+                                onChange={setCopyrightNotice}
+                            />
+                        </Property>
 
-                    {isEditable && (
-                        <Actions
-                            handleApply={isMultiSelection ? handleApplyMulti : handleApply}
-                            handleDiscard={handleDiscard}
-                            hasUnpublishedChanges={hasUnpublishedChanges}
-                            inputValid={isMultiSelection || !!label}
-                        />
-                    )}
-                </ToggablePanel.Contents>
-            </ToggablePanel>
+                        {isEditable && (
+                            <Actions
+                                handleApply={isMultiSelection ? handleApplyMulti : handleApply}
+                                handleDiscard={handleDiscard}
+                                hasUnpublishedChanges={hasUnpublishedChanges}
+                                inputValid={isMultiSelection || !!label}
+                            />
+                        )}
+                    </ToggablePanel.Contents>
+                </ToggablePanel>
+            )}
 
-            {(assetSourceForSelectedAsset?.supportsCollections || isMultiSelection) && <CollectionSelectBox />}
-            {!isMultiSelection && assetSourceForSelectedAsset?.supportsTagging && <TagSelectBoxAsset />}
-            {isMultiSelection && <TagSelectBoxMulti />}
+            {selectedAssetSource.supportsCollections && <CollectionSelectBox />}
+            {selectedAssetSource.supportsTagging && (
+                <>
+                    {isMultiSelection ? <TagSelectBoxAsset /> : <TagSelectBoxMulti />}
+                </>
+            )}
 
             {!isMultiSelection && <MetadataView />}
         </InspectorContainer>

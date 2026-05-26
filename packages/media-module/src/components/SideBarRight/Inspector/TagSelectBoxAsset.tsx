@@ -4,7 +4,7 @@ import { useRecoilValue } from 'recoil';
 import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useSelectedAsset, useSetAssetTags } from '@media-ui/core/src/hooks';
 import { useTagsQuery } from '@media-ui/feature-asset-tags';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import { TagSelectBox } from '.';
 
@@ -27,7 +27,7 @@ const TagSelectBoxAsset = () => {
     const {
         approvalAttainmentStrategy: { obtainApprovalToSetAssetTags },
     } = useMediaUi();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const { tags: allTags } = useTagsQuery(selectedAssetSourceId);
     const { setAssetTags, loading } = useSetAssetTags();
     const selectedAsset = useSelectedAsset();

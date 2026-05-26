@@ -12,17 +12,19 @@ import {
     useSelectedAssetCollection,
 } from '@media-ui/feature-asset-collections';
 import { useSelectedTag } from '@media-ui/feature-asset-tags';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import classes from './CurrentSelection.module.css';
 
 const CurrentSelection = () => {
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedTag = useSelectedTag();
-    const setSelectedAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
+    const setSelectedAssetCollectionAndTag = useSetRecoilState(
+        selectedAssetCollectionAndTagState(selectedAssetSourceId)
+    );
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const { translate } = useIntl();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
     const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
 
     const selection = useMemo(() => {

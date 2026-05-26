@@ -1,6 +1,8 @@
 import { useRecoilValue } from 'recoil';
 import { useQuery } from '@apollo/client';
 
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
+
 import { selectedAssetCollectionIdState } from '../state/selectedAssetCollectionIdState';
 import { ASSET_COLLECTION } from '../queries/assetCollection';
 
@@ -10,8 +12,8 @@ interface AssetCollectionQueryResult {
 }
 
 const useSelectedAssetCollection = (): AssetCollection => {
-    const assetSourceId = useRecoilValue(selectedAssetCollectionIdState);
-    const selectedAssetCollectionId = useRecoilValue(selectedAssetCollectionIdState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const selectedAssetCollectionId = useRecoilValue(selectedAssetCollectionIdState(assetSourceId));
 
     const { data } = useQuery<AssetCollectionQueryResult>(ASSET_COLLECTION, {
         variables: { id: selectedAssetCollectionId, assetSourceId },

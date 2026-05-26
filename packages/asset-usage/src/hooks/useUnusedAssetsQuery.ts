@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { useLazyQuery } from '@apollo/client';
 
 import { currentPageState, featureFlagsState, loadingState } from '@media-ui/core/src/state';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import UNUSED_ASSETS from '../queries/unusedAssets';
 import showUnusedAssetsState from '../state/showUnusedAssetsState';
@@ -23,7 +23,7 @@ const useUnusedAssetsQuery = () => {
         pagination: { assetsPerPage },
     } = useRecoilValue(featureFlagsState);
     const currentPage = useRecoilValue(currentPageState);
-    const assetSourceId = useRecoilValue(selectedAssetSourceState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const [isLoading, setIsLoading] = useRecoilState(loadingState);
     const showUnusedAssets = useRecoilValue(showUnusedAssetsState);
     const [assets, setAssets] = useState<Asset[]>([]);

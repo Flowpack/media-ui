@@ -7,7 +7,7 @@ import { useIntl, useNotify } from '@media-ui/core';
 import { selectedInspectorViewState } from '@media-ui/core/src/state';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { useSelectedAssetCollection, useUpdateAssetCollection } from '@media-ui/feature-asset-collections';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import { TagSelectBoxAssetCollection } from '.';
 import Actions from './Actions';
@@ -18,7 +18,7 @@ import ParentCollectionSelectBox from './ParentCollectionSelectBox';
 // TASK: Move into media module package
 const AssetCollectionInspector = () => {
     const { config } = useConfigQuery();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectedAssetCollection = useSelectedAssetCollection();
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const Notify = useNotify();

@@ -25,7 +25,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect, onMultiS
     const { asset, loading } = useAssetQuery(assetIdentity);
     const applicationContext = useRecoilValue(applicationContextState);
     const isSelected = useRecoilValue(isFocusedAssetState(assetIdentity.assetId));
-    const isMultiSelected = useRecoilValue(isAssetSelectedState(assetIdentity.assetId));
+    const isMultiSelected = useRecoilValue(isAssetSelectedState(assetIdentity));
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
     const isBrowserContext = applicationContext === 'browser';
 
