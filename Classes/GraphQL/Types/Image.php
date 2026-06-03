@@ -14,7 +14,7 @@ final class Image
     private function __construct(
         public readonly int $width,
         public readonly int $height,
-        public readonly Url $url,
+        public readonly string $url,
         public readonly string $alt,
     ) {
     }
