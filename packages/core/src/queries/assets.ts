@@ -5,7 +5,7 @@ import { ASSET_FRAGMENT } from '../fragments/asset';
 const ASSETS = gql`
     query ASSETS(
         $searchTerm: String
-        $assetSourceId: AssetSourceId
+        $assetSourceId: AssetSourceId!
         $assetCollectionId: AssetCollectionId
         $mediaType: MediaType
         $assetType: AssetType
