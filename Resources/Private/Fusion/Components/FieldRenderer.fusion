@@ -48,6 +48,7 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
                     <span></span> {props.fieldConfig.label}
                 </label>
                 <Neos.Fusion:Fragment @if.isNotBoolean={props.fieldConfig.type != 'boolean'}>{private.field}</Neos.Fusion:Fragment>
+                <small @if.hasFallback={props.fieldConfig.parentFallbackValue}>Fallback: {props.fieldConfig.parentFallbackValue}</small>
             </div>
         </Neos.Fusion.Form:FieldContainer>
     `
