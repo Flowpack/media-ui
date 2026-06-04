@@ -116,11 +116,18 @@ class MediaController extends AbstractModuleController
 
         $assetIdentity = AssetIdentity::create($assetId, $assetSourceId);
 
+        $hasOnlyEmptyDsp = false;
+        if ($dimensionSpacePoints->count() === 1) {
+            /** @var MetaDataDimensionSpacePoint $dimensionSpacePoint */
+            $dimensionSpacePoint = $dimensionSpacePoints->getIterator()->current();
+            $hasOnlyEmptyDsp = $dimensionSpacePoint->equals(MetaDataDimensionSpacePoint::fromCoordinates([]));
+        }
+
         $this->view->assignMultiple([
             'formSchema' => $propertyDefinitions,
             'asset' => $asset,
             'assetIdentity' => $assetIdentity,
-            'assetDsps' => $dimensionSpacePoints,
+            'assetDsps' => !$hasOnlyEmptyDsp ? $dimensionSpacePoints : [],
             'currentAssetDsp' => $metaDataDimensionSpacePointHash ?: $dimensionSpacePoint?->hash,
         ]);
     }
