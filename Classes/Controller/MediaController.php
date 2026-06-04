@@ -14,7 +14,6 @@ namespace Flowpack\Media\Ui\Controller;
  * source code.
  */
 
-use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types\AssetId;
 use Flowpack\Media\Ui\GraphQL\Types\AssetIdentity;
@@ -23,7 +22,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Fusion\View\FusionView;
-use Neos\Media\Domain\Model\AssetInterface;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\MetaData\Domain\Dto\MetaDataAssetReference;
 use Neos\MetaData\Domain\Dto\MetaDataDimensionSpacePoint;
@@ -88,16 +87,11 @@ class MediaController extends AbstractModuleController
             return;
         }
         $metaDataPropertyDefinitions = $this->metaDataManager->getPropertyDefinitions();
-        if ($metaDataPropertyDefinitions === null) {
-            return;
-        }
-
-
         $dimensionSpacePoints = $this->metaDataManager->getDimensionSpacePointConfiguration();
-        $dimensionSpacePoint = array_filter(
-            $dimensionSpacePoints->map(fn($spacePoint) => $spacePoint->hash === $metaDataDimensionSpacePointHash ? $spacePoint : null)
-        )[0] ?? null;
-        if ($dimensionSpacePoint === null) {
+        if ($metaDataDimensionSpacePointHash !== null) {
+            $dimensionSpacePoint = $this->getDimensionSpacePointFromHash($metaDataDimensionSpacePointHash);
+        }
+        if ($metaDataDimensionSpacePointHash === null || $dimensionSpacePoint === null) {
             $dimensionSpacePoint = $dimensionSpacePoints->getIterator()->current();
         }
         $asset = $this->assetSourceContext->getAsset($assetId, $assetSourceId);
@@ -106,7 +100,7 @@ class MediaController extends AbstractModuleController
         }
 
         $propertyValues = $this->metaDataManager->getMetaDataPropertyValues(
-            MetaDataAssetReference::create($assetId->value, $assetSourceId->value),
+            MetaDataAssetReference::create($assetSourceId->value, $assetId->value),
             $dimensionSpacePoint
         ) ?: MetaDataPropertyValues::createEmpty();
         $propertyDefinitions = $this->mapPropertyDefinitions($metaDataPropertyDefinitions, $propertyValues);
@@ -143,9 +137,10 @@ class MediaController extends AbstractModuleController
                 'editor' => $propertyDefinition->ui->editorDefinition->editorType === 'Neos.Neos/Inspector/Editors/TextAreaEditor' ? 'textarea' : null,
                 'label' => $propertyDefinition->ui->label,
             ];
+
             foreach ($propertyValues as $propertyValueName => $propertyValue) {
-                if ($propertyValueName === $propertyName) {
-                    $config[$propertyName]['value'] = $propertyValue?->value;
+                if ($propertyValueName->equals($propertyName)) {
+                    $config[$propertyName]['value'] = $propertyValue;
                 }
             }
         }
@@ -174,7 +169,7 @@ class MediaController extends AbstractModuleController
      * @throws StopActionException
      */
     public function updateMetadataAction(
-        AssetInterface $asset,
+        Asset $asset,
         string $metaDataDimensionSpacePointHash,
         array $postData,
     ): void {
@@ -200,8 +195,9 @@ class MediaController extends AbstractModuleController
     private function getDimensionSpacePointFromHash(string $dimensionSpacePointHash): ?MetaDataDimensionSpacePoint
     {
         $dimensionSpacePoints = $this->metaDataManager->getDimensionSpacePointConfiguration();
-        return array_filter(
-            $dimensionSpacePoints->map(fn($spacePoint) => $spacePoint->hash === $dimensionSpacePointHash ? $spacePoint : null)
-        )[0] ?? null;
+        return current(array_filter(
+            iterator_to_array($dimensionSpacePoints),
+            fn($spacePoint) => $spacePoint->hash === $dimensionSpacePointHash
+        )) ?? null;
     }
 }
