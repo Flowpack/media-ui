@@ -99,11 +99,20 @@ class MediaController extends AbstractModuleController
             return;
         }
 
+        $assetReference = MetaDataAssetReference::create($assetSourceId->value, $assetId->value);
         $propertyValues = $this->metaDataManager->getMetaDataPropertyValues(
-            MetaDataAssetReference::create($assetSourceId->value, $assetId->value),
+            $assetReference,
             $dimensionSpacePoint
-        ) ?: MetaDataPropertyValues::createEmpty();
-        $propertyDefinitions = $this->mapPropertyDefinitions($metaDataPropertyDefinitions, $propertyValues);
+        );
+        // Values of the parent dimension if exists, to show the fallback value before overriding
+        $propertyValuesOfParentWithFallback = $this->metaDataManager->getMetaDataPropertyValuesOfParentWithFallback(
+            $assetReference,
+            $dimensionSpacePoint
+        );
+
+        $propertyDefinitions = $this->mapPropertyDefinitions(
+            $metaDataPropertyDefinitions, $propertyValues, $propertyValuesOfParentWithFallback
+        );
 
         $assetIdentity = AssetIdentity::create($assetId, $assetSourceId);
 
@@ -121,7 +130,8 @@ class MediaController extends AbstractModuleController
      */
     protected function mapPropertyDefinitions(
         ?MetaDataPropertyDefinitions $metaDataPropertyDefinitions,
-        MetaDataPropertyValues $propertyValues
+        MetaDataPropertyValues $propertyValues,
+        MetaDataPropertyValues $propertyValuesOfParentWithFallback,
     ): array {
         if (!isset($metaDataPropertyDefinitions) || iterator_count(
                 $metaDataPropertyDefinitions->getIterator()
@@ -143,25 +153,14 @@ class MediaController extends AbstractModuleController
                     $config[$propertyName]['value'] = $propertyValue;
                 }
             }
+
+            foreach ($propertyValuesOfParentWithFallback as $propertyValueName => $propertyValue) {
+                if ($propertyValueName->equals($propertyName)) {
+                    $config[$propertyName]['parentFallbackValue'] = $propertyValue;
+                }
+            }
         }
         return $config;
-    }
-
-    protected function translateByShortHandString(string $shortHand): string|null
-    {
-        $shortHandStringParts = explode(':', $shortHand);
-        if (count($shortHandStringParts) === 3) {
-            [$package, $source, $id] = $shortHandStringParts;
-            return $this->translator->translateById(
-                $id,
-                [],
-                null,
-                null,
-                str_replace('.', '/', $source),
-                $package
-            );
-        }
-        return null;
     }
 
     /**
