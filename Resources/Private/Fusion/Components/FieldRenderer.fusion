@@ -23,7 +23,7 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             renderer = Neos.Fusion.Form:Textarea {
                 attributes.rows = 8
                 field.name = ${'postData[' + props.fieldName + ']'}
-                content = ${props.fieldConfig.value}
+                content = ${Type.isScalar(props.fieldConfig.value) ? props.fieldConfig.value + '' : ''}
             }
         }
         default {
