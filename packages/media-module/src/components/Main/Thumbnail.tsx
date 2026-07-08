@@ -40,6 +40,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({ assetIdentity, onSelect, onMultiS
         [assetIdentity, isSelected, selectionMode, isBrowserContext, onSelect, onMultiSelect]
     );
 
+    // TODO: The checkbox visual and disabled state needs to be defined by the selected asset source to solve the issue that mixed assets are shown in the clipboard
     const handleCheckboxClick = useCallback(
         (event: React.MouseEvent) => {
             event.stopPropagation();
