@@ -4,17 +4,25 @@
     gap: var(--theme-spacing-Half);
 }
 
-.buttonWrapper {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1px;
-}
-
-.buttonWrapper button {
+.dropdownHeader {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    background: var(--colors-ContrastDark);
+    padding: 0 14px !important;
+    border-radius: 0;
+}
+
+.dropdownToggleIcon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
     justify-content: center;
-    gap: var(--theme-spacing-Half);
-    max-width: var(--theme-unit);
+}
+
+.dropdownContents {
+    background-color: var(--colors-ContrastDark);
+    padding: 2px !important;
+    min-width: 100%;
 }

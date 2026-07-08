@@ -6,4 +6,9 @@
 .selectBox {
     min-width: 0;
     display: flex;
+    background: var(--colors-ContrastDark);
+}
+
+.sortingOrder {
+    background: var(--colors-ContrastDark);
 }

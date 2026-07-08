@@ -37,7 +37,6 @@ const SearchBox: React.FC = () => {
                 icon="search"
                 size="regular"
                 style="neutral"
-                className={classes.searchBox__searchButton}
                 hoverStyle="brand"
                 onClick={handleSearch}
                 disabled={!searchValue}
@@ -45,7 +44,6 @@ const SearchBox: React.FC = () => {
             <TextInput
                 value={searchValue}
                 type="search"
-                containerClassName={classes.searchBox__inputWrapper}
                 onChange={(value) => setSearchValue(value)}
                 onEnterKey={handleSearch}
                 placeholder={translate('searchBox.placeholder', 'Search')}
@@ -54,7 +52,6 @@ const SearchBox: React.FC = () => {
                 icon="close"
                 size="regular"
                 style="neutral"
-                className={classes.searchBox__clearButton}
                 hoverStyle="brand"
                 onClick={clearSearchBox}
                 disabled={!searchValue}

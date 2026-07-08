@@ -1,6 +1,7 @@
-import { atom, selectorFamily } from 'recoil';
+import { atom, selector, selectorFamily } from 'recoil';
 
 import { localStorageEffect } from '@media-ui/core/src/state/localStorageEffect';
+import { selectedAssetIdsState } from '@media-ui/core/src/state';
 
 /**
  * The clipboard state contains a list of asset identities
@@ -43,4 +44,41 @@ export const clipboardItemState = selectorFamily<boolean, { assetId: string; ass
                 );
             });
         },
+});
+
+/**
+ * Returns whether all selected assets are in the clipboard,
+ * and toggles all of them at once.
+ */
+export const clipboardItemsState = selector<boolean>({
+    key: 'ClipboardItemsState',
+    get: ({ get }) => {
+        const selectedAssets = get(selectedAssetIdsState);
+        if (selectedAssets.length === 0) return false;
+        const clipboard = get(clipboardState);
+        return selectedAssets.every((selected) =>
+            clipboard.some((c) => c.assetId === selected.assetId && c.assetSourceId === selected.assetSourceId)
+        );
+    },
+    set: ({ get, set }) => {
+        const selectedAssets = get(selectedAssetIdsState);
+        const clipboard = get(clipboardState);
+        const allInClipboard = selectedAssets.every((selected) =>
+            clipboard.some((c) => c.assetId === selected.assetId && c.assetSourceId === selected.assetSourceId)
+        );
+
+        if (allInClipboard) {
+            set(
+                clipboardState,
+                clipboard.filter(
+                    (c) => !selectedAssets.some((s) => s.assetId === c.assetId && s.assetSourceId === c.assetSourceId)
+                )
+            );
+        } else {
+            const toAdd = selectedAssets.filter(
+                (s) => !clipboard.some((c) => c.assetId === s.assetId && c.assetSourceId === s.assetSourceId)
+            );
+            set(clipboardState, [...clipboard, ...toAdd]);
+        }
+    },
 });

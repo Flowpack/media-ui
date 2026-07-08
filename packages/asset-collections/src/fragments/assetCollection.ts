@@ -14,7 +14,6 @@ export const ASSET_COLLECTION_FRAGMENT = gql`
             ...TagProps
         }
         assetCount
-        path
         canDelete
     }
     ${TAG_FRAGMENT}

@@ -7,9 +7,27 @@ import { useIntl } from '@media-ui/core';
 
 import similarAssetsModalState from '../state/similarAssetsModalState';
 
-const SimilarAssetsToggleButton: React.FC = () => {
+interface SimilarAssetsToggleButtonProps {
+    variant?: 'button' | 'menuItem';
+    menuItemClassName?: string;
+}
+
+const SimilarAssetsToggleButton: React.FC<SimilarAssetsToggleButtonProps> = ({
+    variant = 'button',
+    menuItemClassName,
+}) => {
     const [similarAssetsModalOpen, setSimilarAssetsModalOpen] = useRecoilState(similarAssetsModalState);
     const { translate } = useIntl();
+    const label = translate('similarAssetsModal.show', 'Show similar assets');
+
+    if (variant === 'menuItem') {
+        return (
+            <li className={menuItemClassName} onClick={() => setSimilarAssetsModalOpen(true)}>
+                <Icon icon="equals" />
+                <span>{label}</span>
+            </li>
+        );
+    }
 
     return (
         <Button
@@ -17,7 +35,7 @@ const SimilarAssetsToggleButton: React.FC = () => {
             style={similarAssetsModalOpen ? 'brand' : 'lighter'}
             hoverStyle="brand"
             onClick={() => setSimilarAssetsModalOpen(true)}
-            title={translate('similarAssetsModal.show', 'Show similar assets')}
+            title={label}
         >
             <Icon icon="equals" />
         </Button>

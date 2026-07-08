@@ -7,9 +7,27 @@ import { useIntl } from '@media-ui/core';
 
 import { UPLOAD_TYPE, uploadDialogState } from '../state/uploadDialogState';
 
-const AssetReplacementButton: React.FC = () => {
+interface AssetReplacementButtonProps {
+    variant?: 'button' | 'menuItem';
+    menuItemClassName?: string;
+}
+
+const AssetReplacementButton: React.FC<AssetReplacementButtonProps> = ({ variant = 'button', menuItemClassName }) => {
     const [dialogState, setDialogState] = useRecoilState(uploadDialogState);
     const { translate } = useIntl();
+    const label = translate('assetReplacement.toggle', 'Replace asset');
+
+    if (variant === 'menuItem') {
+        return (
+            <li
+                className={menuItemClassName}
+                onClick={() => setDialogState({ visible: true, uploadType: UPLOAD_TYPE.update })}
+            >
+                <Icon icon="exchange-alt" />
+                <span>{label}</span>
+            </li>
+        );
+    }
 
     return (
         <Button
@@ -17,7 +35,7 @@ const AssetReplacementButton: React.FC = () => {
             style={dialogState.visible && dialogState.uploadType === UPLOAD_TYPE.update ? 'brand' : 'lighter'}
             hoverStyle="brand"
             onClick={() => setDialogState({ visible: true, uploadType: UPLOAD_TYPE.update })}
-            title={translate('assetReplacement.toggle', 'Replace asset')}
+            title={label}
         >
             <Icon icon="exchange-alt" />
         </Button>

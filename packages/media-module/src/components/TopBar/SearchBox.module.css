@@ -2,20 +2,12 @@
     display: flex;
     flex-direction: row;
     flex-grow: 1;
-}
 
-.searchBox__inputWrapper {
-    flex: 1;
-}
+    div:has(input) {
+        flex: 1;
 
-.searchBox__inputWrapper > input {
-    width: 100%;
-}
-
-.searchBox__searchButton {
-
-}
-
-.searchBox__clearButton {
-
+        > input {
+            width: 100%;
+        }
+    }
 }

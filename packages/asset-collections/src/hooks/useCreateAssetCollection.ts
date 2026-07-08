@@ -6,7 +6,7 @@ import { ASSET_COLLECTIONS } from '../queries/assetCollections';
 interface CreateAssetCollectionVariables {
     title: AssetCollectionTitle;
     assetSourceId: AssetSourceId;
-    parent: AssetCollectionPath | null;
+    parent: AssetCollectionId | null;
 }
 
 export default function useCreateAssetCollection() {
@@ -18,7 +18,7 @@ export default function useCreateAssetCollection() {
     const createAssetCollection = (
         title: AssetCollectionTitle,
         assetSourceId: AssetSourceId,
-        parentCollectionId: AssetCollectionPath = null
+        parentCollectionId: AssetCollectionId = null
     ) =>
         action({
             variables: {

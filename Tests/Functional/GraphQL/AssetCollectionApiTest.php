@@ -15,6 +15,7 @@ namespace Flowpack\Media\Ui\Tests\Functional\GraphQL;
  */
 
 use Flowpack\Media\Ui\GraphQL\MediaApi;
+use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetCollectionResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
@@ -30,6 +31,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
     protected static $testablePersistenceEnabled = true;
 
     protected MediaApi $mediaApi;
+    protected AssetCollectionResolver $assetCollectionResolver;
 
     public function setUp(): void
     {
@@ -39,6 +41,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
         }
 
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
+        $this->assetCollectionResolver = $this->objectManager->get(AssetCollectionResolver::class);
     }
 
     public function testCreateAssetCollection(): void
@@ -57,7 +60,10 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
         );
 
         $this->assertInstanceOf(Types\AssetCollection::class, $childCollection);
-        $this->assertTrue(str_starts_with($childCollection->path->value, $assetCollection->path->value));
+
+        $childCollectionParent = $this->assetCollectionResolver->parent($childCollection);
+        $this->assertNotNull($childCollectionParent);
+        $this->assertEquals($assetCollection->id, $childCollectionParent->id);
     }
 
     public function testDeleteAssetCollection(): void
@@ -124,15 +130,24 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
         );
         $this->assertTrue($result->success);
 
-        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default(),);
-        $this->assertTrue(str_starts_with($updatedChildCollection->path->value, $parentCollection->path->value));
-
-        $this->mediaApi->setAssetCollectionParent(
+        $updatedChildCollection = $this->mediaApi->assetCollection(
             $childCollection->id,
             Types\AssetSourceId::default(),
         );
+        $updatedChildCollectionParent = $this->assetCollectionResolver->parent($updatedChildCollection);
+        $this->assertNotNull($updatedChildCollectionParent);
+        $this->assertTrue($parentCollection->equals($updatedChildCollectionParent));
 
-        $updatedChildCollection = $this->mediaApi->assetCollection($childCollection->id, Types\AssetSourceId::default(),);
-        $this->assertEquals($childCollection->path->value, $updatedChildCollection->path->value);
+        $this->mediaApi->setAssetCollectionParent(
+            $childCollection->id,
+            Types\AssetSourceId::default()
+        );
+
+        $updatedChildCollection = $this->mediaApi->assetCollection(
+            $childCollection->id,
+            Types\AssetSourceId::default(),
+        );
+        $updatedChildCollectionParent = $this->assetCollectionResolver->parent($updatedChildCollection);
+        $this->assertNull($updatedChildCollectionParent);
     }
 }

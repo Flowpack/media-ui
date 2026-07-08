@@ -3,6 +3,10 @@
     align-items: baseline;
 }
 
+.viewModeSelector button {
+    background: var(--colors-ContrastDark);
+}
+
 .viewModeSelector label {
     margin-right: var(--theme-spacing-Quarter);
 }

@@ -2,7 +2,6 @@ type AssetCollectionType = 'AssetCollection';
 
 type AssetCollectionId = string;
 type AssetCollectionTitle = string;
-type AssetCollectionPath = string;
 
 interface AssetCollection extends GraphQlEntity {
     __typename: AssetCollectionType;
@@ -12,6 +11,5 @@ interface AssetCollection extends GraphQlEntity {
     parent?: AssetCollectionParent;
     tags?: Tag[];
     assetCount: number;
-    path?: AssetCollectionPath;
     canDelete: boolean;
 }

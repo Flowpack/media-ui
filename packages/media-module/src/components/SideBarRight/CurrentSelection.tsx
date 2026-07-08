@@ -12,6 +12,7 @@ import {
     useSelectedAssetCollection,
 } from '@media-ui/feature-asset-collections';
 import { useSelectedTag } from '@media-ui/feature-asset-tags';
+import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
 
 import classes from './CurrentSelection.module.css';
 
@@ -21,7 +22,8 @@ const CurrentSelection = () => {
     const setSelectedAssetCollectionAndTag = useSetRecoilState(selectedAssetCollectionAndTagState);
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
     const { translate } = useIntl();
-    const { assetCollections } = useAssetCollectionsQuery();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
 
     const selection = useMemo(() => {
         let icon = 'question';

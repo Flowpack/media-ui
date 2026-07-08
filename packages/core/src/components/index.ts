@@ -1,3 +1,4 @@
+export { default as Badge } from './Badge';
 export { Dialog } from './Dialog';
 export { default as AssetLabel } from './AssetLabel';
 export { default as Column } from './Column';

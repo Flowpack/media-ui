@@ -4,10 +4,12 @@ import { Column } from '@media-ui/core/src/components';
 
 import { AssetInspector, AssetCollectionInspector, IptcMetadataInspector, TagInspector } from './Inspector';
 import CurrentSelection from './CurrentSelection';
+import CurrentMultiSelection from './CurrentMultiSelection';
 
 const SideBarRight = () => {
     // TODO: Read from component store
     const components = [
+        CurrentMultiSelection,
         CurrentSelection,
         AssetInspector,
         AssetCollectionInspector,

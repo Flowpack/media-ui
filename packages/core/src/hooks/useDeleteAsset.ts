@@ -29,8 +29,8 @@ export default function useDeleteAsset() {
                 },
                 'ASSET_COLLECTIONS',
             ],
-            update: (cache, { data: { deleteAsset: success } }) => {
-                if (!success) return;
+            update: (cache, { data: { deleteAsset: result } }) => {
+                if (!result?.success) return;
 
                 // Remove deleted asset from cache
                 cache.evict({ id: cache.identify({ __typename: 'Asset', id: assetId }) });
