@@ -14,6 +14,7 @@ import { UploadDialog } from '@media-ui/feature-asset-upload/src/components';
 import { AssetPreview } from '@media-ui/feature-asset-preview';
 import { EditAssetDialog, editAssetDialogState } from '@media-ui/feature-asset-editing';
 import { CreateTagDialog, createTagDialogState } from '@media-ui/feature-asset-tags';
+import { EditMetadataScreen, metadataEditorVisibleState } from '@media-ui/feature-metadata-editing';
 import {
     CreateAssetCollectionDialog,
     createAssetCollectionDialogVisibleState,
@@ -43,6 +44,7 @@ const App = () => {
     const searchTerm = useRecoilValue(searchTermState);
     const selectAsset = useSelectAsset();
     const selectAssetSource = useSetRecoilState(selectedAssetSourceState);
+    const showMetadataEditor = useRecoilValue(metadataEditorVisibleState);
 
     // TODO: Implement asset source selection via recoil an atom effect in `searchTermState` to avoid this dangerous effect
     React.useEffect(() => {
@@ -98,6 +100,7 @@ const App = () => {
             {createTagDialog.visible && <CreateTagDialog />}
             {showCreateAssetCollectionDialog && <CreateAssetCollectionDialog />}
             {showSimilarAssetsModal && <SimilarAssetsModal />}
+            {showMetadataEditor && <EditMetadataScreen />}
 
             <InteractionDialogRenderer />
             <ClipboardWatcher />

@@ -65,6 +65,7 @@ window.onload = async (): Promise<void> => {
     const initialState = {
         applicationContext: 'browser' as ApplicationContext,
         featureFlags,
+        endpoints,
         constraints: {},
         assetType: 'all' as AssetType,
     };

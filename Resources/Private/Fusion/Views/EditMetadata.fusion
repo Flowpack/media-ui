@@ -1,0 +1,72 @@
+Flowpack.Media.Ui.MediaController {
+    editMetadata = Neos.Fusion:Join {
+        doctype = '<!DOCTYPE html>'
+        doctype.@position = 'start 100'
+
+        # Only the opening html tag for the page. This is done to avoid deep nesting of Fusion paths for integrators.
+        htmlTag = Neos.Fusion:Tag {
+            @position = 'start'
+            tagName = 'html'
+            omitClosingTag = true
+        }
+
+        # The opening head tag for the page. This is done to avoid deep nesting of Fusion paths for integrators.
+        headTag = Neos.Fusion:Tag {
+            @position = 'after htmlTag'
+            tagName = 'head'
+            omitClosingTag = true
+        }
+
+        head = Neos.Fusion:Join {
+            @position = 'after headTag'
+
+            characterSetMetaTag = Neos.Fusion:Tag {
+                @position = 'start 10'
+                tagName = 'meta'
+                attributes {
+                    charset = 'UTF-8'
+                }
+            }
+
+            titleTag = Neos.Fusion:Tag {
+                tagName = 'title'
+                content = ${q(node).property('title')}
+            }
+
+            stylesheets = Neos.Fusion:Join {
+                neos = ${StaticResource.uri('Neos.Neos', 'Public/Styles/Minimal.css')}
+                neos.@process.wrap = ${'<link rel="stylesheet" href="' + value + '" />'}
+                module = ${StaticResource.uri('Flowpack.Media.Ui', 'Public/Styles/EditMetadataForm.css')}
+                module.@process.wrap = ${'<link rel="stylesheet" href="' + value + '" />'}
+            }
+
+            javascripts = Neos.Fusion:Join {
+                @position = 'after stylesheets'
+                module = ${StaticResource.uri('Flowpack.Media.Ui', 'Public/Javascript/EditMetadataForm.js')}
+                module.@process.wrap = ${'<script src="' + value + '"></script>'}
+            }
+        }
+
+        closingHeadTag = '</head>'
+        closingHeadTag.@position = 'after head'
+        bodyTag = Neos.Fusion:Tag {
+            @position = '20'
+            tagName = 'body'
+            attributes.class = 'neos neos-module'
+            omitClosingTag = true
+            attributes.class.@process.addNeosBackendClass = ${Array.push(value, 'neos-backend')}
+            attributes.class.@process.addNeosBackendClass.@if.onlyRenderWhenNotInLiveWorkspace = ${documentNode.context.inBackend}
+        }
+
+        body = Flowpack.Media.Ui:Component.MetadataEditor {
+            asset = ${asset}
+            formSchema = ${formSchema}
+        }
+
+        closingBodyTag = '</body>'
+        closingBodyTag.@position = 'end 100'
+
+        closingHtmlTag = '</html>'
+        closingHtmlTag.@position = 'end 200'
+    }
+}

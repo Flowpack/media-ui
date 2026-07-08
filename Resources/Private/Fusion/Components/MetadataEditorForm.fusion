@@ -1,0 +1,22 @@
+prototype(Flowpack.Media.Ui:Component.MetadataEditorForm) < prototype(Neos.Fusion:Component) {
+    /// AssetInterface
+    asset = null
+    /// data structure with the form schema for the metadata editor form
+    formSchema = null
+
+    assetDsps = null
+    dspHash = null
+
+    renderer = afx`
+        <Neos.Fusion.Form:Form form.target.action="updateMetadata" attributes.id="editMetadataForm">
+            <Neos.Fusion.Form:Hidden field.name="asset" field.value={props.asset} />
+            <Neos.Fusion.Form:Hidden field.name="metaDataDimensionSpacePointHash" field.value={props.currentAssetDsp} />
+            <Neos.Fusion:Loop items={props.formSchema} itemKey="fieldName" itemName="fieldConfig">
+                <Flowpack.Media.Ui:EditMetadata.FieldRenderer
+                    fieldName={fieldName}
+                    fieldConfig={fieldConfig}
+                />
+            </Neos.Fusion:Loop>
+        </Neos.Fusion.Form:Form>
+    `
+}

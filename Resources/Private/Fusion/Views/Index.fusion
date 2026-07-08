@@ -2,6 +2,17 @@ Flowpack.Media.Ui.MediaController {
     index = Neos.Fusion:Component {
         data-endpoints = Neos.Fusion:DataStructure {
             graphql = '/neos/graphql/media-assets'
+            editMetadata = Neos.Fusion:ActionUri {
+                request = ${request.mainRequest}
+                package = 'Flowpack.Media.Ui'
+                controller = 'Media'
+                action = 'editMetadata'
+                absolute = true
+                arguments {
+                    id = '01fb8392-1223-4c46-9508-fa125efafd07'
+                    assetSourceId = 'neos'
+                }
+            }
             @process.stringify = ${Json.stringify(value)}
         }
 
@@ -13,9 +24,9 @@ Flowpack.Media.Ui.MediaController {
         data-features.@process.stringify = ${Json.stringify(value)}
 
         renderer = afx`
-            <div id="media-ui-app" {...props}>
-                {I18n.translate('module.loadingMediaModuleUi', 'Loading media module UI...', [], 'Main', 'Flowpack.Media.Ui')}
-            </div>
+          <div id="media-ui-app" {...props}>
+            {I18n.translate('module.loadingMediaModuleUi', 'Loading media module UI...', [], 'Main', 'Flowpack.Media.Ui')}
+          </div>
         `
     }
 }

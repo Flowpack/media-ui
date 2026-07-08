@@ -27,6 +27,7 @@
     "@media-ui/feature-asset-variants": "workspace:*",
     "@media-ui/feature-clipboard": "workspace:*",
     "@media-ui/feature-concurrent-editing": "workspace:*",
+    "@media-ui/feature-metadata-editing": "workspace:*",
     "@media-ui/feature-similar-assets": "workspace:*",
     "@neos-project/react-ui-components": "^8.4.0",
     "apollo-upload-client": "^14.1.3",
