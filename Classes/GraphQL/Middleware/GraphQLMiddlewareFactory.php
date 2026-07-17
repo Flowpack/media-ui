@@ -22,6 +22,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Log\ThrowableStorageInterface;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\Security\Authentication\AuthenticationManagerInterface;
 use Neos\Flow\Security\Context;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -40,6 +41,7 @@ final class GraphQLMiddlewareFactory
         private readonly ObjectManagerInterface $objectManager,
         private readonly CustomResolversFactory $customResolversFactory,
         private readonly PersistenceManagerInterface $persistenceManager,
+        private readonly AuthenticationManagerInterface $authenticationManager,
     ) {
     }
 
@@ -65,6 +67,7 @@ final class GraphQLMiddlewareFactory
             $this->objectManager,
             $this->customResolversFactory->create($customResolversSettings ?? []),
             $this->persistenceManager,
+            $this->authenticationManager,
         );
     }
 }

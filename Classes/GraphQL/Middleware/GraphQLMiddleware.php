@@ -32,7 +32,9 @@ use Neos\Flow\Exception as FlowException;
 use Neos\Flow\Log\ThrowableStorageInterface;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\Security\Authentication\AuthenticationManagerInterface;
 use Neos\Flow\Security\Context;
+use Neos\Flow\Security\Exception\AuthenticationRequiredException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -66,6 +68,7 @@ final class GraphQLMiddleware implements MiddlewareInterface
         private readonly ContainerInterface $serviceLocator,
         private readonly CustomResolvers $customResolvers,
         private readonly PersistenceManagerInterface $persistenceManager,
+        private readonly AuthenticationManagerInterface $authenticationManager,
     ) {
     }
 
@@ -81,6 +84,13 @@ final class GraphQLMiddleware implements MiddlewareInterface
             // Simulate a request to the specified controller to trigger authentication
             $mockActionRequest->setControllerObjectName($this->simulateControllerObjectName);
             $this->securityContext->setRequest($mockActionRequest);
+            try {
+                $this->authenticationManager->authenticate();
+            } catch (AuthenticationRequiredException) {
+                // Explicit call so sessionless tokens (e.g. OIDC/JWT) get authenticated.
+                // Unauthenticated requests are not rejected here but continue anonymously.
+                // The privilege targets decide whether they may access anything.
+            }
         }
         $response = $this->responseFactory->createResponse();
         $response = $this->addCorsHeaders($response);
