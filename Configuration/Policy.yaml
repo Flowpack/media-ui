@@ -11,7 +11,7 @@ privilegeTargets:
       matcher: 'method(Flowpack\Media\Ui\GraphQL\Resolver\Type\MutationResolver->(create|delete|update)AssetCollection())'
     'Flowpack.Media.Ui:Queries':
       label: 'Query asset data'
-      matcher: 'method(public Flowpack\Media\Ui\GraphQL\Resolver\(.*)Resolver->.*()) || method(t3n\GraphQL\Controller\GraphQLController->queryAction())'
+      matcher: 'method(public Flowpack\Media\Ui\GraphQL\Resolver\(.*)Resolver->.*()) || method(public Flowpack\Media\Ui\GraphQL\MediaApi->(?!__construct).*())'
 
   'Neos\Neos\Security\Authorization\Privilege\ModulePrivilege':
     'Flowpack.Media.Ui:Backend.Module.Management.Media':
