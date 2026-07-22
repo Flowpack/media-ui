@@ -81,16 +81,10 @@ final class GraphQLMiddleware implements MiddlewareInterface
         }
         if ($this->simulateControllerObjectName !== null) {
             $mockActionRequest = ActionRequest::fromHttpRequest($request);
-            // Simulate a request to the specified controller to trigger authentication
+            // Simulate a request to the specified controller
             $mockActionRequest->setControllerObjectName($this->simulateControllerObjectName);
             $this->securityContext->setRequest($mockActionRequest);
-            try {
-                $this->authenticationManager->authenticate();
-            } catch (AuthenticationRequiredException) {
-                // Explicit call so sessionless tokens (e.g. OIDC/JWT) get authenticated.
-                // Unauthenticated requests are not rejected here but continue anonymously.
-                // The privilege targets decide whether they may access anything.
-            }
+            $this->authenticationManager->isAuthenticated();  // Trigger authentication if isAuthenticated is null
         }
         $response = $this->responseFactory->createResponse();
         $response = $this->addCorsHeaders($response);
