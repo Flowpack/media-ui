@@ -34,7 +34,6 @@ use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Authentication\AuthenticationManagerInterface;
 use Neos\Flow\Security\Context;
-use Neos\Flow\Security\Exception\AuthenticationRequiredException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
