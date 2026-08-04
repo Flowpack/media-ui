@@ -8,7 +8,8 @@ prototype(Flowpack.Media.Ui:EditMetadata.Atom.GlobalScopeIcon) < prototype(Neos.
                 <div class="tooltip">
                     <div class="tooltip-arrow"></div>
                     <div class="tooltip-inner">
-                      I pop over
+                        {I18n.translate('metaData.globalScopeHint', 'Changes to this property will affect all specialization variants', [], 'Main', 'Flowpack.Media.Ui')}
+
                     </div>
                 </div>
             </label>
