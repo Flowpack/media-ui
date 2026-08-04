@@ -2,6 +2,11 @@
     background: transparent;
     padding-bottom: var(--spacing-GoldenUnit);
 
+    .neos-control-label {
+        display: inline-block;
+        margin-bottom: var(--relatedMargin);
+    }
+
     .neos-control-label + .neos-controls {
         margin-top: 0.5rem;
     }
@@ -19,6 +24,7 @@
         padding-block: 0.5rem !important;
         resize: vertical;
     }
+
     .neos-controls .neos-checkbox {
         margin-top: .5rem;
     }
@@ -40,6 +46,57 @@
         bottom: 0;
         right: 0;
         left: 0;
+    }
+
+    .global-scope-icon {
+        display: inline-block;
+        position: relative;
+        margin-left: var(--relatedMargin);
+
+        input {
+            opacity: 0;
+            position: absolute;
+            left: -9999px;
+        }
+
+        label {
+            position: relative;
+            margin-left: var(--relatedMargin);
+            cursor: help;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            flex-direction: column;
+            align-items: center;
+            top: 100%;
+            width: max-content;
+
+            .tooltip-arrow {
+                width: 0;
+                height: 0;
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-bottom: 8px solid #141414;
+                position: relative;
+            }
+
+            .tooltip-inner {
+                padding: 8px;
+                background: #141414;
+                color: #fff;
+                overflow-wrap: break-word;
+                position: relative;
+                box-shadow: 0 0 10px #7d7d7d33;
+            }
+        }
+
+        input:checked ~ .tooltip {
+            display: flex;
+        }
     }
 }
 
