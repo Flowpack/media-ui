@@ -104,14 +104,10 @@ class MediaController extends AbstractModuleController
             $assetReference,
             $dimensionSpacePoint
         );
-        // Values of the parent dimension if exists, to show the fallback value before overriding
-        $propertyValuesOfParentWithFallback = $this->metaDataManager->getMetaDataPropertyValuesOfParentWithFallback(
-            $assetReference,
-            $dimensionSpacePoint
-        );
 
         $propertyDefinitions = $this->mapPropertyDefinitions(
-            $metaDataPropertyDefinitions, $propertyValues, $propertyValuesOfParentWithFallback
+            $metaDataPropertyDefinitions,
+            $propertyValues
         );
 
         $assetIdentity = AssetIdentity::create($assetId, $assetSourceId);
@@ -138,7 +134,6 @@ class MediaController extends AbstractModuleController
     protected function mapPropertyDefinitions(
         ?MetaDataPropertyDefinitions $metaDataPropertyDefinitions,
         MetaDataPropertyValues $propertyValues,
-        MetaDataPropertyValues $propertyValuesOfParentWithFallback,
     ): array {
         if (!isset($metaDataPropertyDefinitions) || iterator_count(
                 $metaDataPropertyDefinitions->getIterator()
@@ -153,19 +148,9 @@ class MediaController extends AbstractModuleController
                 'type' => $propertyDefinition->type->name,
                 'editor' => $propertyDefinition->ui->editorDefinition->editorType === 'Neos.Neos/Inspector/Editors/TextAreaEditor' ? 'textarea' : null,
                 'label' => $propertyDefinition->ui->label,
+                'globalScope' => $propertyDefinition->globalScope,
+                'value' => $propertyValues->get(MetaDataPropertyName::fromString($propertyName)),
             ];
-
-            foreach ($propertyValues as $propertyValueName => $propertyValue) {
-                if ($propertyValueName->equals($propertyName)) {
-                    $config[$propertyName]['value'] = $propertyValue;
-                }
-            }
-
-            foreach ($propertyValuesOfParentWithFallback as $propertyValueName => $propertyValue) {
-                if ($propertyValueName->equals($propertyName)) {
-                    $config[$propertyName]['parentFallbackValue'] = $propertyValue;
-                }
-            }
         }
         return $config;
     }
