@@ -2,6 +2,10 @@
     background: transparent;
     padding-bottom: var(--spacing-GoldenUnit);
 
+    .neos-control-group {
+        position: relative;
+    }
+
     .neos-control-label {
         display: inline-block;
         margin-bottom: var(--relatedMargin);
@@ -50,7 +54,6 @@
 
     .global-scope-icon {
         display: inline-block;
-        position: relative;
         margin-left: var(--relatedMargin);
 
         input {
@@ -60,7 +63,6 @@
         }
 
         label {
-            position: relative;
             margin-left: var(--relatedMargin);
             cursor: help;
         }
@@ -68,16 +70,16 @@
         .tooltip {
             display: none;
             position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            flex-direction: column;
-            align-items: center;
-            top: 100%;
+            top: 1rem;
+            left: 2px;
             width: max-content;
+            max-width: calc(100% - 4px);
 
             .tooltip-arrow {
                 width: 0;
                 height: 0;
+                z-index: 1;
+                margin-left: 2rem;
                 border-left: 8px solid transparent;
                 border-right: 8px solid transparent;
                 border-bottom: 8px solid #141414;
@@ -95,7 +97,7 @@
         }
 
         input:checked ~ .tooltip {
-            display: flex;
+            display: block;
         }
     }
 }
