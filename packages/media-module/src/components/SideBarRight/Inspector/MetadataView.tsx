@@ -8,6 +8,7 @@ import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { humanFileSize } from '@media-ui/core/src/helper';
 import { IconLabel, PropertyList, PropertyListItem } from '@media-ui/core/src/components';
 import { metadataEditorVisibleState } from '@media-ui/feature-metadata-editing';
+import classes from './MetadataView.module.css';
 
 const MetadataView: React.FC = () => {
     const { translate } = useIntl();
@@ -21,7 +22,7 @@ const MetadataView: React.FC = () => {
     if (!selectedAsset) return null;
 
     return (
-        <div>
+        <div className={classes.metadata}>
             <Headline type="h2">
                 <IconLabel icon="info-circle" label={translate('inspector.metadata', 'Metadata')} />
             </Headline>
