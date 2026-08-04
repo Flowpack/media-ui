@@ -874,6 +874,11 @@
             <trans-unit id="errors.1462196420.message" xml:space="preserve" approved="yes">
                 <source>Asset could not be deleted, because it is still in use.</source>
             </trans-unit>
+
+            <!-- Metadata -->
+            <trans-unit id="metaData.globalScopeHint" xml:space="preserve" approved="yes">
+                <source>Changes to this property will affect all dimensions</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

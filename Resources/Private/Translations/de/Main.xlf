@@ -1123,6 +1123,12 @@
                 <source>Asset could not be deleted, because it is still in use.</source>
                 <target>Die Datei konnte nicht gelöscht werden, da sie noch verwendet wird.</target>
             </trans-unit>
+
+            <!-- Metadata -->
+            <trans-unit id="metaData.globalScopeHint" xml:space="preserve" approved="yes">
+                <source>Changes to this property will affect all dimensions</source>
+                <target>Änderungen an dieser Eigenschaft wirken sich auf alle Dimensionen aus</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
