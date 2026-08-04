@@ -1,0 +1,17 @@
+prototype(Flowpack.Media.Ui:EditMetadata.Atom.GlobalScopeIcon) < prototype(Neos.Fusion:Component) {
+    renderer = afx`
+        <div class="global-scope-icon">
+            <i class="fa fa-arrow-right-arrow-left"></i>
+            <label>
+                <input type="checkbox" />
+                <i class="fa fa-circle-question"></i>
+                <div class="tooltip">
+                    <div class="tooltip-arrow"></div>
+                    <div class="tooltip-inner">
+                      I pop over
+                    </div>
+                </div>
+            </label>
+        </div>
+    `
+}

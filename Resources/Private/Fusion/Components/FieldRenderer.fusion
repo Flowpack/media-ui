@@ -7,7 +7,7 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             condition = ${props.fieldConfig.type == 'boolean'}
             renderer = Neos.Fusion.Form:Checkbox {
                 field.name = ${'postData[' + props.fieldName + ']'}
-                field.value = ${props.fieldConfig.value ? props.fieldConfig.value : 1}
+                field.value = ${props.fieldConfig.value.ownValue}
             }
         }
         number {
@@ -15,7 +15,7 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             renderer = Neos.Fusion.Form:Input {
                 attributes.type = 'number'
                 field.name = ${'postData[' + props.fieldName + ']'}
-                field.value = ${props.fieldConfig.value}
+                field.value = ${props.fieldConfig.value.ownValue}
             }
         }
         textArea {
@@ -23,14 +23,14 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             renderer = Neos.Fusion.Form:Textarea {
                 attributes.rows = 8
                 field.name = ${'postData[' + props.fieldName + ']'}
-                content = ${Type.isScalar(props.fieldConfig.value) ? props.fieldConfig.value + '' : ''}
+                content = ${props.fieldConfig.value.ownValue}
             }
         }
         default {
             condition = ${true}
             renderer = Neos.Fusion.Form:Input {
                 field.name = ${'postData[' + props.fieldName + ']'}
-                field.value = ${props.fieldConfig.value}
+                field.value = ${props.fieldConfig.value.ownValue}
             }
         }
     }
@@ -42,13 +42,14 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
     renderer  = afx`
         <Neos.Fusion.Form:FieldContainer class="neos-control-group neos-span12"
                                          label={props.fieldConfig.type != 'boolean' ? props.fieldConfig.label : ''}>
+            <Flowpack.Media.Ui:EditMetadata.Atom.GlobalScopeIcon @if.isGlobalScope={props.fieldConfig.globalScope == true}/>
             <div class="neos-controls neos-controls-row">
                 <label class="neos-checkbox neos-inline" @if.isBoolean={props.fieldConfig.type == 'boolean'}>
                     {private.field}
                     <span></span> {props.fieldConfig.label}
                 </label>
                 <Neos.Fusion:Fragment @if.isNotBoolean={props.fieldConfig.type != 'boolean'}>{private.field}</Neos.Fusion:Fragment>
-                <small @if.hasFallback={props.fieldConfig.parentFallbackValue}>Fallback: {props.fieldConfig.parentFallbackValue}</small>
+                <small @if.hasFallback={props.fieldConfig.value.inheritedValue}>Fallback: {props.fieldConfig.value.inheritedValue}</small>
             </div>
         </Neos.Fusion.Form:FieldContainer>
     `
