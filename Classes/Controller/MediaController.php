@@ -150,6 +150,7 @@ class MediaController extends AbstractModuleController
             $config[$propertyName] = [
                 'type' => $propertyDefinition->type->name,
                 'editor' => $propertyDefinition->ui->editorDefinition->editorType === 'Neos.Neos/Inspector/Editors/TextAreaEditor' ? 'textarea' : null,
+                'editorOptions' => $propertyDefinition->ui->editorDefinition->options,
                 'label' => $propertyDefinition->ui->label,
                 'globalScope' => $propertyDefinition->globalScope,
                 'value' => $propertyValues->get(MetaDataPropertyName::fromString($propertyName)),

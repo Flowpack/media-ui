@@ -8,6 +8,8 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             renderer = Neos.Fusion.Form:Checkbox {
                 field.name = ${'postData[' + props.fieldName + ']'}
                 field.value = ${props.fieldConfig.value.ownValue}
+                attributes.disabled = 'disabled'
+                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
         number {
@@ -16,14 +18,18 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
                 attributes.type = 'number'
                 field.name = ${'postData[' + props.fieldName + ']'}
                 field.value = ${props.fieldConfig.value.ownValue}
+                attributes.disabled = 'disabled'
+                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
         textArea {
             condition = ${props.fieldConfig.type == 'string' && props.fieldConfig.editor == 'textarea'}
             renderer = Neos.Fusion.Form:Textarea {
-                attributes.rows = 8
+                attributes.rows = ${props.fieldConfig.editorOptions.rows || 8}
                 field.name = ${'postData[' + props.fieldName + ']'}
                 content = ${props.fieldConfig.value.ownValue}
+                attributes.disabled = 'disabled'
+                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
         default {
@@ -31,6 +37,8 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             renderer = Neos.Fusion.Form:Input {
                 field.name = ${'postData[' + props.fieldName + ']'}
                 field.value = ${props.fieldConfig.value.ownValue}
+                attributes.disabled = 'disabled'
+                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
     }
