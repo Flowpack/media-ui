@@ -144,6 +144,9 @@ class MediaController extends AbstractModuleController
 
         $config = [];
         foreach ($metaDataPropertyDefinitions as $propertyDefinition) {
+            if ($propertyDefinition->ui === null) {
+                continue;
+            }
             $propertyName = $propertyDefinition->name->value;
             $config[$propertyName] = [
                 'type' => $propertyDefinition->type->name,
