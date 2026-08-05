@@ -17,6 +17,21 @@
 
     .neos-controls {
         margin-bottom: 0.5rem;
+
+        input, textarea {
+            &[disabled] {
+                cursor: not-allowed;
+                color: rgb(from #fff r g b /.5);
+            }
+        }
+
+        .neos-checkbox:has([disabled]) {
+            cursor: not-allowed;
+            
+            span, span::before {
+                cursor: not-allowed;
+            }
+        }
     }
 
     .neos-controls input,
