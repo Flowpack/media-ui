@@ -32,6 +32,17 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
                 attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
+
+        dateTime {
+            condition = ${props.fieldConfig.type == 'dateTime'}
+            renderer = Neos.Fusion.Form:Input {
+                field.name = ${'postData[' + props.fieldName + ']'}
+                content = ${props.fieldConfig.value.ownValue}
+                attributes.type = 'datetime-local'
+                attributes.disabled = 'disabled'
+                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
+            }
+        }
         default {
             condition = ${true}
             renderer = Neos.Fusion.Form:Input {
