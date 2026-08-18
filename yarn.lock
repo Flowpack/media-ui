@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 10
   cacheKey: 10
 
 "@adobe/css-tools@npm:^4.0.1":
@@ -10042,27 +10042,27 @@ __metadata:
 
 "resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>":
   version: 1.22.1
-  resolution: "resolve@patch:resolve@npm%3A1.22.1#optional!builtin<compat/resolve>::version=1.22.1&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.1#optional!builtin<compat/resolve>::version=1.22.1&hash=9bd1a5"
   dependencies:
     is-core-module: "npm:^2.9.0"
     path-parse: "npm:^1.0.7"
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 10/551dd500765cce767c583747f5f21ceb51d437f539b01aee96d6ec39eb2c68a8ff5d646b083d690fe428a81329856bc1bbdb094379b8df4b3f10e7e1f6aa3839
+  checksum: 10/af66203356dffd62ccf2089ccb2fa62b12de11574ec63145e88af5641087fe413da9f402c3eafa8faf246c61618b3c117b4aac34029e908f503594eea641e8d0
   languageName: node
   linkType: hard
 
 "resolve@patch:resolve@npm%3A^2.0.0-next.4#optional!builtin<compat/resolve>":
   version: 2.0.0-next.4
-  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.4#optional!builtin<compat/resolve>::version=2.0.0-next.4&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.4#optional!builtin<compat/resolve>::version=2.0.0-next.4&hash=9bd1a5"
   dependencies:
     is-core-module: "npm:^2.9.0"
     path-parse: "npm:^1.0.7"
     supports-preserve-symlinks-flag: "npm:^1.0.0"
   bin:
     resolve: bin/resolve
-  checksum: 10/27bff19d8219385bb1e271066317e553cff18daa2a19db9598d94ae444417ef3f5aec19e86927872d6cb241d02649cfb35a4c0d9d10ef2afa6325bce8bc8d903
+  checksum: 10/022d9ded746726e984b08da1d4f7739fb221f35271b39f0f28fd3ec5ee98ebe009c9fcbc0412880eaf8f0ce6aaaeaa8aa455d72984c080bc1ffb1f22f8819f2f
   languageName: node
   linkType: hard
 
