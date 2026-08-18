@@ -55,7 +55,7 @@ export const multiSelectionState = selectorFamily<boolean, AssetSourceId>({
     get:
         (assetSourceId: AssetSourceId) =>
         ({ get }) =>
-            get(selectedAssetIdsInternalState(assetSourceId)).length > 0,
+            get(selectedAssetIdsInternalState(assetSourceId)).length > 1,
 });
 
 export const isAssetSelectedState = selectorFamily<boolean, { assetId: AssetId; assetSourceId: AssetSourceId }>({
