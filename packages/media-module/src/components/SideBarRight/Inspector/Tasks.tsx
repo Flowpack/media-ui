@@ -50,28 +50,31 @@ const Tasks: React.FC = () => {
             <DropDownContents className={classes.dropdownContents}>
                 {isMultiSelection ? (
                     <>
-                    <DownloadAssetButton
-                        assets={selectedAssets}
-                        variant="menuItem"
-                        menuItemClassName={menuItemClasses.menuItem}
-                        menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
-                    />
-                    {!isReadonly && (
-                        <DeleteAssetButton
+                        <DownloadAssetButton
                             assets={selectedAssets}
                             variant="menuItem"
                             menuItemClassName={menuItemClasses.menuItem}
                             menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
                         />
-                    )}
-                    <li className={menuItemClasses.menuItem} onClick={() => toggleAllClipboardState(!allInClipboard)}>
-                        <Icon icon={allInClipboard ? 'clipboard-check' : 'clipboard'} />
-                        <span>
-                            {allInClipboard
-                                ? translate('itemActions.removeAllFromClipboard', 'Remove all from clipboard')
-                                : translate('itemActions.copyAllToClipboard', 'Copy all to clipboard')}
-                        </span>
-                    </li>
+                        {!isReadonly && (
+                            <DeleteAssetButton
+                                assets={selectedAssets}
+                                variant="menuItem"
+                                menuItemClassName={menuItemClasses.menuItem}
+                                menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
+                            />
+                        )}
+                        <li
+                            className={menuItemClasses.menuItem}
+                            onClick={() => toggleAllClipboardState(!allInClipboard)}
+                        >
+                            <Icon icon={allInClipboard ? 'clipboard-check' : 'clipboard'} />
+                            <span>
+                                {allInClipboard
+                                    ? translate('itemActions.removeAllFromClipboard', 'Remove all from clipboard')
+                                    : translate('itemActions.copyAllToClipboard', 'Copy all to clipboard')}
+                            </span>
+                        </li>
                     </>
                 ) : (
                     <>
@@ -81,7 +84,10 @@ const Tasks: React.FC = () => {
                             menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
                         />
                         {showSimilarAssets && (
-                            <SimilarAssetsToggleButton variant="menuItem" menuItemClassName={menuItemClasses.menuItem} />
+                            <SimilarAssetsToggleButton
+                                variant="menuItem"
+                                menuItemClassName={menuItemClasses.menuItem}
+                            />
                         )}
                         <DownloadAssetButton
                             assets={[selectedAsset]}
@@ -108,7 +114,10 @@ const Tasks: React.FC = () => {
                             </>
                         )}
                         {selectedAsset.localId && (
-                            <li className={menuItemClasses.menuItem} onClick={() => toggleClipboardState(!isInClipboard)}>
+                            <li
+                                className={menuItemClasses.menuItem}
+                                onClick={() => toggleClipboardState(!isInClipboard)}
+                            >
                                 <Icon icon={isInClipboard ? 'clipboard-check' : 'clipboard'} />
                                 <span>
                                     {isInClipboard

@@ -7,7 +7,7 @@ declare module '*.module.css' {
 interface NeosI18n {
     translate: (
         id: string,
-        fallback: string,
+        fallback: string | null,
         packageKey: string,
         source: string,
         args: Record<string, unknown> | (string | number)[]

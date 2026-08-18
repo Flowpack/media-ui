@@ -224,9 +224,7 @@ const PropertyInspector = () => {
 
             {selectedAssetSource.supportsCollections && <CollectionSelectBox />}
             {selectedAssetSource.supportsTagging && (
-                <>
-                    {isMultiSelection ? <TagSelectBoxAsset /> : <TagSelectBoxMulti />}
-                </>
+                <>{isMultiSelection ? <TagSelectBoxAsset /> : <TagSelectBoxMulti />}</>
             )}
 
             {!isMultiSelection && <MetadataView />}

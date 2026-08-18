@@ -1,4 +1,4 @@
-import { atom, selectorFamily } from 'recoil';
+import { atomFamily, selectorFamily } from 'recoil';
 
 import { localStorageEffect } from '@media-ui/core/src/state/localStorageEffect';
 import { selectedAssetIdsState } from '@media-ui/core/src/state';
@@ -6,7 +6,7 @@ import { selectedAssetIdsState } from '@media-ui/core/src/state';
 /**
  * The clipboard state contains a list of asset identities
  */
-export const clipboardState = atom<AssetIdentity[]>({
+export const clipboardState = atomFamily<AssetIdentity[], AssetSourceId>({
     key: 'ClipboardState',
     default: [],
     effects: [localStorageEffect('ClipboardState')],
@@ -15,19 +15,19 @@ export const clipboardState = atom<AssetIdentity[]>({
 /**
  * Returns the current clipboard state for a given asset and the setter toggles the state
  */
-export const clipboardItemState = selectorFamily<boolean, { assetId: string; assetSourceId: string }>({
+export const clipboardItemState = selectorFamily<boolean, AssetIdentity>({
     key: 'ClipboardItemState',
     get:
         (assetIdentity) =>
         ({ get }) =>
-            get(clipboardState).find(
+            get(clipboardState(assetIdentity.assetSourceId)).find(
                 ({ assetId, assetSourceId }) =>
                     assetId === assetIdentity.assetId && assetSourceId === assetIdentity.assetSourceId
             ) !== undefined,
     set:
         (assetIdentity) =>
         ({ set }) => {
-            set(clipboardState, (prevState: AssetIdentity[]) => {
+            set(clipboardState(assetIdentity.assetSourceId), (prevState: AssetIdentity[]) => {
                 // Check if the asset is already in the clipboard
                 const assetInClipboardIndex = prevState.findIndex(
                     ({ assetId, assetSourceId }) =>
@@ -57,7 +57,7 @@ export const clipboardItemsState = selectorFamily<boolean, AssetSourceId>({
         ({ get }) => {
             const selectedAssets = get(selectedAssetIdsState(assetSourceId));
             if (selectedAssets.length === 0) return false;
-            const clipboard = get(clipboardState);
+            const clipboard = get(clipboardState(assetSourceId));
             return selectedAssets.every((selected) =>
                 clipboard.some((c) => c.assetId === selected.assetId && c.assetSourceId === selected.assetSourceId)
             );
@@ -66,14 +66,14 @@ export const clipboardItemsState = selectorFamily<boolean, AssetSourceId>({
         (assetSourceId: AssetSourceId) =>
         ({ get, set }) => {
             const selectedAssets = get(selectedAssetIdsState(assetSourceId));
-            const clipboard = get(clipboardState);
+            const clipboard = get(clipboardState(assetSourceId));
             const allInClipboard = selectedAssets.every((selected) =>
                 clipboard.some((c) => c.assetId === selected.assetId && c.assetSourceId === selected.assetSourceId)
             );
 
             if (allInClipboard) {
                 set(
-                    clipboardState,
+                    clipboardState(assetSourceId),
                     clipboard.filter(
                         (c) =>
                             !selectedAssets.some((s) => s.assetId === c.assetId && s.assetSourceId === c.assetSourceId)
@@ -83,7 +83,7 @@ export const clipboardItemsState = selectorFamily<boolean, AssetSourceId>({
                 const toAdd = selectedAssets.filter(
                     (s) => !clipboard.some((c) => c.assetId === s.assetId && c.assetSourceId === s.assetSourceId)
                 );
-                set(clipboardState, [...clipboard, ...toAdd]);
+                set(clipboardState(assetSourceId), [...clipboard, ...toAdd]);
             }
         },
 });
