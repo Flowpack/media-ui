@@ -4,7 +4,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { useRecoilValue } from 'recoil';
 
 import { useIntl, useNotify } from '@media-ui/core';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import { useSetAssetCollectionParent } from '../hooks/useSetAssetCollectionParent';
 import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';
@@ -29,7 +29,7 @@ export const useAssetCollectionDnd = (): AssetCollectionTreeDndProviderValues =>
 export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTreeDndProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const [currentlyDraggedNodes, setCurrentlyDraggedNodes] = useState<string[]>([]);
     const { setAssetCollectionParent } = useSetAssetCollectionParent();

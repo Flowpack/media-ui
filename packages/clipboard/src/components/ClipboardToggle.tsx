@@ -5,6 +5,7 @@ import { Button } from '@neos-project/react-ui-components';
 
 import { useIntl } from '@media-ui/core';
 import { initialLoadCompleteState } from '@media-ui/core/src/state';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import ClipboardItem from './ClipboardItem';
 import { clipboardState } from '../state/clipboardState';
@@ -14,7 +15,8 @@ import classes from './ClipboardToggle.module.css';
 
 const ClipboardToggle: React.FC = () => {
     const { translate } = useIntl();
-    const clipboard = useRecoilValue(clipboardState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const clipboard = useRecoilValue(clipboardState(selectedAssetSourceId));
     const [clipboardVisible, setClipboardVisible] = useRecoilState(clipboardVisibleState);
     const initialLoadComplete = useRecoilValue(initialLoadCompleteState);
 
