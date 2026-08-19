@@ -5,7 +5,7 @@ const maxRetries = 2;
 const initialDelay = 300;
 
 const isRetryableError = (statusCode: number | undefined): boolean => {
-    if (!statusCode) return false;
+    if (!statusCode) return true;
     // Retry on 401 (auth errors) or 5xx (server errors)
     return statusCode === 401 || (statusCode >= 500 && statusCode < 600);
 };

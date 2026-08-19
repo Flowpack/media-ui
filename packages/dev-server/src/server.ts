@@ -330,7 +330,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 throw new Error('Not implemented');
             },
             tagAsset: ($_, { id, assetSourceId, tagId }): Asset => {
-                throw new Error('Not implemented');
+                const asset = assets.find((asset) => asset.id === id && asset.assetSource.id === assetSourceId);
+                const tag = tags.find((tag) => tag.id === tagId);
+                if (!asset) {
+                    throw new Error('Asset not found');
+                }
+                if (!tag) {
+                    throw new Error('Tag not found');
+                }
+                if (!asset.tags.find((tag) => tag.id === tagId)) {
+                    asset.tags = [...asset.tags, tag];
+                    addAssetChange({
+                        lastModified: asset.lastModified,
+                        assetId: id,
+                        type: 'ASSET_UPDATED',
+                    });
+                }
+                return asset;
             },
             untagAsset: ($_, { id, assetSourceId, tagId }): Asset => {
                 throw new Error('Not implemented');

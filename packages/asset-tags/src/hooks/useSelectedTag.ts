@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 
 import selectedTagIdState from '../state/selectedTagIdState';
 import TAG from '../queries/tag';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 interface TagQueryResult {
     tag: Tag;
@@ -11,8 +11,8 @@ interface TagQueryResult {
 }
 
 const useSelectedTag = (): Tag => {
-    const assetSourceId = useRecoilValue(selectedAssetSourceState);
-    const selectedTagId = useRecoilValue(selectedTagIdState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const selectedTagId = useRecoilValue(selectedTagIdState(assetSourceId));
 
     const { data } = useQuery<TagQueryResult>(TAG, {
         variables: { id: selectedTagId, assetSourceId },

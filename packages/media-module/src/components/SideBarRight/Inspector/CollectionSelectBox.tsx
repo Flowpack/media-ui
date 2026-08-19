@@ -9,7 +9,7 @@ import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { collectionPath, useAssetCollectionsQuery } from '@media-ui/feature-asset-collections';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import { AssetCollectionOptionPreviewElement, CollectionOption } from './AssetCollectionOptionPreviewElement';
 
@@ -20,7 +20,8 @@ const collectionsMatchAsset = (assetCollectionIds: string[], asset: Asset) => {
 };
 
 const CollectionSelectBox: React.FC = () => {
-    const selectedAssets = useRecoilValue(selectedAssetIdsState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const selectedAssets = useRecoilValue(selectedAssetIdsState(selectedAssetSourceId));
     const isMultiSelection = selectedAssets.length > 1;
     const Notify = useNotify();
     const { translate } = useIntl();
@@ -28,7 +29,6 @@ const CollectionSelectBox: React.FC = () => {
     const {
         approvalAttainmentStrategy: { obtainApprovalToSetAssetCollections, obtainApprovalToShiftAssetsToCollection },
     } = useMediaUi();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
     const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const { setAssetCollections, loading } = useSetAssetCollections();
     const { getFailedAssetLabels } = useFailedAssetLabels();

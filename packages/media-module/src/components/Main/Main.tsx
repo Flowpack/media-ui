@@ -8,6 +8,7 @@ import { availableAssetIdentitiesState, searchTermState } from '@media-ui/core/s
 import useAssetsQuery from '@media-ui/core/src/hooks/useAssetsQuery';
 import { clipboardState, clipboardVisibleState } from '@media-ui/feature-clipboard';
 import { useUnusedAssetsQuery } from '@media-ui/feature-asset-usage';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import { ListView, ThumbnailView } from './index';
 import LoadingLabel from '../LoadingLabel';
@@ -20,7 +21,8 @@ const Main: React.FC = () => {
     const { assets: unusedAssets } = useUnusedAssetsQuery();
     // The useAssetsQuery should always be registered here to ensure that the assets are loaded
     const { error: assetsLoadingError } = useAssetsQuery();
-    const clipboard = useRecoilValue(clipboardState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const clipboard = useRecoilValue(clipboardState(selectedAssetSourceId));
     const mainView = useRecoilValue(mainViewState);
     const setClipboardVisible = useSetRecoilState(clipboardVisibleState);
     const searchTerm = useRecoilValue(searchTermState);
