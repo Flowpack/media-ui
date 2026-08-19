@@ -72,7 +72,7 @@ jobs:
       fail-fast: false
       matrix:
         php-versions: ['8.3']
-        flow-versions: ['8.3']
+        flow-versions: ['8.4']
 
     steps:
       - uses: actions/checkout@v5
@@ -101,6 +101,7 @@ jobs:
           cd ${FLOW_FOLDER}
           composer require --no-update --no-interaction flowpack/entity-usage:"^1.1"
           composer require --no-update --no-interaction flowpack/entity-usage-databasestorage:"^0.1"
+          composer require --no-update --dev --no-interaction phpunit/phpunit:"^11.0"
 
           git -C ../${{ env.PACKAGE_FOLDER }} checkout -b build
           composer config repositories.package '{ "type": "path", "url": "../${{ env.PACKAGE_FOLDER }}", "options": { "symlink": false } }'
@@ -109,7 +110,7 @@ jobs:
       - name: Composer Install
         run: |
           cd ${FLOW_FOLDER}
-          composer update --no-interaction --no-progress
+          composer install --no-interaction --no-progress
 
       - name: Run Unit tests
         run: |
@@ -134,7 +135,7 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
-      - name: Run mocha tests
+      - name: Run JS unit tests
         run: yarn test:unit
 
   e2e:

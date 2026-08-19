@@ -35,7 +35,7 @@ class TagApiTest extends AbstractMediaTestCase
     protected AssetCollectionResolver $assetCollectionResolver;
     protected AssetResolver $assetResolver;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         if (!$this->persistenceManager instanceof PersistenceManager) {

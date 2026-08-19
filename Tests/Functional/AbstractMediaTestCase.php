@@ -35,7 +35,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      */
     protected $resourceManager;
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $persistenceManager = self::$bootstrap->getObjectManager()->get(PersistenceManagerInterface::class);
         if (is_callable([$persistenceManager, 'tearDown'])) {
@@ -63,7 +63,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      */
     protected function createMockResourceAndPointerFromHash(string $hash): PersistentResource
     {
-        $mockResource = $this->getMockBuilder(PersistentResource::class)->setMethods(['getHash', 'getUri'])->getMock();
+        $mockResource = $this->getMockBuilder(PersistentResource::class)->addMethods(['getHash', 'getUri'])->getMock();
         $mockResource
                 ->method('getHash')
                 ->willReturn($hash);
