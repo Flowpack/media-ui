@@ -331,10 +331,10 @@ Check out the [Testcafe documentation](https://testcafe.io/documentation/402828/
 
 First, make sure you have [phpstan](https://phpstan.org) installed.
 
-If the package is installed in a Neos distribution:
+If the package is installed in a Neos distribution, run the following command from the project root:
 
 ```console
-composer run codestyle
+bin/phpstan analyse -c Packages/Application/Flowpack.Media.Ui/phpstan.neon
 ```
     
 If the package is standalone
