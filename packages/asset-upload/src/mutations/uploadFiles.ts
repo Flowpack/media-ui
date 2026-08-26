@@ -2,9 +2,9 @@ import { gql } from '@apollo/client';
 
 const UPLOAD_FILES = gql`
     mutation UploadFiles(
-        $files: [UploadedFileInput!]!, 
-        $assetSourceId: AssetSourceId!, 
-        $tagId: TagId, 
+        $files: [UploadedFileInput!]!
+        $assetSourceId: AssetSourceId!
+        $tagId: TagId
         $assetCollectionId: AssetCollectionId
     ) {
         uploadFiles(files: $files, assetSourceId: $assetSourceId, tagId: $tagId, assetCollectionId: $assetCollectionId) {
