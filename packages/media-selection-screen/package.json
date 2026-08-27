@@ -13,6 +13,8 @@
     "@media-ui/feature-clipboard": "workspace:*",
     "@media-ui/media-module": "workspace:*",
     "apollo-upload-client": "catalog:",
+    "classnames": "catalog:",
+    "graphql": "catalog:",
     "react": "catalog:",
     "react-redux": "catalog:",
     "recoil": "catalog:"

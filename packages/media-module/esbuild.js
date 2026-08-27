@@ -1,4 +1,5 @@
 const esbuild = require('esbuild');
+const path = require('path');
 const CssModulesPlugin = require("esbuild-css-modules-plugin");
 const isWatch = process.argv.includes('--watch');
 const isAnalyze = process.argv.includes('--analyze');
@@ -13,6 +14,15 @@ const options = {
     target: 'es2020',
     metafile: isAnalyze,
     mainFields: ['browser', 'module', 'main'],
+    alias: {
+        // Multiple subpackages (core, features, media-module) each install a physical
+        // @apollo/client under their own node_modules because the root graphql peer is v16
+        // (lint-only) while @apollo/client needs graphql v15. Bundling those distinct copies
+        // would yield two Apollo instances and break Apollo's React context, so pin the whole
+        // bundle to the single copy media-module resolves with its peer-satisfied graphql@15.
+        '@apollo/client': path.resolve(__dirname, 'node_modules/@apollo/client'),
+        graphql: path.resolve(__dirname, 'node_modules/graphql'),
+    },
     entryPoints: {
         'main.bundle': './src/index.tsx',
     },

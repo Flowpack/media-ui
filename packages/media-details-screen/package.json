@@ -10,7 +10,10 @@
     "@apollo/client": "catalog:",
     "@media-ui/core": "workspace:*",
     "@media-ui/media-module": "workspace:*",
+    "@neos-project/react-ui-components": "catalog:",
     "apollo-upload-client": "catalog:",
+    "classnames": "catalog:",
+    "graphql": "catalog:",
     "react": "catalog:",
     "react-redux": "catalog:",
     "recoil": "catalog:"
