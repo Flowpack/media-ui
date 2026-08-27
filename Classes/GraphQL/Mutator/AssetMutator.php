@@ -508,7 +508,7 @@ class AssetMutator
         }
 
         // FIXME: The filename is not unique enough for multiple uploads, we need an id instead or use the sha1
-        return Types\FileUploadResult::fromError(self::STATE_EXISTS);
+        return Types\FileUploadResult::fromError(self::STATE_EXISTS, Types\Filename::fromString($filename));
     }
 
     /**
