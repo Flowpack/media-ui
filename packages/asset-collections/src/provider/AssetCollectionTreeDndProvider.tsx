@@ -19,8 +19,8 @@ interface AssetCollectionTreeDndProviderValues {
     currentlyDraggedNodes: string[];
     handleDrag: (assetCollectionId: string) => void;
     handeEndDrag: () => void;
-    handleDrop: (targetAssetCollectionId: string, position: number) => void;
-    acceptsDraggedNode: (assetCollectionId: AssetCollectionId, mode: 'into' | 'after') => boolean;
+    handleDrop: (targetAssetCollectionId: string, position: DROP_POSITION) => void;
+    acceptsDraggedNode: (assetCollectionId: AssetCollectionId, mode: DROP_POSITION) => boolean;
 }
 
 export const AssetCollectionDndContext = createContext(null);
@@ -90,7 +90,7 @@ export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTree
     );
 
     const acceptsDraggedNode = useCallback(
-        (assetCollectionId: AssetCollectionId, mode: 'into' | 'after') => {
+        (assetCollectionId: AssetCollectionId, mode: DROP_POSITION) => {
             if (currentlyDraggedNodes.length === 0 || currentlyDraggedNodes.includes(assetCollectionId)) return false;
 
             // TODO: Also check current assetSource.readonly property
