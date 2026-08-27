@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { Button, Label, TextInput } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify } from '@media-ui/core';
 import { Dialog } from '@media-ui/core/src/components';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import useCreateAssetCollection from '../hooks/useCreateAssetCollection';
 import useSelectedAssetCollection from '../hooks/useSelectedAssetCollection';
@@ -19,6 +20,7 @@ const CreateAssetCollectionDialog = () => {
     const [title, setTitle] = useState('');
     const { createAssetCollection } = useCreateAssetCollection();
     const selectedAssetCollection = useSelectedAssetCollection();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
 
     const handleChange = useCallback((value: string) => {
         setTitle(value.trim());
@@ -27,17 +29,18 @@ const CreateAssetCollectionDialog = () => {
     const handleRequestClose = useCallback(() => setDialogVisible(false), [setDialogVisible]);
     const handleCreate = useCallback(() => {
         setDialogVisible(false);
-        createAssetCollection(title, selectedAssetCollection?.id)
+        createAssetCollection(title, selectedAssetSourceId, selectedAssetCollection?.id)
             .then(() => {
                 Notify.ok(translate('assetCollectionActions.create.success', 'Asset collection was created'));
             })
             .catch(() => {
                 return;
             });
-    }, [setDialogVisible, createAssetCollection, title, selectedAssetCollection?.id, Notify, translate]);
+    }, [setDialogVisible, createAssetCollection, title, selectedAssetSourceId, selectedAssetCollection?.id, Notify, translate]);
 
     return (
         <Dialog
+            id="CreateAssetCollectionDialog"
             isOpen={dialogVisible}
             title={translate('createAssetCollectionDialog.title', 'Create Asset Collection in "{location}"', {
                 location: selectedAssetCollection?.title || 'Root',

@@ -18,7 +18,7 @@ export default function useCreateAssetCollection() {
     const createAssetCollection = (
         title: AssetCollectionTitle,
         assetSourceId: AssetSourceId,
-        parentCollectionId: AssetCollectionId = null
+        parentCollectionId: AssetCollectionId | null = null
     ) =>
         action({
             variables: {
@@ -27,12 +27,21 @@ export default function useCreateAssetCollection() {
                 parent: parentCollectionId,
             },
             update(cache, { data }) {
+                if (!data?.createAssetCollection) {
+                    return;
+                }
                 const { assetCollections } = cache.readQuery<{ assetCollections: AssetCollection[] }>({
                     query: ASSET_COLLECTIONS,
-                });
+                    variables: {
+                        assetSourceId
+                    }
+                }) || { assetCollections: [] };
                 cache.writeQuery({
                     query: ASSET_COLLECTIONS,
-                    data: { assetCollections: assetCollections.concat([data?.createAssetCollection]) },
+                    variables: {
+                        assetSourceId
+                    },
+                    data: { assetCollections: assetCollections.concat([data.createAssetCollection]) },
                 });
             },
         });

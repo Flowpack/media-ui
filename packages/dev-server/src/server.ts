@@ -10,6 +10,11 @@ import * as Fixtures from './fixtures/index';
 
 // FIXME: type annotations are missing as they couldn't be included anymore while making the devserver work again
 // import { AssetChange, AssetChangeQueryResult, AssetChangeType } from '@media-ui/feature-concurrent-editing/src';
+interface MutationResult {
+    success: boolean;
+    messages: string[];
+    data?: any[];
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -191,17 +196,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             setAssetCollectionParent: (
                 $_,
                 { id, assetSourceId, parent }: { id: string; assetSourceId: string; parent: string }
-            ): boolean => {
+            ): MutationResult => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
                 const parentCollection = assetCollections.find((assetCollection) => assetCollection.id === parent);
-                if (!assetCollection || !parentCollection) return false;
+                if (!assetCollection || !parentCollection) return { success: false, messages: ['Collection not found'] };
 
                 // Check if there would be a recursion
                 let tmpParent = parentCollection;
-                while (tmpParent) {
+                while (tmpParent?.parent) {
+                    // @ts-ignore
                     tmpParent = assetCollections.find((assetCollection) => assetCollection.id === tmpParent.parent.id);
                     if (tmpParent.id === parentCollection.id) {
-                        return false;
+                        return { success: false, messages: ['Recursion detected'] };
                     }
                 }
 
@@ -211,13 +217,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     assetSourceId: parentCollection.assetSourceId,
                     title: parentCollection.title,
                 };
-                return true;
+                return { success: true, messages: [] };
             },
             updateAssetCollection: (
                 $_,
                 { id, title, tagIds }: { id: string; title: string; tagIds: string[] }
-            ): boolean => {
+            ): MutationResult => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
+                if (!assetCollection) return { success: false, messages: ['Asset collection not found'] };
                 if (title) {
                     // @ts-ignore we intentionally overwrite the readonly property here
                     assetCollection.title = title;
@@ -225,14 +232,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 if (Array.isArray(tagIds)) {
                     assetCollection.tags = tags.filter((tag) => tagIds.includes(tag.id));
                 }
-                return true;
+                return { success: true, messages: [] };
             },
-            deleteAssetCollection: ($_, { id }: { id: string }): boolean => {
+            deleteAssetCollection: ($_, { id }: { id: string }): MutationResult => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
-                if (!assetCollection) return false;
-                if (assetCollection.assetCount > 0) return false;
+                if (!assetCollection) return { success: false, messages: ['Asset collection not found'] };
+                if (assetCollection.assetCount > 0) return { success: false, messages: ['Asset collection not empty'] };
                 assetCollections = assetCollections.filter((assetCollection) => assetCollection.id !== id);
-                return true;
+                return { success: true, messages: [] };
             },
             createAssetCollection: ($_, { title, parent }: { title: string; parent: string }): AssetCollection => {
                 const parentCollection = parent
