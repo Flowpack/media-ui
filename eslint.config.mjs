@@ -78,11 +78,6 @@ export default [
             '@typescript-eslint': tsEslint.plugin,
             'react-hooks': fixupPluginRules(reactHooks),
         },
-        settings: {
-            react: {
-                version: 'detect',
-            },
-        },
         rules: {
             '@typescript-eslint/explicit-function-return-type': 'off',
             '@typescript-eslint/explicit-module-boundary-types': 'off',
@@ -132,6 +127,14 @@ export default [
         files: ['**/typeDefs.{ts,tsx}/**'],
         rules: {
             '@graphql-eslint/executable-definitions': 'off',
+        },
+    },
+
+    {
+        settings: {
+            react: {
+                version: '17.0',
+            },
         },
     },
 
