@@ -1,4 +1,4 @@
-type AssetFileType = 'AssetFile';
+type AssetFileType = 'File';
 
 interface AssetFile extends GraphQlEntity {
     __typename: AssetFileType;

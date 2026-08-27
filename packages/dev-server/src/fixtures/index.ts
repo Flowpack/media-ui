@@ -187,7 +187,7 @@ const assets = range(150).map((index) => {
         width: 90,
         height: 210,
         file: {
-            __typename: 'AssetFile',
+            __typename: 'File',
             extension: 'jpg',
             mediaType: 'image/jpeg',
             typeIcon: typeIcons.jpg,
