@@ -7,10 +7,11 @@
   },
   "type": "module",
   "devDependencies": {
-    "@types/node": "^16.18.34",
-    "express": "^4.18.2",
+    "@types/node": "^16.18.126",
+    "apollo-server-express": "^3.3.0",
+    "express": "^5.2.1",
     "nodemon": "^3.1.10",
-    "tsx": "^4.19.4"
+    "tsx": "catalog:"
   },
   "scripts": {
     "dev": "nodemon --watch '*.ts' src/server.ts",
