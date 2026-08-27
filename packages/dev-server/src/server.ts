@@ -28,6 +28,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             server: path.resolve(__dirname, './index.ts'),
             main: '@media-ui/media-module/src/index',
         },
+        alias: {
+            // Yarn installs two physically distinct @apollo/client copies: the one used by
+            // @media-ui/media-module is peer-satisfied with graphql@15, while the root-hoisted
+            // copy used by @media-ui/core and the feature packages peers against graphql@16.
+            // Bundling both breaks Apollo's React context (ApolloProvider and the query hooks
+            // come from different module instances), so pin the whole bundle to a single
+            // self-consistent @apollo/client + graphql@15 pair.
+            '@apollo/client': path.resolve(__dirname, '../../media-module/node_modules/@apollo/client'),
+            graphql: path.resolve(__dirname, '../../media-module/node_modules/graphql'),
+        },
         outdir: path.resolve(__dirname, '../public/dist'),
         define: {
             // react-image-lightbox
@@ -368,10 +378,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         ${graphqlSchema}
     `;
 
-    const server = new ApolloServer({ typeDefs, resolvers, uploads: false });
+    const server = new ApolloServer({ typeDefs, resolvers });
     const app = express();
 
-    // @ts-ignore
+    await server.start();
+
     server.applyMiddleware({ app, path: '/graphql' });
 
     app.use((req, res, next) => {
