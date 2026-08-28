@@ -27,25 +27,43 @@ export default function useCreateTag() {
             //         label: label,
             //     }
             // },
-            update: (proxy, { data: { createTag: newTag } }) => {
-                const { assetCollections } = proxy.readQuery<{ assetCollections: AssetCollection[] }>({
-                    query: ASSET_COLLECTIONS,
-                });
+            update: (proxy, { data }) => {
+                const newTag = data?.createTag;
+                const assetCollections =
+                    proxy.readQuery<{ assetCollections: AssetCollection[] }>({
+                        query: ASSET_COLLECTIONS,
+                        variables: {
+                            assetSourceId,
+                        },
+                    })?.assetCollections || [];
                 const updatedAssetCollections = assetCollections.map((assetCollection) => {
                     if (assetCollection.id === assetCollectionId) {
-                        return { ...assetCollection, tags: [...assetCollection.tags, newTag] };
+                        const existingTags = assetCollection.tags || [];
+                        return { ...assetCollection, tags: [...existingTags, newTag] };
                     }
                     return assetCollection;
                 });
                 proxy.writeQuery({
                     query: ASSET_COLLECTIONS,
+                    variables: {
+                        assetSourceId,
+                    },
                     data: { assetCollections: updatedAssetCollections },
                 });
 
-                const { tags } = proxy.readQuery<{ tags: Tag[] }>({ query: TAGS });
+                const tags =
+                    proxy.readQuery<{ tags: Tag[] }>({
+                        query: TAGS,
+                        variables: {
+                            assetSourceId,
+                        },
+                    })?.tags || [];
                 if (!tags.find((tag) => tag?.label === newTag?.label)) {
                     proxy.writeQuery({
                         query: TAGS,
+                        variables: {
+                            assetSourceId,
+                        },
                         data: {
                             tags: [...tags, newTag],
                         },

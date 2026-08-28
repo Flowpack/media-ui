@@ -37,14 +37,14 @@ const CreateTagDialog: React.FC = () => {
     );
     const handleCreate = useCallback(() => {
         setDialogState((state) => ({ ...state, visible: false }));
-        createTag(dialogState.label, selectedAssetCollection?.id)
+        createTag(dialogState.label, selectedAssetSourceId, selectedAssetCollection?.id)
             .then(() => {
                 Notify.ok(translate('tagActions.create.success', 'Tag was created'));
             })
             .catch(() => {
                 return;
             });
-    }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetCollection]);
+    }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetSourceId, selectedAssetCollection]);
     const validate = useCallback(
         (label) => {
             const validationErrors = [];

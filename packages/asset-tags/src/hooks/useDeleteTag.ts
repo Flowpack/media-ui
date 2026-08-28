@@ -31,18 +31,24 @@ export default function useDeleteTag() {
                 if (!success) return;
                 const { assetCollections } = proxy.readQuery<{ assetCollections: AssetCollection[] }>({
                     query: ASSET_COLLECTIONS,
+                    variables: { assetSourceId },
                 });
                 const updatedAssetCollections = assetCollections.map((assetCollection) => {
                     return { ...assetCollection, tags: assetCollection.tags.filter((tag) => tag?.id !== id) };
                 });
                 proxy.writeQuery({
                     query: ASSET_COLLECTIONS,
+                    variables: { assetSourceId },
                     data: { assetCollections: updatedAssetCollections },
                 });
 
-                const { tags }: { tags: Tag[] } = proxy.readQuery({ query: TAGS });
+                const { tags }: { tags: Tag[] } = proxy.readQuery({
+                    query: TAGS,
+                    variables: { assetSourceId },
+                });
                 proxy.writeQuery({
                     query: TAGS,
+                    variables: { assetSourceId },
                     data: {
                         tags: tags.filter((tag) => tag.id !== id),
                     },

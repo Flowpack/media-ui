@@ -298,16 +298,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 });
                 return { success: true, messages: [] };
             },
-            deleteTag: ($_, { id }): boolean => {
-                tags.splice(
-                    tags.findIndex((tag) => tag.id === id),
-                    1
-                );
+            deleteTag: ($_, { id }): MutationResult => {
+                const index = tags.findIndex((tag) => tag.id === id);
+                if (index === -1) return { success: false, messages: ['Tag not found'] };
+                tags.splice(index, 1);
                 // Remove tag from assets
                 assets.forEach((asset) => {
                     asset.tags = asset.tags.filter((tag) => tag.id !== id);
                 });
-                return true;
+                return { success: true, messages: [] };
             },
             deleteAsset: ($_, { id: id, assetSourceId }) => {
                 const inUse = Fixtures.getUsageDetailsForAsset(id).reduce(
@@ -331,15 +330,38 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 }
                 return { success: false, messages: ['Asset not found'] };
             },
-            createTag: ($_, { tag: newTag }: { tag: Tag }): Tag => {
+            createTag: (
+                $_,
+                {
+                    label,
+                    assetSourceId,
+                    assetCollectionId,
+                }: { label: string; assetSourceId: string; assetCollectionId?: string }
+            ): Tag => {
+                const newTag: Tag = {
+                    __typename: 'Tag',
+                    id: `index ${tags.length + 1}`,
+                    label,
+                    assetSourceId,
+                };
                 if (tags.find((tag) => tag === newTag)) {
                     throw new Error('Tag with this id already exists');
+                }
+                if (assetCollectionId) {
+                    const assetCollection: AssetCollection | undefined = assetCollections.find(
+                        (collection) => collection.id === assetCollectionId
+                    );
+                    assetCollection?.tags?.push(newTag);
                 }
                 tags.push(newTag);
                 return newTag;
             },
-            updateTag: ($_, { id, label }): Tag => {
-                throw new Error('Not implemented');
+            updateTag: ($_, { id, assetSourceId, label }): Tag => {
+                const tag = tags.find((tag) => tag.id === id && tag.assetSourceId === assetSourceId);
+                if (!tag) throw new Error('Tag not found');
+                // @ts-ignore we intentionally overwrite the readonly property here
+                tag.label = label;
+                return tag;
             },
             replaceAsset: ($_, { id, assetSourceId, file, options }): FileUploadResult => {
                 throw new Error('Not implemented');
