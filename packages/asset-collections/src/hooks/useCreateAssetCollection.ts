@@ -33,13 +33,13 @@ export default function useCreateAssetCollection() {
                 const { assetCollections } = cache.readQuery<{ assetCollections: AssetCollection[] }>({
                     query: ASSET_COLLECTIONS,
                     variables: {
-                        assetSourceId
-                    }
+                        assetSourceId,
+                    },
                 }) || { assetCollections: [] };
                 cache.writeQuery({
                     query: ASSET_COLLECTIONS,
                     variables: {
-                        assetSourceId
+                        assetSourceId,
                     },
                     data: { assetCollections: assetCollections.concat([data.createAssetCollection]) },
                 });

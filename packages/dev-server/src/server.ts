@@ -199,7 +199,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             ): MutationResult => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
                 const parentCollection = assetCollections.find((assetCollection) => assetCollection.id === parent);
-                if (!assetCollection || !parentCollection) return { success: false, messages: ['Collection not found'] };
+                if (!assetCollection || !parentCollection)
+                    return { success: false, messages: ['Collection not found'] };
 
                 // Check if there would be a recursion
                 let tmpParent = parentCollection;

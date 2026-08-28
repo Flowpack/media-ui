@@ -2,7 +2,7 @@ import page from './page-model';
 
 fixture('Tags').page('./?reset=1');
 
-const subSection = (name) => console.log('\x1b[33m%s\x1b[0m', ' - ' + name);
+const subSection = (name: string) => console.log('\x1b[33m%s\x1b[0m', ' - ' + name);
 
 test('Clicking first tag updates list and only assets should be shown that are assigned to it', async (t) => {
     await t

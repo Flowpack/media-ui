@@ -2,8 +2,6 @@ import page from './page-model';
 
 fixture('Asset collections').page('./?reset=1');
 
-const subSection = (name: string) => console.log('\x1b[33m%s\x1b[0m', ' - ' + name);
-
 test('Clicking first collection updates list and only assets should be shown that are assigned to it', async (t) => {
     await t
         .scrollIntoView(page.firstCollection)
@@ -20,21 +18,21 @@ test('Create a new asset collection and test validation', async (t) => {
     const newAssetCollectionName = 'New asset collection';
 
     await t
-    .click(page.assetCollections.withText('All'))
-    .click(page.collectionTreeToolbar.find('button').withAttribute('title', 'Create new asset collection'))
-    .expect(page.createAssetCollectionDialog.find('button').withText('Create').hasAttribute('disabled'))
-    .ok('Create button should be initially disabled')
-    .typeText(page.createAssetCollectionDialog.find('input[class*="textInput"]'), newAssetCollectionName)
-    .click(page.createAssetCollectionDialog.find('button').withText('Create'))
-    .expect(page.createAssetCollectionDialog.exists)
-    .notOk('The dialog closes after confirmation');
+        .click(page.assetCollections.withText('All'))
+        .click(page.collectionTreeToolbar.find('button').withAttribute('title', 'Create new asset collection'))
+        .expect(page.createAssetCollectionDialog.find('button').withText('Create').hasAttribute('disabled'))
+        .ok('Create button should be initially disabled')
+        .typeText(page.createAssetCollectionDialog.find('input[class*="textInput"]'), newAssetCollectionName)
+        .click(page.createAssetCollectionDialog.find('button').withText('Create'))
+        .expect(page.createAssetCollectionDialog.exists)
+        .notOk('The dialog closes after confirmation');
 
     const { log } = await t.getBrowserConsoleMessages();
     await t
-    .expect(log.includes('Asset collection was created'))
-    .ok('A success message confirms the creation of the collection')
-    .expect(page.assetCollections.withText(newAssetCollectionName).exists)
-    .ok('New collection should appear in list');
+        .expect(log.includes('Asset collection was created'))
+        .ok('A success message confirms the creation of the collection')
+        .expect(page.assetCollections.withText(newAssetCollectionName).exists)
+        .ok('New collection should appear in list');
 });
 
 test('Edit an asset collection and verify the tree is updated', async (t) => {

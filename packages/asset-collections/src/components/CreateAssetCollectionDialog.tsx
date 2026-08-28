@@ -36,7 +36,15 @@ const CreateAssetCollectionDialog = () => {
             .catch(() => {
                 return;
             });
-    }, [setDialogVisible, createAssetCollection, title, selectedAssetSourceId, selectedAssetCollection?.id, Notify, translate]);
+    }, [
+        setDialogVisible,
+        createAssetCollection,
+        title,
+        selectedAssetSourceId,
+        selectedAssetCollection?.id,
+        Notify,
+        translate,
+    ]);
 
     return (
         <Dialog

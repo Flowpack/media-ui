@@ -30,15 +30,19 @@ export default function useDeleteAssetCollection() {
                 const { assetCollections } = cache.readQuery<{ assetCollections: AssetCollection[] }>({
                     query: ASSET_COLLECTIONS,
                     variables: {
-                        assetSourceId
-                    }
+                        assetSourceId,
+                    },
                 }) || { assetCollections: [] };
                 cache.writeQuery({
                     query: ASSET_COLLECTIONS,
                     variables: {
-                        assetSourceId
+                        assetSourceId,
                     },
-                    data: { assetCollections: assetCollections.filter((c: AssetCollection) => c.assetSourceId !== assetSourceId || c.id !== id) },
+                    data: {
+                        assetCollections: assetCollections.filter(
+                            (c: AssetCollection) => c.assetSourceId !== assetSourceId || c.id !== id
+                        ),
+                    },
                 });
             },
         });
