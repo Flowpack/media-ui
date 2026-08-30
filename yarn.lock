@@ -3834,6 +3834,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@media-ui/neos-ui-plugin@workspace:packages/neos-ui-plugin"
   dependencies:
+    "@apollo/client": "catalog:"
     "@media-ui/media-details-screen": "workspace:*"
     "@media-ui/media-selection-screen": "workspace:*"
     "@neos-project/neos-ui-extensibility": "npm:^8.4.4"

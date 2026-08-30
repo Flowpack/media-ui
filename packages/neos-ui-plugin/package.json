@@ -11,6 +11,7 @@
     "watch": "node esbuild.js --watch"
   },
   "dependencies": {
+    "@apollo/client": "catalog:",
     "@media-ui/media-details-screen": "workspace:*",
     "@media-ui/media-selection-screen": "workspace:*",
     "@neos-project/neos-ui-extensibility": "^8.4.4",
