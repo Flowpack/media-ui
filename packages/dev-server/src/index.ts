@@ -63,16 +63,29 @@ setTimeout(() => {
     window.NeosCMS = {
         I18n: {
             initialized: true,
-            translate: (id: string, fallback: string, packageKey = null, source = null, args = []) => {
-                Object.keys(args).forEach((key) => (fallback = fallback.replace(`{${key}}`, args[key])));
+            translate: (
+                id: string,
+                fallback: string | null,
+                packageKey: string = '',
+                source: string = '',
+                args: Record<string, unknown> | (string | number)[] = []
+            ) => {
+                if (!fallback) {
+                    return id;
+                }
+                if (typeof args === 'object') {
+                    Object.keys(args).forEach(
+                        (key: string): string => (fallback = fallback?.replace(`{${key}}`, args[key]) || id)
+                    );
+                }
                 return fallback;
             },
         },
         Notification: {
             notice: (title: string) => console.log(title),
             ok: (title: string) => console.log(title),
-            error: (title: string, message: string) => console.error(message, title),
-            warning: (title: string, message: string) => console.warn(message, title),
+            error: (title: string, message?: string) => console.error(message, title),
+            warning: (title: string, message?: string) => console.warn(message, title),
             info: (title: string) => console.info(title),
         },
     };

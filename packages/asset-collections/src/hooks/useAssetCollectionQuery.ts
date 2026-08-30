@@ -8,7 +8,10 @@ interface AssetCollectionQueryResult {
 
 export const UNASSIGNED_COLLECTION_ID = 'UNASSIGNED';
 
-export function useAssetCollectionQuery(assetCollectionId: string | null, assetSourceId: AssetSourceId | null) {
+export function useAssetCollectionQuery(
+    assetCollectionId: string | null,
+    assetSourceId: AssetSourceId | null | undefined
+) {
     const { data, loading, refetch } = useQuery<
         AssetCollectionQueryResult,
         { id: AssetCollectionId; assetSourceId: AssetSourceId }

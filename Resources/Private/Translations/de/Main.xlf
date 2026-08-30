@@ -452,6 +452,20 @@
                 <source>Failed to create asset collection</source>
                 <target>Fehler beim Erstellen der Sammlung</target>
             </trans-unit>
+            <trans-unit id="assetCollectionActions.validation.emptyTitle" xml:space="preserve" approved="yes">
+                <source>Please provide a title</source>
+                <target>Bitte geben Sie einen Titel ein</target>
+            </trans-unit>
+            <trans-unit id="assetCollectionActions.validation.invalidTitle" xml:space="preserve" approved="yes">
+                <source>The title must be 1-255 characters and must not have leading or trailing whitespace</source>
+                <target>
+                    Der Titel muss aus 1 bis 255 Zeichen bestehen und darf keine Leerzeichen am Anfang oder Ende enthalten
+                </target>
+            </trans-unit>
+            <trans-unit id="assetCollectionActions.validation.collectionExists" xml:space="preserve" approved="yes">
+                <source>A collection with this title already exists</source>
+                <target>Eine Sammlung mit diesem Titel existiert bereits</target>
+            </trans-unit>
             <trans-unit id="actions.deleteAssetCollection.confirm.title" xml:space="preserve" approved="yes">
                 <source>Delete collection</source>
                 <target>Sammlung löschen</target>
@@ -479,6 +493,13 @@
             <trans-unit id="tagActions.validation.emptyTagLabel" xml:space="preserve" approved="yes">
                 <source>Please provide a tag label</source>
                 <target>Bitte geben Sie einen Tag-Namen ein</target>
+            </trans-unit>
+            <trans-unit id="tagActions.validation.invalidLabel" xml:space="preserve" approved="yes">
+                <source>The tag label must be 1-255 characters and must not have leading or trailing whitespace</source>
+                <target>
+                    Der Tag-Name muss aus 1 bis 255 Zeichen bestehen und darf keine Leerzeichen am Anfang oder Ende
+                    enthalten
+                </target>
             </trans-unit>
             <trans-unit id="tagActions.validation.tagExists" xml:space="preserve" approved="yes">
                 <source>This tag already exists. Please choose a different one.</source>

@@ -29,16 +29,16 @@ export default function useDeleteAsset() {
                 },
                 'ASSET_COLLECTIONS',
             ],
-            update: (cache, { data: { deleteAsset: result } }) => {
-                if (!result?.success) return;
+            update: (cache, { data }) => {
+                if (!data?.deleteAsset.success) return;
 
                 // Remove deleted asset from cache
                 cache.evict({ id: cache.identify({ __typename: 'Asset', id: assetId }) });
                 cache.gc();
             },
-        }).then(({ data: { deleteAsset } }) => {
-            if (!deleteAsset.success) {
-                throw new Error(deleteAsset.messages.join(', '));
+        }).then(({ data }) => {
+            if (!data?.deleteAsset.success) {
+                throw new Error(data?.deleteAsset.messages.join(', '));
             }
 
             assetRemoved({ assetId, assetSourceId });

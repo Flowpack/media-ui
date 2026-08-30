@@ -1,6 +1,7 @@
 const esbuild = require('esbuild');
 const CssModulesPlugin = require('esbuild-css-modules-plugin');
 const extensibilityMap = require('@neos-project/neos-ui-extensibility/extensibilityMap.json');
+const path = require('path');
 const isWatch = process.argv.includes('--watch');
 const isAnalyze = process.argv.includes('--analyze');
 
@@ -32,7 +33,16 @@ const options = {
             inject: false,
         }),
     ],
-    alias: extensibilityMap,
+    alias: {
+        ...extensibilityMap,
+        // Multiple subpackages (core, features, media-module) each install a physical
+        // @apollo/client under their own node_modules because the root graphql peer is v16
+        // (lint-only) while @apollo/client needs graphql v15. Bundling those distinct copies
+        // would yield two Apollo instances and break Apollo's React context, so pin the whole
+        // bundle to the single copy media-module resolves with its peer-satisfied graphql@15.
+        '@apollo/client': path.resolve(__dirname, '../media-module/node_modules/@apollo/client'),
+        graphql: path.resolve(__dirname, '../media-module/node_modules/graphql'),
+    },
 };
 
 if (isWatch) {

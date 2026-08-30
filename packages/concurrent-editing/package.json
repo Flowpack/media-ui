@@ -5,6 +5,10 @@
   "private": true,
   "main": "src/index.ts",
   "dependencies": {
-    "@media-ui/core": "workspace:*"
+    "@apollo/client": "catalog:",
+    "@media-ui/core": "workspace:*",
+    "graphql": "catalog:",
+    "react": "catalog:",
+    "recoil": "catalog:"
   }
 }

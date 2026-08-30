@@ -5,6 +5,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { Button, Label, TextInput, Tooltip } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify } from '@media-ui/core';
+import { validateLabelOrTitle } from '@media-ui/core/src/helper';
 import { useSelectedAssetCollection } from '@media-ui/feature-asset-collections';
 import { useCreateTag, useTagsQuery } from '@media-ui/feature-asset-tags';
 import { Dialog } from '@media-ui/core/src/components';
@@ -36,26 +37,32 @@ const CreateTagDialog: React.FC = () => {
         [setDialogState]
     );
     const handleCreate = useCallback(() => {
+        if (!validateLabelOrTitle(dialogState.label)) return;
+
         setDialogState((state) => ({ ...state, visible: false }));
-        createTag(dialogState.label, selectedAssetCollection?.id)
+        createTag(dialogState.label.trim(), selectedAssetSourceId, selectedAssetCollection?.id)
             .then(() => {
                 Notify.ok(translate('tagActions.create.success', 'Tag was created'));
             })
             .catch(() => {
                 return;
             });
-    }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetCollection]);
+    }, [Notify, setDialogState, createTag, dialogState, translate, selectedAssetSourceId, selectedAssetCollection]);
     const validate = useCallback(
         (label) => {
             const validationErrors = [];
             const trimmedLabel = label.trim();
-            const tagWithLabelExist = tags?.some((tag) => tag.label === trimmedLabel);
 
             if (trimmedLabel.length === 0) {
                 validationErrors.push(translate('tagActions.validation.emptyTagLabel', 'Please provide a tag label'));
-            }
-
-            if (tagWithLabelExist) {
+            } else if (!validateLabelOrTitle(label)) {
+                validationErrors.push(
+                    translate(
+                        'tagActions.validation.invalidLabel',
+                        'The tag label must be 1-255 characters and must not have leading or trailing whitespace'
+                    )
+                );
+            } else if (tags?.some((tag) => tag.label === trimmedLabel)) {
                 validationErrors.push(
                     translate('tagActions.validation.tagExists', 'A tag with this label already exists')
                 );
@@ -102,7 +109,7 @@ const CreateTagDialog: React.FC = () => {
                 <Label htmlFor="tag-label">{translate('general.label', 'Label')}</Label>
                 <TextInput
                     id="tag-label"
-                    setFocus
+                    autoFocus
                     validationerrors={dialogState.validation?.valid ? null : ['This input is invalid']}
                     required={true}
                     type="text"

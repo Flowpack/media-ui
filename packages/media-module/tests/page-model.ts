@@ -142,6 +142,10 @@ class Page {
     public get createTagDialog(): Selector {
         return Selector('#CreateTagDialog');
     }
+
+    public get createAssetCollectionDialog(): Selector {
+        return Selector('#CreateAssetCollectionDialog');
+    }
 }
 
 export default new Page();

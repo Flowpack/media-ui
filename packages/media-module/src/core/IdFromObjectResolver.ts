@@ -11,7 +11,7 @@ export default function IdFromObjectResolver(object) {
     switch (object.__typename) {
         case 'Image':
             return id + (object as Image).url;
-        case 'AssetFile':
+        case 'File':
             return id + (object as AssetFile).url;
         default:
             return defaultDataIdFromObject(object);

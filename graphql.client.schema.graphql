@@ -1,0 +1,14 @@
+# Apollo Client local state schema extensions merged into the linting schema.
+# These types/directives are resolved entirely client-side at runtime and are not
+# part of the server schema (Resources/Private/GraphQL/schema.root.graphql),
+# so they must be declared here for GraphQL ESLint to lint operations correctly.
+directive @client(always: Boolean!) on FIELD
+directive @export(as: String!) on FIELD
+
+extend type Query {
+    includeUsage: Boolean!
+}
+
+extend type Mutation {
+    includeUsage: Boolean!
+}

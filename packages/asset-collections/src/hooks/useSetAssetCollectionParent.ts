@@ -6,7 +6,7 @@ import { SET_ASSET_COLLECTION_PARENT } from '../mutations/setAssetCollectionPare
 interface SetAssetCollectionParentProps {
     assetCollection: AssetCollection;
     assetSourceId: AssetSourceId;
-    parent: AssetCollection | null;
+    parent: AssetCollection | null | undefined;
 }
 
 interface SetAssetCollectionParentVariables {

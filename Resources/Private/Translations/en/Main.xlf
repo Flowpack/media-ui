@@ -362,6 +362,15 @@
             <trans-unit id="assetCollectionActions.create.error" xml:space="preserve" approved="yes">
                 <source>Failed to create asset collection</source>
             </trans-unit>
+            <trans-unit id="assetCollectionActions.validation.emptyTitle" xml:space="preserve" approved="yes">
+                <source>Please provide a title</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionActions.validation.invalidTitle" xml:space="preserve" approved="yes">
+                <source>The title must be 1-255 characters and must not have leading or trailing whitespace</source>
+            </trans-unit>
+            <trans-unit id="assetCollectionActions.validation.collectionExists" xml:space="preserve" approved="yes">
+                <source>A collection with this title already exists</source>
+            </trans-unit>
             <trans-unit id="actions.deleteAssetCollection.confirm.title" xml:space="preserve" approved="yes">
                 <source>Delete collection</source>
             </trans-unit>
@@ -385,6 +394,9 @@
             </trans-unit>
             <trans-unit id="tagActions.validation.emptyTagLabel" xml:space="preserve" approved="yes">
                 <source>Please provide a tag label</source>
+            </trans-unit>
+            <trans-unit id="tagActions.validation.invalidLabel" xml:space="preserve" approved="yes">
+                <source>The tag label must be 1-255 characters and must not have leading or trailing whitespace</source>
             </trans-unit>
             <trans-unit id="tagActions.validation.tagExists" xml:space="preserve" approved="yes">
                 <source>This tag already exists. Please choose a different one.</source>
