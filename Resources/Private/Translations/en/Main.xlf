@@ -386,6 +386,9 @@
             <trans-unit id="tagActions.validation.emptyTagLabel" xml:space="preserve" approved="yes">
                 <source>Please provide a tag label</source>
             </trans-unit>
+            <trans-unit id="tagActions.validation.invalidLabel" xml:space="preserve" approved="yes">
+                <source>The tag label must be 1-255 characters and must not have leading or trailing whitespace</source>
+            </trans-unit>
             <trans-unit id="tagActions.validation.tagExists" xml:space="preserve" approved="yes">
                 <source>This tag already exists. Please choose a different one.</source>
             </trans-unit>

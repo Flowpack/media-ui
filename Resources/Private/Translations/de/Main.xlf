@@ -480,6 +480,13 @@
                 <source>Please provide a tag label</source>
                 <target>Bitte geben Sie einen Tag-Namen ein</target>
             </trans-unit>
+            <trans-unit id="tagActions.validation.invalidLabel" xml:space="preserve" approved="yes">
+                <source>The tag label must be 1-255 characters and must not have leading or trailing whitespace</source>
+                <target>
+                    Der Tag-Name muss aus 1 bis 255 Zeichen bestehen und darf keine Leerzeichen am Anfang oder Ende
+                    enthalten
+                </target>
+            </trans-unit>
             <trans-unit id="tagActions.validation.tagExists" xml:space="preserve" approved="yes">
                 <source>This tag already exists. Please choose a different one.</source>
                 <target>Dieser Tag existiert bereits. Bitte wählen Sie einen anderen aus.</target>
