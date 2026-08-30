@@ -22,7 +22,23 @@ test('Create a new asset collection and test validation', async (t) => {
         .click(page.collectionTreeToolbar.find('button').withAttribute('title', 'Create new asset collection'))
         .expect(page.createAssetCollectionDialog.find('button').withText('Create').hasAttribute('disabled'))
         .ok('Create button should be initially disabled')
-        .typeText(page.createAssetCollectionDialog.find('input[class*="textInput"]'), newAssetCollectionName)
+        .typeText(page.createAssetCollectionDialog.find('input[class*="textInput"]'), ' ', { replace: true })
+        .expect(page.createAssetCollectionDialog.find('ul li').textContent)
+        .eql('Please provide a title')
+        .expect(page.createAssetCollectionDialog.find('button').withText('Create').hasAttribute('disabled'))
+        .ok('Create button should be disabled for an empty title')
+        .typeText(page.createAssetCollectionDialog.find('input[class*="textInput"]'), 'Example collection 1', {
+            replace: true,
+        })
+        .expect(page.createAssetCollectionDialog.find('ul li').textContent)
+        .eql('A collection with this title already exists')
+        .expect(page.createAssetCollectionDialog.find('button').withText('Create').hasAttribute('disabled'))
+        .ok('Create button should be disabled for a duplicate title')
+        .typeText(page.createAssetCollectionDialog.find('input[class*="textInput"]'), newAssetCollectionName, {
+            replace: true,
+        })
+        .expect(page.createAssetCollectionDialog.find('ul li').exists)
+        .notOk('The tooltip should not be visible anymore')
         .click(page.createAssetCollectionDialog.find('button').withText('Create'))
         .expect(page.createAssetCollectionDialog.exists)
         .notOk('The dialog closes after confirmation');
@@ -44,6 +60,11 @@ test('Edit an asset collection and verify the tree is updated', async (t) => {
         .click(page.assetCollections.withText('Example collection 1'))
         .expect(page.assetInspector.exists)
         .ok('The inspector should open for the selected collection')
+        .typeText(titleInput, ' ', { replace: true })
+        .expect(page.assetInspector.find('.propertyGroup ul li').textContent)
+        .eql('Please provide a title')
+        .expect(page.applyButton.hasAttribute('disabled'))
+        .ok('Apply button should be disabled while the title is invalid')
         .typeText(titleInput, editedCollectionTitle, { replace: true })
         .click(page.applyButton)
         .expect(titleInput.withAttribute('value', editedCollectionTitle).exists)
