@@ -109,7 +109,7 @@ const CreateTagDialog: React.FC = () => {
                 <Label htmlFor="tag-label">{translate('general.label', 'Label')}</Label>
                 <TextInput
                     id="tag-label"
-                    setFocus
+                    autoFocus
                     validationerrors={dialogState.validation?.valid ? null : ['This input is invalid']}
                     required={true}
                     type="text"
