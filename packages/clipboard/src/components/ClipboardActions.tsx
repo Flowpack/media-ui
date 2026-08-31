@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { IconButton } from '@neos-project/react-ui-components';
 
@@ -9,12 +9,14 @@ import { clipboardState } from '../state/clipboardState';
 import { clipboardVisibleState } from '../state/clipboardVisibleState';
 
 import classes from './ClipboardActions.module.css';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 const ClipboardActions: React.FC = () => {
     const { translate } = useIntl();
     const { approvalAttainmentStrategy } = useMediaUi();
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const [clipboardVisible, setClipboardVisible] = useRecoilState(clipboardVisibleState);
-    const [clipboard, setClipboard] = useRecoilState(clipboardState);
+    const [clipboard, setClipboard] = useRecoilState(clipboardState(selectedAssetSourceId));
 
     const onFlushClipboard = useCallback(async () => {
         const canFlushClipboard = await approvalAttainmentStrategy.obtainApprovalToFlushClipboard();

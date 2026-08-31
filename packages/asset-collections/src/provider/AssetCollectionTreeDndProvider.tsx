@@ -4,7 +4,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { useRecoilValue } from 'recoil';
 
 import { useIntl, useNotify } from '@media-ui/core';
-import { selectedAssetSourceState } from '@media-ui/feature-asset-sources';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import { useSetAssetCollectionParent } from '../hooks/useSetAssetCollectionParent';
 import useAssetCollectionsQuery from '../hooks/useAssetCollectionsQuery';
@@ -19,17 +19,19 @@ interface AssetCollectionTreeDndProviderValues {
     currentlyDraggedNodes: string[];
     handleDrag: (assetCollectionId: string) => void;
     handeEndDrag: () => void;
-    handleDrop: (targetAssetCollectionId: string, position: number) => void;
-    acceptsDraggedNode: (assetCollectionId: AssetCollectionId, mode: 'into' | 'after') => boolean;
+    handleDrop: (targetAssetCollectionId: string, position: DROP_POSITION) => void;
+    acceptsDraggedNode: (assetCollectionId: AssetCollectionId, mode: DROP_POSITION) => boolean;
 }
 
-export const AssetCollectionDndContext = createContext(null);
+export const AssetCollectionDndContext = createContext<AssetCollectionTreeDndProviderValues>(
+    {} as AssetCollectionTreeDndProviderValues
+);
 export const useAssetCollectionDnd = (): AssetCollectionTreeDndProviderValues => useContext(AssetCollectionDndContext);
 
 export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTreeDndProviderProps) {
     const { translate } = useIntl();
     const Notify = useNotify();
-    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const { assetCollections } = useAssetCollectionsQuery(selectedAssetSourceId);
     const [currentlyDraggedNodes, setCurrentlyDraggedNodes] = useState<string[]>([]);
     const { setAssetCollectionParent } = useSetAssetCollectionParent();
@@ -48,41 +50,44 @@ export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTree
     const handleDrop = useCallback(
         (targetAssetCollectionId: string, position: 'before' | 'into') => {
             const targetAssetCollection = assetCollections.find(({ id }) => id === targetAssetCollectionId);
-            const draggedAssetCollections = currentlyDraggedNodes.map((draggedId) =>
-                assetCollections.find(({ id }) => id === draggedId)
-            );
+            const draggedAssetCollections = currentlyDraggedNodes
+                .map((draggedId) => assetCollections.find(({ id }) => id === draggedId))
+                .filter((a) => a !== undefined);
 
-            const targetAssetCollectionParent = targetAssetCollection.parent?.id
-                ? assetCollections.find(({ id }) => id === targetAssetCollection.parent?.id)
-                : null;
-            const targetParentCollection = position === 'into' ? targetAssetCollection : targetAssetCollectionParent;
+            if (targetAssetCollection) {
+                const targetAssetCollectionParent = targetAssetCollection.parent?.id
+                    ? assetCollections.find(({ id }) => id === targetAssetCollection.parent?.id)
+                    : null;
+                const targetParentCollection =
+                    position === 'into' ? targetAssetCollection : targetAssetCollectionParent;
 
-            draggedAssetCollections.forEach((draggedAssetCollection: AssetCollection) => {
-                if (targetParentCollection?.id !== draggedAssetCollection.parent?.id) {
-                    setAssetCollectionParent({
-                        assetCollection: draggedAssetCollection,
-                        assetSourceId: selectedAssetSourceId,
-                        parent: targetParentCollection,
-                    })
-                        .then(() => {
-                            Notify.ok(
-                                translate(
-                                    'ParentCollectionSelectBox.setParent.success',
-                                    'The parent collection has been set'
-                                )
-                            );
+                draggedAssetCollections.forEach((draggedAssetCollection: AssetCollection) => {
+                    if (targetParentCollection?.id !== draggedAssetCollection.parent?.id) {
+                        setAssetCollectionParent({
+                            assetCollection: draggedAssetCollection,
+                            assetSourceId: selectedAssetSourceId,
+                            parent: targetParentCollection,
                         })
-                        .catch(({ message }) => {
-                            Notify.error(
-                                translate(
-                                    'ParentCollectionSelectBox.setParent.error',
-                                    'Error while setting the parent collection'
-                                ),
-                                message
-                            );
-                        });
-                }
-            });
+                            .then(() => {
+                                Notify.ok(
+                                    translate(
+                                        'ParentCollectionSelectBox.setParent.success',
+                                        'The parent collection has been set'
+                                    )
+                                );
+                            })
+                            .catch(({ message }) => {
+                                Notify.error(
+                                    translate(
+                                        'ParentCollectionSelectBox.setParent.error',
+                                        'Error while setting the parent collection'
+                                    ),
+                                    message
+                                );
+                            });
+                    }
+                });
+            }
 
             setCurrentlyDraggedNodes([]);
         },
@@ -90,7 +95,7 @@ export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTree
     );
 
     const acceptsDraggedNode = useCallback(
-        (assetCollectionId: AssetCollectionId, mode: 'into' | 'after') => {
+        (assetCollectionId: AssetCollectionId, mode: DROP_POSITION) => {
             if (currentlyDraggedNodes.length === 0 || currentlyDraggedNodes.includes(assetCollectionId)) return false;
 
             // TODO: Also check current assetSource.readonly property
@@ -100,9 +105,11 @@ export function AssetCollectionTreeDndProvider({ children }: AssetCollectionTree
             if (!canBeInserted) return false;
 
             const assetCollection = assetCollections.find(({ id }) => id === assetCollectionId);
-            const createsRecursion = currentlyDraggedNodes.some((draggedAssetCollectionId) => {
-                return isChildOfCollection(assetCollection, draggedAssetCollectionId, assetCollections);
-            });
+            const createsRecursion = assetCollection
+                ? currentlyDraggedNodes.some((draggedAssetCollectionId) => {
+                      return isChildOfCollection(assetCollection, draggedAssetCollectionId, assetCollections);
+                  })
+                : false;
             return !createsRecursion;
         },
         [assetCollections, currentlyDraggedNodes]

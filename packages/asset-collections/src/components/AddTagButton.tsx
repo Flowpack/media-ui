@@ -6,6 +6,7 @@ import { Button, Icon } from '@neos-project/react-ui-components';
 import { useIntl } from '@media-ui/core';
 import { useConfigQuery } from '@media-ui/core/src/hooks';
 import { createTagDialogState, selectedTagIdState } from '@media-ui/feature-asset-tags';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import classes from './AddTagButton.module.css';
 
@@ -13,7 +14,8 @@ const AddTagButton: React.FC = () => {
     const { translate } = useIntl();
     const { config } = useConfigQuery();
     const setCreateTagDialogState = useSetRecoilState(createTagDialogState);
-    const selectedTagId = useRecoilValue(selectedTagIdState);
+    const assetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const selectedTagId = useRecoilValue(selectedTagIdState(assetSourceId));
 
     const onClickCreate = useCallback(() => {
         setCreateTagDialogState({

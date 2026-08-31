@@ -13,7 +13,7 @@ export const assetCollectionFavouriteState = selectorFamily<boolean, string>({
     get:
         (assetCollectionId) =>
         ({ get }) =>
-            !!get(assetCollectionFavouritesState)[assetCollectionId],
+            get(assetCollectionFavouritesState)[assetCollectionId],
     set:
         (assetCollectionId) =>
         ({ set }, newValue: boolean) =>
@@ -22,7 +22,7 @@ export const assetCollectionFavouriteState = selectorFamily<boolean, string>({
                     ...prevState,
                     [assetCollectionId]: newValue,
                 };
-                if (newState[assetCollectionId] === false) {
+                if (!newState[assetCollectionId]) {
                     delete newState[assetCollectionId];
                 }
                 return newState;

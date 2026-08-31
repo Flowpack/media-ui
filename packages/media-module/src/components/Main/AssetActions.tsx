@@ -34,7 +34,7 @@ const AssetActions: React.FC<ItemActionsProps> = ({ asset }: ItemActionsProps) =
             });
     }, [importAsset, asset, Notify, translate]);
 
-    const canBeViewedInLightbox = asset.thumbnailUrl.indexOf('/Static/Packages/') === -1;
+    const canBeViewedInLightbox = asset.thumbnailUrl?.indexOf('/Static/Packages/') === -1;
 
     if (!asset) return null;
 

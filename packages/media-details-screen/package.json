@@ -7,13 +7,16 @@
     "node": ">=12"
   },
   "dependencies": {
-    "@apollo/client": "^3.3.13",
+    "@apollo/client": "catalog:",
     "@media-ui/core": "workspace:*",
     "@media-ui/media-module": "workspace:*",
-    "apollo-upload-client": "^14.1.3",
-    "react": "^17.0.2",
-    "react-redux": "^5.1.2",
-    "recoil": "^0.7.7"
+    "@neos-project/react-ui-components": "catalog:",
+    "apollo-upload-client": "catalog:",
+    "classnames": "catalog:",
+    "graphql": "catalog:",
+    "react": "catalog:",
+    "react-redux": "catalog:",
+    "recoil": "catalog:"
   },
   "browserslist": [
     "> 0.5%",

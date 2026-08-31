@@ -32,7 +32,7 @@ const ListViewItem: React.FC<ListViewItemProps> = ({ assetIdentity, onSelect, on
     const { dummyImage, isAssetSelectable, selectionMode } = useMediaUi();
     const { asset, loading } = useAssetQuery(assetIdentity);
     const applicationContext = useRecoilValue(applicationContextState);
-    const isMultiSelected = useRecoilValue(isAssetSelectedState(assetIdentity.assetId));
+    const isMultiSelected = useRecoilValue(isAssetSelectedState(assetIdentity));
     const canBeSelected = useMemo(() => isAssetSelectable(asset), [asset, isAssetSelectable]);
     const isBrowserContext = applicationContext === 'browser';
 

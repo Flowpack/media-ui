@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { selectedAssetIdsState } from '@media-ui/core/src/state';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 const useSelectAssets = () => {
-    const [selectedAssets, setSelectedAssets] = useRecoilState(selectedAssetIdsState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const [selectedAssets, setSelectedAssets] = useRecoilState(selectedAssetIdsState(selectedAssetSourceId));
 
     const addToSelection = useCallback(
         (assetIdentity: AssetIdentity) => {

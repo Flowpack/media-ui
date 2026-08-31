@@ -1,4 +1,4 @@
-interface AssetIdentity {
-    assetId: string;
-    assetSourceId: string;
-}
+type AssetIdentity = {
+    assetId: AssetId;
+    assetSourceId: AssetSourceId;
+};
