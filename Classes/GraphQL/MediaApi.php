@@ -17,7 +17,6 @@ namespace Flowpack\Media\Ui\GraphQL;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Flowpack\Media\Ui\Domain\Model\SearchTerm;
-use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Mutator\AssetCollectionMutator;
@@ -268,7 +267,7 @@ final class MediaApi
     public function unusedAssets(Types\AssetSourceId $assetSourceId, int $limit = 20, int $offset = 0): Types\Assets
     {
         try {
-            return $this->assetSourceContext->getUnusedAssets($assetSourceId, $limit, $offset);
+            return $this->getUnusedAssets($assetSourceId, $limit, $offset);
         } catch (MediaUiException $e) {
             $this->logger->error('Could not retrieve unused assets', ['exception' => $e]);
         }
@@ -514,7 +513,7 @@ final class MediaApi
     }
 
     /**
-     * @throws Exception|IllegalObjectTypeException
+     * @throws MediaUiException|IllegalObjectTypeException
      */
     #[Mutation]
     public function createTag(
@@ -526,7 +525,7 @@ final class MediaApi
     }
 
     /**
-     * @throws Exception|IllegalObjectTypeException
+     * @throws MediaUiException|IllegalObjectTypeException
      */
     #[Mutation]
     public function updateTag(
@@ -538,11 +537,24 @@ final class MediaApi
     }
 
     /**
-     * @throws Exception|IllegalObjectTypeException|InvalidQueryException
+     * @throws MediaUiException|IllegalObjectTypeException|InvalidQueryException
      */
     #[Mutation]
     public function deleteTag(Types\TagId $id, Types\AssetSourceId $assetSourceId): MutationResult
     {
         return $this->tagMutator->deleteTag($id, $assetSourceId);
+    }
+
+    /**
+     * @throws MediaUiException
+     */
+    public function getUnusedAssets(Types\AssetSourceId $assetSourceId, int $limit, int $offset): Types\Assets
+    {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support creating collections in the neos asset source
+            return Types\Assets::empty();
+        }
+
+        return $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
     }
 }

@@ -17,7 +17,6 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
-use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
@@ -25,6 +24,7 @@ use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\TagRepository;
@@ -34,9 +34,9 @@ use Neos\Neos\Domain\Repository\SiteRepository;
 class AssetCollectionMutator
 {
     public function __construct(
+        protected readonly PersistenceManagerInterface $persistenceManager,
         private readonly AssetCollectionRepository $assetCollectionRepository,
         private readonly AssetCollectionService $assetCollectionService,
-        private readonly AssetSourceContext $assetSourceContext,
         private readonly TagRepository $tagRepository,
         private readonly SiteRepository $siteRepository,
         private readonly Translator $translator,
@@ -71,8 +71,27 @@ class AssetCollectionMutator
         Types\AssetCollectionTitle $title,
         Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionId $parent = null
-    ): Types\AssetCollection {
-        return $this->assetSourceContext->createAssetCollection($title, $assetSourceId, $parent);
+    ): ?Types\AssetCollection {
+        if ($assetSourceId->value !== 'neos') {
+            // We currently only support creating collections in the neos asset source
+            return null;
+        }
+
+        /** @var HierarchicalAssetCollectionInterface&AssetCollection $newAssetCollection */
+        $newAssetCollection = new AssetCollection($title->value);
+        if ($parent) {
+            $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
+            $newAssetCollection->setParent($parentCollection);
+        }
+
+        // FIXME: Multiple asset collections with the same title can exist, but do we want that?
+        $this->assetCollectionRepository->add($newAssetCollection);
+        return Types\AssetCollection::create(
+            Types\AssetCollectionId::fromString($this->persistenceManager->getIdentifierByObject($newAssetCollection)),
+            $assetSourceId,
+            Types\AssetCollectionTitle::fromString($newAssetCollection->getTitle()),
+            Types\AssetCollectionPath::fromString($newAssetCollection->getPath()),
+        );
     }
 
     /**
