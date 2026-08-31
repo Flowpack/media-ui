@@ -81,7 +81,7 @@ const Tasks: React.FC = () => {
                         <AssetUsagesToggleButton
                             variant="menuItem"
                             menuItemClassName={menuItemClasses.menuItem}
-                            menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
+                            menuItemDisabledClassName={menuItemClasses.menuItemDisabled}
                         />
                         {showSimilarAssets && (
                             <SimilarAssetsToggleButton
@@ -93,7 +93,7 @@ const Tasks: React.FC = () => {
                             assets={[selectedAsset]}
                             variant="menuItem"
                             menuItemClassName={menuItemClasses.menuItem}
-                            menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
+                            menuItemDisabledClassName={menuItemClasses.menuItemDisabled}
                         />
                         {!isReadonly && applicationContext !== 'details' && (
                             <>
