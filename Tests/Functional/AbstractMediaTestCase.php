@@ -56,7 +56,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
             $session->destroy(
                 sprintf(
                     'assure that session is fresh, in setUp() method of functional test %s.',
-                    get_class($this) . '::' . $this->getName()
+                    get_class($this) . '::' . $this->name()
                 )
             );
         }
@@ -81,7 +81,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
             $session->destroy(
                 sprintf(
                     'assure that session is fresh, in setUp() method of functional test %s.',
-                    get_class($this) . '::' . $this->getName()
+                    get_class($this) . '::' . $this->name()
                 )
             );
         }
@@ -132,7 +132,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      */
     protected function createMockResourceAndPointerFromHash(string $hash): PersistentResource
     {
-        $mockResource = $this->getMockBuilder(PersistentResource::class)->setMethods(['getHash', 'getUri'])->getMock();
+        $mockResource = $this->getMockBuilder(PersistentResource::class)->addMethods(['getHash', 'getUri'])->getMock();
         $mockResource
                 ->method('getHash')
                 ->willReturn($hash);

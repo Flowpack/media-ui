@@ -44,7 +44,7 @@ class AssetApiTest extends AbstractMediaTestCase
     protected AssetRepository $assetRepository;
     protected false $isolated;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->isolated = false;
@@ -144,7 +144,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->assertTrue($deleteResult->success);
         $assetsAfterDeletion = $this->mediaApi->assets(Types\AssetSourceId::default());
         Assert::assertNotNull($assetsAfterDeletion);
-        $this->assertCount(0, $assetsAfterDeletion);
+        $this->assertCount(0, $assetsAfterDeletion->assets);
     }
 
     public function testDeleteUsedAssetFails(): void
@@ -172,7 +172,7 @@ class AssetApiTest extends AbstractMediaTestCase
         $this->assertFalse($deleteResult->success);
         $assetsAfterDeletion = $this->mediaApi->assets(Types\AssetSourceId::default());
         Assert::assertNotNull($assetsAfterDeletion);
-        $this->assertCount(1, $assetsAfterDeletion);
+        $this->assertCount(1, $assetsAfterDeletion->assets);
     }
 
     public function testUpdateAsset(): void
@@ -327,7 +327,7 @@ class AssetApiTest extends AbstractMediaTestCase
 
         $unusedAssets = $this->mediaApi->unusedAssets(Types\AssetSourceId::default());
         $unusedAsset = $unusedAssets->assets[0];
-        $this->assertCount(1, $unusedAssets);
+        $this->assertCount(1, $unusedAssets->assets);
         $this->assertEquals($file->clientFilename, $unusedAsset->filename->value);
     }
 }

@@ -5,6 +5,9 @@
   "private": true,
   "main": "src/index.ts",
   "dependencies": {
-    "@media-ui/core": "workspace:*"
+    "@media-ui/core": "workspace:*",
+    "@neos-project/react-ui-components": "catalog:",
+    "react": "catalog:",
+    "recoil": "catalog:"
   }
 }

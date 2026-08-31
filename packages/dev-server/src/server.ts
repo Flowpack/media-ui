@@ -10,6 +10,11 @@ import * as Fixtures from './fixtures/index';
 
 // FIXME: type annotations are missing as they couldn't be included anymore while making the devserver work again
 // import { AssetChange, AssetChangeQueryResult, AssetChangeType } from '@media-ui/feature-concurrent-editing/src';
+interface MutationResult {
+    success: boolean;
+    messages: string[];
+    data?: any[];
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -27,6 +32,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         entryPoints: {
             server: path.resolve(__dirname, './index.ts'),
             main: '@media-ui/media-module/src/index',
+        },
+        alias: {
+            // Yarn installs two physically distinct @apollo/client copies: the one used by
+            // @media-ui/media-module is peer-satisfied with graphql@15, while the root-hoisted
+            // copy used by @media-ui/core and the feature packages peers against graphql@16.
+            // Bundling both breaks Apollo's React context (ApolloProvider and the query hooks
+            // come from different module instances), so pin the whole bundle to a single
+            // self-consistent @apollo/client + graphql@15 pair.
+            '@apollo/client': path.resolve(__dirname, '../../media-module/node_modules/@apollo/client'),
+            graphql: path.resolve(__dirname, '../../media-module/node_modules/graphql'),
         },
         outdir: path.resolve(__dirname, '../public/dist'),
         define: {
@@ -181,17 +196,19 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
             setAssetCollectionParent: (
                 $_,
                 { id, assetSourceId, parent }: { id: string; assetSourceId: string; parent: string }
-            ): boolean => {
+            ): MutationResult => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
                 const parentCollection = assetCollections.find((assetCollection) => assetCollection.id === parent);
-                if (!assetCollection || !parentCollection) return false;
+                if (!assetCollection || !parentCollection)
+                    return { success: false, messages: ['Collection not found'] };
 
                 // Check if there would be a recursion
                 let tmpParent = parentCollection;
-                while (tmpParent) {
+                while (tmpParent?.parent) {
+                    // @ts-ignore
                     tmpParent = assetCollections.find((assetCollection) => assetCollection.id === tmpParent.parent.id);
                     if (tmpParent.id === parentCollection.id) {
-                        return false;
+                        return { success: false, messages: ['Recursion detected'] };
                     }
                 }
 
@@ -201,13 +218,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                     assetSourceId: parentCollection.assetSourceId,
                     title: parentCollection.title,
                 };
-                return true;
+                return { success: true, messages: [] };
             },
             updateAssetCollection: (
                 $_,
                 { id, title, tagIds }: { id: string; title: string; tagIds: string[] }
-            ): boolean => {
+            ): MutationResult => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
+                if (!assetCollection) return { success: false, messages: ['Asset collection not found'] };
                 if (title) {
                     // @ts-ignore we intentionally overwrite the readonly property here
                     assetCollection.title = title;
@@ -215,14 +233,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 if (Array.isArray(tagIds)) {
                     assetCollection.tags = tags.filter((tag) => tagIds.includes(tag.id));
                 }
-                return true;
+                return { success: true, messages: [] };
             },
-            deleteAssetCollection: ($_, { id }: { id: string }): boolean => {
+            deleteAssetCollection: ($_, { id }: { id: string }): MutationResult => {
                 const assetCollection = assetCollections.find((assetCollection) => assetCollection.id === id);
-                if (!assetCollection) return false;
-                if (assetCollection.assetCount > 0) return false;
+                if (!assetCollection) return { success: false, messages: ['Asset collection not found'] };
+                if (assetCollection.assetCount > 0) return { success: false, messages: ['Asset collection not empty'] };
                 assetCollections = assetCollections.filter((assetCollection) => assetCollection.id !== id);
-                return true;
+                return { success: true, messages: [] };
             },
             createAssetCollection: ($_, { title, parent }: { title: string; parent: string }): AssetCollection => {
                 const parentCollection = parent
@@ -280,16 +298,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 });
                 return { success: true, messages: [] };
             },
-            deleteTag: ($_, { id }): boolean => {
-                tags.splice(
-                    tags.findIndex((tag) => tag.id === id),
-                    1
-                );
+            deleteTag: ($_, { id }): MutationResult => {
+                const index = tags.findIndex((tag) => tag.id === id);
+                if (index === -1) return { success: false, messages: ['Tag not found'] };
+                tags.splice(index, 1);
                 // Remove tag from assets
                 assets.forEach((asset) => {
                     asset.tags = asset.tags.filter((tag) => tag.id !== id);
                 });
-                return true;
+                return { success: true, messages: [] };
             },
             deleteAsset: ($_, { id: id, assetSourceId }) => {
                 const inUse = Fixtures.getUsageDetailsForAsset(id).reduce(
@@ -313,15 +330,38 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 }
                 return { success: false, messages: ['Asset not found'] };
             },
-            createTag: ($_, { tag: newTag }: { tag: Tag }): Tag => {
+            createTag: (
+                $_,
+                {
+                    label,
+                    assetSourceId,
+                    assetCollectionId,
+                }: { label: string; assetSourceId: string; assetCollectionId?: string }
+            ): Tag => {
+                const newTag: Tag = {
+                    __typename: 'Tag',
+                    id: `index ${tags.length + 1}`,
+                    label,
+                    assetSourceId,
+                };
                 if (tags.find((tag) => tag === newTag)) {
                     throw new Error('Tag with this id already exists');
+                }
+                if (assetCollectionId) {
+                    const assetCollection: AssetCollection | undefined = assetCollections.find(
+                        (collection) => collection.id === assetCollectionId
+                    );
+                    assetCollection?.tags?.push(newTag);
                 }
                 tags.push(newTag);
                 return newTag;
             },
-            updateTag: ($_, { id, label }): Tag => {
-                throw new Error('Not implemented');
+            updateTag: ($_, { id, assetSourceId, label }): Tag => {
+                const tag = tags.find((tag) => tag.id === id && tag.assetSourceId === assetSourceId);
+                if (!tag) throw new Error('Tag not found');
+                // @ts-ignore we intentionally overwrite the readonly property here
+                tag.label = label;
+                return tag;
             },
             replaceAsset: ($_, { id, assetSourceId, file, options }): FileUploadResult => {
                 throw new Error('Not implemented');
@@ -368,10 +408,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
         ${graphqlSchema}
     `;
 
-    const server = new ApolloServer({ typeDefs, resolvers, uploads: false });
+    const server = new ApolloServer({ typeDefs, resolvers });
     const app = express();
 
-    // @ts-ignore
+    await server.start();
+
     server.applyMiddleware({ app, path: '/graphql' });
 
     app.use((req, res, next) => {

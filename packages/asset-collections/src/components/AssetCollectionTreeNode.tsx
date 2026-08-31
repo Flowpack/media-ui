@@ -57,7 +57,7 @@ const AssetCollectionTreeNode: React.FC<AssetCollectionTreeNodeProps> = ({
     const handleNodeDrag = useCallback(() => handleDrag(assetCollectionId), [assetCollectionId, handleDrag]);
     const handleNodeEndDrag = useCallback(() => handeEndDrag(), [handeEndDrag]);
     const handleNodeDrop = useCallback(
-        (position) => handleDrop(assetCollectionId, position),
+        (position: DROP_POSITION) => handleDrop(assetCollectionId, position),
         [assetCollectionId, handleDrop]
     );
 

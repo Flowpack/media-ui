@@ -5,6 +5,13 @@
   "private": true,
   "main": "src/index.ts",
   "dependencies": {
-    "@media-ui/feature-asset-tags": "workspace:*"
+    "@apollo/client": "catalog:",
+    "@media-ui/feature-asset-tags": "workspace:*",
+    "@neos-project/react-ui-components": "catalog:",
+    "graphql": "catalog:",
+    "react": "catalog:",
+    "react-dnd": "catalog:",
+    "react-dnd-html5-backend": "catalog:",
+    "recoil": "catalog:"
   }
 }

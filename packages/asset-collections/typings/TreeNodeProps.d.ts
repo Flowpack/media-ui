@@ -4,3 +4,5 @@ interface TreeNodeProps {
     level: number;
     collapsedByDefault?: boolean;
 }
+
+type DROP_POSITION = 'before' | 'into';

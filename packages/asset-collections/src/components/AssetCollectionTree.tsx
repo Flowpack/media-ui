@@ -109,7 +109,6 @@ const AssetCollectionTree = () => {
                             label={translate('assetCollectionList.showAll', 'All') + ` (${totalAssetCount})`}
                             title={translate('assetCollectionList.showAll.title', 'Show assets for all collections')}
                             level={1}
-                            assetCollectionId={null}
                         >
                             <AssetCollectionTreeNode
                                 label={translate('assetCollectionList.unassigned', 'Unassigned')}
@@ -123,18 +122,11 @@ const AssetCollectionTree = () => {
                             <TagTreeNode
                                 tagId={'UNTAGGED'}
                                 label={translate('assetCollectionList.untagged', 'Untagged')}
-                                assetCollectionId={null}
                                 level={2}
                                 customIconComponent={<IconStack primaryIcon="tag" secondaryIcon="times" />}
                             />
                             {tags?.map((tag) => (
-                                <TagTreeNode
-                                    key={tag.id}
-                                    tagId={tag.id}
-                                    label={tag.label}
-                                    assetCollectionId={null}
-                                    level={2}
-                                />
+                                <TagTreeNode key={tag.id} tagId={tag.id} label={tag.label} level={2} />
                             ))}
                         </AssetCollectionTreeNode>
                         {assetCollectionsIdWithoutParent.map((assetCollectionId) => (

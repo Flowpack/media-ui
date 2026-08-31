@@ -17,6 +17,7 @@ export default function useUploadFile() {
         action({
             variables: {
                 file,
+                assetSourceId,
                 tagId,
                 assetCollectionId,
             },

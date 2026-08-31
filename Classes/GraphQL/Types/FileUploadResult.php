@@ -23,9 +23,9 @@ final class FileUploadResult implements \JsonSerializable
         return new self(true, $result, $filename);
     }
 
-    public static function fromError(string $result): self
+    public static function fromError(string $result, ?Filename $filename = null): self
     {
-        return new self(false, $result);
+        return new self(false, $result, $filename);
     }
 
     /**

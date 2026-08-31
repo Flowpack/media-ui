@@ -31,7 +31,7 @@ interface AssetsQueryResult {
 interface AssetsQueryVariables {
     searchTerm: string;
     assetSourceId: string;
-    assetCollectionId: string;
+    assetCollectionId?: string | null;
     mediaType: MediaType | '';
     assetType: AssetType | '';
     tagId: string;

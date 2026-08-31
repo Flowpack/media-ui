@@ -117,6 +117,7 @@ jobs:
         run: |
           git clone https://github.com/neos/flow-base-distribution.git -b ${{ matrix.flow-versions }} ${FLOW_FOLDER}
           cd ${FLOW_FOLDER}
+          composer require --no-update --dev --no-interaction phpunit/phpunit:"^11.0"
 
           git -C ../${{ env.PACKAGE_FOLDER }} checkout -b build
           composer config repositories.package '{ "type": "path", "url": "../${{ env.PACKAGE_FOLDER }}", "options": { "symlink": false } }'
@@ -127,7 +128,7 @@ jobs:
       - name: Composer Install
         run: |
           cd ${FLOW_FOLDER}
-          composer update --no-interaction --no-progress
+          composer install --no-interaction --no-progress
 
       - name: Run Unit tests
         run: |
@@ -178,7 +179,7 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
-      - name: Run mocha tests
+      - name: Run JS unit tests
         run: yarn test:unit
 
   e2e:

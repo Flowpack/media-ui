@@ -34,7 +34,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
     protected MediaApi $mediaApi;
     protected AssetCollectionResolver $assetCollectionResolver;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         if (!$this->persistenceManager instanceof PersistenceManager) {

@@ -90,7 +90,6 @@ class AssetCollectionMutator
             Types\AssetCollectionId::fromString($this->persistenceManager->getIdentifierByObject($newAssetCollection)),
             $assetSourceId,
             Types\AssetCollectionTitle::fromString($newAssetCollection->getTitle()),
-            Types\AssetCollectionPath::fromString($newAssetCollection->getPath()),
         );
     }
 
