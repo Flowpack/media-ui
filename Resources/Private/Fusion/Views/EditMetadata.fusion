@@ -61,6 +61,8 @@ Flowpack.Media.Ui.MediaController {
         body = Flowpack.Media.Ui:Component.MetadataEditor {
             asset = ${asset}
             formSchema = ${formSchema}
+            assetDsps = ${assetDsps}
+            dspHash = ${dspHash}
         }
 
         closingBodyTag = '</body>'
