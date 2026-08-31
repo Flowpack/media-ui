@@ -1150,6 +1150,20 @@
                 <source>Changes to this property will affect all dimensions</source>
                 <target>Änderungen an dieser Eigenschaft wirken sich auf alle Dimensionen aus</target>
             </trans-unit>
+
+            <!-- Metadata editor -->
+            <trans-unit id="metadataEditor.title" xml:space="preserve" approved="yes">
+                <source>Editing asset "{0}"</source>
+                <target>Datei "{0}" bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="metadataEditor.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
+            <trans-unit id="metadataEditor.save" xml:space="preserve" approved="yes">
+                <source>Save</source>
+                <target>Speichern</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

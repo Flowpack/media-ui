@@ -8,8 +8,6 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditor) < prototype(Neos.Fusion:Co
     /// string
     dspHash = null
 
-    // TODO: Translate labels
-
     renderer = afx`
         <main>
             <Flowpack.Media.Ui:EditMetadata.DimensionSwitcherForm
@@ -19,7 +17,7 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditor) < prototype(Neos.Fusion:Co
                 currentAssetDsp={props.currentAssetDsp}
             />
             <h1>
-                Editing asset "{props.asset.label}"
+                {I18n.translate('metadataEditor.title', 'Editing asset "{0}"', [props.asset.label], 'Main', 'Flowpack.Media.Ui')}
             </h1>
             <Flowpack.Media.Ui:Component.MetadataEditorForm
                 asset={props.asset}
@@ -33,13 +31,13 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditor) < prototype(Neos.Fusion:Co
                 attributes.class="neos-button"
                 attributes.id="cancelButton"
             >
-                Cancel
+                {I18n.translate('metadataEditor.cancel', 'Cancel', [], 'Main', 'Flowpack.Media.Ui')}
             </Neos.Fusion.Form:Button>
             <Neos.Fusion.Form:Button
                 attributes.form="editMetadataForm"
                 attributes.class="neos-button neos-button-success"
             >
-                Save
+                {I18n.translate('metadataEditor.save', 'Save', [], 'Main', 'Flowpack.Media.Ui')}
             </Neos.Fusion.Form:Button>
         </footer>
     `

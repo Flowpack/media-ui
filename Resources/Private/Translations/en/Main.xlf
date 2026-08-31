@@ -891,6 +891,17 @@
             <trans-unit id="metaData.globalScopeHint" xml:space="preserve" approved="yes">
                 <source>Changes to this property will affect all dimensions</source>
             </trans-unit>
+
+            <!-- Metadata editor -->
+            <trans-unit id="metadataEditor.title" xml:space="preserve" approved="yes">
+                <source>Editing asset "{0}"</source>
+            </trans-unit>
+            <trans-unit id="metadataEditor.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+            </trans-unit>
+            <trans-unit id="metadataEditor.save" xml:space="preserve" approved="yes">
+                <source>Save</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
