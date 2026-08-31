@@ -1,6 +1,10 @@
 import { atom } from 'recoil';
 
-const createTagDialogState = atom({
+const createTagDialogState = atom<{
+    visible: boolean;
+    label: string;
+    validation: { valid: boolean; errors: string[] };
+}>({
     key: 'createTagDialogState',
     default: {
         visible: false,

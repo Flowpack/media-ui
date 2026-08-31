@@ -30,5 +30,5 @@ export const Dialog: React.FC<DialogProps> = (props) => {
         }
     }, [dialogRef]);
 
-    return <NeosUiDialog {...props} autoFocus={true} ref={dialogRef} className={theme.mediaModuleTheme} />;
+    return <NeosUiDialog {...props} ref={dialogRef} className={theme.mediaModuleTheme} />;
 };

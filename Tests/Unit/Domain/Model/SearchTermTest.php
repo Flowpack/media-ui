@@ -45,7 +45,7 @@ final class SearchTermTest extends UnitTestCase
     /**
      * @return array<mixed>
      */
-    public function nonStringValueExamples(): array
+    public static function nonStringValueExamples(): array
     {
         return [
             'null' => [null],

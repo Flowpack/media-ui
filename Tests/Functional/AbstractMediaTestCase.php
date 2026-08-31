@@ -56,7 +56,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
             $session->destroy(
                 sprintf(
                     'assure that session is fresh, in setUp() method of functional test %s.',
-                    get_class($this) . '::' . $this->getName()
+                    get_class($this) . '::' . $this->name()
                 )
             );
         }
@@ -81,7 +81,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
             $session->destroy(
                 sprintf(
                     'assure that session is fresh, in setUp() method of functional test %s.',
-                    get_class($this) . '::' . $this->getName()
+                    get_class($this) . '::' . $this->name()
                 )
             );
         }
@@ -132,7 +132,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      */
     protected function createMockResourceAndPointerFromHash(string $hash): PersistentResource
     {
-        $mockResource = $this->getMockBuilder(PersistentResource::class)->setMethods(['getHash', 'getUri'])->getMock();
+        $mockResource = $this->getMockBuilder(PersistentResource::class)->addMethods(['getHash', 'getUri'])->getMock();
         $mockResource
                 ->method('getHash')
                 ->willReturn($hash);
@@ -176,13 +176,18 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
     }
 
     /**
+     * Required by SecurityOperationsTrait.
+     *
      * @template T of object
      * @param class-string<T> $className
      *
      * @return T
+     *
+     * @phpstan-ignore method.unused (required to satisfy SecurityOperationsTrait)
      */
     private function getObject(string $className): object
     {
         return $this->objectManager->get($className);
     }
+
 }

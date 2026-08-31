@@ -35,7 +35,14 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
     const disabled = isSingle ? asset.isInUse : assets?.length === 0;
 
     const onDelete = useCallback(async (): Promise<boolean> => {
-        const identities: AssetIdentity[] = assets ?? [{ assetId: asset.id, assetSourceId: asset.assetSource.id }];
+        let identities: AssetIdentity[];
+        if (assets) {
+            identities = assets;
+        } else if (asset) {
+            identities = [{ assetId: asset.id, assetSourceId: asset.assetSource.id }];
+        } else {
+            return false;
+        }
 
         const canDelete = isSingle
             ? await approvalAttainmentStrategy.obtainApprovalToDeleteAsset({ asset })
@@ -48,8 +55,11 @@ const DeleteAssetButton: React.FC<DeleteAssetButtonProps> = ({
                 await deleteAsset(identities[0]);
                 Notify.ok(translate('action.deleteAsset.success', 'The asset has been deleted'));
                 return true;
-            } catch ({ message }) {
-                Notify.error(translate('action.deleteAsset.error', 'Error while trying to delete the asset'), message);
+            } catch (error: any) {
+                Notify.error(
+                    translate('action.deleteAsset.error', 'Error while trying to delete the asset'),
+                    error?.message
+                );
                 return false;
             }
         }

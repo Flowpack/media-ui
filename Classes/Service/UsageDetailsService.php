@@ -205,6 +205,7 @@ final class UsageDetailsService
             'assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode'
         ) ?: 'inaccessibleNode');
 
+        // FIXME: In Neos 8 we used the node from the users personal workspace so they can edit the node, but for Neos 9 this needs to be reimplemented
         $url = $accessible && $closestDocumentNode ? $this->buildNodeUri($site, $closestDocumentNode) : '';
 
         $workspaceMetadata = $this->workspaceMetadataAndRoleRepository->loadWorkspaceMetadata(

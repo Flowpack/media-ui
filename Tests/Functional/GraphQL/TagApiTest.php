@@ -36,7 +36,7 @@ class TagApiTest extends AbstractMediaTestCase
     protected AssetCollectionResolver $assetCollectionResolver;
     protected AssetResolver $assetResolver;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         if (!$this->persistenceManager instanceof PersistenceManager) {
@@ -86,6 +86,7 @@ class TagApiTest extends AbstractMediaTestCase
             Types\AssetCollectionTitle::fromString('Test Collection'),
             Types\AssetSourceId::default(),
         );
+        Assert::assertInstanceOf(Types\AssetCollection::class, $assetCollection);
         $tag = $this->mediaApi->createTag(
             Types\TagLabel::fromString('Test Tag'),
             Types\AssetSourceId::default(),

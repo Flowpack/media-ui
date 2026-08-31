@@ -15,14 +15,10 @@ namespace Flowpack\Media\Ui\GraphQL\Context;
  */
 
 use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
-use Flowpack\Media\Ui\Exception as MediaUiException;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\GraphQL\Types\TagLabel;
-use Flowpack\Media\Ui\Service\UsageDetailsService;
-use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Media\Domain\Model\Asset;
-use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
@@ -56,7 +52,6 @@ class AssetSourceContext
         protected readonly AssetRepository $assetRepository,
         protected readonly AssetCollectionRepository $assetCollectionRepository,
         protected readonly TagRepository $tagRepository,
-        protected readonly UsageDetailsService $usageDetailsService,
     ) {
         $this->assetSources = $this->assetSourceService->getAssetSources();
     }
@@ -191,48 +186,5 @@ class AssetSourceContext
         /** @var ?Tag $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         return $tag ? Types\Tag::create($id, $assetSourceId, TagLabel::fromString($tag->getLabel())) : null;
-    }
-
-    /**
-     * @throws IllegalObjectTypeException
-     */
-    public function createAssetCollection(
-        Types\AssetCollectionTitle $title,
-        Types\AssetSourceId $assetSourceId,
-        ?Types\AssetCollectionId $parent
-    ): Types\AssetCollection {
-        if ($assetSourceId->value !== 'neos') {
-            throw new \Exception('We currently only support creating collections in the neos asset source');
-        }
-
-        /** @var HierarchicalAssetCollectionInterface&AssetCollection $newAssetCollection */
-        $newAssetCollection = new AssetCollection($title->value);
-        if ($parent) {
-            $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
-            if ($parentCollection instanceof HierarchicalAssetCollectionInterface) {
-                $newAssetCollection->setParent($parentCollection);
-            }
-        }
-
-        // FIXME: Multiple asset collections with the same title can exist, but do we want that?
-        $this->assetCollectionRepository->add($newAssetCollection);
-        return Types\AssetCollection::create(
-            Types\AssetCollectionId::fromString($this->persistenceManager->getIdentifierByObject($newAssetCollection)),
-            $assetSourceId,
-            Types\AssetCollectionTitle::fromString($newAssetCollection->getTitle()),
-        );
-    }
-
-    /**
-     * @throws MediaUiException
-     */
-    public function getUnusedAssets(Types\AssetSourceId $assetSourceId, int $limit, int $offset): Types\Assets
-    {
-        if ($assetSourceId->value !== 'neos') {
-            // We currently only support creating collections in the neos asset source
-            return Types\Assets::empty();
-        }
-
-        return $this->usageDetailsService->getUnusedAssets($limit, $offset, Types\AssetSourceId::default());
     }
 }

@@ -5,6 +5,13 @@
   "private": true,
   "main": "src/index.ts",
   "dependencies": {
-    "@media-ui/core": "workspace:*"
+    "@apollo/client": "catalog:",
+    "@media-ui/core": "workspace:*",
+    "@neos-project/react-ui-components": "catalog:",
+    "classnames": "catalog:",
+    "graphql": "catalog:",
+    "react": "catalog:",
+    "react-dropzone": "catalog:",
+    "recoil": "catalog:"
   }
 }

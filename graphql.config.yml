@@ -1,0 +1,4 @@
+schema:
+  - ./Resources/Private/GraphQL/schema.root.graphql
+  - ./graphql.client.schema.graphql
+documents: ./packages/**/*.{ts,tsx}
