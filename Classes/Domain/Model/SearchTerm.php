@@ -33,9 +33,7 @@ final class SearchTerm
         $this->value = $value;
 
         if (preg_match(self::ASSET_IDENTIFIER_PATTERN, $value, $matches) !== false) {
-            if ($assetIdentifier = $matches[1] ?? null) {
-                $this->assetIdentifier = $assetIdentifier;
-            }
+            $this->assetIdentifier = $matches[1];
         }
     }
 

@@ -80,6 +80,7 @@ class AssetCollectionMutator
         /** @var HierarchicalAssetCollectionInterface&AssetCollection $newAssetCollection */
         $newAssetCollection = new AssetCollection($title->value);
         if ($parent) {
+            /** @var HierarchicalAssetCollectionInterface|null $parentCollection */
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
             $newAssetCollection->setParent($parentCollection);
         }

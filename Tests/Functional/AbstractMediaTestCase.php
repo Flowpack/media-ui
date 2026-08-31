@@ -176,13 +176,18 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
     }
 
     /**
+     * Required by SecurityOperationsTrait.
+     *
      * @template T of object
      * @param class-string<T> $className
      *
      * @return T
+     *
+     * @phpstan-ignore method.unused (required to satisfy SecurityOperationsTrait)
      */
     private function getObject(string $className): object
     {
         return $this->objectManager->get($className);
     }
+
 }
