@@ -388,7 +388,7 @@ final class MediaApi
         Types\AssetCollectionTitle $title,
         Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionId $parent = null,
-    ): Types\AssetCollection {
+    ): ?Types\AssetCollection {
         return $this->assetCollectionMutator->createAssetCollection(
             $title,
             $assetSourceId,

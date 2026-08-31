@@ -86,6 +86,7 @@ class TagApiTest extends AbstractMediaTestCase
             Types\AssetCollectionTitle::fromString('Test Collection'),
             Types\AssetSourceId::default(),
         );
+        Assert::assertInstanceOf(Types\AssetCollection::class, $assetCollection);
         $tag = $this->mediaApi->createTag(
             Types\TagLabel::fromString('Test Tag'),
             Types\AssetSourceId::default(),

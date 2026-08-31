@@ -162,9 +162,9 @@ final class GraphQLMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param array<int, Error> $errors
+     * @param list<Error> $errors
      * @param callable(Throwable): FormattedError $formatter
-     * @return array<int, FormattedError>
+     * @return list<FormattedError>
      */
     private function handleGraphQLErrors(array $errors, callable $formatter): array
     {
