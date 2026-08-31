@@ -10,8 +10,8 @@ prototype(Flowpack.Media.Ui:EditMetadata.DimensionSwitcherForm) < prototype(Neos
             <Neos.Fusion.Form:Select field.name="metaDataDimensionSpacePointHash" field.value={props.currentAssetDsp}>
                 <Neos.Fusion:Loop items={props.assetDsps}>
                     <Neos.Fusion.Form:Select.Option option.value={item.hash} attributes.selected={item.hash == props.currentAssetDsp}>
-                        <Neos.Fusion:Loop items={item.coordinates} itemKey="dimensionName" itemName="dimensionValue" @glue=", ">
-                            {dimensionName}: {dimensionValue}
+                        <Neos.Fusion:Loop items={item.coordinates} itemName="coordinate" @glue=", ">
+                            {coordinate.dimensionLabel}: {coordinate.valueLabel}
                         </Neos.Fusion:Loop>
                     </Neos.Fusion.Form:Select.Option>
                 </Neos.Fusion:Loop>

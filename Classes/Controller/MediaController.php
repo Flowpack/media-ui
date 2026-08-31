@@ -26,11 +26,13 @@ use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\MetaData\Domain\Dto\MetaDataAssetReference;
 use Neos\MetaData\Domain\Dto\MetaDataDimensionSpacePoint;
+use Neos\MetaData\Domain\Dto\MetaDataDimensionSpacePoints;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyDefinitions;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyName;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyValues;
 use Neos\MetaData\MetaDataManager;
 use Neos\Neos\Controller\Module\AbstractModuleController;
+use Neos\Neos\Domain\Service\ConfigurationContentDimensionPresetSource;
 
 #[Flow\Scope('singleton')]
 class MediaController extends AbstractModuleController
@@ -43,6 +45,9 @@ class MediaController extends AbstractModuleController
 
     #[Flow\Inject]
     protected Translator $translator;
+
+    #[Flow\Inject]
+    protected ConfigurationContentDimensionPresetSource $contentDimensionPresetSource;
 
     /**
      * @var FusionView
@@ -92,7 +97,7 @@ class MediaController extends AbstractModuleController
             $dimensionSpacePoint = $this->getDimensionSpacePointFromHash($metaDataDimensionSpacePointHash);
         }
         if ($metaDataDimensionSpacePointHash === null || $dimensionSpacePoint === null) {
-            $dimensionSpacePoint = $dimensionSpacePoints->getIterator()->current();
+            $dimensionSpacePoint = $this->getFirstDimensionSpacePoint($dimensionSpacePoints);
         }
         $asset = $this->assetSourceContext->getAsset($assetId, $assetSourceId);
         if ($asset === null) {
@@ -115,7 +120,7 @@ class MediaController extends AbstractModuleController
         $hasOnlyEmptyDsp = false;
         if ($dimensionSpacePoints->count() === 1) {
             /** @var MetaDataDimensionSpacePoint $dimensionSpacePoint */
-            $dimensionSpacePoint = $dimensionSpacePoints->getIterator()->current();
+            $dimensionSpacePoint = $this->getFirstDimensionSpacePoint($dimensionSpacePoints);
             $hasOnlyEmptyDsp = $dimensionSpacePoint->equals(MetaDataDimensionSpacePoint::fromCoordinates([]));
         }
 
@@ -123,7 +128,7 @@ class MediaController extends AbstractModuleController
             'formSchema' => $propertyDefinitions,
             'asset' => $asset,
             'assetIdentity' => $assetIdentity,
-            'assetDsps' => !$hasOnlyEmptyDsp ? $dimensionSpacePoints : [],
+            'assetDsps' => !$hasOnlyEmptyDsp ? $this->mapDimensionSpacePointsToDtos($dimensionSpacePoints) : [],
             'currentAssetDsp' => $metaDataDimensionSpacePointHash ?: $dimensionSpacePoint?->hash,
         ]);
     }
@@ -187,12 +192,63 @@ class MediaController extends AbstractModuleController
         $this->redirect('index');
     }
 
+    /**
+     * Converts the configured dimension space points into displayable dtos with the dimensions' and
+     * presets' labels resolved, so that the dimension switcher can show them instead of the configuration keys.
+     *
+     * @return array<array{hash: string, coordinates: list<array{dimensionLabel: string, valueLabel: string}>}>
+     */
+    private function mapDimensionSpacePointsToDtos(MetaDataDimensionSpacePoints $dimensionSpacePoints): array
+    {
+        $presets = $this->contentDimensionPresetSource->getAllPresets();
+        $dtos = [];
+        foreach ($dimensionSpacePoints as $dimensionSpacePoint) {
+            $coordinates = [];
+            foreach ($dimensionSpacePoint->coordinates as $dimensionName => $dimensionValue) {
+                $dimensionConfiguration = $presets[$dimensionName] ?? null;
+                $coordinates[] = [
+                    'dimensionLabel' => $dimensionConfiguration['label'] ?? $dimensionName,
+                    'valueLabel' => $this->resolvePresetLabel($dimensionConfiguration['presets'] ?? [], $dimensionValue) ?? $dimensionValue,
+                ];
+            }
+            $dtos[] = [
+                'hash' => $dimensionSpacePoint->hash,
+                'coordinates' => $coordinates,
+            ];
+        }
+
+        return $dtos;
+    }
+
+    /**
+     * @param array<string, array{values: list<string>, label: string|null}> $presets
+     */
+    private function resolvePresetLabel(array $presets, string $dimensionValue): ?string
+    {
+        foreach ($presets as $presetConfiguration) {
+            if (isset($presetConfiguration['values'][0]) && $presetConfiguration['values'][0] === $dimensionValue) {
+                return $presetConfiguration['label'] ?? null;
+            }
+        }
+
+        return null;
+    }
+
+    private function getFirstDimensionSpacePoint(MetaDataDimensionSpacePoints $dimensionSpacePoints): ?MetaDataDimensionSpacePoint
+    {
+        foreach ($dimensionSpacePoints as $dimensionSpacePoint) {
+            return $dimensionSpacePoint;
+        }
+
+        return null;
+    }
+
     private function getDimensionSpacePointFromHash(string $dimensionSpacePointHash): ?MetaDataDimensionSpacePoint
     {
         $dimensionSpacePoints = $this->metaDataManager->getDimensionSpacePointConfiguration();
         return current(array_filter(
             iterator_to_array($dimensionSpacePoints),
-            fn($spacePoint) => $spacePoint->hash === $dimensionSpacePointHash
-        )) ?? null;
+            static fn($spacePoint) => $spacePoint->hash === $dimensionSpacePointHash
+        )) ?: null;
     }
 }
