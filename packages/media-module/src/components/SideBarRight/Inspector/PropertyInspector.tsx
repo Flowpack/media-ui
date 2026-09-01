@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useApolloClient } from '@apollo/client';
 
-import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
+import { Button, TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
 import { useConfigQuery, useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
@@ -12,6 +12,7 @@ import { featureFlagsState, multiSelectionState, selectedAssetIdsState } from '@
 import { UPDATE_ASSET } from '@media-ui/core/src/mutations';
 import { useInteraction } from '@media-ui/core/src/provider';
 import { selectedAssetSourceIdState, useSelectedAssetSource } from '@media-ui/feature-asset-sources';
+import { metadataEditorVisibleState } from '@media-ui/feature-metadata-editing';
 
 import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
 import TagSelectBoxMulti from './TagSelectBoxMulti';
@@ -45,6 +46,7 @@ const PropertyInspector = () => {
     const [propertyEditorCollapsed, setPropertyEditorCollapsed] = useState<boolean>(
         featureFlags.propertyEditor.collapsed
     );
+    const [metadataEditorVisible, setMetadataEditorVisible] = useRecoilState(metadataEditorVisibleState);
 
     const { updateAsset, loading } = useUpdateAsset();
 
@@ -56,6 +58,10 @@ const PropertyInspector = () => {
           (label !== selectedAsset.label ||
               caption !== selectedAsset.caption ||
               copyrightNotice !== selectedAsset.copyrightNotice);
+
+    const toggleMetadataEditor = useCallback(() => {
+        setMetadataEditorVisible((prev) => !prev);
+    }, [setMetadataEditorVisible]);
 
     const handleDiscard = useCallback(() => {
         if (isMultiSelection) {
@@ -92,7 +98,7 @@ const PropertyInspector = () => {
                     Notify.ok(translate('actions.updateAsset.success', 'The asset has been updated'));
                 } catch (error: any) {
                     Notify.error(
-                        translate('actions.updateAsset.error', 'Error while updating the asset'),
+                   Notify.error(translate('actions.updateAsset.error', 'Error while updating the asset'), error?.message);
                         error?.message
                     );
                 }
@@ -226,6 +232,12 @@ const PropertyInspector = () => {
                                 hasUnpublishedChanges={hasUnpublishedChanges}
                                 inputValid={isMultiSelection || !!label}
                             />
+                        )}
+
+                        {config.supportsMetadataEditing && (
+                            <Button type="button" onClick={toggleMetadataEditor} isActive={metadataEditorVisible}>
+                                {translate('inspector.toggleMetadataEditor', 'Edit metadata')}
+                            </Button>
                         )}
                     </ToggablePanel.Contents>
                 </ToggablePanel>
