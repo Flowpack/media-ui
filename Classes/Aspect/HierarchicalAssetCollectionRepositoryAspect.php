@@ -14,13 +14,8 @@ namespace Flowpack\Media\Ui\Aspect;
  * source code.
  */
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
-use Neos\Flow\Persistence\QueryResultInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Utility\ObjectAccess;
