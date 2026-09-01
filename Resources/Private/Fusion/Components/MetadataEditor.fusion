@@ -9,13 +9,15 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditor) < prototype(Neos.Fusion:Co
     @private.isMultiAssetEdit = ${Array.length(props.assetsWithMetadata) > 1}
 
     renderer = afx`
-        <main>
+        <header>
             <Flowpack.Media.Ui:EditMetadata.DimensionSwitcherForm
                 @if.hasDimensions={props.assetDsps}
                 assetsWithMetadata={props.assetsWithMetadata}
                 assetDsps={props.assetDsps}
                 currentAssetDsp={props.currentAssetDsp}
             />
+        </header>
+        <main>
             <h1 @if.condition={!private.isMultiAssetEdit}>
                 {I18n.translate('metadataEditor.title', 'Editing asset "{0}"', [props.assetsWithMetadata[0].asset.label], 'Main', 'Flowpack.Media.Ui')}
             </h1>

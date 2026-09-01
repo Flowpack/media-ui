@@ -96,7 +96,10 @@ const PropertyInspector = () => {
 
                     Notify.ok(translate('actions.updateAsset.success', 'The asset has been updated'));
                 } catch (error: any) {
-                    Notify.error(translate('actions.updateAsset.error', 'Error while updating the asset'), error?.message);
+                    Notify.error(
+                        translate('actions.updateAsset.error', 'Error while updating the asset'),
+                        error?.message
+                    );
                 }
             }
         }
