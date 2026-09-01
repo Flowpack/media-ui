@@ -33,6 +33,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Persistence\Exception\InvalidQueryException;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\ResourceManagement\Exception as ResourceManagementException;
 use Neos\Flow\Security\Authorization\PrivilegeManagerInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetSourceInterface;
@@ -40,6 +41,7 @@ use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
 use Neos\Media\Domain\Model\AssetVariantInterface;
 use Neos\Media\Domain\Model\VariantSupportInterface;
 use Neos\Media\Domain\Service\AssetService;
+use Neos\MetaData\MetaDataManager;
 use Neos\Utility\Exception\FilesException;
 use Neos\Utility\Files;
 use Psr\Log\LoggerInterface;
@@ -64,6 +66,7 @@ final class MediaApi
         private readonly AssetService $assetService,
         private readonly AssetSourceContext $assetSourceContext,
         private readonly LoggerInterface $logger,
+        private readonly ObjectManagerInterface $objectManager,
         private readonly PersistenceManagerInterface $persistenceManager,
         private readonly PrivilegeManagerInterface $privilegeManager,
         private readonly SimilarityService $similarityService,
@@ -213,6 +216,7 @@ final class MediaApi
                 'Flowpack.Media.Ui:ManageAssetCollections'
             ),
             'canManageAssets' => $this->privilegeManager->isPrivilegeTargetGranted('Flowpack.Media.Ui:ManageAssets'),
+            'supportsMetadataEditing' => $this->objectManager->has(MetaDataManager::class),
         ]);
     }
 

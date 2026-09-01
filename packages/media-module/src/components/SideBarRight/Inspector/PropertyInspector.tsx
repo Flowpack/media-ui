@@ -5,7 +5,7 @@ import { useApolloClient } from '@apollo/client';
 import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
 import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
-import { useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
+import { useConfigQuery, useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
 import { featureFlagsState, multiSelectionState, selectedAssetIdsState } from '@media-ui/core/src/state';
@@ -37,6 +37,7 @@ const PropertyInspector = () => {
     const client = useApolloClient();
     const { getFailedAssetLabels } = useFailedAssetLabels();
     const featureFlags = useRecoilValue(featureFlagsState);
+    const { config } = useConfigQuery();
     const [label, setLabel] = useState<string>(null);
     const [caption, setCaption] = useState<string>(null);
     const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
@@ -185,30 +186,34 @@ const PropertyInspector = () => {
                                         onEnterKey={handleApply}
                                     />
                                 </Property>
-                                <Property label={translate('inspector.caption', 'Caption')}>
-                                    <TextArea
-                                        name="caption"
-                                        className={classes.textArea}
-                                        disabled={!isEditable}
-                                        minRows={3}
-                                        expandedRows={6}
-                                        value={caption || ''}
-                                        onChange={setCaption}
-                                    />
-                                </Property>
+                                {!config.supportsMetadataEditing && (
+                                    <Property label={translate('inspector.caption', 'Caption')}>
+                                        <TextArea
+                                            name="caption"
+                                            className={classes.textArea}
+                                            disabled={!isEditable}
+                                            minRows={3}
+                                            expandedRows={6}
+                                            value={caption || ''}
+                                            onChange={setCaption}
+                                        />
+                                    </Property>
+                                )}
                             </>
                         )}
-                        <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
-                            <TextArea
-                                name="copyrightNotice"
-                                className={classes.textArea}
-                                disabled={!isEditable}
-                                minRows={2}
-                                expandedRows={4}
-                                value={copyrightNotice || ''}
-                                onChange={setCopyrightNotice}
-                            />
-                        </Property>
+                        {!config.supportsMetadataEditing && (
+                            <Property label={translate('inspector.copyrightNotice', 'Copyright notice')}>
+                                <TextArea
+                                    name="copyrightNotice"
+                                    className={classes.textArea}
+                                    disabled={!isEditable}
+                                    minRows={2}
+                                    expandedRows={4}
+                                    value={copyrightNotice || ''}
+                                    onChange={setCopyrightNotice}
+                                />
+                            </Property>
+                        )}
 
                         {isEditable && (
                             <Actions

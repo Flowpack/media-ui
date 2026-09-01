@@ -257,6 +257,8 @@ type Config {
   canManageTags: Boolean!
   canManageAssetCollections: Boolean!
   canManageAssets: Boolean!
+  """ Whether metadata editing is supported (e.g. by the Neos.MetaData package) """
+  supportsMetadataEditing: Boolean!
   """ Unique identifier of an Asset collection (e.g. "neos") """
   defaultAssetCollectionId: AssetCollectionId
 }
