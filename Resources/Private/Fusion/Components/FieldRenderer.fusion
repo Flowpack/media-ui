@@ -1,12 +1,14 @@
 prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:Component) {
     fieldName = ''
     fieldConfig = null
+    fieldNamePrefix = 'postData'
 
     @private.field = Neos.Fusion:Case {
         boolean {
             condition = ${props.fieldConfig.type == 'boolean'}
             renderer = Neos.Fusion.Form:Checkbox {
-                field.name = ${'postData[' + props.fieldName + ']'}
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 field.value = ${props.fieldConfig.value.ownValue}
                 attributes.disabled = 'disabled'
                 attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
@@ -15,8 +17,9 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
         number {
             condition = ${props.fieldConfig.type == 'number'}
             renderer = Neos.Fusion.Form:Input {
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 attributes.type = 'number'
-                field.name = ${'postData[' + props.fieldName + ']'}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 field.value = ${props.fieldConfig.value.ownValue}
                 attributes.disabled = 'disabled'
                 attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
@@ -25,8 +28,9 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
         textArea {
             condition = ${props.fieldConfig.type == 'string' && props.fieldConfig.editor == 'textarea'}
             renderer = Neos.Fusion.Form:Textarea {
-                attributes.rows = ${props.fieldConfig.editorOptions.rows || 8}
-                field.name = ${'postData[' + props.fieldName + ']'}
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                attributes.rows = ${props.fieldConfig.editorOptions.rows || 3}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 content = ${props.fieldConfig.value.ownValue}
                 attributes.disabled = 'disabled'
                 attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
@@ -36,7 +40,8 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
         dateTime {
             condition = ${props.fieldConfig.type == 'dateTime'}
             renderer = Neos.Fusion.Form:Input {
-                field.name = ${'postData[' + props.fieldName + ']'}
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 content = ${props.fieldConfig.value.ownValue}
                 attributes.type = 'datetime-local'
                 attributes.disabled = 'disabled'
@@ -46,7 +51,8 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
         default {
             condition = ${true}
             renderer = Neos.Fusion.Form:Input {
-                field.name = ${'postData[' + props.fieldName + ']'}
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 field.value = ${props.fieldConfig.value.ownValue}
                 attributes.disabled = 'disabled'
                 attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
@@ -59,16 +65,31 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
     }
 
     renderer  = afx`
-        <Neos.Fusion.Form:FieldContainer class="neos-control-group neos-span12"
-                                         label={props.fieldConfig.type != 'boolean' ? props.fieldConfig.label : ''}>
-            <Flowpack.Media.Ui:EditMetadata.Atom.GlobalScopeIcon @if.isGlobalScope={props.fieldConfig.globalScope == true}/>
-            <div class="neos-controls neos-controls-row">
-                <label class="neos-checkbox neos-inline" @if.isBoolean={props.fieldConfig.type == 'boolean'}>
+        <Neos.Fusion.Form:FieldContainer
+            class='neos-control-group'
+            label={props.fieldConfig.type != 'boolean' ? props.fieldConfig.label : ''}
+            field.name={props.fieldNamePrefix + '[' + props.fieldName + ']'}
+        >
+            <Flowpack.Media.Ui:EditMetadata.Atom.GlobalScopeIcon
+                @if.isGlobalScope={props.fieldConfig.globalScope == true}
+            />
+            <div class='neos-controls'>
+                <label
+                    class='neos-checkbox neos-inline'
+                    for={props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                    @if.isBoolean={props.fieldConfig.type == 'boolean'}
+                >
                     {private.field}
                     <span></span> {props.fieldConfig.label}
                 </label>
-                <Neos.Fusion:Fragment @if.isNotBoolean={props.fieldConfig.type != 'boolean'}>{private.field}</Neos.Fusion:Fragment>
-                <small @if.hasFallback={props.fieldConfig.value.inheritedValue}>Fallback: {props.fieldConfig.value.inheritedValue}</small>
+                <Neos.Fusion:Fragment
+                    @if.isNotBoolean={props.fieldConfig.type != 'boolean'}
+                >
+                    {private.field}
+                </Neos.Fusion:Fragment>
+                <small @if.hasFallback={props.fieldConfig.value.inheritedValue}>
+                    Fallback: {props.fieldConfig.value.inheritedValue}
+                </small>
             </div>
         </Neos.Fusion.Form:FieldContainer>
     `

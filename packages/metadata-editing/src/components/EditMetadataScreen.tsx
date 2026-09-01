@@ -1,32 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { endpointsState, selectedAssetIdState } from '@media-ui/core/src/state';
+import { endpointsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 
 import classes from './EditMetadataScreen.module.css';
 import { metadataEditorVisibleState } from '../index';
 import { Icon } from '@neos-project/react-ui-components';
 import { useNotify } from '@media-ui/core';
+import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
-type EditMetadataScreenProps = {
-    assetIdentities?: AssetIdentity[];
-};
-
-const EditMetadataScreen: React.FC<EditMetadataScreenProps> = ({ assetIdentities }) => {
-    const dialogRef = useRef<HTMLDialogElement>();
+const EditMetadataScreen: React.FC = () => {
+    const dialogRef = useRef<HTMLDialogElement>(null);
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const endpoints = useRecoilValue(endpointsState);
-    const selectedAssetId = useRecoilValue(selectedAssetIdState);
+    const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
+    const selectedAssetIds = useRecoilValue(selectedAssetIdsState(selectedAssetSourceId));
     const setEditMetadataScreenVisible = useSetRecoilState(metadataEditorVisibleState);
     const [isLoading, setIsLoading] = useState(true);
     const Notify = useNotify();
-
-    // TODO: Support multiple editing metadata of multiple assets
-    const firstAssetIdentity = assetIdentities?.length > 0 ? assetIdentities[0] : selectedAssetId;
-
-    const endpointUriWithParameters = new URL(endpoints.editMetadata, window.location.origin);
-    endpointUriWithParameters.searchParams.set('assetId', firstAssetIdentity.assetId);
-    endpointUriWithParameters.searchParams.set('assetSourceId', firstAssetIdentity.assetSourceId);
 
     // Open the dialog when the component is mounted
     useEffect(() => {
@@ -97,7 +88,18 @@ const EditMetadataScreen: React.FC<EditMetadataScreenProps> = ({ assetIdentities
         return () => iframe.removeEventListener('load', handleLoad);
     }, []);
 
-    return firstAssetIdentity ? (
+    if (selectedAssetIds.length === 0) {
+        return null;
+    }
+
+    const endpointUriWithParameters = new URL(endpoints.editMetadata, window.location.origin);
+    endpointUriWithParameters.searchParams.set(
+        'assetIds',
+        JSON.stringify(selectedAssetIds.map((assetIdentity) => assetIdentity.assetId))
+    );
+    endpointUriWithParameters.searchParams.set('assetSourceId', selectedAssetSourceId);
+
+    return (
         <dialog className={classes.editMetadataScreen} ref={dialogRef}>
             {isLoading && (
                 <div className={classes.loadingContainer}>
@@ -110,7 +112,7 @@ const EditMetadataScreen: React.FC<EditMetadataScreenProps> = ({ assetIdentities
                 style={{ display: isLoading ? 'none' : 'block' }}
             />
         </dialog>
-    ) : null;
+    );
 };
 
 export default React.memo(EditMetadataScreen);

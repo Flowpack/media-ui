@@ -27,7 +27,7 @@
 
         .neos-checkbox:has([disabled]) {
             cursor: not-allowed;
-            
+
             span, span::before {
                 cursor: not-allowed;
             }
@@ -56,6 +56,52 @@
         display: flex;
         flex-direction: column;
         gap: 1em;
+    }
+
+    .metadata-editor-tabs {
+        display: flex;
+        flex-wrap: wrap;
+
+        > details {
+            display: contents;
+
+            > div {
+                order: 1;
+                padding: 0.75rem;
+                border: 1px solid var(--grayLight);
+                background: var(--grayDark);
+            }
+
+            &[open]::details-content {
+                order: 1;
+                width: 100%;
+            }
+        }
+
+        summary {
+            order: 0;
+            display: block;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--grayMedium);
+            border-bottom: none;
+            border-radius: 0.25rem 0.25rem 0 0;
+            color: var(--textSubtleLight);
+            background-color: var(--grayDark);
+
+            &::-webkit-details-marker,
+            &::marker {
+                display: none;
+            }
+
+            [open] > & {
+                pointer-events: none;
+                z-index: 1;
+                margin-bottom: -1px;
+                border-color: var(--grayLight);
+                color: #fff;
+            }
+        }
     }
 
     footer {
