@@ -28,6 +28,7 @@ use Neos\MetaData\Domain\Dto\MetaDataDimensionSpacePoint;
 use Neos\MetaData\Domain\Dto\MetaDataDimensionSpacePoints;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyDefinitions;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyName;
+use Neos\MetaData\Domain\Dto\MetaDataPropertyValue;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyValues;
 use Neos\MetaData\MetaDataManager;
 use Neos\Neos\Controller\Module\AbstractModuleController;
@@ -99,7 +100,6 @@ class MediaController extends AbstractModuleController
             $dimensionSpacePoint = $this->getFirstDimensionSpacePoint($dimensionSpacePoints);
         }
 
-        /** @var AssetIdentity[] $assetIdentities */
         try {
             $assetIdentities = array_map(
                 static fn(string $assetId) => AssetIdentity::create(
@@ -111,6 +111,7 @@ class MediaController extends AbstractModuleController
         } catch (\Exception) {
             $assetIdentities = [];
         }
+        /** @var AssetIdentity[] $assetIdentities */
 
         $assetsWithMetadata = array_filter(array_map(function (AssetIdentity $assetIdentity) use (
             $dimensionSpacePoint,
@@ -158,7 +159,7 @@ class MediaController extends AbstractModuleController
     }
 
     /**
-     * @return array<string, array{type: string, editor: string|null, label: string, value: string|null}>
+     * @return array<string, array{type: string, editor: string|null, label: string, value: MetaDataPropertyValue}>
      */
     protected function mapPropertyDefinitions(
         ?MetaDataPropertyDefinitions $metaDataPropertyDefinitions,
