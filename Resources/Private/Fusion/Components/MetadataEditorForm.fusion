@@ -21,10 +21,12 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditorForm) < prototype(Neos.Fusio
             </div>
         </Neos.Fusion:Fragment>
         <Neos.Fusion:Fragment @if.condition={!private.isMultiAssetEdit}>
-            <Flowpack.Media.Ui:EditMetadata.AssetFields
-                assetWithMetadata={assetWithMetadata[0]}
-                index={0}
-            />
+            <div class="metadata-editor-single">
+                <Flowpack.Media.Ui:EditMetadata.AssetFields
+                    assetWithMetadata={assetsWithMetadata[0]}
+                    index={0}
+                />
+            </div>
         </Neos.Fusion:Fragment>
     `
 }
