@@ -16,8 +16,8 @@ interface NeosI18n {
 }
 
 type TranslateFunction = (
-    id?: string,
-    fallback?: string,
+    id: string,
+    fallback?: string | null,
     params?: Record<string, unknown> | (string | number)[],
     packageKey?: string,
     sourceName?: string

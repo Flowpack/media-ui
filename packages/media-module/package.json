@@ -49,6 +49,7 @@
     "@types/apollo-upload-client": "^14.1.0",
     "@types/react": "^17.0.93",
     "@types/react-dom": "^17.0.26",
-    "@types/react-dropzone": "^5.1.0"
+    "@types/react-dropzone": "^5.1.0",
+    "@types/react-modal": "^3.16.3"
   }
 }

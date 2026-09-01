@@ -3805,6 +3805,7 @@ __metadata:
     "@types/react": "npm:^17.0.93"
     "@types/react-dom": "npm:^17.0.26"
     "@types/react-dropzone": "npm:^5.1.0"
+    "@types/react-modal": "npm:^3.16.3"
     apollo-upload-client: "catalog:"
     classnames: "catalog:"
     graphql: "catalog:"
@@ -4526,6 +4527,15 @@ __metadata:
   dependencies:
     react-dropzone: "npm:*"
   checksum: 10/2b68fcf0153fb00e17088907490b823b6d81a29a02e615f820e347df2546f9318c5f025eeb33d575c648d01a14e55a19e528c32907608b5a7f727ff0e96b3923
+  languageName: node
+  linkType: hard
+
+"@types/react-modal@npm:^3.16.3":
+  version: 3.16.3
+  resolution: "@types/react-modal@npm:3.16.3"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10/9622d1983ade28864a85baffcf068722b24f02ac3ec1485dab6a9005a2e0b2f8af78f860be494523d90ba5e182744d1151461a4cc42120a32ed57ec3b7a4cab9
   languageName: node
   linkType: hard
 
