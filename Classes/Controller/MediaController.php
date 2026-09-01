@@ -22,7 +22,6 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Fusion\View\FusionView;
-use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\MetaData\Domain\Dto\MetaDataAssetReference;
 use Neos\MetaData\Domain\Dto\MetaDataDimensionSpacePoint;
@@ -84,7 +83,7 @@ class MediaController extends AbstractModuleController
     }
 
     public function editMetadataAction(
-        AssetId $assetId,
+        string $assetIds,
         AssetSourceId $assetSourceId,
         ?string $metaDataDimensionSpacePointHash = null,
     ): void {
@@ -99,23 +98,50 @@ class MediaController extends AbstractModuleController
         if ($metaDataDimensionSpacePointHash === null || $dimensionSpacePoint === null) {
             $dimensionSpacePoint = $this->getFirstDimensionSpacePoint($dimensionSpacePoints);
         }
-        $asset = $this->assetSourceContext->getAsset($assetId, $assetSourceId);
-        if ($asset === null) {
-            return;
+
+        /** @var AssetIdentity[] $assetIdentities */
+        try {
+            $assetIdentities = array_map(
+                static fn(string $assetId) => AssetIdentity::create(
+                    AssetId::fromString($assetId),
+                    $assetSourceId
+                ),
+                json_decode($assetIds, false, 512, JSON_THROW_ON_ERROR)
+            );
+        } catch (\Exception) {
+            $assetIdentities = [];
         }
 
-        $assetReference = MetaDataAssetReference::create($assetSourceId->value, $assetId->value);
-        $propertyValues = $this->metaDataManager->getMetaDataPropertyValues(
-            $assetReference,
-            $dimensionSpacePoint
-        );
+        $assetsWithMetadata = array_filter(array_map(function (AssetIdentity $assetIdentity) use (
+            $dimensionSpacePoint,
+            $metaDataPropertyDefinitions
+        ) {
+            $asset = $this->assetSourceContext->getAsset($assetIdentity->assetId, $assetIdentity->assetSourceId);
+            if (!$asset) {
+                return null;
+            }
 
-        $propertyDefinitions = $this->mapPropertyDefinitions(
-            $metaDataPropertyDefinitions,
-            $propertyValues
-        );
+            $assetReference = MetaDataAssetReference::create(
+                $assetIdentity->assetSourceId->value,
+                $assetIdentity->assetId->value
+            );
 
-        $assetIdentity = AssetIdentity::create($assetId, $assetSourceId);
+            $propertyValues = $this->metaDataManager->getMetaDataPropertyValues(
+                $assetReference,
+                $dimensionSpacePoint
+            );
+
+            $propertyDefinitions = $this->mapPropertyDefinitions(
+                $metaDataPropertyDefinitions,
+                $propertyValues
+            );
+
+            return [
+                'assetIdentity' => $assetIdentity,
+                'asset' => $asset,
+                'formSchema' => $propertyDefinitions,
+            ];
+        }, $assetIdentities));
 
         $hasOnlyEmptyDsp = false;
         if ($dimensionSpacePoints->count() === 1) {
@@ -125,24 +151,26 @@ class MediaController extends AbstractModuleController
         }
 
         $this->view->assignMultiple([
-            'formSchema' => $propertyDefinitions,
-            'asset' => $asset,
-            'assetIdentity' => $assetIdentity,
+            'assetsWithMetadata' => $assetsWithMetadata,
             'assetDsps' => !$hasOnlyEmptyDsp ? $this->mapDimensionSpacePointsToDtos($dimensionSpacePoints) : [],
             'currentAssetDsp' => $metaDataDimensionSpacePointHash ?: $dimensionSpacePoint?->hash,
         ]);
     }
 
     /**
-     * @return array {type: string, editor: string|null, label: string, value: string|null}[]
+     * @return array<string, array{type: string, editor: string|null, label: string, value: string|null}>
      */
     protected function mapPropertyDefinitions(
         ?MetaDataPropertyDefinitions $metaDataPropertyDefinitions,
         MetaDataPropertyValues $propertyValues,
     ): array {
-        if (!isset($metaDataPropertyDefinitions) || iterator_count(
-                $metaDataPropertyDefinitions->getIterator()
-            ) === 0) {
+        try {
+            if (!isset($metaDataPropertyDefinitions) || iterator_count(
+                    $metaDataPropertyDefinitions->getIterator()
+                ) === 0) {
+                return [];
+            }
+        } catch (\Exception) {
             return [];
         }
 
@@ -165,30 +193,38 @@ class MediaController extends AbstractModuleController
     }
 
     /**
-     * @param string[] $postData
+     * @param array<array{assetId: string, postData: array<string, mixed>}> $assets
      * @throws StopActionException
      */
     public function updateMetadataAction(
-        Asset $asset,
+        array $assets,
         string $metaDataDimensionSpacePointHash,
-        array $postData,
+        AssetSourceId $assetSourceId,
     ): void {
-        $assetIdentity = AssetIdentity::create(
-            AssetId::fromString($this->persistenceManager->getIdentifierByObject($asset)),
-            new AssetSourceId($asset->getAssetSourceIdentifier())
-        );
-
         $metaDataDimensionSpacePoint = $this->getDimensionSpacePointFromHash($metaDataDimensionSpacePointHash);
 
-        foreach ($postData as $propertyName => $propertyValue) {
-            $this->metaDataManager->setMetaDataPropertyValue(
-                MetaDataAssetReference::create($assetIdentity->assetSourceId->value, $assetIdentity->assetId->value),
-                MetaDataPropertyName::fromString($propertyName),
-                $propertyValue,
-                $metaDataDimensionSpacePoint,
+        foreach ($assets as $assetData) {
+            $assetIdentity = AssetIdentity::create(
+                AssetId::fromString($assetData['assetId']),
+                $assetSourceId,
             );
+
+            $asset = $this->assetSourceContext->getAsset($assetIdentity->assetId, $assetSourceId);
+            if ($asset === null) {
+                continue;
+            }
+
+            foreach ($assetData['postData'] ?? [] as $propertyName => $propertyValue) {
+                $this->metaDataManager->setMetaDataPropertyValue(
+                    MetaDataAssetReference::create($assetIdentity->assetSourceId->value,
+                        $assetIdentity->assetId->value),
+                    MetaDataPropertyName::fromString($propertyName),
+                    $propertyValue,
+                    $metaDataDimensionSpacePoint,
+                );
+            }
+            $this->assetService->emitAssetUpdated($asset);
         }
-        $this->assetService->emitAssetUpdated($asset);
         $this->redirect('index');
     }
 
@@ -208,7 +244,8 @@ class MediaController extends AbstractModuleController
                 $dimensionConfiguration = $presets[$dimensionName] ?? null;
                 $coordinates[] = [
                     'dimensionLabel' => $dimensionConfiguration['label'] ?? $dimensionName,
-                    'valueLabel' => $this->resolvePresetLabel($dimensionConfiguration['presets'] ?? [], $dimensionValue) ?? $dimensionValue,
+                    'valueLabel' => $this->resolvePresetLabel($dimensionConfiguration['presets'] ?? [],
+                            $dimensionValue) ?? $dimensionValue,
                 ];
             }
             $dtos[] = [
@@ -234,8 +271,8 @@ class MediaController extends AbstractModuleController
         return null;
     }
 
-    private function getFirstDimensionSpacePoint(MetaDataDimensionSpacePoints $dimensionSpacePoints): ?MetaDataDimensionSpacePoint
-    {
+    private function getFirstDimensionSpacePoint(MetaDataDimensionSpacePoints $dimensionSpacePoints
+    ): ?MetaDataDimensionSpacePoint {
         foreach ($dimensionSpacePoints as $dimensionSpacePoint) {
             return $dimensionSpacePoint;
         }

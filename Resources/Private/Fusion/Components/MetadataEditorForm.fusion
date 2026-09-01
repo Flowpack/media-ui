@@ -1,22 +1,30 @@
 prototype(Flowpack.Media.Ui:Component.MetadataEditorForm) < prototype(Neos.Fusion:Component) {
-    /// AssetInterface
-    asset = null
-    /// data structure with the form schema for the metadata editor form
-    formSchema = null
+    /// list<array{assetIdentity: AssetIdentity, asset: AssetInterface, formSchema: array<string, array{type: string, editor: string|null, label: string, value: string|null}>}>
+    assetsWithMetadata = null
 
-    assetDsps = null
-    dspHash = null
+    @private.isMultiAssetEdit = ${Array.length(props.assetsWithMetadata) > 1}
 
     renderer = afx`
-        <Neos.Fusion.Form:Form form.target.action="updateMetadata" attributes.id="editMetadataForm">
-            <Neos.Fusion.Form:Hidden field.name="asset" field.value={props.asset} />
-            <Neos.Fusion.Form:Hidden field.name="metaDataDimensionSpacePointHash" field.value={props.currentAssetDsp} />
-            <Neos.Fusion:Loop items={props.formSchema} itemKey="fieldName" itemName="fieldConfig">
-                <Flowpack.Media.Ui:EditMetadata.FieldRenderer
-                    fieldName={fieldName}
-                    fieldConfig={fieldConfig}
-                />
-            </Neos.Fusion:Loop>
-        </Neos.Fusion.Form:Form>
+        <Neos.Fusion:Fragment @if.condition={private.isMultiAssetEdit}>
+            <div class="metadata-editor-tabs">
+                <Neos.Fusion:Loop items={props.assetsWithMetadata} iterationName="iterator" itemName="assetWithMetadata">
+                    <details name="metadataEditorTab" open="open" open.@if={iterator.isFirst}>
+                        <summary>{assetWithMetadata.asset.label}</summary>
+                        <div>
+                            <Flowpack.Media.Ui:EditMetadata.AssetFields
+                                assetWithMetadata={assetWithMetadata}
+                                index={iterator.index}
+                            />
+                        </div>
+                    </details>
+                </Neos.Fusion:Loop>
+            </div>
+        </Neos.Fusion:Fragment>
+        <Neos.Fusion:Fragment @if.condition={!private.isMultiAssetEdit}>
+            <Flowpack.Media.Ui:EditMetadata.AssetFields
+                assetWithMetadata={assetWithMetadata[0]}
+                index={0}
+            />
+        </Neos.Fusion:Fragment>
     `
 }
