@@ -1,6 +1,15 @@
+html {
+    height: 100%;
+}
+
 .neos.neos-module {
     background: transparent;
-    padding-bottom: var(--spacing-GoldenUnit);
+    margin: 0;
+    display: grid;
+    grid-template-rows: min-content 1fr min-content;
+    max-height: 100%;
+    height: 100%;
+    gap: var(--defaultMargin);
 
     .neos-control-group {
         position: relative;
@@ -53,14 +62,19 @@
     }
 
     main {
-        display: flex;
-        flex-direction: column;
-        gap: 1em;
+        overflow: auto;
+
+        .metadata-editor-single {
+            overflow-y: auto;
+            max-width: 100%;
+        }
     }
 
     .metadata-editor-tabs {
         display: flex;
         flex-wrap: wrap;
+        align-content: flex-start;
+        max-width: 100%;
 
         > details {
             display: contents;
@@ -70,6 +84,7 @@
                 padding: 0.75rem;
                 border: 1px solid var(--grayLight);
                 background: var(--grayDark);
+                overflow: auto;
             }
 
             &[open]::details-content {
@@ -80,6 +95,9 @@
 
         summary {
             order: 0;
+            position: sticky;
+            top: 0;
+            z-index: 2;
             display: block;
             cursor: pointer;
             padding: 0.5rem 0.75rem;
@@ -96,7 +114,7 @@
 
             [open] > & {
                 pointer-events: none;
-                z-index: 1;
+                z-index: 3;
                 margin-bottom: -1px;
                 border-color: var(--grayLight);
                 color: #fff;
@@ -105,12 +123,13 @@
     }
 
     footer {
+        flex-shrink: 0;
         display: flex;
         justify-content: flex-end;
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        left: 0;
+        gap: 0.5rem;
+        padding-top: var(--defaultMargin);
+        border-top: 1px solid var(--grayLight);
+        background: var(--grayDark);
     }
 
     .global-scope-icon {

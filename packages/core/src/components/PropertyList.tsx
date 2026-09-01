@@ -5,7 +5,7 @@ import PropertyListItem from './PropertyListItem';
 import classes from './PropertyList.module.css';
 
 interface PropertyListProps {
-    children: (React.ReactElement<typeof PropertyListItem>|null)[];
+    children: (React.ReactElement<typeof PropertyListItem> | null)[];
 }
 
 const PropertyList: React.FC<PropertyListProps> = ({ children }: PropertyListProps) => {

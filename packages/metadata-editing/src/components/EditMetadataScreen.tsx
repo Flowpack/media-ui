@@ -71,17 +71,7 @@ const EditMetadataScreen: React.FC = () => {
             setIsLoading(false);
 
             // Set initial height
-            const initialHeight = iframeDocument.body.scrollHeight;
-            iframe.style.height = `${initialHeight}px`;
-
-            const resizeObserver = new ResizeObserver(() => {
-                const height = iframeDocument.body.scrollHeight;
-                iframe.style.height = `${height}px`;
-            });
-
-            resizeObserver.observe(iframeDocument.body);
-
-            return () => resizeObserver.disconnect();
+            iframe.style.height = `80vh`;
         };
 
         iframe.addEventListener('load', handleLoad);
