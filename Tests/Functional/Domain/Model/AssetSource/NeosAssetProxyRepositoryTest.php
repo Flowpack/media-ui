@@ -127,13 +127,18 @@ class NeosAssetProxyRepositoryTest extends AbstractMediaTestCase
     }
 
     /**
+     * Requires the optional Neos.MetaData package, therefore tagged "metadata-capabilities" and
+     * excluded from the default functional test run (see CI).
+     *
      * @test
+     * @group metadata-capabilities
      */
     public function findBySearchTermUsesMetaData(): void
     {
         if (!$this->usesMySql()) {
             static::markTestSkipped('MetaData-driven search requires a MySQL database (MetaData storage uses MySQL-specific SQL).');
         }
+        $this->createMetaDataTableIfNecessary();
 
         $image = $this->createImage('First Image');
         $this->persistenceManager->persistAll();
@@ -176,5 +181,17 @@ class NeosAssetProxyRepositoryTest extends AbstractMediaTestCase
         $platform = $this->objectManager->get(EntityManagerInterface::class)
             ->getConnection()->getDatabasePlatform();
         return $platform instanceof AbstractMySQLPlatform;
+    }
+
+    private function createMetaDataTableIfNecessary(): void
+    {
+        $this->objectManager->get(EntityManagerInterface::class)->getConnection()->executeStatement('CREATE TABLE IF NOT EXISTS neos_metadata_value (
+            `asset_source_id` VARCHAR(255) DEFAULT NULL,
+            `asset_id` VARCHAR(40) DEFAULT NULL,
+            `property_name` VARCHAR(40) NOT NULL,
+            `property_value` VARCHAR(250) NOT NULL,
+            `dimension_hash` VARCHAR(250) NOT NULL,
+            UNIQUE INDEX idx_unique (`asset_source_id`, `asset_id`, `property_name`, `dimension_hash`)
+        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
     }
 }
