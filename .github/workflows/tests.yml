@@ -65,13 +65,16 @@ jobs:
     env:
       FLOW_CONTEXT: Testing
       FLOW_FOLDER: ../flow-base-distribution
+      # The optional Neos.MetaData package is installed for a second functional test run.
+      # It requires PHP >= 8.4, so it is only installed on the 8.4 matrix variant.
+      NEOS_METADATA_PACKAGE_BRANCH: 'dev-feature/extensible-metadata-properties'
 
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['8.3']
+        php-versions: ['8.4']
         flow-versions: ['8.4']
 
     steps:
@@ -118,6 +121,19 @@ jobs:
           bin/phpunit --colors -c Build/BuildEssentials/PhpUnit/UnitTests.xml Packages/Application/Flowpack.Media.Ui/Tests/Unit/
 
       - name: Run Functional tests
+        run: |
+          cd ${FLOW_FOLDER}
+          # The metadata-capabilities tests require the optional Neos.MetaData package, which is
+          # only installed for the 8.4 matrix variant below. They are run there instead.
+          bin/phpunit --colors -c Build/BuildEssentials/PhpUnit/FunctionalTests.xml --exclude-group metadata-capabilities Packages/Application/Flowpack.Media.Ui/Tests/Functional/
+
+      - name: Install Neos.MetaData
+        run: |
+          cd ${FLOW_FOLDER}
+          composer require --no-interaction --no-progress neos/metadata:"${NEOS_METADATA_PACKAGE_BRANCH} as 2.0.0"
+          ./flow neos.flow:cache:flush --force
+
+      - name: Run Functional tests with Neos.MetaData
         run: |
           cd ${FLOW_FOLDER}
           bin/phpunit --colors -c Build/BuildEssentials/PhpUnit/FunctionalTests.xml Packages/Application/Flowpack.Media.Ui/Tests/Functional/
