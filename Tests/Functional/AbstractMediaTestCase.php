@@ -11,6 +11,8 @@ namespace Flowpack\Media\Ui\Tests\Functional;
  * source code.
  */
 
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+use Doctrine\ORM\EntityManagerInterface;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
@@ -34,6 +36,45 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      * @var ResourceManager
      */
     protected $resourceManager;
+
+    /**
+     * @inheritDoc
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->createMetaDataValueTable();
+    }
+
+    /**
+     * Creates the table the MetaDataManager writes to.
+     *
+     * The table is not mapped as an entity, so the functional test schema, which is derived from entity
+     * metadata only, does not contain it. As with the MetaData storage adapter tests, the foreign key of
+     * the Doctrine migration is omitted on purpose - the migration cannot be run here.
+     *
+     * TODO: This should be solved in a better way in the metadata package so we can either mock the metadatamanager or can rely on the tables to exist
+     *
+     * @see \Neos\Flow\Persistence\Doctrine\Migrations\Version20260415145934
+     */
+    protected function createMetaDataValueTable(): void
+    {
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $this->objectManager->get(EntityManagerInterface::class);
+        $connection = $entityManager->getConnection();
+        if (!$connection->getDatabasePlatform() instanceof AbstractMySQLPlatform) {
+            $this->markTestSkipped('The metadata storage adapter requires MySQL or MariaDB');
+        }
+        $connection->executeStatement('CREATE TABLE IF NOT EXISTS neos_metadata_value (
+            `asset_source_id` VARCHAR(255) DEFAULT NULL,
+            `asset_id` VARCHAR(40) DEFAULT NULL,
+            `property_name` VARCHAR(40) NOT NULL,
+            `property_value` TEXT NOT NULL,
+            `dimension_hash` VARCHAR(250) NOT NULL,
+            UNIQUE INDEX idx_unique (`asset_source_id`, `asset_id`, `property_name`, `dimension_hash`)
+        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+    }
 
     protected function tearDown(): void
     {
