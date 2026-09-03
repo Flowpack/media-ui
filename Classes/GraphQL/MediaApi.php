@@ -187,7 +187,7 @@ final class MediaApi
         Types\AssetCollectionId $id,
         Types\AssetSourceId $assetSourceId
     ): ?Types\AssetCollection {
-        return $id ? $this->assetSourceContext->getAssetCollection($id, $assetSourceId) : null;
+        return $this->assetSourceContext->getAssetCollection($id, $assetSourceId);
     }
 
     #[Description('Returns an asset by id')]

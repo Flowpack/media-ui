@@ -71,9 +71,10 @@ class TagMutator
             );
         }
 
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findOneByLabel($label->value);
         if ($tag === null) {
-            $tag = new Tag($label);
+            $tag = new Tag($label->value);
             $this->tagRepository->add($tag);
         } else {
             throw new Exception('Tag already exists', 1603921233);
@@ -108,7 +109,7 @@ class TagMutator
             return null;
         }
 
-        /** @var Tag $tag */
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag) {
             throw new Exception('Tag not found', 1590659046);
@@ -141,7 +142,7 @@ class TagMutator
             ]);
         }
 
-        /** @var Tag $tag */
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag) {
             return MutationResult::fromError([

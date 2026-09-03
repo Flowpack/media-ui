@@ -61,7 +61,7 @@ class GraphQLUploadMiddleware implements MiddlewareInterface
                 }
 
                 $data = [
-                    'streamOrFile' => $firstFile->getStream()?->getContents(),
+                    'streamOrFile' => $firstFile->getStream()->getContents(),
                     'size' => $firstFile->getSize(),
                     'errorStatus' => $firstFile->getError(),
                     'clientFilename' => $firstFile->getClientFilename(),

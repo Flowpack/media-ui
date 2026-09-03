@@ -25,6 +25,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Uri;
 use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\NodeInterface;
+use Neos\ContentRepository\Domain\Model\Workspace;
 use Neos\ContentRepository\Domain\Repository\WorkspaceRepository;
 use Neos\ContentRepository\Domain\Service\ContextFactoryInterface;
 use Neos\ContentRepository\Domain\Service\NodeTypeManager;
@@ -45,6 +46,7 @@ use Neos\Flow\Package\PackageManager;
 use Neos\Flow\Reflection\ReflectionService;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetVariantInterface;
+use Neos\Media\Domain\Model\Dto\UsageReference;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Strategy\AssetUsageStrategyInterface;
 use Neos\Neos\Controller\BackendUserTranslationTrait;
@@ -125,12 +127,15 @@ final class UsageDetailsService
                     if (count($usageReferences) && $usageReferences[0] instanceof AssetUsageInNodeProperties) {
                         $usageByStrategy['metadataSchema'] = $this->getNodePropertiesUsageMetadataSchema($includeSites,
                             $includeDimensions)->toArray();
-                        $usageByStrategy['usages'] = array_map(function (AssetUsageInNodeProperties $usage) use (
+                        $usageByStrategy['usages'] = array_filter(array_map(function (UsageReference $usage) use (
                             $includeSites,
                             $includeDimensions
                         ) {
+                            if (!$usage instanceof AssetUsageInNodeProperties) {
+                                return null;
+                            }
                             return $this->getNodePropertiesUsageDetails($usage, $includeSites, $includeDimensions);
-                        }, $usageReferences);
+                        }, $usageReferences));
                     }
                 } catch (NodeConfigurationException) {
                     // TODO: Handle error
@@ -184,12 +189,13 @@ final class UsageDetailsService
         bool $includeSites,
         bool $includeDimensions
     ): AssetUsageDetails {
-        /** @var Node $node */
+        /** @var Node|null $node */
         $node = $this->getNodeFrom($usage);
         $siteNode = $this->getSiteNodeFrom($node);
         $site = $siteNode ? $this->siteRepository->findOneByNodeName($siteNode->getName()) : null;
         $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
         $accessible = $this->usageIsAccessible($usage->getWorkspaceName());
+        /** @var Workspace|null $workspace */
         $workspace = $this->workspaceRepository->findByIdentifier($usage->getWorkspaceName());
         $label = $accessible && $node ? $node->getLabel() : $this->translateById('assetUsage.assetUsageInNodePropertiesStrategy.inaccessibleNode');
 
@@ -261,6 +267,7 @@ final class UsageDetailsService
 
     protected function getClosestDocumentNode(NodeInterface $node): ?NodeInterface
     {
+        /** @var Node|null $parentNode */
         $parentNode = $node;
         while ($parentNode && !$parentNode->getNodeType()->isOfType('Neos.Neos:Document')) {
             $parentNode = $parentNode->getParent();

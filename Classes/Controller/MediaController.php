@@ -194,7 +194,7 @@ class MediaController extends AbstractModuleController
     }
 
     /**
-     * @param array<array{assetId: string, postData: array<string, mixed>}> $assets
+     * @param array<array{assetId: string, postData: array<string, mixed>|null}> $assets
      * @throws StopActionException
      */
     public function updateMetadataAction(

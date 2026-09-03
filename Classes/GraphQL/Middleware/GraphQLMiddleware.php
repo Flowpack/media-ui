@@ -19,6 +19,7 @@ namespace Flowpack\Media\Ui\GraphQL\Middleware;
 use Flowpack\Media\Ui\GraphQL\Resolver;
 use GraphQL\Error\ClientAware;
 use GraphQL\Error\SyntaxError;
+use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\Parser;
 use GraphQL\Server\ServerConfig;
 use GraphQL\Server\StandardServer;
@@ -212,6 +213,7 @@ final class GraphQLMiddleware implements MiddlewareInterface
     {
         $cacheKey = md5($this->apiObjectName);
         if ($this->schemaCache->has($cacheKey)) {
+            /** @var DocumentNode $documentNode */
             $documentNode = AST::fromArray($this->schemaCache->get($cacheKey));
         } else {
             /** @var GraphQLGenerator $generator */
