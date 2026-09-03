@@ -23,17 +23,15 @@ final class UsageDetails
 
     public static function fromUsage(AssetUsageDetails $usage): self
     {
-        $usageDetailsMetaData = [];
-        foreach ($usage->getMetadata() as $name => $value) {
-            $usageDetailsMetaData[] = instantiate(
-                UsageDetailsMetadata::class,
-                ['name' => $name, 'value' => $value],
-            );
-        }
         return instantiate(self::class, [
             'label' => $usage->getLabel(),
             'url' => $usage->getUrl(),
-            'metadata' => UsageDetailsMetadataList::fromArray($usageDetailsMetaData),
+            'metadata' => UsageDetailsMetadataList::fromArray(
+                array_map(static fn(array $metadata) => instantiate(
+                    UsageDetailsMetadata::class,
+                    $metadata,
+                ), $usage->getMetadata())
+            ),
         ]);
     }
 }
