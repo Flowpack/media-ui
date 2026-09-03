@@ -63,6 +63,9 @@ html {
 
     main {
         overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
 
         .metadata-editor-single {
             overflow-y: auto;
