@@ -14,6 +14,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
+use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Domain\Service\ContentContext;
 
 #[Flow\Scope('singleton')]
@@ -103,6 +104,8 @@ class AssetCollectionService
             'workspaceName' => 'live',
         ]);
 
-        return $context->getCurrentSite()?->getAssetCollection();
+        /** @var Site|null $site */
+        $site = $context->getCurrentSite();
+        return $site?->getAssetCollection();
     }
 }

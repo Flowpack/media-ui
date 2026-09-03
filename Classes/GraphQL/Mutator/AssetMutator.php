@@ -136,7 +136,7 @@ class AssetMutator
             throw new MediaUiException('Asset type does not support tagging', 1619081662);
         }
 
-        /** @var Tag $tag */
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findByIdentifier($tagId->value);
         if (!$tag) {
             throw new MediaUiException('Cannot tag asset with tag that does not exist', 1591561845);
@@ -280,7 +280,7 @@ class AssetMutator
             throw new MediaUiException('Asset type does not support tagging', 1619081740);
         }
 
-        /** @var Tag $tag */
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findByIdentifier($tagId->value);
         if (!$tag) {
             throw new MediaUiException('Cannot untag asset from tag that does not exist', 1591561934);
@@ -355,7 +355,7 @@ class AssetMutator
                     $resource,
                     $options->toArray()
                 );
-                return Types\FileUploadResult::fromSuccess(self::STATE_REPLACED, $filename);
+                return Types\FileUploadResult::fromSuccess(self::STATE_REPLACED, Types\Filename::fromString($filename));
             } catch (\Exception $e) {
                 $this->logger->error(
                     sprintf(
@@ -405,7 +405,7 @@ class AssetMutator
             $originalResource->getCollectionName()
         );
         fclose($originalResourceStream);
-        $resource->setFilename($filename);
+        $resource->setFilename($filename->value);
         $resource->setMediaType($originalResource->getMediaType());
 
         try {
@@ -478,7 +478,7 @@ class AssetMutator
 
                     if ($this->persistenceManager->isNewObject($asset)) {
                         if ($tagId) {
-                            /** @var Tag $tag */
+                            /** @var Tag|null $tag */
                             $tag = $this->tagRepository->findByIdentifier($tagId->value);
                             if ($tag) {
                                 $asset->addTag($tag);
@@ -521,7 +521,9 @@ class AssetMutator
         ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResults {
         if ($assetSourceId->value !== 'neos') {
-            return Types\FileUploadResults::fromArray([Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED)]);
+            return Types\FileUploadResults::fromArray([
+                'n/a' => Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED)
+            ]);
         }
         $results = [];
         foreach ($files as $file) {
