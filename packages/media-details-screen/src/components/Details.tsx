@@ -49,7 +49,7 @@ const Details = ({ buildLinkToMediaUi }: DetailsProps) => {
                     <div className={classes.inspector}>
                         <AssetInspector />
                     </div>
-                    {metadataEditorVisible && <EditMetadataScreen />}
+                    {metadataEditorVisible ? <EditMetadataScreen /> : null}
                     <Preview asset={asset} loading={loading} buildLinkToMediaUi={buildLinkToMediaUi} />
                 </ErrorBoundary>
             </div>

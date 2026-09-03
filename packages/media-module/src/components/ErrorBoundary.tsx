@@ -3,12 +3,12 @@ import React from 'react';
 import { NotifyContext } from '@media-ui/core/src/provider/Notify';
 
 class ErrorBoundary extends React.Component<
-    { children: React.ReactElement | React.ReactElement[] },
+    { children: React.ReactElement | (React.ReactElement | null)[] },
     { hasError: boolean; error: Error | null }
 > {
     static contextType = NotifyContext;
 
-    constructor(props) {
+    constructor(props: any) {
         super(props);
         this.state = { hasError: false, error: null };
     }
@@ -17,7 +17,7 @@ class ErrorBoundary extends React.Component<
         return { hasError: true };
     }
 
-    componentDidCatch(error) {
+    componentDidCatch(error: any) {
         this.setState({ error });
         this.context.error(error.name, error.message);
     }
