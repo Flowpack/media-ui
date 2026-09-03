@@ -22,7 +22,7 @@ const TagInspector = () => {
     const Notify = useNotify();
     const { config } = useConfigQuery();
     const { translate } = useIntl();
-    const [label, setLabel] = useState<string>(null);
+    const [label, setLabel] = useState<string>('');
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
     const { updateTag } = useUpdateTag();

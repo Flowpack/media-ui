@@ -16,9 +16,13 @@ namespace Flowpack\Media\Ui\Tests\Functional\GraphQL;
 
 use Flowpack\Media\Ui\Controller\MediaController;
 use Flowpack\Media\Ui\GraphQL\MediaApi;
+use Flowpack\Media\Ui\GraphQL\Resolver\Type\AssetResolver;
+use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Flow\Tests\Behavior\Features\Bootstrap\SecurityOperationsTrait;
+use Neos\Media\Domain\Repository\AssetRepository;
+use Neos\MetaData\Domain\Dto\MetaDataAssetReference;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyDefinitions;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyName;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyValue;
@@ -47,6 +51,8 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
     protected MediaApi $mediaApi;
     protected MetaDataManager $metaDataManager;
     protected MediaController $mediaController;
+    protected AssetResolver $assetResolver;
+    protected AssetRepository $assetRepository;
     protected false $isolated;
 
     protected function setUp(): void
@@ -60,6 +66,8 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
         $this->mediaApi = $this->objectManager->get(MediaApi::class);
         $this->metaDataManager = $this->objectManager->get(MetaDataManager::class);
         $this->mediaController = $this->objectManager->get(MediaController::class);
+        $this->assetResolver = $this->objectManager->get(AssetResolver::class);
+        $this->assetRepository = $this->objectManager->get(AssetRepository::class);
 
         $this->iAmAuthenticatedWithRole('Neos.Neos:Editor');
     }
@@ -106,6 +114,95 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
         self::assertFalse($caption['value']->hasOwnValue());
 
         self::assertTrue($formSchema['copyright']['globalScope']);
+    }
+
+    /**
+     * @test
+     */
+    public function assetResolverExposesMetadataFromMetaDataManager(): void
+    {
+        $file = self::createFile();
+        $this->mediaApi->uploadFiles(
+            Types\UploadedFiles::fromArray([$file]),
+            Types\AssetSourceId::default(),
+        );
+        $this->persistenceManager->persistAll();
+
+        $asset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+        $assetEntity = $this->assetRepository->findByIdentifier($asset->id->value);
+
+        $assetReference = MetaDataAssetReference::create(
+            $asset->assetSource->id->value,
+            $assetEntity->getIdentifier()
+        );
+        $this->metaDataManager->setMetaDataPropertyValue($assetReference, 'caption', 'The caption');
+        $this->persistenceManager->persistAll();
+
+        $metadata = $this->assetResolver->metadata($asset);
+
+        $captions = array_values(array_filter(
+            iterator_to_array($metadata),
+            static fn (Types\MetaDataProperty $property) => $property->propertyName->value === 'caption'
+        ));
+
+        self::assertCount(1, $captions);
+        self::assertSame('The caption', $captions[0]->value);
+    }
+
+    /**
+     * @test
+     */
+    public function assetResolverOmitsMetadataPropertiesWithoutValue(): void
+    {
+        $file = self::createFile();
+        $this->mediaApi->uploadFiles(
+            Types\UploadedFiles::fromArray([$file]),
+            Types\AssetSourceId::default(),
+        );
+        $this->persistenceManager->persistAll();
+
+        $asset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+
+        $metadata = $this->assetResolver->metadata($asset);
+
+        // No metadata value is set, so all properties must be omitted
+        self::assertCount(0, $metadata->properties);
+    }
+
+    /**
+     * @test
+     */
+    public function assetResolverEscapesMetadataValues(): void
+    {
+        $file = self::createFile();
+        $this->mediaApi->uploadFiles(
+            Types\UploadedFiles::fromArray([$file]),
+            Types\AssetSourceId::default(),
+        );
+        $this->persistenceManager->persistAll();
+
+        $asset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+        $assetEntity = $this->assetRepository->findByIdentifier($asset->id->value);
+
+        $assetReference = MetaDataAssetReference::create(
+            $asset->assetSource->id->value,
+            $assetEntity->getIdentifier()
+        );
+        $this->metaDataManager->setMetaDataPropertyValue($assetReference, 'caption', '<script>alert("xss")</script>');
+        $this->persistenceManager->persistAll();
+
+        $metadata = $this->assetResolver->metadata($asset);
+
+        $captions = array_values(array_filter(
+            iterator_to_array($metadata),
+            static fn (Types\MetaDataProperty $property) => $property->propertyName->value === 'caption'
+        ));
+
+        self::assertCount(1, $captions);
+        self::assertSame(
+            '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;',
+            $captions[0]->value
+        );
     }
 
     /**

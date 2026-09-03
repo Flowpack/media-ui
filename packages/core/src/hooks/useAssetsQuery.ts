@@ -34,7 +34,7 @@ interface AssetsQueryVariables {
     assetCollectionId?: string | null;
     mediaType: MediaType | '';
     assetType: AssetType | '';
-    tagId: string;
+    tagId: string | null;
     limit: number;
     offset: number;
     sortBy: SORT_BY;

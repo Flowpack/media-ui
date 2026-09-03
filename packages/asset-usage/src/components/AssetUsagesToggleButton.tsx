@@ -19,10 +19,10 @@ const AssetUsagesToggleButton: React.FC<AssetUsagesToggleButtonProps> = ({
     menuItemClassName,
     menuItemDisabledClassName,
 }) => {
-    const { isInUse } = useSelectedAsset();
+    const asset = useSelectedAsset();
     const [assetUsagesModalOpen, setAssetUsagesModalOpen] = useRecoilState(assetUsageDetailsModalState);
     const { translate } = useIntl();
-    const disabled = isInUse === false;
+    const disabled = asset?.isInUse === false;
     const label = translate('assetUsageList.toggle', 'Show usages');
 
     if (variant === 'menuItem') {
@@ -37,7 +37,7 @@ const AssetUsagesToggleButton: React.FC<AssetUsagesToggleButtonProps> = ({
         );
     }
 
-    return (
+    return asset ? (
         <Button
             disabled={disabled}
             size="regular"
@@ -48,7 +48,7 @@ const AssetUsagesToggleButton: React.FC<AssetUsagesToggleButtonProps> = ({
         >
             <Icon icon="link" />
         </Button>
-    );
+    ) : null;
 };
 
 export default React.memo(AssetUsagesToggleButton);

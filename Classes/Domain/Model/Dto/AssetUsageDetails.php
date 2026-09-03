@@ -25,7 +25,7 @@ final class AssetUsageDetails implements \JsonSerializable
 
     private string $label;
     /**
-     * @var array<string, string>
+     * @var list<array{name: string, value: string}>
      */
     private array $metadata;
     private string $url;
@@ -43,7 +43,7 @@ final class AssetUsageDetails implements \JsonSerializable
     }
 
     /**
-     * @return array<string, string>
+     * @return list<array{name: string, value: string}>
      */
     public function getMetadata(): array
     {

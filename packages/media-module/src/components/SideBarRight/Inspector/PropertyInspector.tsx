@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { useApolloClient } from '@apollo/client';
 
-import { Button, TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
+import { TextArea, TextInput, ToggablePanel } from '@neos-project/react-ui-components';
 
-import { useIntl, useNotify, useMediaUi } from '@media-ui/core';
+import { useIntl, useMediaUi, useNotify } from '@media-ui/core';
 import { useConfigQuery, useSelectedAsset, useUpdateAsset } from '@media-ui/core/src/hooks';
 import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 import { IconLabel } from '@media-ui/core/src/components';
@@ -12,9 +12,8 @@ import { featureFlagsState, multiSelectionState, selectedAssetIdsState } from '@
 import { UPDATE_ASSET } from '@media-ui/core/src/mutations';
 import { useInteraction } from '@media-ui/core/src/provider';
 import { selectedAssetSourceIdState, useSelectedAssetSource } from '@media-ui/feature-asset-sources';
-import { metadataEditorVisibleState } from '@media-ui/feature-metadata-editing';
 
-import { CollectionSelectBox, MetadataView, TagSelectBoxAsset } from './index';
+import { CollectionSelectBox, TagSelectBoxAsset } from './index';
 import TagSelectBoxMulti from './TagSelectBoxMulti';
 import Property from './Property';
 import Actions from './Actions';
@@ -46,22 +45,17 @@ const PropertyInspector = () => {
     const [propertyEditorCollapsed, setPropertyEditorCollapsed] = useState<boolean>(
         featureFlags.propertyEditor.collapsed
     );
-    const [metadataEditorVisible, setMetadataEditorVisible] = useRecoilState(metadataEditorVisibleState);
 
     const { updateAsset, loading } = useUpdateAsset();
 
     const isReadOnly = selectedAssetSource ? selectedAssetSource.readOnly : true;
-    const isEditable = !isReadOnly && (isMultiSelection ? !multiLoading : selectedAsset?.localId && !loading);
+    const isEditable = !isReadOnly && (isMultiSelection ? !multiLoading : !!selectedAsset?.localId && !loading);
     const hasUnpublishedChanges = isMultiSelection
         ? copyrightNotice !== '' && copyrightNotice !== null
-        : selectedAsset &&
+        : selectedAsset !== null &&
           (label !== selectedAsset.label ||
               caption !== selectedAsset.caption ||
               copyrightNotice !== selectedAsset.copyrightNotice);
-
-    const toggleMetadataEditor = useCallback(() => {
-        setMetadataEditorVisible((prev) => !prev);
-    }, [setMetadataEditorVisible]);
 
     const handleDiscard = useCallback(() => {
         if (isMultiSelection) {
@@ -77,9 +71,11 @@ const PropertyInspector = () => {
 
     const handleApply = useCallback(async () => {
         if (
+            selectedAsset && (
             label !== selectedAsset.label ||
             caption !== selectedAsset.caption ||
             copyrightNotice !== selectedAsset.copyrightNotice
+            )
         ) {
             const hasApprovalToUpdateAsset = await obtainApprovalToUpdateAsset({
                 asset: selectedAsset,
@@ -232,12 +228,6 @@ const PropertyInspector = () => {
                                 inputValid={isMultiSelection || !!label}
                             />
                         )}
-
-                        {config.supportsMetadataEditing && (
-                            <Button type="button" onClick={toggleMetadataEditor} isActive={metadataEditorVisible}>
-                                {translate('inspector.toggleMetadataEditor', 'Edit metadata')}
-                            </Button>
-                        )}
                     </ToggablePanel.Contents>
                 </ToggablePanel>
             )}
@@ -246,8 +236,6 @@ const PropertyInspector = () => {
             {selectedAssetSource.supportsTagging && (
                 <>{isMultiSelection ? <TagSelectBoxMulti /> : <TagSelectBoxAsset />}</>
             )}
-
-            {!isMultiSelection && <MetadataView />}
         </InspectorContainer>
     );
 };
