@@ -69,7 +69,7 @@ class MediaController extends AbstractModuleController
 
     protected ?MetaDataManager $metaDataManager;
 
-    public function initializeAction()
+    public function initializeAction(): void
     {
         $this->metaDataManager = $this->objectManager->has(MetaDataManager::class)
             ? $this->objectManager->get(MetaDataManager::class)
@@ -184,7 +184,7 @@ class MediaController extends AbstractModuleController
             $propertyName = $propertyDefinition->name->value;
             $config[$propertyName] = [
                 'type' => $propertyDefinition->type->name,
-                'editor' => $propertyDefinition->ui->editorDefinition->editorType === 'Neos.Neos/Inspector/Editors/TextAreaEditor' ? 'textarea' : null,
+                'editor' => $propertyDefinition->ui->editorDefinition->editorType,
                 'editorOptions' => $propertyDefinition->ui->editorDefinition->options,
                 'label' => $propertyDefinition->ui->label,
                 'globalScope' => $propertyDefinition->globalScope,

@@ -768,6 +768,10 @@
                 <source>Metadata</source>
                 <target>Metadaten</target>
             </trans-unit>
+            <trans-unit id="inspector.properties" xml:space="preserve" approved="yes">
+                <source>Properties</source>
+                <target>Eigenschaften</target>
+            </trans-unit>
             <trans-unit id="inspector.property.dimensions" xml:space="preserve" approved="yes">
                 <source>Dimensions</source>
                 <target>Dimensionen</target>

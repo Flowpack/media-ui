@@ -3,6 +3,8 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
     fieldConfig = null
     fieldNamePrefix = 'postData'
 
+    @if.editable = ${!this.fieldConfig.editorOptions.readonly}
+
     @private.field = Neos.Fusion:Case {
         boolean {
             condition = ${props.fieldConfig.type == 'boolean'}
@@ -10,10 +12,9 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
                 attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 field.value = ${props.fieldConfig.value.ownValue}
-                attributes.disabled = 'disabled'
-                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
+
         number {
             condition = ${props.fieldConfig.type == 'number'}
             renderer = Neos.Fusion.Form:Input {
@@ -21,19 +22,16 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
                 attributes.type = 'number'
                 field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 field.value = ${props.fieldConfig.value.ownValue}
-                attributes.disabled = 'disabled'
-                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
+
         textArea {
-            condition = ${props.fieldConfig.type == 'string' && props.fieldConfig.editor == 'textarea'}
+            condition = ${props.fieldConfig.type == 'string' && props.fieldConfig.editor == 'Neos.Neos/Inspector/Editors/TextAreaEditor'}
             renderer = Neos.Fusion.Form:Textarea {
                 attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 attributes.rows = ${props.fieldConfig.editorOptions.rows || 3}
                 field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 content = ${props.fieldConfig.value.ownValue}
-                attributes.disabled = 'disabled'
-                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
 
@@ -44,18 +42,15 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
                 field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 content = ${props.fieldConfig.value.ownValue}
                 attributes.type = 'datetime-local'
-                attributes.disabled = 'disabled'
-                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
+
         default {
-            condition = ${true}
+            condition = true
             renderer = Neos.Fusion.Form:Input {
                 attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
                 field.value = ${props.fieldConfig.value.ownValue}
-                attributes.disabled = 'disabled'
-                attributes.disabled.@if.isDisabled = ${props.fieldConfig.editorOptions.readonly}
             }
         }
     }
