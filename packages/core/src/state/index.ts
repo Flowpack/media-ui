@@ -2,6 +2,7 @@ export { availableAssetsState, availableAssetIdentitiesState } from './available
 export { constraintsState } from './constraintsState';
 export { currentPageState } from './currentPageState';
 export { featureFlagsState } from './featureFlagsState';
+export { endpointsState } from './endpointsState';
 export { initialLoadCompleteState } from './initialLoadCompleteState';
 export { loadingState } from './loadingState';
 export { localStorageEffect } from './localStorageEffect';

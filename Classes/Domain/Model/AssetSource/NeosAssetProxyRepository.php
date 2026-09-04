@@ -15,10 +15,10 @@ namespace Flowpack\Media\Ui\Domain\Model\AssetSource;
  */
 
 use Doctrine\ORM\EntityManagerInterface;
+use Flowpack\Media\Ui\Infrastructure\Neos\Media\NeosAssetProxyQuery;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
-use Neos\Flow\Persistence\Exception\InvalidQueryException;
-use Neos\Flow\Persistence\QueryInterface;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Model\AssetInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxy\AssetProxyInterface;
@@ -27,22 +27,18 @@ use Neos\Media\Domain\Model\AssetSource\AssetProxyRepositoryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetTypeFilter;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetNotFoundException;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxy;
-use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetProxyQueryResult;
 use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
 use Neos\Media\Domain\Model\AssetSource\SupportsCollectionsInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsSortingInterface;
 use Neos\Media\Domain\Model\AssetSource\SupportsTaggingInterface;
-use Neos\Media\Domain\Model\ImageVariant;
 use Neos\Media\Domain\Model\Tag;
-use Neos\Media\Domain\Repository\AssetRepository;
-use Neos\Media\Domain\Repository\AudioRepository;
-use Neos\Media\Domain\Repository\DocumentRepository;
-use Neos\Media\Domain\Repository\ImageRepository;
-use Neos\Media\Domain\Repository\VideoRepository;
 
 /**
  * This is a copy of the NeosAssetProxyRepository from the Neos.Media package
  * but with some additional methods to support the Flowpack.Media.Ui package.
+ *
+ * All query related logic lives in {@see NeosAssetProxyQuery}; this repository
+ * only keeps the public asset source API and delegates to it.
  */
 final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, SupportsSortingInterface,
                                                 SupportsCollectionsInterface, SupportsTaggingInterface
@@ -64,26 +60,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
      */
     private $assetSource;
 
-    /**
-     * @var AssetRepository
-     */
-    private $assetRepository;
-
-    private ?AssetCollection $activeAssetCollection = null;
-    protected ?Tag $activeTag = null;
-
-    private string $assetTypeFilter = 'All';
-    private string $mediaTypeFilter = '';
-    private bool $filterAssetsInCollections = false;
-    private bool $filterAssetsWithTags = false;
-
-    private array $assetRepositoryClassNames = [
-        'All' => AssetRepository::class,
-        'Image' => ImageRepository::class,
-        'Document' => DocumentRepository::class,
-        'Video' => VideoRepository::class,
-        'Audio' => AudioRepository::class
-    ];
+    private ?NeosAssetProxyQuery $query = null;
 
     public function __construct(NeosAssetSource $assetSource)
     {
@@ -92,9 +69,15 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
 
     public function initializeObject(): void
     {
-        /** @var AssetRepository $assetRepositoryForType */
-        $assetRepositoryForType = $this->objectManager->get($this->assetRepositoryClassNames[$this->assetTypeFilter]);
-        $this->assetRepository = $assetRepositoryForType;
+    }
+
+    private function query(): NeosAssetProxyQuery
+    {
+        if ($this->query === null) {
+            $this->query = new NeosAssetProxyQuery($this->objectManager, $this->entityManager, $this->assetSource);
+        }
+
+        return $this->query;
     }
 
     /**
@@ -108,18 +91,17 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
      */
     public function orderBy(array $orderings): void
     {
-        $this->assetRepository->setDefaultOrderings($orderings);
+        $this->query()->setOrderings($orderings);
     }
 
     public function filterByType(?AssetTypeFilter $assetType = null): void
     {
-        $this->assetTypeFilter = (string)$assetType ?: 'All';
-        $this->initializeObject();
+        $this->query()->setAssetType((string)$assetType);
     }
 
     public function filterByMediaType(string $mediaType): void
     {
-        $this->mediaTypeFilter = $mediaType;
+        $this->query()->setMediaType($mediaType);
     }
 
     /**
@@ -128,35 +110,12 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
      */
     public function filterByCollection(?AssetCollection $assetCollection = null): void
     {
-        $this->activeAssetCollection = $assetCollection;
+        $this->query()->setAssetCollection($assetCollection);
     }
 
     public function filterByTag(Tag $tag): void
     {
-        $this->activeTag = $tag;
-    }
-
-    private function filterQuery(QueryInterface $query, bool $filterOtherCollections = false): QueryInterface
-    {
-        $query = $this->filterOutImportedAssetsFromOtherAssetSources($query);
-        $query = $this->filterOutImageVariants($query);
-
-        if ($filterOtherCollections) {
-            $query = $this->filterOutAssetsFromOtherAssetCollections($query);
-        } elseif ($this->filterAssetsInCollections) {
-            $query = $this->filterOutAssetsWithAssetCollections($query);
-        }
-
-        if ($this->activeTag) {
-            $query = $this->filterOutAssetsWithoutActiveTag($query);
-        } else if ($this->filterAssetsWithTags) {
-            $query = $this->filterOutAssetsWithTags($query);
-        }
-
-        if ($this->mediaTypeFilter) {
-            $query = $this->filterOutAssetsWithOtherMediaTypes($query);
-        }
-        return $query;
+        $this->query()->setTag($tag);
     }
 
     /**
@@ -164,158 +123,56 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
      */
     public function getAssetProxy(string $identifier): AssetProxyInterface
     {
-        $asset = $this->assetRepository->findByIdentifier($identifier);
+        $asset = $this->entityManager->getRepository($this->query()->getEntityClassName())->find($identifier);
         if (!$asset instanceof AssetInterface) {
             throw new NeosAssetNotFoundException('The specified asset was not found.', 1509632861);
         }
+
         return new NeosAssetProxy($asset, $this->assetSource);
     }
 
     public function findAll(): AssetProxyQueryResultInterface
     {
-        $query = $this->filterQuery($this->assetRepository->findAll($this->activeAssetCollection)->getQuery());
-        return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
+        return $this->query()->findAll();
     }
 
     public function findBySearchTerm(string $searchTerm): AssetProxyQueryResultInterface
     {
-        $query = $this->filterQuery($this->assetRepository->findBySearchTermOrTags($searchTerm, [],
-            $this->activeAssetCollection)->getQuery());
-        return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
+        return $this->query()->findBySearchTerm($searchTerm);
     }
 
     public function findByTag(Tag $tag): AssetProxyQueryResultInterface
     {
-        $query = $this->filterQuery($this->assetRepository->findByTag($tag, $this->activeAssetCollection)->getQuery());
-        return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
+        return $this->query()->findByTag($tag);
     }
 
     public function findUntagged(): AssetProxyQueryResultInterface
     {
-        $query = $this->filterQuery($this->assetRepository->findUntagged($this->activeAssetCollection)->getQuery());
-        return new NeosAssetProxyQueryResult($query->execute(), $this->assetSource);
+        return $this->query()->findUntagged();
     }
 
     public function filterUnassigned(): void
     {
-        $this->filterAssetsInCollections = true;
+        $this->query()->setFilterAssetsInCollections(true);
     }
 
     public function filterUntagged(): void
     {
-        $this->filterAssetsWithTags = true;
+        $this->query()->setFilterAssetsWithTags(true);
     }
 
     public function countAll(): int
     {
-        return $this->filterQuery($this->assetRepository->createQuery(), true)->count();
+        return $this->query()->countAll();
     }
 
     public function countUntagged(): int
     {
-        $query = $this->filterQuery($this->assetRepository->createQuery(), true);
-        try {
-            $query->matching($query->isEmpty('tags'));
-        } catch (InvalidQueryException $e) {
-        }
-        return $query->count();
+        return $this->query()->countUntagged();
     }
 
     public function countByTag(Tag $tag): int
     {
-        return $this->filterQuery($this->assetRepository->findByTag($tag, $this->activeAssetCollection)->getQuery(),
-            true)->count();
-    }
-
-    private function filterOutImportedAssetsFromOtherAssetSources(QueryInterface $query): QueryInterface
-    {
-        $constraint = $query->getConstraint();
-        $query->matching(
-            $query->logicalAnd([
-                $constraint,
-                $query->equals('assetSourceIdentifier', 'neos')
-            ])
-        );
-        return $query;
-    }
-
-    private function filterOutImageVariants(QueryInterface $query): QueryInterface
-    {
-        if (!method_exists($query, 'getQueryBuilder')) {
-            return $query;
-        }
-        $query->getQueryBuilder()->andWhere('e NOT INSTANCE OF ' . ImageVariant::class);
-        return $query;
-    }
-
-    private function filterOutAssetsWithTags(QueryInterface $query): QueryInterface
-    {
-        $constraints = $query->getConstraint();
-        try {
-            $query->matching(
-                $query->logicalAnd([
-                    $constraints,
-                    $query->isEmpty('tags'),
-                ])
-            );
-        } catch (InvalidQueryException $e) {
-        }
-        return $query;
-    }
-
-    private function filterOutAssetsWithoutActiveTag(QueryInterface $query): QueryInterface
-    {
-        $constraints = $query->getConstraint();
-        try {
-            $query->matching(
-                $query->logicalAnd([
-                    $constraints,
-                    $query->contains('tags', $this->activeTag)
-                ])
-            );
-        } catch (InvalidQueryException $e) {
-        }
-        return $query;
-    }
-
-    private function filterOutAssetsFromOtherAssetCollections(QueryInterface $query): QueryInterface
-    {
-        $constraints = $query->getConstraint();
-        try {
-            $query->matching(
-                $query->logicalAnd([
-                    $constraints,
-                    $query->contains('assetCollections', $this->activeAssetCollection),
-                ])
-            );
-        } catch (InvalidQueryException $e) {
-        }
-        return $query;
-    }
-
-    private function filterOutAssetsWithAssetCollections(QueryInterface $query): QueryInterface
-    {
-        $constraints = $query->getConstraint();
-        try {
-            $query->matching(
-                $query->logicalAnd([
-                    $constraints,
-                    $query->isEmpty('assetCollections'),
-                ])
-            );
-        } catch (InvalidQueryException $e) {
-        }
-        return $query;
-    }
-
-    private function filterOutAssetsWithOtherMediaTypes(QueryInterface $query): QueryInterface
-    {
-        $constraints = $query->getConstraint();
-        return $query->matching(
-            $query->logicalAnd([
-                $constraints,
-                $query->equals('resource.mediaType', $this->mediaTypeFilter),
-            ])
-        );
+        return $this->query()->countByTag($tag);
     }
 }

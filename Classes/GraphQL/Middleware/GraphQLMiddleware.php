@@ -19,6 +19,7 @@ namespace Flowpack\Media\Ui\GraphQL\Middleware;
 use Flowpack\Media\Ui\GraphQL\Resolver;
 use GraphQL\Error\ClientAware;
 use GraphQL\Error\SyntaxError;
+use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\Parser;
 use GraphQL\Server\ServerConfig;
 use GraphQL\Server\StandardServer;
@@ -72,8 +73,8 @@ final class GraphQLMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // only handle POST and OPTIONS requests to $this->url
-        if (!\in_array($request->getMethod(), ['POST', 'OPTIONS'],
-                true) || $request->getUri()->getPath() !== $this->uriPath) {
+        if (!in_array($request->getMethod(), ['POST', 'OPTIONS'], true)
+            || $request->getUri()->getPath() !== $this->uriPath) {
             return $handler->handle($request);
         }
         if ($this->simulateControllerObjectName !== null) {
@@ -145,8 +146,10 @@ final class GraphQLMiddleware implements MiddlewareInterface
         return $response
             ->withHeader('Access-Control-Allow-Origin', $this->corsOrigin)
             ->withHeader('Access-Control-Allow-Methods', 'POST,OPTIONS')
-            ->withHeader('Access-Control-Allow-Headers',
-                'Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range');
+            ->withHeader(
+                'Access-Control-Allow-Headers',
+                'Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range'
+            );
     }
 
     private function handleGraphQLErrors(array $errors, callable $formatter): array
@@ -210,6 +213,7 @@ final class GraphQLMiddleware implements MiddlewareInterface
     {
         $cacheKey = md5($this->apiObjectName);
         if ($this->schemaCache->has($cacheKey)) {
+            /** @var DocumentNode $documentNode */
             $documentNode = AST::fromArray($this->schemaCache->get($cacheKey));
         } else {
             /** @var GraphQLGenerator $generator */
@@ -218,14 +222,20 @@ final class GraphQLMiddleware implements MiddlewareInterface
             try {
                 $documentNode = Parser::parse($schema);
             } catch (SyntaxError $e) {
-                throw new \RuntimeException(sprintf('Failed to parse GraphQL Schema: %s', $e->getMessage()), 1652975280,
-                    $e);
+                throw new \RuntimeException(
+                    sprintf('Failed to parse GraphQL Schema: %s', $e->getMessage()), 1652975280,
+                    $e
+                );
             }
             try {
                 $this->schemaCache->set($cacheKey, AST::toArray($documentNode));
             } catch (Exception $e) {
-                throw new \RuntimeException(sprintf('Failed to store parsed GraphQL Scheme in cache: %s',
-                    $e->getMessage()), 1652975323, $e);
+                throw new \RuntimeException(
+                    sprintf(
+                        'Failed to store parsed GraphQL Scheme in cache: %s',
+                        $e->getMessage()
+                    ), 1652975323, $e
+                );
             }
         }
         return BuildSchema::build($documentNode, $resolver->typeConfigDecorator(...));

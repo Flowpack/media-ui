@@ -4,3 +4,4 @@
     fusionPathPatterns:
       - 'resource://Neos.Fusion/Private/Fusion'
       - 'resource://Flowpack.Media.Ui/Private/Fusion'
+      - 'resource://Neos.Fusion.Form/Private/Fusion'

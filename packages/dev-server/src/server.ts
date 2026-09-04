@@ -177,6 +177,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
                 canManageAssetCollections: true,
                 canManageTags: true,
                 canManageAssets: true,
+                supportsMetadataEditing: false,
             }),
         },
         Mutation: {

@@ -768,6 +768,10 @@
                 <source>Metadata</source>
                 <target>Metadaten</target>
             </trans-unit>
+            <trans-unit id="inspector.properties" xml:space="preserve" approved="yes">
+                <source>Properties</source>
+                <target>Eigenschaften</target>
+            </trans-unit>
             <trans-unit id="inspector.property.dimensions" xml:space="preserve" approved="yes">
                 <source>Dimensions</source>
                 <target>Dimensionen</target>
@@ -1143,6 +1147,26 @@
             <trans-unit id="errors.1462196420.message" xml:space="preserve" approved="yes">
                 <source>Asset could not be deleted, because it is still in use.</source>
                 <target>Die Datei konnte nicht gelöscht werden, da sie noch verwendet wird.</target>
+            </trans-unit>
+
+            <!-- Metadata -->
+            <trans-unit id="metaData.globalScopeHint" xml:space="preserve" approved="yes">
+                <source>Changes to this property will affect all dimensions</source>
+                <target>Änderungen an dieser Eigenschaft wirken sich auf alle Dimensionen aus</target>
+            </trans-unit>
+
+            <!-- Metadata editor -->
+            <trans-unit id="metadataEditor.title" xml:space="preserve" approved="yes">
+                <source>Editing asset "{0}"</source>
+                <target>Datei "{0}" bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="metadataEditor.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
+            <trans-unit id="metadataEditor.save" xml:space="preserve" approved="yes">
+                <source>Save</source>
+                <target>Speichern</target>
             </trans-unit>
         </body>
     </file>

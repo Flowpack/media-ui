@@ -23,10 +23,10 @@ window.onload = async (): Promise<void> => {
         await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
-    const root = document.getElementById('media-ui-app');
-    const { dummyImage } = root.dataset;
-    const endpoints = JSON.parse(root.dataset.endpoints) as Endpoints;
-    const featureFlags: FeatureFlags = JSON.parse(root.dataset.features);
+    const root = document.getElementById('media-ui-app') as HTMLElement;
+    const dummyImage = root.dataset.dummyImage || null;
+    const endpoints = JSON.parse(root.dataset.endpoints || '{}') as Endpoints;
+    const featureFlags: FeatureFlags = JSON.parse(root.dataset.features || '{}');
 
     // Modal for the lightbox
     Modal.setAppElement(root);
@@ -65,6 +65,7 @@ window.onload = async (): Promise<void> => {
     const initialState = {
         applicationContext: 'browser' as ApplicationContext,
         featureFlags,
+        endpoints,
         constraints: {},
         assetType: 'all' as AssetType,
     };

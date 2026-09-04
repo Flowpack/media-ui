@@ -27,6 +27,7 @@
     "@media-ui/feature-asset-variants": "workspace:*",
     "@media-ui/feature-clipboard": "workspace:*",
     "@media-ui/feature-concurrent-editing": "workspace:*",
+    "@media-ui/feature-metadata-editing": "workspace:*",
     "@media-ui/feature-similar-assets": "workspace:*",
     "@neos-project/react-ui-components": "catalog:",
     "apollo-upload-client": "catalog:",
@@ -48,6 +49,7 @@
     "@types/apollo-upload-client": "^14.1.0",
     "@types/react": "^17.0.93",
     "@types/react-dom": "^17.0.26",
-    "@types/react-dropzone": "^5.1.0"
+    "@types/react-dropzone": "^5.1.0",
+    "@types/react-modal": "^3.16.3"
   }
 }

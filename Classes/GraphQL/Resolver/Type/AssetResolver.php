@@ -19,6 +19,7 @@ use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Media\Domain\Model\Asset;
@@ -27,6 +28,8 @@ use Neos\Media\Domain\Model\AssetSource\AssetProxy\SupportsIptcMetadataInterface
 use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Service\AssetService;
 use Neos\Media\Domain\Service\FileTypeIconService;
+use Neos\MetaData\Domain\Dto\MetaDataAssetReference;
+use Neos\MetaData\MetaDataManager;
 
 #[Flow\Scope('singleton')]
 class AssetResolver
@@ -44,11 +47,16 @@ class AssetResolver
     #[Flow\Inject]
     protected AssetSourceContext $assetSourceContext;
 
+    #[Flow\Inject]
+    protected ObjectManagerInterface $objectManager;
+
     /**
      * @var PersistenceManagerInterface
      */
     #[Flow\Inject]
     protected $persistenceManager;
+
+    private ?MetaDataManager $metaDataManager = null;
 
     /**
      * Returns the title of the associated local asset data or the label of the proxy as fallback
@@ -93,7 +101,7 @@ class AssetResolver
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
         // TODO: Find better way to make sure the asset originates from somewhere outside Neos
-        return $assetProxy?->getLocalAssetIdentifier() && $assetProxy?->getAssetSource()->getIdentifier() !== 'neos';
+        return $assetProxy?->getLocalAssetIdentifier() && $assetProxy->getAssetSource()->getIdentifier() !== 'neos';
     }
 
     /**
@@ -149,6 +157,56 @@ class AssetResolver
         return Types\IptcProperties::empty();
     }
 
+    /**
+     * Returns the metadata properties from the Neos.MetaData package if it is installed,
+     * otherwise an empty collection. Metadata properties without a value are skipped.
+     */
+    public function metadata(Types\Asset $asset): Types\MetaDataProperties
+    {
+        $metaDataManager = $this->getMetaDataManager();
+        if ($metaDataManager === null || !$asset->localId) {
+            return Types\MetaDataProperties::empty();
+        }
+
+        $propertyValues = $metaDataManager->getMetaDataPropertyValues(
+            MetaDataAssetReference::create($asset->assetSource->id->value, $asset->id->value)
+        );
+
+        $properties = [];
+        foreach ($metaDataManager->getPropertyDefinitions() as $propertyDefinition) {
+            $propertyValue = $propertyValues->get($propertyDefinition->name);
+            $value = $propertyValue->value;
+            if ($value === null) {
+                continue;
+            }
+
+            $properties[] = Types\MetaDataProperty::create(
+                Types\MetaDataPropertyName::fromString($propertyDefinition->name->value),
+                Types\MetaDataPropertyLabel::fromString($propertyDefinition->ui->label),
+                $this->escape((string)$value),
+                $propertyValue->inheritedValue !== null ? $this->escape((string)$propertyValue->inheritedValue) : null,
+            );
+        }
+
+        return Types\MetaDataProperties::fromArray($properties);
+    }
+
+    private function getMetaDataManager(): ?MetaDataManager
+    {
+        if ($this->metaDataManager === null && $this->objectManager->has(MetaDataManager::class)) {
+            $this->metaDataManager = $this->objectManager->get(MetaDataManager::class);
+        }
+        return $this->metaDataManager;
+    }
+
+    /**
+     * Escapes a value so that it is safe to be rendered in HTML context
+     */
+    private function escape(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
     public function copyrightNotice(Types\Asset $asset): ?string
     {
         if (!$asset->localId) {
@@ -161,7 +219,7 @@ class AssetResolver
     public function lastModified(Types\Asset $asset): ?string
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
-        return $assetProxy?->getLastModified() ? $assetProxy?->getLastModified()->format(DATE_W3C) : null;
+        return $assetProxy?->getLastModified() ? $assetProxy->getLastModified()->format(DATE_W3C) : null;
     }
 
     public function tags(Types\Asset $asset): Types\Tags
