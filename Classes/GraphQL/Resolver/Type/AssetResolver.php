@@ -176,7 +176,7 @@ class AssetResolver
         foreach ($metaDataManager->getPropertyDefinitions() as $propertyDefinition) {
             $propertyValue = $propertyValues->get($propertyDefinition->name);
             $value = $propertyValue->value;
-            if ($value === null) {
+            if ($value === null || $propertyDefinition->ui === null) {
                 continue;
             }
 
@@ -194,7 +194,9 @@ class AssetResolver
     private function getMetaDataManager(): ?MetaDataManager
     {
         if ($this->metaDataManager === null && $this->objectManager->has(MetaDataManager::class)) {
-            $this->metaDataManager = $this->objectManager->get(MetaDataManager::class);
+            /** @var MetaDataManager $metaDataManager */
+            $metaDataManager = $this->objectManager->get(MetaDataManager::class);
+            $this->metaDataManager = $metaDataManager;
         }
         return $this->metaDataManager;
     }

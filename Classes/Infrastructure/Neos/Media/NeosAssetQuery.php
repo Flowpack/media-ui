@@ -15,7 +15,7 @@ use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
  */
 final class NeosAssetQuery implements AssetProxyQueryInterface
 {
-    private ?string $searchTerm = null;
+    private string $searchTerm = '';
 
     public function __construct(
         private readonly Query $query,
@@ -44,11 +44,17 @@ final class NeosAssetQuery implements AssetProxyQueryInterface
         return (int)$this->query->getMaxResults();
     }
 
+    /**
+     * @return void
+     */
     public function setSearchTerm(string $searchTerm)
     {
         $this->searchTerm = $searchTerm;
     }
 
+    /**
+     * @return string
+     */
     public function getSearchTerm()
     {
         return $this->searchTerm;

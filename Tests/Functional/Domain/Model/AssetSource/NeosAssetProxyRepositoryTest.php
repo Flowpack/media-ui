@@ -48,8 +48,8 @@ class NeosAssetProxyRepositoryTest extends AbstractMediaTestCase
         }
 
         $this->prepareResourceManager();
-        $this->assetRepository = $this->objectManager->get(AssetRepository::class);
-        $this->tagRepository = $this->objectManager->get(TagRepository::class);
+        $this->assetRepository = $this->getObject(AssetRepository::class);
+        $this->tagRepository = $this->getObject(TagRepository::class);
     }
 
     private function createImage(string $title): Image
@@ -145,7 +145,7 @@ class NeosAssetProxyRepositoryTest extends AbstractMediaTestCase
         $this->persistenceManager->clearState();
 
         $identifier = $this->persistenceManager->getIdentifierByObject($image);
-        $metaDataManager = $this->objectManager->get(MetaDataManager::class);
+        $metaDataManager = $this->getObject(MetaDataManager::class);
         $metaDataManager->setMetaDataPropertyValue(
             MetaDataAssetReference::create('neos', $identifier),
             'copyright',
@@ -154,7 +154,9 @@ class NeosAssetProxyRepositoryTest extends AbstractMediaTestCase
 
         $result = $this->createRepository()->findBySearchTerm('AnotherUniqueToken');
         static::assertCount(1, $result);
-        static::assertSame($identifier, $result->getFirst()->getLocalAssetIdentifier());
+        $first = $result->getFirst();
+        static::assertNotNull($first);
+        static::assertSame($identifier, $first->getLocalAssetIdentifier());
     }
 
     /**
@@ -178,14 +180,14 @@ class NeosAssetProxyRepositoryTest extends AbstractMediaTestCase
 
     private function usesMySql(): bool
     {
-        $platform = $this->objectManager->get(EntityManagerInterface::class)
+        $platform = $this->getObject(EntityManagerInterface::class)
             ->getConnection()->getDatabasePlatform();
         return $platform instanceof AbstractMySQLPlatform;
     }
 
     private function createMetaDataTableIfNecessary(): void
     {
-        $this->objectManager->get(EntityManagerInterface::class)->getConnection()->executeStatement('CREATE TABLE IF NOT EXISTS neos_metadata_value (
+        $this->getObject(EntityManagerInterface::class)->getConnection()->executeStatement('CREATE TABLE IF NOT EXISTS neos_metadata_value (
             `asset_source_id` VARCHAR(255) DEFAULT NULL,
             `asset_id` VARCHAR(40) DEFAULT NULL,
             `property_name` VARCHAR(40) NOT NULL,
