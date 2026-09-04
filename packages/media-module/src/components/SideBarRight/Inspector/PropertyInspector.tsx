@@ -71,11 +71,10 @@ const PropertyInspector = () => {
 
     const handleApply = useCallback(async () => {
         if (
-            selectedAsset && (
-            label !== selectedAsset.label ||
-            caption !== selectedAsset.caption ||
-            copyrightNotice !== selectedAsset.copyrightNotice
-            )
+            selectedAsset &&
+            (label !== selectedAsset.label ||
+                caption !== selectedAsset.caption ||
+                copyrightNotice !== selectedAsset.copyrightNotice)
         ) {
             const hasApprovalToUpdateAsset = await obtainApprovalToUpdateAsset({
                 asset: selectedAsset,

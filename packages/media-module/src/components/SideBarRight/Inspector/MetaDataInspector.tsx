@@ -59,9 +59,11 @@ const MetaDataInspector: React.FC = () => {
                                     items.push(
                                         <PropertyListItem
                                             key={`${metaDataProperty.propertyName}-inherited`}
-                                            label={translate('inspector.metaData.inherited', '{propertyName} (inherited)', [
-                                                metaDataProperty.propertyLabel,
-                                            ])}
+                                            label={translate(
+                                                'inspector.metaData.inherited',
+                                                '{propertyName} (inherited)',
+                                                [metaDataProperty.propertyLabel]
+                                            )}
                                             value={metaDataProperty.inheritedValue}
                                         />
                                     );

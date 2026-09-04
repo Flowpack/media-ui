@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import { DropDown, Icon } from '@neos-project/react-ui-components';
 
@@ -11,11 +11,15 @@ import { AssetReplacementButton } from '@media-ui/feature-asset-upload/src/compo
 import { OpenAssetEditDialogButton } from '@media-ui/feature-asset-editing';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { applicationContextState, featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
-import { clipboardItemState, clipboardItemsState } from '@media-ui/feature-clipboard';
 import { selectedAssetSourceIdState, useSelectedAssetSource } from '@media-ui/feature-asset-sources';
 
-import DownloadAssetButton from '../../Actions/DownloadAssetButton';
-import DeleteAssetButton from '../../Actions/DeleteAssetButton';
+
+import {
+    AssetClipboardListToggleButton,
+    AssetClipboardToggleButton,
+    DeleteAssetButton,
+    DownloadAssetButton
+} from '../../Actions';
 
 import classes from './Tasks.module.css';
 import menuItemClasses from './TaskMenuItem.module.css';
@@ -31,10 +35,6 @@ const Tasks: React.FC = () => {
     const { showSimilarAssets } = useRecoilValue(featureFlagsState);
     const selectedAssetSource = useSelectedAssetSource();
     const selectedAsset = useSelectedAsset();
-    const [isInClipboard, toggleClipboardState] = useRecoilState(
-        clipboardItemState({ assetId: selectedAsset?.id ?? '', assetSourceId: selectedAsset?.assetSource?.id ?? '' })
-    );
-    const [allInClipboard, toggleAllClipboardState] = useRecoilState(clipboardItemsState(assetSourceId));
 
     const isMultiSelection = selectedAssets.length > 1;
     const isReadonly = selectedAssetSource ? selectedAssetSource.readOnly : true;
@@ -50,84 +50,51 @@ const Tasks: React.FC = () => {
             <DropDownContents className={classes.dropdownContents}>
                 {isMultiSelection ? (
                     <>
-                        <DownloadAssetButton
-                            assets={selectedAssets}
-                            variant="menuItem"
-                            menuItemClassName={menuItemClasses.menuItem}
-                            menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
-                        />
+                        <li className={menuItemClasses.menuItem}>
+                            <DownloadAssetButton assets={selectedAssets} />
+                        </li>
                         {!isReadonly && (
-                            <DeleteAssetButton
-                                assets={selectedAssets}
-                                variant="menuItem"
-                                menuItemClassName={menuItemClasses.menuItem}
-                                menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
-                            />
+                            <li className={menuItemClasses.menuItem}>
+                                <DeleteAssetButton assets={selectedAssets} />
+                            </li>
                         )}
-                        <li
-                            className={menuItemClasses.menuItem}
-                            onClick={() => toggleAllClipboardState(!allInClipboard)}
-                        >
-                            <Icon icon={allInClipboard ? 'clipboard-check' : 'clipboard'} />
-                            <span>
-                                {allInClipboard
-                                    ? translate('itemActions.removeAllFromClipboard', 'Remove all from clipboard')
-                                    : translate('itemActions.copyAllToClipboard', 'Copy all to clipboard')}
-                            </span>
+                        <li className={menuItemClasses.menuItem}>
+                            <AssetClipboardListToggleButton assetSourceId={assetSourceId} />
                         </li>
                     </>
-                ) : (
+                ) : selectedAsset ? (
                     <>
-                        <AssetUsagesToggleButton
-                            variant="menuItem"
-                            menuItemClassName={menuItemClasses.menuItem}
-                            menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
-                        />
+                        <li className={menuItemClasses.menuItem}>
+                            <AssetUsagesToggleButton />
+                        </li>
                         {showSimilarAssets && (
-                            <SimilarAssetsToggleButton
-                                variant="menuItem"
-                                menuItemClassName={menuItemClasses.menuItem}
-                            />
+                            <li className={menuItemClasses.menuItem}>
+                                <SimilarAssetsToggleButton />
+                            </li>
                         )}
-                        <DownloadAssetButton
-                            assets={[selectedAsset]}
-                            variant="menuItem"
-                            menuItemClassName={menuItemClasses.menuItem}
-                            menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
-                        />
+                        <li className={menuItemClasses.menuItem}>
+                            <DownloadAssetButton assets={[selectedAsset]} />
+                        </li>
                         {!isReadonly && applicationContext !== 'details' && (
                             <>
-                                <OpenAssetEditDialogButton
-                                    variant="menuItem"
-                                    menuItemClassName={menuItemClasses.menuItem}
-                                />
-                                <AssetReplacementButton
-                                    variant="menuItem"
-                                    menuItemClassName={menuItemClasses.menuItem}
-                                />
-                                <DeleteAssetButton
-                                    asset={selectedAsset}
-                                    variant="menuItem"
-                                    menuItemClassName={menuItemClasses.menuItem}
-                                    menuItemDisabledClassName={menuItemClasses['menuItem--disabled']}
-                                />
+                                <li className={menuItemClasses.menuItem}>
+                                    <OpenAssetEditDialogButton />
+                                </li>
+                                <li className={menuItemClasses.menuItem}>
+                                    <AssetReplacementButton />
+                                </li>
+                                <li className={menuItemClasses.menuItem}>
+                                    <DeleteAssetButton asset={selectedAsset} />
+                                </li>
                             </>
                         )}
                         {selectedAsset.localId && (
-                            <li
-                                className={menuItemClasses.menuItem}
-                                onClick={() => toggleClipboardState(!isInClipboard)}
-                            >
-                                <Icon icon={isInClipboard ? 'clipboard-check' : 'clipboard'} />
-                                <span>
-                                    {isInClipboard
-                                        ? translate('itemActions.removeFromClipboard', 'Remove from clipboard')
-                                        : translate('itemActions.copyToClipboard', 'Copy to clipboard')}
-                                </span>
+                            <li className={menuItemClasses.menuItem}>
+                                <AssetClipboardToggleButton asset={selectedAsset} />
                             </li>
                         )}
                     </>
-                )}
+                ) : null}
             </DropDownContents>
         </DropDown>
     );

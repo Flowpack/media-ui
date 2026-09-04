@@ -1,31 +1,20 @@
 import React, { useCallback } from 'react';
 
-import { Icon, IconButton } from '@neos-project/react-ui-components';
-
 import { useIntl, useNotify } from '@media-ui/core';
+import { ActionButton } from '@media-ui/core/src/components';
 import { useDownloadAssets } from '@media-ui/core/src/hooks';
 import { useFailedAssetLabels } from '@media-ui/media-module/src/hooks';
 
 interface DownloadAssetButtonProps {
     assets: (Asset | AssetIdentity)[];
-    style?: string;
-    size?: 'small' | 'regular';
-    variant?: 'button' | 'menuItem';
-    menuItemClassName?: string;
-    menuItemDisabledClassName?: string;
+    hideLabel?: boolean;
+    className?: string;
 }
 
 const toIdentity = (asset: Asset | AssetIdentity): AssetIdentity =>
     'assetId' in asset ? asset : { assetId: asset.id, assetSourceId: asset.assetSource.id };
 
-const DownloadAssetButton: React.FC<DownloadAssetButtonProps> = ({
-    assets,
-    style = 'transparent',
-    size = 'regular',
-    variant = 'button',
-    menuItemClassName,
-    menuItemDisabledClassName,
-}) => {
+const DownloadAssetButton: React.FC<DownloadAssetButtonProps> = ({ assets, hideLabel, className }) => {
     const { translate } = useIntl();
     const Notify = useNotify();
     const { downloadAssets } = useDownloadAssets();
@@ -57,20 +46,15 @@ const DownloadAssetButton: React.FC<DownloadAssetButtonProps> = ({
         ? translate('itemActions.download', 'Download asset')
         : translate('itemActions.downloadMultiple', 'Download assets');
 
-    if (variant === 'menuItem') {
-        return (
-            <li
-                className={`${menuItemClassName}${disabled ? ` ${menuItemDisabledClassName ?? ''}` : ''}`}
-                onClick={disabled ? undefined : onDownload}
-            >
-                <Icon icon="download" />
-                <span>{label}</span>
-            </li>
-        );
-    }
-
     return (
-        <IconButton icon="download" size={size} style={style} hoverStyle="success" title={label} onClick={onDownload} />
+        <ActionButton
+            icon="download"
+            label={label}
+            disabled={disabled}
+            hideLabel={hideLabel}
+            className={className}
+            onClick={onDownload}
+        />
     );
 };
 

@@ -1,54 +1,36 @@
 import React from 'react';
-import { useRecoilState } from 'recoil';
-
-import { Button, Icon } from '@neos-project/react-ui-components';
+import { useSetRecoilState } from 'recoil';
 
 import { useIntl } from '@media-ui/core';
+import { ActionButton } from '@media-ui/core/src/components';
 import { useSelectedAsset } from '@media-ui/core/src/hooks';
 
 import assetUsageDetailsModalState from '../state/assetUsageDetailsModalState';
 
 interface AssetUsagesToggleButtonProps {
-    variant?: 'button' | 'menuItem';
-    menuItemClassName?: string;
-    menuItemDisabledClassName?: string;
+    hideLabel?: boolean;
+    className?: string;
 }
 
-const AssetUsagesToggleButton: React.FC<AssetUsagesToggleButtonProps> = ({
-    variant = 'button',
-    menuItemClassName,
-    menuItemDisabledClassName,
-}) => {
+const AssetUsagesToggleButton: React.FC<AssetUsagesToggleButtonProps> = ({ hideLabel, className }) => {
     const asset = useSelectedAsset();
-    const [assetUsagesModalOpen, setAssetUsagesModalOpen] = useRecoilState(assetUsageDetailsModalState);
+    const setAssetUsagesModalOpen = useSetRecoilState(assetUsageDetailsModalState);
     const { translate } = useIntl();
     const disabled = asset?.isInUse === false;
     const label = translate('assetUsageList.toggle', 'Show usages');
 
-    if (variant === 'menuItem') {
-        return (
-            <li
-                className={`${menuItemClassName}${disabled ? ` ${menuItemDisabledClassName}` : ''}`}
-                onClick={disabled ? undefined : () => setAssetUsagesModalOpen(true)}
-            >
-                <Icon icon="link" />
-                <span>{label}</span>
-            </li>
-        );
-    }
+    if (!asset) return null;
 
-    return asset ? (
-        <Button
+    return (
+        <ActionButton
+            icon="link"
+            label={label}
             disabled={disabled}
-            size="regular"
-            style={assetUsagesModalOpen ? 'brand' : 'lighter'}
-            hoverStyle="brand"
+            hideLabel={hideLabel}
+            className={className}
             onClick={() => setAssetUsagesModalOpen(true)}
-            title={label}
-        >
-            <Icon icon="link" />
-        </Button>
-    ) : null;
+        />
+    );
 };
 
 export default React.memo(AssetUsagesToggleButton);
