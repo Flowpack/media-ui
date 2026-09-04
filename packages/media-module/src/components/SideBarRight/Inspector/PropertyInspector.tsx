@@ -75,7 +75,6 @@ const PropertyInspector = () => {
             (label !== selectedAsset.label ||
                 caption !== selectedAsset.caption ||
                 copyrightNotice !== selectedAsset.copyrightNotice)
-            )
         ) {
             const hasApprovalToUpdateAsset = await obtainApprovalToUpdateAsset({
                 asset: selectedAsset,

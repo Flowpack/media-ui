@@ -30,7 +30,7 @@ const AssetUsagesToggleButton: React.FC<AssetUsagesToggleButtonProps> = ({ hideL
             className={className}
             onClick={() => setAssetUsagesModalOpen(true)}
         />
-    ) : null;
+    );
 };
 
 export default React.memo(AssetUsagesToggleButton);
