@@ -106,6 +106,6 @@ class AssetCollectionService
 
         /** @var Site|null $site */
         $site = $context->getCurrentSite();
-        return $site->getAssetCollection();
+        return $site?->getAssetCollection();
     }
 }

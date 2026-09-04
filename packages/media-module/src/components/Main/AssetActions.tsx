@@ -6,7 +6,7 @@ import {
     DownloadAssetButton,
     ImportAssetButton,
     OpenAssetInNewTabButton,
-    PreviewAssetButton
+    PreviewAssetButton,
 } from '../Actions';
 
 interface ItemActionsProps {

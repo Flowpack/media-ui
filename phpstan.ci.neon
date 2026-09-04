@@ -4,10 +4,6 @@ parameters:
     paths:
         - Classes
         - Tests
-    excludePaths:
-        # Only runs when the optional Neos.MetaData package is installed, which is not in this
-        # toolchain. Its classes are unknown to PHPStan here.
-        - Tests/Functional/GraphQL/MetadataCapabilitiesTest.php
     ignoreErrors:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findBy[a-zA-Z]+\(\)#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+Repository::findOneBy[a-zA-Z]+\(\)#'

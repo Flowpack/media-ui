@@ -28,12 +28,17 @@ jobs:
         run: yarn lint
 
   codestyle:
+    env:
+      # PHPStan analyses Classes/, which reference types from the optional Neos.MetaData package.
+      # It requires PHP >= 8.4, so it is installed on the 8.4 matrix variant below.
+      NEOS_METADATA_PACKAGE_BRANCH: 'dev-feature/extensible-metadata-properties'
+
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['8.3']
+        php-versions: ['8.4']
 
     steps:
       - uses: actions/checkout@v5
@@ -42,6 +47,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
+
+      - name: Configure git safe directory
+        # The checkout is owned by a different user inside the php-actions Docker container,
+        # which makes git/composer refuse to operate on /app unless it is marked as safe.
+        run: git config --global --add safe.directory /app
 
       - name: Cache dependencies
         uses: actions/cache@v5
@@ -54,6 +64,11 @@ jobs:
         with:
           php_version: ${{ matrix.php-versions }}
           version: 2
+
+      - name: Install Neos.MetaData
+        # Runs as root to match the php-actions Docker steps, which leave the checkout's
+        # composer.json/composer.lock owned by root and therefore unwritable by the runner user.
+        run: sudo composer require --no-interaction --no-progress neos/metadata:"${NEOS_METADATA_PACKAGE_BRANCH} as 2.0.0"
 
       - name: PHPStan
         uses: php-actions/phpstan@v3
@@ -76,6 +91,22 @@ jobs:
       matrix:
         php-versions: ['8.4']
         flow-versions: ['8.4']
+
+    # The metadata capable tests (which run once Neos.MetaData is installed) require a real
+    # MySQL/MariaDB backend, as the Neos.MetaData storage adapter uses MySQL-specific SQL
+    # (e.g. ON DUPLICATE KEY) that SQLite cannot execute.
+    services:
+      mariadb:
+        # see https://mariadb.com/kb/en/mariadb-server-release-dates/
+        image: mariadb:10.8
+        env:
+          MYSQL_USER: neos
+          MYSQL_PASSWORD: neos
+          MYSQL_DATABASE: neos_functional_testing
+          MYSQL_ROOT_PASSWORD: neos
+        ports:
+          - "3306:3306"
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v5
@@ -131,6 +162,26 @@ jobs:
         run: |
           cd ${FLOW_FOLDER}
           composer require --no-interaction --no-progress neos/metadata:"${NEOS_METADATA_PACKAGE_BRANCH} as 2.0.0"
+          ./flow neos.flow:cache:flush --force
+
+      - name: Setup Flow configuration for MariaDB
+        # Point the Testing context at the MariaDB service, as the metadata capable tests need a
+        # MySQL/MariaDB backend (see the services block above). This mirrors the split where the
+        # earlier functional run stays on SQLite and only the metadata run uses MariaDB.
+        run: |
+          cd ${FLOW_FOLDER}
+          rm -f Configuration/Testing/Settings.yaml
+          cat <<EOF >> Configuration/Testing/Settings.yaml
+          Neos:
+            Flow:
+              persistence:
+                backendOptions:
+                  host: '127.0.0.1'
+                  driver: pdo_mysql
+                  user: 'neos'
+                  password: 'neos'
+                  dbname: 'neos_functional_testing'
+          EOF
           ./flow neos.flow:cache:flush --force
 
       - name: Run Functional tests with Neos.MetaData

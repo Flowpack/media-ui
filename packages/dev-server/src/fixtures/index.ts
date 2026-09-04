@@ -184,6 +184,7 @@ const assets = range(150).map((index) => {
         copyrightNotice: 'The Neos team',
         lastModified: new Date(`2020-06-16 15:${Math.floor((150 - index) / 60)}:${(150 - index) % 60}`),
         iptcProperties: index % 5 === 0 ? getIptcProperties(index) : [],
+        metadata: [],
         width: 90,
         height: 210,
         file: {
