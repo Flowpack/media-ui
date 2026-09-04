@@ -71,9 +71,13 @@ class MediaController extends AbstractModuleController
 
     public function initializeAction(): void
     {
-        $this->metaDataManager = $this->objectManager->has(MetaDataManager::class)
-            ? $this->objectManager->get(MetaDataManager::class)
-            : null;
+        if ($this->objectManager->has(MetaDataManager::class)) {
+            /** @var MetaDataManager $metaDataManager */
+            $metaDataManager = $this->objectManager->get(MetaDataManager::class);
+            $this->metaDataManager = $metaDataManager;
+        } else {
+            $this->metaDataManager = null;
+        }
         parent::initializeAction();
     }
 
@@ -92,10 +96,14 @@ class MediaController extends AbstractModuleController
         if ($this->metaDataManager === null) {
             return;
         }
-        $metaDataPropertyDefinitions = $this->metaDataManager->getPropertyDefinitions();
-        $dimensionSpacePoints = $this->metaDataManager->getDimensionSpacePointConfiguration();
+        $metaDataManager = $this->metaDataManager;
+        $metaDataPropertyDefinitions = $metaDataManager->getPropertyDefinitions();
+        $dimensionSpacePoints = $metaDataManager->getDimensionSpacePointConfiguration();
         if ($metaDataDimensionSpacePointHash !== null) {
-            $dimensionSpacePoint = $this->getDimensionSpacePointFromHash($metaDataDimensionSpacePointHash);
+            $dimensionSpacePoint = $this->getDimensionSpacePointFromHash(
+                $metaDataManager,
+                $metaDataDimensionSpacePointHash
+            );
         }
         if ($metaDataDimensionSpacePointHash === null || $dimensionSpacePoint === null) {
             $dimensionSpacePoint = $this->getFirstDimensionSpacePoint($dimensionSpacePoints);
@@ -116,6 +124,7 @@ class MediaController extends AbstractModuleController
 
         $assetsWithMetadata = array_filter(array_map(function (AssetIdentity $assetIdentity) use (
             $dimensionSpacePoint,
+            $metaDataManager,
             $metaDataPropertyDefinitions
         ) {
             $asset = $this->assetSourceContext->getAsset($assetIdentity->assetId, $assetIdentity->assetSourceId);
@@ -128,7 +137,7 @@ class MediaController extends AbstractModuleController
                 $assetIdentity->assetId->value
             );
 
-            $propertyValues = $this->metaDataManager->getMetaDataPropertyValues(
+            $propertyValues = $metaDataManager->getMetaDataPropertyValues(
                 $assetReference,
                 $dimensionSpacePoint
             );
@@ -195,7 +204,7 @@ class MediaController extends AbstractModuleController
     }
 
     /**
-     * @param array<array{assetId: string, postData: array<string, mixed>}> $assets
+     * @param array<array{assetId: string, postData: array<string, mixed>|null}> $assets
      * @throws StopActionException
      */
     public function updateMetadataAction(
@@ -203,7 +212,14 @@ class MediaController extends AbstractModuleController
         string $metaDataDimensionSpacePointHash,
         AssetSourceId $assetSourceId,
     ): void {
-        $metaDataDimensionSpacePoint = $this->getDimensionSpacePointFromHash($metaDataDimensionSpacePointHash);
+        $metaDataManager = $this->metaDataManager;
+        if ($metaDataManager === null) {
+            return;
+        }
+        $metaDataDimensionSpacePoint = $this->getDimensionSpacePointFromHash(
+            $metaDataManager,
+            $metaDataDimensionSpacePointHash
+        );
 
         foreach ($assets as $assetData) {
             $assetIdentity = AssetIdentity::create(
@@ -217,7 +233,7 @@ class MediaController extends AbstractModuleController
             }
 
             foreach ($assetData['postData'] ?? [] as $propertyName => $propertyValue) {
-                $this->metaDataManager->setMetaDataPropertyValue(
+                $metaDataManager->setMetaDataPropertyValue(
                     MetaDataAssetReference::create($assetIdentity->assetSourceId->value,
                         $assetIdentity->assetId->value),
                     MetaDataPropertyName::fromString($propertyName),
@@ -282,9 +298,11 @@ class MediaController extends AbstractModuleController
         return null;
     }
 
-    private function getDimensionSpacePointFromHash(string $dimensionSpacePointHash): ?MetaDataDimensionSpacePoint
-    {
-        $dimensionSpacePoints = $this->metaDataManager->getDimensionSpacePointConfiguration();
+    private function getDimensionSpacePointFromHash(
+        MetaDataManager $metaDataManager,
+        string $dimensionSpacePointHash,
+    ): ?MetaDataDimensionSpacePoint {
+        $dimensionSpacePoints = $metaDataManager->getDimensionSpacePointConfiguration();
         return current(array_filter(
             iterator_to_array($dimensionSpacePoints),
             static fn($spacePoint) => $spacePoint->hash === $dimensionSpacePointHash

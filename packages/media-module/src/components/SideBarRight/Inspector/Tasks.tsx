@@ -13,7 +13,6 @@ import { useSelectedAsset } from '@media-ui/core/src/hooks';
 import { applicationContextState, featureFlagsState, selectedAssetIdsState } from '@media-ui/core/src/state';
 import { selectedAssetSourceIdState, useSelectedAssetSource } from '@media-ui/feature-asset-sources';
 
-
 import {
     AssetClipboardListToggleButton,
     AssetClipboardToggleButton,

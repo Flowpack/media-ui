@@ -7,10 +7,16 @@ namespace Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<MetaDataProperty>
+ */
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: MetaDataProperty::class)]
 final class MetaDataProperties implements \IteratorAggregate
 {
+    /**
+     * @param list<MetaDataProperty> $properties
+     */
     private function __construct(public readonly array $properties)
     {
     }

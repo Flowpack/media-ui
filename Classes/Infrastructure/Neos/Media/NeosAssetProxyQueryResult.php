@@ -19,7 +19,14 @@ use Neos\Media\Domain\Model\AssetSource\Neos\NeosAssetSource;
  */
 final class NeosAssetProxyQueryResult implements AssetProxyQueryResultInterface
 {
+    /**
+     * @var list<AssetProxyInterface>|null
+     */
     private ?array $assetProxies = null;
+
+    /**
+     * @var ArrayIterator<int, AssetProxyInterface>|null
+     */
     private ?ArrayIterator $iterator = null;
 
     public function __construct(
@@ -47,6 +54,9 @@ final class NeosAssetProxyQueryResult implements AssetProxyQueryResultInterface
         return $this->assetProxies;
     }
 
+    /**
+     * @return ArrayIterator<int, AssetProxyInterface>
+     */
     private function iterator(): ArrayIterator
     {
         if ($this->iterator === null) {

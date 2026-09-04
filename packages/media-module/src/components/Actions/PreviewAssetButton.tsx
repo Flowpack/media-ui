@@ -21,9 +21,7 @@ const PreviewAssetButton: React.FC<PreviewAssetButtonProps> = ({ asset, hideLabe
             label={translate('itemActions.preview', 'Preview asset')}
             hideLabel={hideLabel}
             className={className}
-            onClick={() =>
-                setSelectedAssetForPreview({ assetId: asset.id, assetSourceId: asset.assetSource.id })
-            }
+            onClick={() => setSelectedAssetForPreview({ assetId: asset.id, assetSourceId: asset.assetSource.id })}
         />
     );
 };

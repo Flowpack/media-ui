@@ -18,6 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Flowpack\Media\Ui\Infrastructure\Neos\Media\NeosAssetProxyQuery;
+use Flowpack\Media\Ui\Infrastructure\Neos\Media\NeosAssetProxyQueryResult;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Media\Domain\Model\Asset;
@@ -53,10 +54,10 @@ class NeosAssetProxyQueryTest extends AbstractMediaTestCase
         }
 
         $this->prepareResourceManager();
-        $this->assetRepository = $this->objectManager->get(AssetRepository::class);
-        $this->tagRepository = $this->objectManager->get(TagRepository::class);
-        $this->assetCollectionRepository = $this->objectManager->get(AssetCollectionRepository::class);
-        $this->entityManager = $this->objectManager->get(EntityManagerInterface::class);
+        $this->assetRepository = $this->getObject(AssetRepository::class);
+        $this->tagRepository = $this->getObject(TagRepository::class);
+        $this->assetCollectionRepository = $this->getObject(AssetCollectionRepository::class);
+        $this->entityManager = $this->getObject(EntityManagerInterface::class);
     }
 
     private function createImage(string $title): Image
@@ -91,16 +92,19 @@ class NeosAssetProxyQueryTest extends AbstractMediaTestCase
     }
 
     /**
-     * @return string[]
-     */
-    private function identifiersOf(iterable $proxies): array
-    {
-        $identifiers = [];
-        foreach ($proxies as $proxy) {
-            $identifiers[] = $proxy->getLocalAssetIdentifier();
+ * @return list<string>
+ */
+private function identifiersOf(NeosAssetProxyQueryResult $queryResult): array
+{
+    $identifiers = [];
+    foreach ($queryResult->toArray() as $proxy) {
+        $identifier = $proxy->getLocalAssetIdentifier();
+        if ($identifier !== null) {
+            $identifiers[] = $identifier;
         }
-        return $identifiers;
     }
+    return $identifiers;
+}
 
     private function persistFixtures(): Asset
     {
@@ -119,7 +123,11 @@ class NeosAssetProxyQueryTest extends AbstractMediaTestCase
         $this->persistenceManager->persistAll();
         $this->persistenceManager->clearState();
 
-        return $this->assetRepository->findByIdentifier($this->persistenceManager->getIdentifierByObject($firstImage));
+        $persistedAsset = $this->assetRepository->findByIdentifier(
+            $this->persistenceManager->getIdentifierByObject($firstImage)
+        );
+        self::assertInstanceOf(Asset::class, $persistedAsset);
+        return $persistedAsset;
     }
 
     /**
@@ -251,7 +259,7 @@ class NeosAssetProxyQueryTest extends AbstractMediaTestCase
         $firstImage = $this->persistFixtures();
         $identifier = $this->persistenceManager->getIdentifierByObject($firstImage);
 
-        $metaDataManager = $this->objectManager->get(MetaDataManager::class);
+        $metaDataManager = $this->getObject(MetaDataManager::class);
         $metaDataManager->setMetaDataPropertyValue(
             MetaDataAssetReference::create('neos', $identifier),
             'copyright',

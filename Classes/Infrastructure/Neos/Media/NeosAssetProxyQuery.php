@@ -42,8 +42,14 @@ final class NeosAssetProxyQuery
     private bool $filterAssetsInCollections = false;
     private bool $filterAssetsWithTags = false;
 
+    /**
+     * @var array<string, string>
+     */
     private array $orderings = [];
 
+    /**
+     * @var array<string, class-string<Asset>>
+     */
     private array $entityClassNames = [
         'All' => Asset::class,
         'Image' => Image::class,
@@ -152,8 +158,12 @@ final class NeosAssetProxyQuery
      */
     private function findByMetaDataSearchTerm(string $searchTerm): NeosAssetProxyQueryResult
     {
+        $metaDataManager = $this->getMetaDataManager();
+        if ($metaDataManager === null) {
+            return $this->buildResult();
+        }
         $identifiers = [];
-        foreach ($this->getMetaDataManager()->findAssets(
+        foreach ($metaDataManager->findAssets(
             MetaDataAssetFilter::create(assetSourceId: self::ASSET_SOURCE_IDENTIFIER, searchTerm: $searchTerm)
         ) as $assetReference) {
             $identifiers[] = $assetReference->assetId;
@@ -173,12 +183,17 @@ final class NeosAssetProxyQuery
     private function getMetaDataManager(): ?MetaDataManager
     {
         if ($this->metaDataManager === null && $this->objectManager->has(MetaDataManager::class)) {
-            $this->metaDataManager = $this->objectManager->get(MetaDataManager::class);
+            /** @var MetaDataManager $metaDataManager */
+            $metaDataManager = $this->objectManager->get(MetaDataManager::class);
+            $this->metaDataManager = $metaDataManager;
         }
 
         return $this->metaDataManager;
     }
 
+    /**
+     * @return class-string<Asset>
+     */
     public function getEntityClassName(): string
     {
         return $this->entityClassNames[$this->assetTypeFilter] ?? Asset::class;

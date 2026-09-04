@@ -21,6 +21,7 @@ use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
 use Neos\Flow\Tests\Behavior\Features\Bootstrap\SecurityOperationsTrait;
+use Neos\Media\Domain\Model\Asset;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\MetaData\Domain\Dto\MetaDataAssetReference;
 use Neos\MetaData\Domain\Dto\MetaDataPropertyDefinitions;
@@ -63,11 +64,11 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
             static::markTestSkipped('Doctrine persistence is not enabled');
         }
 
-        $this->mediaApi = $this->objectManager->get(MediaApi::class);
-        $this->metaDataManager = $this->objectManager->get(MetaDataManager::class);
-        $this->mediaController = $this->objectManager->get(MediaController::class);
-        $this->assetResolver = $this->objectManager->get(AssetResolver::class);
-        $this->assetRepository = $this->objectManager->get(AssetRepository::class);
+        $this->mediaApi = $this->getObject(MediaApi::class);
+        $this->metaDataManager = $this->getObject(MetaDataManager::class);
+        $this->mediaController = $this->getObject(MediaController::class);
+        $this->assetResolver = $this->getObject(AssetResolver::class);
+        $this->assetRepository = $this->getObject(AssetRepository::class);
 
         $this->iAmAuthenticatedWithRole('Neos.Neos:Editor');
     }
@@ -109,7 +110,7 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
 
         $caption = $formSchema['caption'];
         self::assertSame('string', $caption['type']);
-        self::assertSame('textarea', $caption['editor']);
+        self::assertSame('Neos.Neos/Inspector/Editors/TextAreaEditor', $caption['editor']);
         self::assertFalse($caption['globalScope']);
         self::assertFalse($caption['value']->hasOwnValue());
 
@@ -128,8 +129,11 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
         );
         $this->persistenceManager->persistAll();
 
-        $asset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+        $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        self::assertNotNull($assets);
+        $asset = $assets->assets[0];
         $assetEntity = $this->assetRepository->findByIdentifier($asset->id->value);
+        self::assertInstanceOf(Asset::class, $assetEntity);
 
         $assetReference = MetaDataAssetReference::create(
             $asset->assetSource->id->value,
@@ -161,7 +165,9 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
         );
         $this->persistenceManager->persistAll();
 
-        $asset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+        $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        self::assertNotNull($assets);
+        $asset = $assets->assets[0];
 
         $metadata = $this->assetResolver->metadata($asset);
 
@@ -181,8 +187,11 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
         );
         $this->persistenceManager->persistAll();
 
-        $asset = $this->mediaApi->assets(Types\AssetSourceId::default())->assets[0];
+        $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        self::assertNotNull($assets);
+        $asset = $assets->assets[0];
         $assetEntity = $this->assetRepository->findByIdentifier($asset->id->value);
+        self::assertInstanceOf(Asset::class, $assetEntity);
 
         $assetReference = MetaDataAssetReference::create(
             $asset->assetSource->id->value,
@@ -206,7 +215,7 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
     }
 
     /**
-     * @return array<string, array{type: string, editor: string|null, editorOptions: array, label: string, globalScope: bool, value: MetaDataPropertyValue}>
+     * @return array<string, array{type: string, editor: string|null, editorOptions: array<string, mixed>, label: string, globalScope: bool, value: MetaDataPropertyValue}>
      */
     private function mapPropertyDefinitions(MetaDataPropertyDefinitions $definitions): array
     {
