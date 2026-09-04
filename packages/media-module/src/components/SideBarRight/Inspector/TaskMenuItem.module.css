@@ -15,7 +15,20 @@
     color: white !important;
 }
 
-.menuItem--disabled {
+.menuItem button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--theme-spacing-Half);
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: white;
+    cursor: pointer;
+}
+
+.menuItem button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;

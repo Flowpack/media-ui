@@ -1,0 +1,32 @@
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--theme-spacing-Half);
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+    cursor: pointer;
+}
+
+.button:hover {
+    color: inherit;
+}
+
+.button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.label {
+}
+
+.hideLabel {
+    display: none;
+}
+
+.small {
+    width: 32px !important;
+    min-width: 32px !important;
+}
