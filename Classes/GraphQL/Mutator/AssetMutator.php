@@ -355,7 +355,10 @@ class AssetMutator
                     $resource,
                     $options->toArray()
                 );
-                return Types\FileUploadResult::fromSuccess(self::STATE_REPLACED, $filename);
+                return Types\FileUploadResult::fromSuccess(
+                    self::STATE_REPLACED,
+                    Types\Filename::fromString($resource->getFilename())
+                );
             } catch (\Exception $e) {
                 $this->logger->error(
                     sprintf(
