@@ -126,7 +126,7 @@ class AssetSourceContext
 
     public function getAssetCollections(?Types\AssetSourceId $assetSourceId): Types\AssetCollections
     {
-        if ($assetSourceId->value !== 'neos') {
+        if (!$assetSourceId || $assetSourceId->value !== 'neos') {
             // We currently only know about collections in the neos asset source
             return Types\AssetCollections::empty();
         }
@@ -164,7 +164,7 @@ class AssetSourceContext
 
     public function getTags(?Types\AssetSourceId $assetSourceId): Types\Tags
     {
-        if ($assetSourceId->value !== 'neos') {
+        if (!$assetSourceId || $assetSourceId->value !== 'neos') {
             // We currently only know about tags in the neos asset source
             return Types\Tags::empty();
         }
@@ -209,7 +209,9 @@ class AssetSourceContext
         $newAssetCollection = new AssetCollection($title->value);
         if ($parent) {
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
-            $newAssetCollection->setParent($parentCollection);
+            if ($parentCollection instanceof HierarchicalAssetCollectionInterface) {
+                $newAssetCollection->setParent($parentCollection);
+            }
         }
 
         // FIXME: Multiple asset collections with the same title can exist, but do we want that?

@@ -8,15 +8,18 @@ use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\Description;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<UploadedFile>
+ */
 #[Flow\Proxy(false)]
 #[Description('A list of uploaded files')]
 #[ListBased(itemClassName: UploadedFile::class)]
 final class UploadedFiles implements \IteratorAggregate
 {
     /**
-     * @param UploadedFile[]|null $files
+     * @param UploadedFile[] $files
      */
-    private function __construct(public readonly ?array $files = null)
+    private function __construct(public readonly array $files)
     {
     }
 

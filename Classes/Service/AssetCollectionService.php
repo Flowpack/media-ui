@@ -21,6 +21,9 @@ use Neos\Neos\Domain\Service\ContentContext;
 class AssetCollectionService
 {
 
+    /**
+     * @var array<string, int>
+     */
     protected array $assetCollectAssetCountCache = [];
 
     /**

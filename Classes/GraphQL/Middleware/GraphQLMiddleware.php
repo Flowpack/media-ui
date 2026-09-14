@@ -18,7 +18,9 @@ namespace Flowpack\Media\Ui\GraphQL\Middleware;
 
 use Flowpack\Media\Ui\GraphQL\Resolver;
 use GraphQL\Error\ClientAware;
+use GraphQL\Error\Error;
 use GraphQL\Error\SyntaxError;
+use GraphQL\Executor\Promise\Promise;
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\Parser;
 use GraphQL\Server\ServerConfig;
@@ -49,9 +51,15 @@ use Wwwision\TypesGraphQL\Types\CustomResolvers;
 
 /**
  * HTTP Component to implement the GraphQL Endpoint, see Settings Neos.Flow.http.chain
+ *
+ * @phpstan-type FormattedError array{message: string, locations?: array<int, array{line: int, column: int}>, path?: array<int, int|string>, extensions?: array<string, mixed>}
  */
 final class GraphQLMiddleware implements MiddlewareInterface
 {
+    /**
+     * @param class-string $apiObjectName
+     * @param array<mixed> $typeNamespaces
+     */
     public function __construct(
         private readonly string $uriPath,
         private readonly string $apiObjectName,
@@ -120,6 +128,9 @@ final class GraphQLMiddleware implements MiddlewareInterface
 
         $bodyStream = $this->streamFactory->createStream();
         $newResponse = $server->processPsrRequest($request, $response, $bodyStream);
+        if ($newResponse instanceof Promise) {
+            throw new Exception('Async operations are not supported');
+        }
         $bodyStream->rewind();
 
         // FIXME: We need to manually persist mutations for some reason
@@ -150,11 +161,20 @@ final class GraphQLMiddleware implements MiddlewareInterface
                 'Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range');
     }
 
+    /**
+     * @param list<Error> $errors
+     * @param callable(Throwable): FormattedError $formatter
+     * @return list<FormattedError>
+     */
     private function handleGraphQLErrors(array $errors, callable $formatter): array
     {
-        return array_map(fn(Throwable $error) => $this->handleGraphQLError($error, $formatter), $errors);
+        return array_map(fn(Error $error) => $this->handleGraphQLError($error, $formatter), $errors);
     }
 
+    /**
+     * @param callable(Throwable): FormattedError $formatter
+     * @return FormattedError
+     */
     private function handleGraphQLError(Throwable $error, callable $formatter): array
     {
         if (!$error instanceof ClientAware || !$error->isClientSafe()) {

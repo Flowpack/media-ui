@@ -8,11 +8,17 @@ use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\Description;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<UsageDetailsMetadataSchema>
+ */
 #[Description('A collection of assets. One asset can belong to multiple collections')]
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: UsageDetailsMetadataSchema::class)]
 final class UsageDetailsMetadataSchemaList implements \IteratorAggregate
 {
+    /**
+     * @param array<UsageDetailsMetadataSchema> $schemas
+     */
     private function __construct(
         public readonly array $schemas,
     ) {

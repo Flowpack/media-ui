@@ -52,6 +52,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
     {
         $imagePathAndFilename = Files::getUnixStylePath($imagePathAndFilename);
         $hash = sha1_file($imagePathAndFilename);
+        self::assertIsString($hash);
         copy($imagePathAndFilename, 'resource://' . $hash);
         return $this->createMockResourceAndPointerFromHash($hash);
     }
@@ -89,7 +90,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      */
     protected function prepareResourceManager(): void
     {
-        $this->resourceManager = $this->objectManager->get(ResourceManager::class);
+        $this->resourceManager = $this->getObject(ResourceManager::class);
     }
 
     protected static function createFile(): Types\UploadedFile
@@ -104,8 +105,15 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
         ]);
     }
 
+    /**
+     * @template T of object
+     * @param class-string<T> $className
+     * @return T
+     */
     public function getObject(string $className): object
     {
-        return $this->objectManager->get($className);
+        /** @var T $object */
+        $object = $this->objectManager->get($className);
+        return $object;
     }
 }

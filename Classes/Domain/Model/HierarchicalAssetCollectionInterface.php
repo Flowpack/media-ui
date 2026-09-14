@@ -16,6 +16,7 @@ namespace Flowpack\Media\Ui\Domain\Model;
 
 use Doctrine\Common\Collections\Collection;
 use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\Tag;
 
 /**
  * This interface is required for the HierachicalAssetCollectionAspect to add the
@@ -31,7 +32,7 @@ interface HierarchicalAssetCollectionInterface
     public function getTitle();
 
     /**
-     * @return Collection
+     * @return Collection<int|string,Tag>
      */
     public function getTags();
 

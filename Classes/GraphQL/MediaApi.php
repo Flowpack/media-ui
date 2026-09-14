@@ -52,6 +52,9 @@ use function Wwwision\Types\instantiate;
 #[Flow\Scope('singleton')]
 final class MediaApi
 {
+    /**
+     * @var array<string, mixed>
+     */
     #[Flow\InjectConfiguration]
     protected array $settings = [];
 
@@ -222,9 +225,14 @@ final class MediaApi
     protected function getMaximumFileUploadSize(): int
     {
         try {
+            $postMaxSize = ini_get('post_max_size');
+            $uploadMaxFilesize = ini_get('upload_max_filesize');
+            if ($postMaxSize === false || $uploadMaxFilesize === false) {
+                return 0;
+            }
             return (int)min(
-                Files::sizeStringToBytes(ini_get('post_max_size')),
-                Files::sizeStringToBytes(ini_get('upload_max_filesize'))
+                Files::sizeStringToBytes($postMaxSize),
+                Files::sizeStringToBytes($uploadMaxFilesize)
             );
         } catch (FilesException) {
             return 0;
