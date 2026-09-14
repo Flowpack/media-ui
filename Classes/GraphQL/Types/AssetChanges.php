@@ -7,6 +7,9 @@ namespace Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<AssetChange>
+ */
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: AssetChange::class)]
 final class AssetChanges implements \IteratorAggregate

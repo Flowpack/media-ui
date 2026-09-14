@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Flowpack\Media\Ui\GraphQL\Types;
 
+use GuzzleHttp\Psr7\Utils;
 use Neos\Flow\Annotations as Flow;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -16,23 +17,23 @@ final class UploadedFile implements UploadedFileInterface
     private function __construct(
         public int $size,
         public int $errorStatus,
-        public ?string $streamOrFile = null,
+        public string $streamOrFile,
         public ?string $clientFilename = null,
         public ?string $clientMediaType = null
     )
     {
     }
 
-    public function getStream(): StreamInterface|string
+    public function getStream(): StreamInterface
     {
-        return $this->streamOrFile;
+        return Utils::streamFor($this->streamOrFile);
     }
 
     public function moveTo(string $targetPath): void
     {
     }
 
-    public function getSize(): ?int
+    public function getSize(): int
     {
         return $this->size;
     }

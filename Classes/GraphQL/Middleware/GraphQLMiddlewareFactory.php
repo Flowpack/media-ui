@@ -43,6 +43,11 @@ final class GraphQLMiddlewareFactory
     ) {
     }
 
+    /**
+     * @param class-string $apiObjectName
+     * @param array<mixed> $typeNamespaces
+     * @param array<mixed>|null $customResolversSettings
+     */
     public function create(
         string $uriPath,
         string $apiObjectName,

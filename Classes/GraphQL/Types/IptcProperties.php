@@ -7,10 +7,16 @@ namespace Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<IptcProperty>
+ */
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: IptcProperty::class)]
 final class IptcProperties implements \IteratorAggregate
 {
+    /**
+     * @param array<IptcProperty> $properties
+     */
     private function __construct(public readonly array $properties)
     {
     }

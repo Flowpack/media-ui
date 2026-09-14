@@ -19,6 +19,7 @@ use Flowpack\Media\Ui\Domain\Model\HierarchicalAssetCollectionInterface;
 use Flowpack\Media\Ui\Exception;
 use Flowpack\Media\Ui\GraphQL\Context\AssetSourceContext;
 use Flowpack\Media\Ui\GraphQL\Types;
+use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
 use Flowpack\Media\Ui\Service\AssetCollectionService;
 use Neos\Flow\Annotations as Flow;
@@ -28,6 +29,8 @@ use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\Neos\Domain\Repository\SiteRepository;
+
+use function Wwwision\Types\instantiate;
 
 #[Flow\Scope("singleton")]
 class AssetCollectionMutator
@@ -42,10 +45,13 @@ class AssetCollectionMutator
     ) {
     }
 
-    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): string
+    /**
+     * @param array<mixed> $arguments
+     */
+    protected function localizedMessage(string $id, string $fallback = '', array $arguments = []): MutationResponseMessage
     {
         try {
-            return $this->translator->translateById(
+            $value = $this->translator->translateById(
                 $id,
                 $arguments,
                 null,
@@ -54,8 +60,9 @@ class AssetCollectionMutator
                 'Flowpack.Media.Ui'
             ) ?? $fallback;
         } catch (\Exception) {
-            return $fallback ?: $id;
+            $value = $fallback ?: $id;
         }
+        return instantiate(MutationResponseMessage::class, $value);
     }
 
     /**
@@ -66,7 +73,11 @@ class AssetCollectionMutator
         Types\AssetSourceId $assetSourceId,
         Types\AssetCollectionId $parent = null
     ): Types\AssetCollection {
-        return $this->assetSourceContext->createAssetCollection($title, $assetSourceId, $parent);
+        $assetCollection = $this->assetSourceContext->createAssetCollection($title, $assetSourceId, $parent);
+        if (!$assetCollection) {
+            throw new Exception('Could not create asset collection', 1789383771);
+        }
+        return $assetCollection;
     }
 
     /**

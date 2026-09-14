@@ -8,11 +8,17 @@ use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\Description;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<AssetCollection>
+ */
 #[Description('All asset collections')]
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: AssetCollection::class)]
 final class AssetCollections implements \IteratorAggregate
 {
+    /**
+     * @param AssetCollection[] $collections
+     */
     private function __construct(public readonly array $collections)
     {
     }

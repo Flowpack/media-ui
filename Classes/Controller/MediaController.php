@@ -15,6 +15,7 @@ namespace Flowpack\Media\Ui\Controller;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Mvc\View\ViewInterface;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 
@@ -32,7 +33,7 @@ class MediaController extends AbstractModuleController
     protected $defaultViewObjectName = FusionView::class;
 
     /**
-     * @var array
+     * @var array<string,class-string<ViewInterface>>
      */
     protected $viewFormatToObjectNameMap = [
         'html' => FusionView::class,

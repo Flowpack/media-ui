@@ -42,9 +42,9 @@ class TagApiTest extends AbstractMediaTestCase
             static::markTestSkipped('Doctrine persistence is not enabled');
         }
 
-        $this->mediaApi = $this->objectManager->get(MediaApi::class);
-        $this->assetCollectionResolver = $this->objectManager->get(AssetCollectionResolver::class);
-        $this->assetResolver = $this->objectManager->get(AssetResolver::class);
+        $this->mediaApi = $this->getObject(MediaApi::class);
+        $this->assetCollectionResolver = $this->getObject(AssetCollectionResolver::class);
+        $this->assetResolver = $this->getObject(AssetResolver::class);
     }
 
     public function testCreateTag(): void
@@ -82,6 +82,7 @@ class TagApiTest extends AbstractMediaTestCase
             Types\AssetCollectionTitle::fromString('Test Collection'),
             Types\AssetSourceId::default(),
         );
+        $this->assertInstanceOf(Types\AssetCollection::class, $assetCollection);
         $tag = $this->mediaApi->createTag(
             Types\TagLabel::fromString('Test Tag'),
             Types\AssetSourceId::default(),
@@ -106,6 +107,7 @@ class TagApiTest extends AbstractMediaTestCase
 
         $this->persistenceManager->persistAll();
         $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
+        $this->assertNotNull($assets);
         $uploadedAsset = $assets->assets[0];
 
         $tag = $this->mediaApi->createTag(

@@ -18,11 +18,17 @@ final class MutationResult
     ) {
     }
 
+    /**
+     * @param array<MutationResponseMessage>|null $messages
+     */
     public static function fromSuccess(?array $messages = null): self
     {
         return new self(true, $messages ? MutationResponseMessages::fromArray($messages) : null);
     }
 
+    /**
+     * @param array<MutationResponseMessage> $messages
+     */
     public static function fromError(array $messages): self
     {
         return new self(false, MutationResponseMessages::fromArray($messages));

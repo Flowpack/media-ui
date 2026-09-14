@@ -68,12 +68,18 @@ final class UsageDetailsService
     use CreateContentContextTrait;
     use BackendUserTranslationTrait;
 
+    /**
+     * @var array<string, mixed>
+     */
     #[Flow\InjectConfiguration('contentDimensions', 'Neos.ContentRepository')]
     protected array $contentDimensionsConfiguration = [];
 
     #[Flow\Inject]
     protected ContextFactoryInterface $contextFactory;
 
+    /**
+     * @var array<string, bool>
+     */
     private array $accessibleWorkspaces = [];
 
     public function __construct(
@@ -191,7 +197,7 @@ final class UsageDetailsService
     ): AssetUsageDetails {
         /** @var Node|null $node */
         $node = $this->getNodeFrom($usage);
-        $siteNode = $this->getSiteNodeFrom($node);
+        $siteNode = $node ? $this->getSiteNodeFrom($node) : null;
         $site = $siteNode ? $this->siteRepository->findOneByNodeName($siteNode->getName()) : null;
         $closestDocumentNode = $node ? $this->getClosestDocumentNode($node) : null;
         $accessible = $this->usageIsAccessible($usage->getWorkspaceName());
@@ -228,7 +234,7 @@ final class UsageDetailsService
             if ($includeDimensions) {
                 $metadata[] = [
                     'name' => 'contentDimensions',
-                    'value' => json_encode($this->resolveDimensionValuesForNode($node)),
+                    'value' => json_encode($this->resolveDimensionValuesForNode($node)) ?: null,
                 ];
             }
         }
@@ -236,6 +242,9 @@ final class UsageDetailsService
         return new AssetUsageDetails($label, $url, $metadata);
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     protected function resolveDimensionValuesForNode(NodeInterface $node): array
     {
         $dimensionValues = [];
@@ -353,7 +362,9 @@ final class UsageDetailsService
         $usageStrategies = [];
         $assetUsageStrategyImplementations = $this->reflectionService->getAllImplementationClassNamesForInterface(AssetUsageStrategyInterface::class);
         foreach ($assetUsageStrategyImplementations as $assetUsageStrategyImplementationClassName) {
-            $usageStrategies[] = $this->objectManager->get($assetUsageStrategyImplementationClassName);
+            /** @var AssetUsageStrategyInterface $usageStrategy */
+            $usageStrategy = $this->objectManager->get($assetUsageStrategyImplementationClassName);
+            $usageStrategies[] = $usageStrategy;
         }
         return $usageStrategies;
     }
@@ -448,7 +459,7 @@ final class UsageDetailsService
      * @throws InvalidFormatPlaceholderException
      * @throws IndexOutOfBoundsException
      */
-    protected function translateById(string $id): ?string
+    protected function translateById(string $id): string
     {
         $source = 'Main';
         $package = 'Flowpack.Media.Ui';

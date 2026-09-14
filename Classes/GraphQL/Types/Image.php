@@ -19,6 +19,9 @@ final class Image
     ) {
     }
 
+    /**
+     * @param array<string,mixed> $fields
+     */
     public static function fromArray(array $fields): self
     {
         $url = $fields['url'] ?? null;

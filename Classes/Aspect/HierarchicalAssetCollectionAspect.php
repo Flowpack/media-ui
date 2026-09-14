@@ -22,6 +22,7 @@ use Flowpack\Media\Ui\Utility\AssetCollectionUtility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Aop\JoinPointInterface;
 use Neos\Media\Domain\Model\AssetCollection;
+use Neos\Media\Domain\Model\Tag;
 use Neos\Utility\ObjectAccess;
 
 /**
@@ -149,6 +150,7 @@ class HierarchicalAssetCollectionAspect
 
     /**
      * @Flow\Around("method(Neos\Media\Domain\Model\AssetCollection->getTags())")
+     * @return Collection<int|string,Tag>
      */
     public function getTags(JoinPointInterface $joinPoint): Collection
     {

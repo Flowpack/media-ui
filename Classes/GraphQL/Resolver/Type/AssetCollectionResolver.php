@@ -47,6 +47,9 @@ class AssetCollectionResolver
     #[Flow\Inject]
     protected AssetCollectionRepository $assetCollectionRepository;
 
+    /**
+     * @var array<string,bool>|null
+     */
     protected array|null $siteDefaultAssetCollections = null;
 
     public function assetCount(Types\AssetCollection $assetCollection): int

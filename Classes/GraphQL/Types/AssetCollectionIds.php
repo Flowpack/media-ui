@@ -7,10 +7,16 @@ namespace Flowpack\Media\Ui\GraphQL\Types;
 use Neos\Flow\Annotations as Flow;
 use Wwwision\Types\Attributes\ListBased;
 
+/**
+ * @implements \IteratorAggregate<AssetCollectionId>
+ */
 #[Flow\Proxy(false)]
 #[ListBased(itemClassName: AssetCollectionId::class)]
 final class AssetCollectionIds implements \IteratorAggregate, \JsonSerializable
 {
+    /**
+     * @param array<AssetCollectionId> $values
+     */
     private function __construct(public readonly array $values)
     {
     }
@@ -28,6 +34,9 @@ final class AssetCollectionIds implements \IteratorAggregate, \JsonSerializable
         return new self([]);
     }
 
+    /**
+     * @return array<AssetCollectionId>
+     */
     public function jsonSerialize(): array
     {
         return $this->values;
