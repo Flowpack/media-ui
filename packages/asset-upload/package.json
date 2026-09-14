@@ -7,6 +7,7 @@
   "dependencies": {
     "@apollo/client": "catalog:",
     "@media-ui/core": "workspace:*",
+    "@media-ui/feature-asset-sources": "workspace:*",
     "@neos-project/react-ui-components": "catalog:",
     "classnames": "catalog:",
     "graphql": "catalog:",

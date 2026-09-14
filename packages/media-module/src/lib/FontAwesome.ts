@@ -35,6 +35,7 @@ import { faFont } from '@fortawesome/free-solid-svg-icons/faFont';
 import { faGripLinesVertical } from '@fortawesome/free-solid-svg-icons/faGripLinesVertical';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons/faInfoCircle';
 import { faImages } from '@fortawesome/free-solid-svg-icons/faImages';
+import { faListAlt } from '@fortawesome/free-solid-svg-icons/faListAlt';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
 import { faPhotoVideo } from '@fortawesome/free-solid-svg-icons/faPhotoVideo';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
@@ -103,6 +104,7 @@ export default function loadIconLibrary() {
         faGripLinesVertical,
         faImages,
         faInfoCircle,
+        faListAlt,
         faNeos,
         faPencilAlt,
         faPhotoVideo,

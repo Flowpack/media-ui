@@ -1,0 +1,18 @@
+prototype(Flowpack.Media.Ui:EditMetadata.Atom.GlobalScopeIcon) < prototype(Neos.Fusion:Component) {
+    renderer = afx`
+        <div class="global-scope-icon">
+            <i class="fa fa-arrow-right-arrow-left"></i>
+            <label>
+                <input type="checkbox" />
+                <i class="fa fa-circle-question"></i>
+                <div class="tooltip">
+                    <div class="tooltip-arrow"></div>
+                    <div class="tooltip-inner">
+                        {I18n.translate('metaData.globalScopeHint', 'Changes to this property will affect all specialization variants', [], 'Main', 'Flowpack.Media.Ui')}
+
+                    </div>
+                </div>
+            </label>
+        </div>
+    `
+}

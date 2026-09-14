@@ -13,7 +13,7 @@ use Wwwision\Types\Attributes\StringBased;
 #[StringBased]
 final class AssetId implements \JsonSerializable
 {
-    private function __construct(public readonly string $value)
+    public function __construct(public readonly string $value)
     {
     }
 

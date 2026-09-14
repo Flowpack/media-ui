@@ -1,0 +1,91 @@
+prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:Component) {
+    fieldName = ''
+    fieldConfig = null
+    fieldNamePrefix = 'postData'
+
+    @if.editable = ${!this.fieldConfig.editorOptions.readonly}
+
+    @private.field = Neos.Fusion:Case {
+        boolean {
+            condition = ${props.fieldConfig.type == 'boolean'}
+            renderer = Neos.Fusion.Form:Checkbox {
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.value = ${props.fieldConfig.value.ownValue}
+            }
+        }
+
+        number {
+            condition = ${props.fieldConfig.type == 'number'}
+            renderer = Neos.Fusion.Form:Input {
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                attributes.type = 'number'
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.value = ${props.fieldConfig.value.ownValue}
+            }
+        }
+
+        textArea {
+            condition = ${props.fieldConfig.type == 'string' && props.fieldConfig.editor == 'Neos.Neos/Inspector/Editors/TextAreaEditor'}
+            renderer = Neos.Fusion.Form:Textarea {
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                attributes.rows = ${props.fieldConfig.editorOptions.rows || 3}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                content = ${props.fieldConfig.value.ownValue}
+            }
+        }
+
+        dateTime {
+            condition = ${props.fieldConfig.type == 'dateTime'}
+            renderer = Neos.Fusion.Form:Input {
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                content = ${props.fieldConfig.value.ownValue}
+                attributes.type = 'datetime-local'
+            }
+        }
+
+        default {
+            condition = true
+            renderer = Neos.Fusion.Form:Input {
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.value = ${props.fieldConfig.value.ownValue}
+            }
+        }
+    }
+
+    prototype(Neos.Fusion.Form:LabelRenderer) {
+        class = 'neos-control-label'
+    }
+
+    renderer  = afx`
+        <Neos.Fusion.Form:FieldContainer
+            class='neos-control-group'
+            label={props.fieldConfig.type != 'boolean' ? props.fieldConfig.label : ''}
+            field.name={props.fieldNamePrefix + '[' + props.fieldName + ']'}
+        >
+            <Flowpack.Media.Ui:EditMetadata.Atom.GlobalScopeIcon
+                @if.isGlobalScope={props.fieldConfig.globalScope == true}
+            />
+            <div class='neos-controls'>
+                <label
+                    class='neos-checkbox neos-inline'
+                    for={props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                    @if.isBoolean={props.fieldConfig.type == 'boolean'}
+                >
+                    {private.field}
+                    <span></span> {props.fieldConfig.label}
+                </label>
+                <Neos.Fusion:Fragment
+                    @if.isNotBoolean={props.fieldConfig.type != 'boolean'}
+                >
+                    {private.field}
+                </Neos.Fusion:Fragment>
+                <small @if.hasFallback={props.fieldConfig.value.inheritedValue}>
+                    Fallback: {props.fieldConfig.value.inheritedValue}
+                </small>
+            </div>
+        </Neos.Fusion.Form:FieldContainer>
+    `
+}

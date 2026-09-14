@@ -13,6 +13,9 @@ import VariantsInspector from '@media-ui/feature-asset-variants/src/components/V
 import { selectedAssetSourceIdState } from '@media-ui/feature-asset-sources';
 
 import PropertyInspector from './PropertyInspector';
+import ResourceInspector from './ResourceInspector';
+import IptcMetadataInspector from './IptcMetadataInspector';
+import MetaDataInspector from './MetaDataInspector';
 
 import classes from './AssetInspector.module.css';
 
@@ -29,13 +32,21 @@ const AssetInspector = () => {
         <Tabs theme={{ tabs__content: classes.tabContent }}>
             <Tabs.Panel icon="info-circle" key="editor" id="editor">
                 <PropertyInspector />
+                <ResourceInspector />
+                <IptcMetadataInspector />
+                <MetaDataInspector />
             </Tabs.Panel>
             <Tabs.Panel icon="images">
                 <VariantsInspector />
             </Tabs.Panel>
         </Tabs>
     ) : (
-        <PropertyInspector />
+        <>
+            <PropertyInspector />
+            <ResourceInspector />
+            <MetaDataInspector />
+            <IptcMetadataInspector />
+        </>
     );
 };
 

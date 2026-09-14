@@ -600,6 +600,9 @@
             <trans-unit id="inspector.metadata" xml:space="preserve" approved="yes">
                 <source>Metadata</source>
             </trans-unit>
+            <trans-unit id="inspector.properties" xml:space="preserve" approved="yes">
+                <source>Properties</source>
+            </trans-unit>
             <trans-unit id="inspector.property.dimensions" xml:space="preserve" approved="yes">
                 <source>Dimensions</source>
             </trans-unit>
@@ -885,6 +888,22 @@
             </trans-unit>
             <trans-unit id="errors.1462196420.message" xml:space="preserve" approved="yes">
                 <source>Asset could not be deleted, because it is still in use.</source>
+            </trans-unit>
+
+            <!-- Metadata -->
+            <trans-unit id="metaData.globalScopeHint" xml:space="preserve" approved="yes">
+                <source>Changes to this property will affect all dimensions</source>
+            </trans-unit>
+
+            <!-- Metadata editor -->
+            <trans-unit id="metadataEditor.title" xml:space="preserve" approved="yes">
+                <source>Editing asset "{0}"</source>
+            </trans-unit>
+            <trans-unit id="metadataEditor.cancel" xml:space="preserve" approved="yes">
+                <source>Cancel</source>
+            </trans-unit>
+            <trans-unit id="metadataEditor.save" xml:space="preserve" approved="yes">
+                <source>Save</source>
             </trans-unit>
         </body>
     </file>

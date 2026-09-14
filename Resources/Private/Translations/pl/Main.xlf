@@ -348,6 +348,10 @@
                 <source>Metadata</source>
                 <target>Metadane</target>
             </trans-unit>
+            <trans-unit id="inspector.properties" xml:space="preserve" approved="yes">
+                <source>Properties</source>
+                <target>Właściwości</target>
+            </trans-unit>
             <trans-unit id="inspector.property.dimensions" xml:space="preserve" approved="yes">
                 <source>Dimensions</source>
                 <target>Wymiary</target>
