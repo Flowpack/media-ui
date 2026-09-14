@@ -38,7 +38,7 @@ const PreviewActions: React.FC<PreviewActionsProps> = ({ asset, buildLinkToMedia
                     <IconButton icon="external-link-alt" size="regular" style="transparent" hoverStyle="brand" />
                 </a>
             )}
-            <DownloadAssetButton assets={[asset]} />
+            <DownloadAssetButton assets={[asset]} hideLabel />
             {asset.localId && (
                 <IconButton
                     title={translate('itemActions.copyToClipboard', 'Copy to clipboard')}

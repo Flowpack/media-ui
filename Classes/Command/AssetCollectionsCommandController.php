@@ -66,16 +66,24 @@ class AssetCollectionsCommandController extends CommandController
 
     public function setParentCommand(string $assetCollectionIdentifier, string $parentAssetCollectionIdentifier): void
     {
-        /** @var HierarchicalAssetCollectionInterface $assetCollection */
+        /** @var HierarchicalAssetCollectionInterface|null $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionIdentifier);
-        /** @var HierarchicalAssetCollectionInterface $parentAssetCollection */
+        if (!$assetCollection) {
+            $this->outputLine('Asset collection not found');
+            $this->quit(1);
+        }
+        /** @var HierarchicalAssetCollectionInterface|null $parentAssetCollection */
         $parentAssetCollection = $this->assetCollectionRepository->findByIdentifier($parentAssetCollectionIdentifier);
+        if (!$parentAssetCollection) {
+            $this->outputLine('Parent asset collection not found');
+            $this->quit(1);
+        }
         $assetCollection->setParent($parentAssetCollection);
         $this->assetCollectionRepository->update($assetCollection);
         $this->assetCollectionService->updatePathForNestedAssetCollections($assetCollection);
         $this->outputLine(
             'Asset collection "%s" has been set as child of "%s"',
-            [$assetCollection->getTitle(), $parentAssetCollection ? $parentAssetCollection->getTitle() : 'none']
+            [$assetCollection->getTitle(), $parentAssetCollection->getTitle()]
         );
     }
 

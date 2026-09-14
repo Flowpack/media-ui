@@ -138,7 +138,7 @@ class AssetCollectionMutator
             ]);
         }
 
-        /** @var AssetCollection&HierarchicalAssetCollectionInterface $assetCollection */
+        /** @var (AssetCollection&HierarchicalAssetCollectionInterface)|null $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
         if (!$assetCollection) {
             return MutationResult::fromError([
@@ -193,9 +193,8 @@ class AssetCollectionMutator
             ]);
         }
 
-        /** @var AssetCollection $assetCollection */
+        /** @var AssetCollection|null $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
-
         if (!$assetCollection) {
             return MutationResult::fromError([
                 $this->localizedMessage(
@@ -207,7 +206,7 @@ class AssetCollectionMutator
 
         /** @var HierarchicalAssetCollectionInterface $assetCollection */
         if ($parent) {
-            /** @var HierarchicalAssetCollectionInterface $parentCollection */
+            /** @var HierarchicalAssetCollectionInterface|null $parentCollection */
             $parentCollection = $this->assetCollectionRepository->findByIdentifier($parent->value);
             if (!$parentCollection) {
                 return MutationResult::fromError([

@@ -17,17 +17,17 @@ import { constraintsState } from '../state';
 
 interface MediaUiProviderProps {
     children: React.ReactElement;
-    dummyImage: string;
+    dummyImage: string | null;
     selectionMode?: boolean;
     isInNodeCreationDialog?: boolean;
     containerRef: React.RefObject<HTMLDivElement>;
-    onAssetSelection?: (localAssetIdentifier: string) => void;
+    onAssetSelection?: null | ((localAssetIdentifier: string) => void);
     approvalAttainmentStrategyFactory?: ApprovalAttainmentStrategyFactory;
 }
 
 interface MediaUiProviderValues {
     containerRef: React.RefObject<HTMLDivElement>;
-    dummyImage: string;
+    dummyImage: string | null;
     handleSelectAsset: (assetIdentity: AssetIdentity) => void;
     // TODO: Turn view variants into a single view Enum
     selectionMode: boolean;
@@ -66,12 +66,12 @@ export function MediaUiProvider({
     // TODO: This can properly be optimised by turning it into a recoil readonly selector family
     const isAssetSelectable = useCallback(
         (asset: Asset) => {
-            if (constraints.mediaTypes?.length > 0) {
+            if (constraints.mediaTypes && constraints.mediaTypes.length > 0) {
                 if (!isMatch(asset.file.mediaType, constraints.mediaTypes)) {
                     return false;
                 }
             }
-            if (constraints.assetSources?.length > 0) {
+            if (constraints.assetSources && constraints.assetSources.length > 0) {
                 if (!isMatch(asset.assetSource.id, constraints.assetSources)) {
                     return false;
                 }
@@ -109,7 +109,7 @@ export function MediaUiProvider({
                         'action.selectAsset.invalidType.message',
                         'You can only select any of the following types: {types}',
                         {
-                            types: constraints.mediaTypes.join(', '),
+                            types: constraints.mediaTypes?.join(', ') || 'n/a',
                         }
                     )
                 );
@@ -121,7 +121,10 @@ export function MediaUiProvider({
             } else {
                 // If no local id is present, we first need to import the asset from its remote source
                 importAsset(assetIdentity).then(({ data }) => {
-                    onAssetSelection(data.importAsset.localId);
+                    if (data) {
+                        onAssetSelection(data.importAsset.localId as string);
+                    }
+                    // TODO: Show error/warning
                 });
             }
         },
