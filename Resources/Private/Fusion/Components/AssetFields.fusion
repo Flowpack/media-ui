@@ -1,0 +1,22 @@
+prototype(Flowpack.Media.Ui:EditMetadata.AssetFields) < prototype(Neos.Fusion:Component) {
+    /// array{assetIdentity: AssetIdentity, asset: AssetInterface, formSchema: array<string, array{type: string, editor: string|null, label: string, value: string|null}>}
+    assetWithMetadata = null
+    /// integer
+    index = null
+
+    renderer = afx`
+        <Neos.Fusion:Fragment>
+            <Neos.Fusion.Form:Hidden
+                field.name={"assets[" + props.index + "][assetId]"}
+                field.value={props.assetWithMetadata.assetIdentity.assetId.value}
+            />
+            <Neos.Fusion:Loop items={props.assetWithMetadata.formSchema} itemKey="fieldName" itemName="fieldConfig">
+                <Flowpack.Media.Ui:EditMetadata.FieldRenderer
+                    fieldName={fieldName}
+                    fieldConfig={fieldConfig}
+                    fieldNamePrefix={"assets[" + props.index + "][postData]"}
+                />
+            </Neos.Fusion:Loop>
+        </Neos.Fusion:Fragment>
+    `
+}

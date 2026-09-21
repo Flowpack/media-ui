@@ -1,0 +1,32 @@
+prototype(Flowpack.Media.Ui:Component.MetadataEditorForm) < prototype(Neos.Fusion:Component) {
+    /// list<array{assetIdentity: AssetIdentity, asset: AssetInterface, formSchema: array<string, array{type: string, editor: string|null, label: string, value: string|null}>}>
+    assetsWithMetadata = null
+
+    @private.isMultiAssetEdit = ${Array.length(props.assetsWithMetadata) > 1}
+
+    renderer = afx`
+        <Neos.Fusion:Fragment @if.condition={private.isMultiAssetEdit}>
+            <div class="metadata-editor-tabs">
+                <Neos.Fusion:Loop items={props.assetsWithMetadata} iterationName="iterator" itemName="assetWithMetadata">
+                    <details name="metadataEditorTab" open="open" open.@if={iterator.isFirst}>
+                        <summary>{assetWithMetadata.asset.label}</summary>
+                        <div>
+                            <Flowpack.Media.Ui:EditMetadata.AssetFields
+                                assetWithMetadata={assetWithMetadata}
+                                index={iterator.index}
+                            />
+                        </div>
+                    </details>
+                </Neos.Fusion:Loop>
+            </div>
+        </Neos.Fusion:Fragment>
+        <Neos.Fusion:Fragment @if.condition={!private.isMultiAssetEdit}>
+            <div class="metadata-editor-single">
+                <Flowpack.Media.Ui:EditMetadata.AssetFields
+                    assetWithMetadata={assetsWithMetadata[0]}
+                    index={0}
+                />
+            </div>
+        </Neos.Fusion:Fragment>
+    `
+}

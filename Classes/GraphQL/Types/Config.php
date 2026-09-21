@@ -20,6 +20,8 @@ final class Config
         public readonly bool $canManageTags,
         public readonly bool $canManageAssetCollections,
         public readonly bool $canManageAssets,
+        #[Description('Whether metadata editing is supported (e.g. by the Neos.MetaData package)')]
+        public readonly bool $supportsMetadataEditing,
         public readonly ?AssetCollectionId $defaultAssetCollectionId = null,
     ) {
     }

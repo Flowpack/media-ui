@@ -25,6 +25,7 @@ interface Asset extends GraphQlEntity {
     copyrightNotice: string;
     lastModified: Date;
     iptcProperties: IptcProperty[];
+    metadata: MetaDataProperty[];
 
     width?: number;
     height?: number;

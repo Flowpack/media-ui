@@ -1,0 +1,54 @@
+prototype(Flowpack.Media.Ui:Component.MetadataEditor) < prototype(Neos.Fusion:Component) {
+    /// list<array{assetIdentity: AssetIdentity, asset: AssetInterface, formSchema: array<string, array{type: string, editor: string|null, label: string, value: string|null}>}>
+    assetsWithMetadata = null
+    /// Available asset dimension space points
+    assetDsps = null
+    /// string
+    currentAssetDsp = null
+
+    @private.isMultiAssetEdit = ${Array.length(props.assetsWithMetadata) > 1}
+
+    renderer = afx`
+        <header>
+            <Flowpack.Media.Ui:EditMetadata.DimensionSwitcherForm
+                @if.hasDimensions={props.assetDsps}
+                assetsWithMetadata={props.assetsWithMetadata}
+                assetDsps={props.assetDsps}
+                currentAssetDsp={props.currentAssetDsp}
+            />
+        </header>
+        <main>
+            <h1 @if.condition={!private.isMultiAssetEdit}>
+                {I18n.translate('metadataEditor.title', 'Editing asset "{0}"', [props.assetsWithMetadata[0].asset.label], 'Main', 'Flowpack.Media.Ui')}
+            </h1>
+            <Neos.Fusion.Form:Form form.target.action="updateMetadata" attributes.id="editMetadataForm">
+                <Neos.Fusion.Form:Hidden
+                    field.name="assetSourceId"
+                    field.value={props.assetsWithMetadata[0].assetIdentity.assetSourceId.value}
+                />
+                <Neos.Fusion.Form:Hidden
+                    field.name="metaDataDimensionSpacePointHash"
+                    field.value={props.currentAssetDsp}
+                />
+                <Flowpack.Media.Ui:Component.MetadataEditorForm
+                    assetsWithMetadata={props.assetsWithMetadata}
+                />
+            </Neos.Fusion.Form:Form>
+        </main>
+        <footer>
+            <Neos.Fusion.Form:Button
+                attributes.type="button"
+                attributes.class="neos-button"
+                attributes.id="cancelButton"
+            >
+                {I18n.translate('metadataEditor.cancel', 'Cancel', [], 'Main', 'Flowpack.Media.Ui')}
+            </Neos.Fusion.Form:Button>
+            <Neos.Fusion.Form:Button
+                attributes.form="editMetadataForm"
+                attributes.class="neos-button neos-button-success"
+            >
+                {I18n.translate('metadataEditor.save', 'Save', [], 'Main', 'Flowpack.Media.Ui')}
+            </Neos.Fusion.Form:Button>
+        </footer>
+    `
+}

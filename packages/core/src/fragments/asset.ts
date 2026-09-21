@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 import { TAG_FRAGMENT } from '@media-ui/feature-asset-tags/src/fragments/tag';
 
 import { IPTC_PROPERTY_FRAGMENT } from './iptcProperty';
+import { META_DATA_PROPERTY_FRAGMENT } from './metaDataProperty';
 import { FILE_FRAGMENT } from './file';
 
 // TODO: Somehow extend `isInClipboard` from clipboard feature package
@@ -31,6 +32,9 @@ export const ASSET_FRAGMENT = gql`
         iptcProperties {
             ...IptcPropertyProps
         }
+        metadata {
+            ...MetaDataPropertyProps
+        }
         width
         height
         file {
@@ -41,6 +45,7 @@ export const ASSET_FRAGMENT = gql`
         isInUse @include(if: $includeUsage)
     }
     ${IPTC_PROPERTY_FRAGMENT}
+    ${META_DATA_PROPERTY_FRAGMENT}
     ${FILE_FRAGMENT}
     ${TAG_FRAGMENT}
 `;
