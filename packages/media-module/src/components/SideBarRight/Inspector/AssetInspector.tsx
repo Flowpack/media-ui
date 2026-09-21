@@ -33,8 +33,8 @@ const AssetInspector = () => {
             <Tabs.Panel icon="info-circle" key="editor" id="editor">
                 <PropertyInspector />
                 <ResourceInspector />
-                <IptcMetadataInspector />
                 <MetaDataInspector />
+                <IptcMetadataInspector />
             </Tabs.Panel>
             <Tabs.Panel icon="images">
                 <VariantsInspector />

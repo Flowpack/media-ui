@@ -544,7 +544,7 @@
             </trans-unit>
 
             <trans-unit id="propertyPanel.header" xml:space="preserve" approved="yes">
-                <source>Properties</source>
+                <source>Edit</source>
             </trans-unit>
             <trans-unit id="inspector.title" xml:space="preserve" approved="yes">
                 <source>Title</source>

@@ -693,8 +693,8 @@
             </trans-unit>
 
             <trans-unit id="propertyPanel.header" xml:space="preserve" approved="yes">
-                <source>Properties</source>
-                <target>Eigenschaften</target>
+                <source>Edit</source>
+                <target>Bearbeiten</target>
             </trans-unit>
             <trans-unit id="inspector.title" xml:space="preserve" approved="yes">
                 <source>Title</source>

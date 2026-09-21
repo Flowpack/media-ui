@@ -175,7 +175,7 @@ const PropertyInspector = () => {
                     onPanelToggle={() => setPropertyEditorCollapsed((prev) => !prev)}
                 >
                     <ToggablePanel.Header className={classes.propertyPanelHeader}>
-                        <IconLabel icon="pencil" label={translate('propertyPanel.header', 'Properties')} />
+                        <IconLabel icon="pencil" label={translate('propertyPanel.header', 'Edit')} />
                     </ToggablePanel.Header>
                     <ToggablePanel.Contents className={classes.propertyPanelContents}>
                         {!isMultiSelection && (
