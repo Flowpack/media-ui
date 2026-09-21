@@ -65,7 +65,7 @@ class MetadataCapabilitiesTest extends AbstractMediaTestCase
         }
 
         $this->mediaApi = $this->getObject(MediaApi::class);
-        $this->metaDataManager = $this->getObject(MetaDataManager::class);
+        $this->metaDataManager = $this->mockMetaDataManager();
         $this->mediaController = $this->getObject(MediaController::class);
         $this->assetResolver = $this->getObject(AssetResolver::class);
         $this->assetRepository = $this->getObject(AssetRepository::class);
