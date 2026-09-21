@@ -14,8 +14,6 @@ namespace Flowpack\Media\Ui\Tests\Functional\Domain\Model\AssetSource;
  * source code.
  */
 
-use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
-use Doctrine\ORM\EntityManagerInterface;
 use Flowpack\Media\Ui\Domain\Model\AssetSource\NeosAssetProxyRepository;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
@@ -27,7 +25,6 @@ use Neos\Media\Domain\Model\Tag;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 use Neos\MetaData\Domain\Dto\MetaDataAssetReference;
-use Neos\MetaData\MetaDataManager;
 use Neos\Utility\Files;
 
 class NeosAssetProxyRepositoryTest extends AbstractMediaTestCase
@@ -135,17 +132,13 @@ class NeosAssetProxyRepositoryTest extends AbstractMediaTestCase
      */
     public function findBySearchTermUsesMetaData(): void
     {
-        if (!$this->usesMySql()) {
-            static::markTestSkipped('MetaData-driven search requires a MySQL database (MetaData storage uses MySQL-specific SQL).');
-        }
-        $this->createMetaDataTableIfNecessary();
+        $metaDataManager = $this->mockMetaDataManager();
 
         $image = $this->createImage('First Image');
         $this->persistenceManager->persistAll();
         $this->persistenceManager->clearState();
 
         $identifier = $this->persistenceManager->getIdentifierByObject($image);
-        $metaDataManager = $this->getObject(MetaDataManager::class);
         $metaDataManager->setMetaDataPropertyValue(
             MetaDataAssetReference::create('neos', $identifier),
             'copyright',
@@ -176,24 +169,5 @@ class NeosAssetProxyRepositoryTest extends AbstractMediaTestCase
 
         static::assertCount(1, $repository->findByTag($persistedTag));
         static::assertSame(1, $repository->countByTag($persistedTag));
-    }
-
-    private function usesMySql(): bool
-    {
-        $platform = $this->getObject(EntityManagerInterface::class)
-            ->getConnection()->getDatabasePlatform();
-        return $platform instanceof AbstractMySQLPlatform;
-    }
-
-    private function createMetaDataTableIfNecessary(): void
-    {
-        $this->getObject(EntityManagerInterface::class)->getConnection()->executeStatement('CREATE TABLE IF NOT EXISTS neos_metadata_value (
-            `asset_source_id` VARCHAR(255) DEFAULT NULL,
-            `asset_id` VARCHAR(40) DEFAULT NULL,
-            `property_name` VARCHAR(40) NOT NULL,
-            `property_value` VARCHAR(250) NOT NULL,
-            `dimension_hash` VARCHAR(250) NOT NULL,
-            UNIQUE INDEX idx_unique (`asset_source_id`, `asset_id`, `property_name`, `dimension_hash`)
-        ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
     }
 }
