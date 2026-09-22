@@ -78,7 +78,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
     private bool $filterAssetsWithTags = false;
 
     /**
-     * @var array<string,class-string>
+     * @var array<string, class-string>
      */
     private array $assetRepositoryClassNames = [
         'All' => AssetRepository::class,
@@ -107,7 +107,7 @@ final class NeosAssetProxyRepository implements AssetProxyRepositoryInterface, S
      *  'bar' => \Neos\Flow\Persistence\QueryInterface::ORDER_DESCENDING
      * )
      *
-     * @param array<string,string> $orderings The property names to order by by default
+     * @param array<string, string> $orderings The property names to order by by default
      */
     public function orderBy(array $orderings): void
     {

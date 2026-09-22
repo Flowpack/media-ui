@@ -33,7 +33,7 @@ final class AssetUsageDetails implements \JsonSerializable
     /**
      * @param string $label
      * @param string $url
-     * @param array<array<string,?string>> $metadata
+     * @param array<array<string, ?string>> $metadata
      */
     public function __construct(string $label, string $url, array $metadata)
     {

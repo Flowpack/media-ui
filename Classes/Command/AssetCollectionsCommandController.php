@@ -66,10 +66,12 @@ class AssetCollectionsCommandController extends CommandController
 
     public function setParentCommand(string $assetCollectionIdentifier, string $parentAssetCollectionIdentifier): void
     {
+        /** @var HierarchicalAssetCollectionInterface|null $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionIdentifier);
         if (!$assetCollection instanceof HierarchicalAssetCollectionInterface) {
             throw new \Exception('Unknown asset collection ' . $assetCollectionIdentifier);
         }
+        /** @var HierarchicalAssetCollectionInterface|null $parentAssetCollection */
         $parentAssetCollection = $this->assetCollectionRepository->findByIdentifier($parentAssetCollectionIdentifier);
         if ($parentAssetCollection instanceof HierarchicalAssetCollectionInterface) {
             $assetCollection->setParent($parentAssetCollection);

@@ -43,9 +43,9 @@ class TagApiTest extends AbstractMediaTestCase
             static::markTestSkipped('Doctrine persistence is not enabled');
         }
 
-        $this->mediaApi = $this->objectManager->get(MediaApi::class);
-        $this->assetCollectionResolver = $this->objectManager->get(AssetCollectionResolver::class);
-        $this->assetResolver = $this->objectManager->get(AssetResolver::class);
+        $this->mediaApi = $this->getObject(MediaApi::class);
+        $this->assetCollectionResolver = $this->getObject(AssetCollectionResolver::class);
+        $this->assetResolver = $this->getObject(AssetResolver::class);
 
         $this->authenticateRoles(['Neos.Neos:Editor']);
     }
@@ -111,7 +111,8 @@ class TagApiTest extends AbstractMediaTestCase
 
         $this->persistenceManager->persistAll();
         $assets = $this->mediaApi->assets(Types\AssetSourceId::default());
-        $uploadedAsset = $assets?->assets[0];
+        Assert::assertNotNull($assets);
+        $uploadedAsset = $assets->assets[0];
         Assert::assertInstanceOf(Types\Asset::class, $uploadedAsset);
 
         $tag = $this->mediaApi->createTag(
