@@ -33,7 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['8.3']
+        php-versions: ['8.4']
 
     steps:
       - uses: actions/checkout@v5
@@ -63,7 +63,6 @@ jobs:
         uses: php-actions/phpstan@v3
         with:
           php_version: ${{ matrix.php-versions }}
-          version: 2.2.10
           configuration: phpstan.ci.neon
 
   php-unit-tests:

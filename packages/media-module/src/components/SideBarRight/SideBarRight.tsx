@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Column } from '@media-ui/core/src/components';
 
-import { AssetInspector, AssetCollectionInspector, IptcMetadataInspector, TagInspector } from './Inspector';
+import { AssetInspector, AssetCollectionInspector, TagInspector, IptcMetadataInspector } from './Inspector';
 import CurrentSelection from './CurrentSelection';
 import CurrentMultiSelection from './CurrentMultiSelection';
 

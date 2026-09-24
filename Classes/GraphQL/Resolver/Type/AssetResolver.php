@@ -161,7 +161,7 @@ class AssetResolver
     public function lastModified(Types\Asset $asset): ?string
     {
         $assetProxy = $this->assetSourceContext->getAssetProxy($asset->id, $asset->assetSource->id);
-        return $assetProxy?->getLastModified()?->format(DATE_W3C);
+        return $assetProxy?->getLastModified() ? $assetProxy->getLastModified()->format(DATE_W3C) : null;
     }
 
     public function tags(Types\Asset $asset): Types\Tags

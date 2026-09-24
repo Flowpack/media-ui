@@ -120,7 +120,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
     {
         $imagePathAndFilename = Files::getUnixStylePath($imagePathAndFilename);
         $hash = sha1_file($imagePathAndFilename);
-        Assert::assertIsString($hash);
+        self::assertIsString($hash);
         copy($imagePathAndFilename, 'resource://' . $hash);
         return $this->createMockResourceAndPointerFromHash($hash);
     }
@@ -160,7 +160,7 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      */
     protected function prepareResourceManager(): void
     {
-        $this->resourceManager = $this->objectManager->get(ResourceManager::class);
+        $this->resourceManager = $this->getObject(ResourceManager::class);
     }
 
     protected static function createFile(): Types\UploadedFile
@@ -182,12 +182,12 @@ abstract class AbstractMediaTestCase extends FunctionalTestCase
      * @param class-string<T> $className
      *
      * @return T
-     *
-     * @phpstan-ignore method.unused (required to satisfy SecurityOperationsTrait)
      */
-    private function getObject(string $className): object
+    protected function getObject(string $className): object
     {
-        return $this->objectManager->get($className);
+        /** @var T $object */
+        $object = $this->objectManager->get($className);
+        return $object;
     }
 
 }

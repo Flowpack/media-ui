@@ -25,13 +25,14 @@ final class AssetUsage
 
     private string $assetId;
     private string $serviceId;
+
     /**
-     * @var array<string,?string>
+     * @var array<string, ?string>
      */
     private array $metadata;
 
     /**
-     * @param array<string,?string> $metadata
+     * @param array<string, ?string> $metadata
      */
     public function __construct(string $assetId, string $serviceId, array $metadata)
     {
@@ -51,7 +52,7 @@ final class AssetUsage
     }
 
     /**
-     * @return array<string,?string>
+     * @return array<string, ?string>
      */
     public function getMetadata(): array
     {

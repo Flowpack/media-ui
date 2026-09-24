@@ -141,6 +141,7 @@ class AssetMutator
             throw new MediaUiException('Asset type does not support tagging', 1619081662);
         }
 
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findByIdentifier($tagId->value);
         if (!$tag instanceof Tag) {
             throw new MediaUiException('Cannot tag asset with tag that does not exist', 1591561845);
@@ -284,6 +285,7 @@ class AssetMutator
             throw new MediaUiException('Asset type does not support tagging', 1619081740);
         }
 
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findByIdentifier($tagId->value);
         if (!$tag instanceof Tag) {
             throw new MediaUiException('Cannot untag asset from tag that does not exist', 1591561934);
@@ -481,21 +483,22 @@ class AssetMutator
         }
 
         $filename = $file->clientFilename;
-        if ($filename !== null) {
-            try {
-                $resource = $this->resourceManager->importResourceFromContent(
-                    $file->streamOrFile,
-                    $filename,
-                );
-            } catch (ResourceManagementException $e) {
-                $this->logger->error('Could not import uploaded file: ' . $e->getMessage());
-                $resource = null;
-            }
-        } else {
+        if ($filename === null) {
+            $this->logger->error('Could not import uploaded file: no filename given');
+            return Types\FileUploadResult::fromError(self::STATE_EXISTS);
+        }
+        try {
+            $resource = $this->resourceManager->importResourceFromContent(
+                $file->streamOrFile,
+                $filename,
+            );
+        } catch (ResourceManagementException $e) {
+            $this->logger->error('Could not import uploaded file: ' . $e->getMessage());
             $resource = null;
         }
 
         if ($resource) {
+            $resource->setFilename($filename);
             if ($file->clientMediaType) {
                 $resource->setMediaType($file->clientMediaType);
             }
@@ -508,6 +511,7 @@ class AssetMutator
 
                     if ($this->persistenceManager->isNewObject($asset)) {
                         if ($tagId) {
+                            /** @var Tag|null $tag */
                             $tag = $this->tagRepository->findByIdentifier($tagId->value);
                             if ($tag instanceof Tag) {
                                 $asset->addTag($tag);
@@ -537,7 +541,7 @@ class AssetMutator
         }
 
         // FIXME: The filename is not unique enough for multiple uploads, we need an id instead or use the sha1
-        return Types\FileUploadResult::fromError(self::STATE_EXISTS, Types\Filename::fromString($filename ?? ''));
+        return Types\FileUploadResult::fromError(self::STATE_EXISTS, Types\Filename::fromString($filename));
     }
 
     /**
@@ -550,7 +554,9 @@ class AssetMutator
         ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\FileUploadResults {
         if ($assetSourceId->value !== 'neos') {
-            return Types\FileUploadResults::fromArray([Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED)]);
+            return Types\FileUploadResults::fromArray([
+                'n/a' => Types\FileUploadResult::fromError(self::STATE_UNSUPPORTED)
+            ]);
         }
         $results = [];
         foreach ($files as $file) {

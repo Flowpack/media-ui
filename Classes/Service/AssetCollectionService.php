@@ -13,13 +13,14 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Media\Domain\Model\AssetCollection;
 use Neos\Media\Domain\Repository\AssetCollectionRepository;
+use Neos\Neos\Domain\Model\Site;
 use Neos\Neos\Domain\Repository\DomainRepository;
 
 #[Flow\Scope('singleton')]
 class AssetCollectionService
 {
     /**
-     * @var array<string,int>
+     * @var array<string, int>
      */
     protected array $assetCollectAssetCountCache = [];
 
@@ -97,10 +98,6 @@ class AssetCollectionService
     public function getDefaultCollectionForCurrentSite(): ?AssetCollection
     {
         $domain = $this->domainRepository->findOneByActiveRequest();
-        if ($domain !== null) {
-            return $domain->getSite()->getAssetCollection();
-        }
-
-        return null;
+        return $domain?->getSite()->getAssetCollection();
     }
 }

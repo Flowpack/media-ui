@@ -37,9 +37,9 @@ const PropertyInspector = () => {
     const client = useApolloClient();
     const { getFailedAssetLabels } = useFailedAssetLabels();
     const featureFlags = useRecoilValue(featureFlagsState);
-    const [label, setLabel] = useState<string>(null);
-    const [caption, setCaption] = useState<string>(null);
-    const [copyrightNotice, setCopyrightNotice] = useState<string>(null);
+    const [label, setLabel] = useState<string>('');
+    const [caption, setCaption] = useState<string>('');
+    const [copyrightNotice, setCopyrightNotice] = useState<string>('');
     const [multiLoading, setMultiLoading] = useState<boolean>(false);
     const [propertyEditorCollapsed, setPropertyEditorCollapsed] = useState<boolean>(
         featureFlags.propertyEditor.collapsed
@@ -51,7 +51,7 @@ const PropertyInspector = () => {
     const isEditable = !isReadOnly && (isMultiSelection ? !multiLoading : selectedAsset?.localId && !loading);
     const hasUnpublishedChanges = isMultiSelection
         ? copyrightNotice !== '' && copyrightNotice !== null
-        : selectedAsset &&
+        : !!selectedAsset &&
           (label !== selectedAsset.label ||
               caption !== selectedAsset.caption ||
               copyrightNotice !== selectedAsset.copyrightNotice);
@@ -70,9 +70,10 @@ const PropertyInspector = () => {
 
     const handleApply = useCallback(async () => {
         if (
-            label !== selectedAsset.label ||
-            caption !== selectedAsset.caption ||
-            copyrightNotice !== selectedAsset.copyrightNotice
+            selectedAsset &&
+            (label !== selectedAsset.label ||
+                caption !== selectedAsset.caption ||
+                copyrightNotice !== selectedAsset.copyrightNotice)
         ) {
             const hasApprovalToUpdateAsset = await obtainApprovalToUpdateAsset({
                 asset: selectedAsset,
@@ -88,8 +89,11 @@ const PropertyInspector = () => {
                     });
 
                     Notify.ok(translate('actions.updateAsset.success', 'The asset has been updated'));
-                } catch ({ message }) {
-                    Notify.error(translate('actions.updateAsset.error', 'Error while updating the asset'), message);
+                } catch (error: any) {
+                    Notify.error(
+                        translate('actions.updateAsset.error', 'Error while updating the asset'),
+                        error?.message
+                    );
                 }
             }
         }
