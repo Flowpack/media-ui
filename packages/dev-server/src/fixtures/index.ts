@@ -74,6 +74,7 @@ const assetCollections: AssetCollection[] = range(3).map((index) => ({
         index == 1
             ? {
                   id: `someId_0`,
+                  assetSourceId: 'neos',
                   title: `Example collection 1`,
                   __typename: 'AssetCollectionParent',
               }

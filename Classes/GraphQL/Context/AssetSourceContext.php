@@ -160,7 +160,6 @@ class AssetSourceContext
                     ),
                     $assetSourceId,
                     Types\AssetCollectionTitle::fromString($assetCollection->getTitle()),
-                    Types\AssetCollectionPath::fromString($assetCollection->getPath() ?: '/'),
                 ),
                 $this->assetCollectionRepository->findAll()->toArray()
             )
@@ -193,8 +192,7 @@ class AssetSourceContext
             ? Types\AssetCollection::create(
                 $id,
                 $assetSourceId,
-                Types\AssetCollectionTitle::fromString($assetCollection->getTitle()),
-                Types\AssetCollectionPath::fromString($assetCollection->getPath() ?: '/'),
+                Types\AssetCollectionTitle::fromString($assetCollection->getTitle())
             )
             : null;
     }
@@ -298,7 +296,6 @@ class AssetSourceContext
             Types\AssetCollectionId::fromString($this->persistenceManager->getIdentifierByObject($newAssetCollection)),
             $assetSourceId,
             Types\AssetCollectionTitle::fromString($newAssetCollection->getTitle()),
-            Types\AssetCollectionPath::fromString($newAssetCollection->getPath() ?: '/'),
         );
     }
 

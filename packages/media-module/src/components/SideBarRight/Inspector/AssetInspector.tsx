@@ -3,7 +3,12 @@ import { useRecoilValue } from 'recoil';
 
 import { Tabs } from '@neos-project/react-ui-components';
 
-import { featureFlagsState, selectedAssetIdState, selectedInspectorViewState } from '@media-ui/core/src/state';
+import {
+    featureFlagsState,
+    selectedAssetIdsState,
+    selectedAssetIdState,
+    selectedInspectorViewState,
+} from '@media-ui/core/src/state';
 import VariantsInspector from '@media-ui/feature-asset-variants/src/components/VariantsInspector';
 
 import PropertyInspector from './PropertyInspector';
@@ -14,10 +19,11 @@ const AssetInspector = () => {
     const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const { showVariantsEditor } = useRecoilValue(featureFlagsState);
     const selectedInspectorView = useRecoilValue(selectedInspectorViewState);
+    const isMultiSelection = useRecoilValue(selectedAssetIdsState).length > 1;
 
-    if (!selectedAssetId || selectedInspectorView !== 'asset') return null;
+    if ((!selectedAssetId && !isMultiSelection) || selectedInspectorView !== 'asset') return null;
 
-    return showVariantsEditor ? (
+    return showVariantsEditor && !isMultiSelection ? (
         <Tabs theme={{ tabs__content: classes.tabContent }}>
             <Tabs.Panel icon="info-circle" key="editor" id="editor">
                 <PropertyInspector />

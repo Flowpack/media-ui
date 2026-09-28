@@ -1,4 +1,4 @@
-import { atomFamily, selector } from 'recoil';
+import { atomFamily, selector, selectorFamily } from 'recoil';
 
 import { localStorageEffect } from './localStorageEffect';
 import { applicationContextState } from './applicationContextState';
@@ -16,4 +16,12 @@ export const selectedAssetIdState = selector<AssetIdentity>({
     get: ({ get }) => get(selectedAssetIdForContextState(get(applicationContextState))),
     set: ({ get, set }, assetIdentity) =>
         set(selectedAssetIdForContextState(get(applicationContextState)), assetIdentity),
+});
+
+export const isFocusedAssetState = selectorFamily<boolean, string>({
+    key: 'IsFocusedAssetState',
+    get:
+        (assetId) =>
+        ({ get }) =>
+            get(selectedAssetIdState)?.assetId === assetId,
 });

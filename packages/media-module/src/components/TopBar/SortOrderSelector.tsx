@@ -73,6 +73,7 @@ const SortOrderSelector: React.FC = () => {
                 />
             </div>
             <IconButton
+                className={classes.sortingOrder}
                 icon={sortOrderState.sortDirection === SORT_DIRECTION.Asc ? 'sort-amount-up' : 'sort-amount-down'}
                 size="regular"
                 title={translate(

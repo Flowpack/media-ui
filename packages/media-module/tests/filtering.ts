@@ -16,6 +16,6 @@ test('Results are shown when filtering images', async (t) => {
         .click(page.assetsFilter)
         .click(page.assetTypeFilter)
         .click(page.getDropdownElement('Image'))
-        .expect(page.firstThumbnail.innerText)
+        .expect(page.firstThumbnailLabel.innerText)
         .eql('Example asset 1');
 });

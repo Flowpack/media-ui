@@ -3,7 +3,7 @@ import { gql } from '@apollo/client';
 const ASSET_COUNT = gql`
     query ASSET_COUNT(
         $searchTerm: String
-        $assetSourceId: AssetSourceId
+        $assetSourceId: AssetSourceId!
         $assetCollectionId: AssetCollectionId
         $mediaType: MediaType
         $assetType: AssetType

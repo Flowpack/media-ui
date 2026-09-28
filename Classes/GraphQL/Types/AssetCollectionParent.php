@@ -13,12 +13,16 @@ final class AssetCollectionParent
 {
     private function __construct(
         public readonly AssetCollectionId $id,
+        public readonly AssetSourceId $assetSourceId,
         public readonly AssetCollectionTitle $title,
     ) {
     }
 
-    public static function create(AssetCollectionId $assetCollectionId, AssetCollectionTitle $assetCollectionTitle): self
-    {
-        return new self($assetCollectionId, $assetCollectionTitle);
+    public static function create(
+        AssetCollectionId $assetCollectionId,
+        AssetSourceId $assetSourceId,
+        AssetCollectionTitle $assetCollectionTitle
+    ): self {
+        return new self($assetCollectionId, $assetSourceId, $assetCollectionTitle);
     }
 }

@@ -197,10 +197,6 @@ class AssetResolver
                         ),
                         $asset->assetSource->id,
                         Types\AssetCollectionTitle::fromString($assetCollection->getTitle()),
-                        $assetCollection->getPath() ?
-                            Types\AssetCollectionPath::fromString(
-                                $assetCollection->getPath()
-                            ) : Types\AssetCollectionPath::fromString(''),
                     );
                 },
                     $localAssetData->getAssetCollections()->toArray())

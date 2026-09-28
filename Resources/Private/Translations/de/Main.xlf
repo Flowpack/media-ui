@@ -151,10 +151,6 @@
                 <source>Close clipboard</source>
                 <target>Zwischenablage schließen</target>
             </trans-unit>
-            <trans-unit id="clipboard.deleteAsset" xml:space="preserve" approved="yes">
-                <source>Delete all assets in clipboard</source>
-                <target>Alle Dateien in der Zwischenablage löschen</target>
-            </trans-unit>
             <trans-unit id="actions.deleteAssets.confirm.title" xml:space="preserve" approved="yes">
                 <source>Delete Assets</source>
                 <target>Dateien löschen</target>
@@ -166,14 +162,6 @@
             <trans-unit id="actions.deleteAssets.confirm.buttonLabel" xml:space="preserve" approved="yes">
                 <source>Yes, proceed with deleting the assets</source>
                 <target>Ja, mit dem Löschen fortfahren</target>
-            </trans-unit>
-            <trans-unit id="clipboard.deleteAssets.success" xml:space="preserve" approved="yes">
-                <source>The assets have been deleted</source>
-                <target>Die Dateien wurden gelöscht</target>
-            </trans-unit>
-            <trans-unit id="clipboard.deleteAssets.error" xml:space="preserve" approved="yes">
-                <source>Error while trying to delete the assets</source>
-                <target>Fehler beim Löschen der Dateien</target>
             </trans-unit>
             <trans-unit id="actions.deleteAssets.noProxy" xml:space="preserve" approved="yes">
                 <source>Asset could not be resolved</source>
@@ -222,6 +210,46 @@
 
             <!-- asset actions -->
 
+            <trans-unit id="actions.tagAssets.confirm.title" xml:space="preserve" approved="yes">
+                <source>Add tag to assets</source>
+                <target>Tag zu Dateien hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="actions.tagAssets.confirm.message" xml:space="preserve" approved="yes">
+                <source>Are you sure you want to add the tag "{0}" to {1} assets?</source>
+                <target>Wollen Sie den Tag „{0}" wirklich zu {1} Dateien hinzufügen?</target>
+            </trans-unit>
+            <trans-unit id="actions.tagAssets.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, add tag</source>
+                <target>Ja, Tag hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="actions.untagAssets.confirm.title" xml:space="preserve" approved="yes">
+                <source>Remove tag from assets</source>
+                <target>Tag von Dateien entfernen</target>
+            </trans-unit>
+            <trans-unit id="actions.untagAssets.confirm.message" xml:space="preserve" approved="yes">
+                <source>Are you sure you want to remove the tag "{0}" from {1} assets?</source>
+                <target>Wollen Sie den Tag „{0}" wirklich von {1} Dateien entfernen?</target>
+            </trans-unit>
+            <trans-unit id="actions.untagAssets.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, remove tag</source>
+                <target>Ja, Tag entfernen</target>
+            </trans-unit>
+            <trans-unit id="actions.bulkTagAssets.success" xml:space="preserve" approved="yes">
+                <source>The tag has been added to the selected assets</source>
+                <target>Der Tag wurde den ausgewählten Dateien hinzugefügt</target>
+            </trans-unit>
+            <trans-unit id="actions.bulkTagAssets.error" xml:space="preserve" approved="yes">
+                <source>The following assets could not be tagged:</source>
+                <target>Der Tag konnte nicht zu folgenden Dateien hinzugefügt werden:</target>
+            </trans-unit>
+            <trans-unit id="actions.bulkUntagAssets.success" xml:space="preserve" approved="yes">
+                <source>The tag has been removed from the selected assets</source>
+                <target>Der Tag wurde von den ausgewählten Dateien entfernt</target>
+            </trans-unit>
+            <trans-unit id="actions.bulkUntagAssets.error" xml:space="preserve" approved="yes">
+                <source>The following assets could not be untagged:</source>
+                <target>Der Tag konnte nicht von folgenden Dateien entfernt werden:</target>
+            </trans-unit>
             <trans-unit id="assetActions.import.success" xml:space="preserve" approved="yes">
                 <source>Asset was successfully imported</source>
                 <target>Die Datei wurde erfolgreich importiert</target>
@@ -233,6 +261,10 @@
             <trans-unit id="action.deleteAsset.success" xml:space="preserve" approved="yes">
                 <source>The asset has been deleted</source>
                 <target>Die Datei wurde gelöscht</target>
+            </trans-unit>
+            <trans-unit id="action.deleteAssets.success" xml:space="preserve" approved="yes">
+                <source>The assets have been deleted</source>
+                <target>Die Dateien wurden gelöscht</target>
             </trans-unit>
             <trans-unit id="itemActions.preview" xml:space="preserve" approved="yes">
                 <source>Preview asset</source>
@@ -274,11 +306,19 @@
                 <source>Yes, proceed with deleting the asset</source>
                 <target>Ja, mit dem Löschen fortfahren</target>
             </trans-unit>
+            <trans-unit id="action.deleteAsset.error" xml:space="preserve" approved="yes">
+                <source>Error while trying to delete the asset</source>
+                <target>Fehler beim Löschen der Datei</target>
+            </trans-unit>
+            <trans-unit id="action.deleteAssets.error" xml:space="preserve" approved="yes">
+                <source>Error while trying to delete the assets</source>
+                <target>Fehler beim Löschen der Dateien</target>
+            </trans-unit>
             <trans-unit id="actions.updateAsset.success" xml:space="preserve" approved="yes">
                 <source>The asset has been updated</source>
                 <target>Die Datei wurde aktualisiert</target>
             </trans-unit>
-            <trans-unit id="actions.deleteAsset.error" xml:space="preserve" approved="yes">
+            <trans-unit id="actions.updateAsset.error" xml:space="preserve" approved="yes">
                 <source>Error while updating the asset</source>
                 <target>Fehler beim Aktualisieren der Datei</target>
             </trans-unit>
@@ -297,6 +337,26 @@
             <trans-unit id="actions.setAssetTags.error" xml:space="preserve" approved="yes">
                 <source>Error while tagging the asset</source>
                 <target>Fehler beim Taggen der Datei</target>
+            </trans-unit>
+            <trans-unit id="actions.moveToAssetsCollection.confirm.title" xml:space="preserve" approved="yes">
+                <source>Move to collection</source>
+                <target>In Sammlung verschieben</target>
+            </trans-unit>
+            <trans-unit id="actions.moveToAssetsCollection.confirm.message" xml:space="preserve" approved="yes">
+                <source>Are you sure you want to move {0} files into the collection "{1}"?</source>
+                <target>Wollen Sie wirklich {0} Dateien in die Sammlung „{1}" verschieben?</target>
+            </trans-unit>
+            <trans-unit id="actions.moveToAssetsCollection.confirm.buttonLabel" xml:space="preserve" approved="yes">
+                <source>Yes, move assets</source>
+                <target>Ja, Dateien verschieben</target>
+            </trans-unit>
+            <trans-unit id="actions.setAssetCollections.multiSuccess" xml:space="preserve" approved="yes">
+                <source>The collections for the assets have been set</source>
+                <target>Die Sammlungen für die Dateien wurden gesetzt</target>
+            </trans-unit>
+            <trans-unit id="actions.setAssetCollections.multiError" xml:space="preserve" approved="yes">
+                <source>Error while setting the collections for the assets</source>
+                <target>Fehler beim Setzen der Sammlungen für die Dateien</target>
             </trans-unit>
             <trans-unit id="actions.updateAssetCollection.success" xml:space="preserve" approved="yes">
                 <source>The asset collection has been updated</source>
@@ -655,6 +715,10 @@
                 <source>Select a collection</source>
                 <target>Sammlung auswählen</target>
             </trans-unit>
+            <trans-unit id="inspector.collections.multiPlaceholder" xml:space="preserve" approved="yes">
+                <source>Move to other collection</source>
+                <target>In andere Sammlung verschieben</target>
+            </trans-unit>
             <trans-unit id="inspector.tags" xml:space="preserve" approved="yes">
                 <source>Tags</source>
                 <target>Tags</target>
@@ -662,6 +726,14 @@
             <trans-unit id="inspector.tags.placeholder" xml:space="preserve" approved="yes">
                 <source>Select a tag</source>
                 <target>Tag auswählen</target>
+            </trans-unit>
+            <trans-unit id="inspector.tags.addPlaceholder" xml:space="preserve" approved="yes">
+                <source>Add tag to selection</source>
+                <target>Tag zur Auswahl hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="inspector.tags.removePlaceholder" xml:space="preserve" approved="yes">
+                <source>Remove tag from selection</source>
+                <target>Tag von Auswahl entfernen</target>
             </trans-unit>
             <trans-unit id="inspector.actions" xml:space="preserve" approved="yes">
                 <source>Tasks</source>
