@@ -9,7 +9,7 @@ use Wwwision\Types\Attributes\Description;
 use Wwwision\Types\Attributes\ListBased;
 
 /**
- * @implements \IteratorAggregate<AssetSource>
+ * @implements \IteratorAggregate<string,AssetSource>
  */
 #[Description('All asset sources')]
 #[Flow\Proxy(false)]
@@ -17,7 +17,7 @@ use Wwwision\Types\Attributes\ListBased;
 final class AssetSources implements \IteratorAggregate
 {
     /**
-     * @param array<string, AssetSource> $items
+     * @param array<string, AssetSource> $items indexed by asset source id
      */
     private function __construct(public readonly array $items)
     {
@@ -32,7 +32,7 @@ final class AssetSources implements \IteratorAggregate
     }
 
     /**
-     * @return \Traversable<AssetSource>
+     * @return \Traversable<string, AssetSource>
      */
     public function getIterator(): \Traversable
     {

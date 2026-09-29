@@ -15,9 +15,14 @@ namespace Flowpack\Media\Ui\GraphQL\Mutator;
  */
 
 use Flowpack\Media\Ui\Exception;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryIdExtractor;
+use Flowpack\Media\Ui\GraphQL\Resolver\ContentRepositoryResolver;
 use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResponseMessage;
 use Flowpack\Media\Ui\GraphQL\Types\MutationResult;
+use Neos\ContentRepository\Core\DimensionSpace\OriginDimensionSpacePoint;
+use Neos\ContentRepository\Core\SharedModel\Node\NodeAggregateId;
+use Neos\ContentRepository\Core\SharedModel\Workspace\WorkspaceName;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
@@ -29,8 +34,6 @@ use Neos\Media\Domain\Repository\AssetCollectionRepository;
 use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Repository\TagRepository;
 
-use function Wwwision\Types\instantiate;
-
 #[Flow\Scope("singleton")]
 class TagMutator
 {
@@ -40,6 +43,8 @@ class TagMutator
         private readonly PersistenceManagerInterface $persistenceManager,
         private readonly TagRepository $tagRepository,
         private readonly Translator $translator,
+        private readonly ContentRepositoryResolver $contentRepositoryResolver,
+        private readonly ContentRepositoryMutator $contentRepositoryMutator,
     ) {
     }
 
@@ -61,10 +66,7 @@ class TagMutator
             $value = $fallback ?: $id;
         }
 
-        return instantiate(
-            MutationResponseMessage::class,
-            $value,
-        );
+        return MutationResponseMessage::fromString($value);
     }
 
     /**
@@ -75,6 +77,23 @@ class TagMutator
         Types\AssetSourceId $assetSourceId,
         ?Types\AssetCollectionId $assetCollectionId = null,
     ): Types\Tag {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+
+        if ($contentRepositoryId) {
+            /** @todo send via request */
+            $workspaceName = WorkspaceName::forLive();
+            /** @todo send via request */
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromDimensionSpacePoint(
+                $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId)
+            );
+            return $this->contentRepositoryMutator->createTag(
+                contentRepositoryId: $contentRepositoryId,
+                workspaceName: $workspaceName,
+                originDimensionSpacePoint: $originDimensionSpacePoint,
+                label: $label,
+                folderId: $assetCollectionId ? NodeAggregateId::fromString($assetCollectionId->value) : null
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             // We currently only support managing tags in the neos asset source
             throw new Exception(
@@ -116,6 +135,20 @@ class TagMutator
         Types\AssetSourceId $assetSourceId,
         ?Types\TagLabel $label = null
     ): Types\Tag {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            /** @todo send via request */
+            $workspaceName = WorkspaceName::forLive();
+            /** @todo send via request */
+            $originDimensionSpacePoint = OriginDimensionSpacePoint::fromArray(['language' => 'de']);
+            return $this->contentRepositoryMutator->updateTag(
+                $contentRepositoryId,
+                $workspaceName,
+                $originDimensionSpacePoint,
+                NodeAggregateId::fromString($id->value),
+                $label,
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             throw new \Exception('We currently only support managing tags in the neos asset source');
         }
@@ -145,6 +178,19 @@ class TagMutator
         Types\TagId $id,
         Types\AssetSourceId $assetSourceId
     ): MutationResult {
+        $contentRepositoryId = ContentRepositoryIdExtractor::tryFromAssetSourceId($assetSourceId);
+        if ($contentRepositoryId) {
+            /** @todo send via request */
+            $workspaceName = WorkspaceName::forLive();
+            /** @todo send via request */
+            $originDimensionSpacePoint = $this->contentRepositoryResolver->getArbitraryDimensionSpacePoint($contentRepositoryId);
+            return $this->contentRepositoryMutator->removeTag(
+                $contentRepositoryId,
+                $workspaceName,
+                NodeAggregateId::fromString('id'),
+                $originDimensionSpacePoint,
+            );
+        }
         if ($assetSourceId->value !== 'neos') {
             // We currently only support managing tags in the neos asset source
             return MutationResult::fromError([

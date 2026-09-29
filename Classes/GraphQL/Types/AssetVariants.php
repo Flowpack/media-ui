@@ -23,6 +23,14 @@ final class AssetVariants implements \IteratorAggregate
     }
 
     /**
+     * @param array<AssetVariant> $items
+     */
+    public static function fromArray(array $items): self
+    {
+        return new self($items);
+    }
+
+    /**
      * @param iterable<AssetVariantInterface> $assetVariants
      */
     public static function fromAssetVariants(iterable $assetVariants): self

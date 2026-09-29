@@ -122,7 +122,7 @@ final class UsageDetailsService
                         function (AssetUsageReference $usage) use ($includeSites, $includeDimensions) {
                             return $this->getNodePropertiesUsageDetails($usage, $includeSites, $includeDimensions);
                         },
-                        $assetUsageReferences
+                        $assetUsageReferences,
                     );
                 }
             }
