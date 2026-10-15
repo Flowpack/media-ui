@@ -28,6 +28,7 @@ final class UsageMetadataSchema implements \JsonSerializable
     public const TYPE_URL = 'URL';
     public const TYPE_JSON = 'JSON';
     public const VALID_TYPES = [self::TYPE_TEXT, self::TYPE_DATE, self::TYPE_DATETIME, self::TYPE_URL, self::TYPE_JSON];
+
     /**
      * @var array<string,array<string,mixed>>
      */

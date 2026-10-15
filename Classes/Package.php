@@ -34,7 +34,10 @@ class Package extends BasePackage
                 $assetProxyId = $assetProxy->getIdentifier();
             } elseif ($asset->getAssetSourceIdentifier() === 'neos') {
                 // FIXME: This is only necessary until https://github.com/neos/neos-development-collection/pull/2924 is merged as local assets don't return a proxy without the patch
-                $assetProxyId = $bootstrap->getObjectManager()->get(PersistenceManagerInterface::class)->getIdentifierByObject($asset);
+                $objectManager = $bootstrap->getObjectManager();
+                /** @var PersistenceManagerInterface $persistenceManager */
+                $persistenceManager = $objectManager->get(PersistenceManagerInterface::class);
+                $assetProxyId = $persistenceManager->getIdentifierByObject($asset);
             } else {
                 return;
             }

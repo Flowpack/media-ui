@@ -78,10 +78,11 @@ final class SearchTermTest extends UnitTestCase
     public function providesTheGivenAssetIdentifierIfPresent(): void
     {
         $searchTerm = SearchTerm::from('id:68610fa2-bdd1-4d84-80eb-27db56f2889f');
+        $this->assertNotNull($searchTerm);
 
         $this->assertEquals(
             '68610fa2-bdd1-4d84-80eb-27db56f2889f',
-            $searchTerm?->getAssetIdentifierIfPresent()
+            $searchTerm->getAssetIdentifierIfPresent()
         );
     }
 

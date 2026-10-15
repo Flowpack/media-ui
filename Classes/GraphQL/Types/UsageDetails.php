@@ -27,13 +27,10 @@ final class UsageDetails
             'label' => $usage->getLabel(),
             'url' => $usage->getUrl(),
             'metadata' => UsageDetailsMetadataList::fromArray(
-                array_map(
-                    static fn(array $metadata) => instantiate(
-                        UsageDetailsMetadata::class,
-                        $metadata,
-                    ),
-                    $usage->getMetadata(),
-                )
+                array_map(static fn(array $metadata) => instantiate(
+                    UsageDetailsMetadata::class,
+                    $metadata,
+                ), $usage->getMetadata())
             ),
         ]);
     }

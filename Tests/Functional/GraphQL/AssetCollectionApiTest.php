@@ -41,10 +41,10 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             static::markTestSkipped('Doctrine persistence is not enabled');
         }
 
-        $this->mediaApi = $this->objectManager->get(MediaApi::class);
+        $this->mediaApi = $this->getObject(MediaApi::class);
 
         $this->authenticateRoles(['Neos.Neos:Editor']);
-        $this->assetCollectionResolver = $this->objectManager->get(AssetCollectionResolver::class);
+        $this->assetCollectionResolver = $this->getObject(AssetCollectionResolver::class);
     }
 
     public function testCreateAssetCollection(): void
@@ -65,6 +65,10 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
         Assert::assertInstanceOf(Types\AssetCollection::class, $childCollection);
 
         $this->persist();
+
+        $childCollectionParent = $this->assetCollectionResolver->parent($childCollection);
+        $this->assertNotNull($childCollectionParent);
+        $this->assertEquals($assetCollection->id, $childCollectionParent->id);
 
         $assetCollections = $this->mediaApi->assetCollections(Types\AssetSourceId::default());
         $this->assertNotEmpty($assetCollections->collections);
@@ -126,7 +130,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             $assetCollection->id,
             Types\AssetSourceId::default()
         );
-        Assert::assertNotNull($updatedAssetCollection);
+        $this->assertInstanceOf(Types\AssetCollection::class, $updatedAssetCollection);
 
         $this->assertEquals('Updated Collection', $updatedAssetCollection->title->value);
     }
@@ -155,7 +159,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             $childCollection->id,
             Types\AssetSourceId::default(),
         );
-        Assert::assertNotNull($updatedChildCollection);
+        $this->assertInstanceOf(Types\AssetCollection::class, $updatedChildCollection);
         $updatedChildCollectionParent = $this->assetCollectionResolver->parent($updatedChildCollection);
         Assert::assertNotNull($updatedChildCollectionParent);
         $this->assertTrue($parentCollection->id->equals($updatedChildCollectionParent->id));
@@ -169,7 +173,7 @@ class AssetCollectionApiTest extends AbstractMediaTestCase
             $childCollection->id,
             Types\AssetSourceId::default(),
         );
-        Assert::assertNotNull($updatedChildCollection);
+        $this->assertInstanceOf(Types\AssetCollection::class, $updatedChildCollection);
         $updatedChildCollectionParent = $this->assetCollectionResolver->parent($updatedChildCollection);
         $this->assertNull($updatedChildCollectionParent);
     }

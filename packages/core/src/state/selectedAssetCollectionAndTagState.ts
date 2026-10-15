@@ -1,4 +1,4 @@
-import { selectorFamily } from 'recoil';
+import { DefaultValue, selectorFamily } from 'recoil';
 
 import { selectedTagIdState } from '@media-ui/feature-asset-tags';
 import { selectedAssetCollectionIdState } from '@media-ui/feature-asset-collections';
@@ -24,7 +24,17 @@ export const selectedAssetCollectionAndTagState = selectorFamily<
         }),
     set:
         (assetSourceId: AssetSourceId) =>
-        ({ get, set }, props: { tagId: string | null; assetCollectionId: string | null }) => {
+        ({ get, set, reset }, props: { tagId: string | null; assetCollectionId: string | null } | DefaultValue) => {
+            if (props instanceof DefaultValue) {
+                reset(selectedTagIdState(assetSourceId));
+                reset(selectedAssetCollectionIdState(assetSourceId));
+                reset(selectedAssetIdState);
+                reset(selectedAssetIdsState(assetSourceId));
+                reset(currentPageState);
+                reset(clipboardVisibleState);
+                return;
+            }
+
             const isMultiSelection = get(selectedAssetIdsState(assetSourceId)).length > 1;
             if (!isMultiSelection) {
                 set(selectedInspectorViewState, props.tagId ? 'tag' : 'assetCollection');

@@ -20,9 +20,8 @@ use Flowpack\Media\Ui\GraphQL\Types;
 use Flowpack\Media\Ui\Tests\Functional\AbstractMediaTestCase;
 use Flowpack\Media\Ui\Tests\Functional\TestAssetUsageStrategy;
 use Neos\Flow\Persistence\Doctrine\PersistenceManager;
-use Neos\Media\Domain\Repository\AssetRepository;
 use Neos\Media\Domain\Model\AssetInterface;
-
+use Neos\Media\Domain\Repository\AssetRepository;
 use PHPUnit\Framework\Assert;
 
 use function Wwwision\Types\instantiate;
@@ -52,10 +51,10 @@ class AssetApiTest extends AbstractMediaTestCase
             static::markTestSkipped('Doctrine persistence is not enabled');
         }
 
-        $this->mediaApi = $this->objectManager->get(MediaApi::class);
-        $this->assetResolver = $this->objectManager->get(AssetResolver::class);
-        $this->testAssetUsageStrategy = $this->objectManager->get(TestAssetUsageStrategy::class);
-        $this->assetRepository = $this->objectManager->get(AssetRepository::class);
+        $this->mediaApi = $this->getObject(MediaApi::class);
+        $this->assetResolver = $this->getObject(AssetResolver::class);
+        $this->testAssetUsageStrategy = $this->getObject(TestAssetUsageStrategy::class);
+        $this->assetRepository = $this->getObject(AssetRepository::class);
 
         // Reset the test strategy before each test
         $this->testAssetUsageStrategy->reset();
@@ -163,6 +162,7 @@ class AssetApiTest extends AbstractMediaTestCase
         // Get the actual asset entity from repository and mark it as used
         /** @var AssetInterface $assetEntity */
         $assetEntity = $this->assetRepository->findByIdentifier($asset->id->value);
+        $this->assertInstanceOf(AssetInterface::class, $assetEntity);
         $this->testAssetUsageStrategy->markAssetAsUsed($assetEntity);
 
         // Try to delete the used asset

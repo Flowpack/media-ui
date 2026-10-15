@@ -20,7 +20,6 @@ final class File
     ) {
     }
 
-
     /**
      * @param array<string,mixed> $array
      */

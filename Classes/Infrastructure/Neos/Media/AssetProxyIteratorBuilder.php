@@ -116,6 +116,7 @@ class AssetProxyIteratorBuilder
             if ($assetProxyRepository instanceof NeosAssetProxyRepository && $assetCollectionId->isUnassigned()) {
                 $assetProxyRepository->filterUnassigned();
             } else {
+                /** @var AssetCollection|null $assetCollection */
                 $assetCollection = $this->assetCollectionRepository->findByIdentifier((string)$assetCollectionId);
                 if ($assetCollection instanceof AssetCollection) {
                     $assetProxyRepository->filterByCollection($assetCollection);
@@ -164,6 +165,7 @@ class AssetProxyIteratorBuilder
             if ($tagId->isUntagged()) {
                 $assetProxyRepository->filterUntagged();
             } else {
+                /** @var Tag|null $tag */
                 $tag = $this->tagRepository->findByIdentifier($tagId->value);
                 if ($tag instanceof Tag) {
                     $assetProxyRepository->filterByTag($tag);
@@ -175,6 +177,7 @@ class AssetProxyIteratorBuilder
                 return $assetProxyRepository->findUntagged()->getQuery();
             }
 
+            /** @var Tag|null $tag */
             $tag = $this->tagRepository->findByIdentifier($tagId->value);
             if ($tag instanceof Tag) {
                 return $assetProxyRepository->findByTag($tag)->getQuery();

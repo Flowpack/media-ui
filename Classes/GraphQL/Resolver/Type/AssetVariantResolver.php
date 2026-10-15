@@ -40,7 +40,7 @@ class AssetVariantResolver
     {
         $imageVariant = $this->imageVariantRepository->findByIdentifier($assetVariant->id->value);
         $imageUri = $imageVariant instanceof ImageVariant ? $this->resourceManager->getPublicPersistentResourceUri($imageVariant->getResource()) : null;
-        return $imageUri ? Types\Url::fromString($imageUri) : null;
+        return is_string($imageUri) ? Types\Url::fromString($imageUri) : null;
     }
 
     public function hasCrop(Types\AssetVariant $assetVariant): bool

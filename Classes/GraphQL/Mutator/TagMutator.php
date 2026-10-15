@@ -83,7 +83,7 @@ class TagMutator
             );
         }
 
-        /** @var ?Tag $tag */
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findOneByLabel($label->value);
         if ($tag === null) {
             $tag = new Tag($label->value);
@@ -117,9 +117,11 @@ class TagMutator
         ?Types\TagLabel $label = null
     ): Types\Tag {
         if ($assetSourceId->value !== 'neos') {
-            throw new \Exception('We currently only support managing tags in the neos asset source');
+            // We currently only support managing tags in the neos asset source
+            throw new Exception('We currently only support managing tags in the neos asset source', 1789383753);
         }
 
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag instanceof Tag) {
             throw new Exception('Tag not found', 1590659046);
@@ -152,6 +154,7 @@ class TagMutator
             ]);
         }
 
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         if (!$tag instanceof Tag) {
             return MutationResult::fromError([

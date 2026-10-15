@@ -39,7 +39,7 @@ class AssetCollectionRepositoryTest extends AbstractMediaTestCase
             static::markTestSkipped('Doctrine persistence is not enabled');
         }
 
-        $this->assetCollectionRepository = $this->objectManager->get(AssetCollectionRepository::class);
+        $this->assetCollectionRepository = $this->getObject(AssetCollectionRepository::class);
     }
 
     /**

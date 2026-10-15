@@ -39,6 +39,8 @@ class AssetCollectionsCommandController extends CommandController
 
     public function hierarchyCommand(): void
     {
+        /** @var HierarchicalAssetCollectionInterface[] $assetCollections */
+        $assetCollections = $this->assetCollectionRepository->findAll()->toArray();
         $rows = array_map(function (HierarchicalAssetCollectionInterface $assetCollection) {
             $children = $this->assetCollectionRepository->findByParent($assetCollection)->toArray();
 
@@ -59,17 +61,19 @@ class AssetCollectionsCommandController extends CommandController
                 ),
                 $assetCollection->getPath(),
             ];
-        }, $this->assetCollectionRepository->findAll()->toArray());
+        }, $assetCollections);
 
         $this->output->outputTable($rows, ['Id', 'Title', 'ParentId', 'Parent title', 'Children', 'Tags', 'Path']);
     }
 
     public function setParentCommand(string $assetCollectionIdentifier, string $parentAssetCollectionIdentifier): void
     {
+        /** @var HierarchicalAssetCollectionInterface|null $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollectionIdentifier);
         if (!$assetCollection instanceof HierarchicalAssetCollectionInterface) {
             throw new \Exception('Unknown asset collection ' . $assetCollectionIdentifier);
         }
+        /** @var HierarchicalAssetCollectionInterface|null $parentAssetCollection */
         $parentAssetCollection = $this->assetCollectionRepository->findByIdentifier($parentAssetCollectionIdentifier);
         if ($parentAssetCollection instanceof HierarchicalAssetCollectionInterface) {
             $assetCollection->setParent($parentAssetCollection);

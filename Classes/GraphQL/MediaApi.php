@@ -52,7 +52,7 @@ use function Wwwision\Types\instantiate;
 final class MediaApi
 {
     /**
-     * @phpstan-var array<string,mixed>
+     * @var array<string, mixed>
      */
     #[Flow\InjectConfiguration]
     protected array $settings = [];
@@ -224,13 +224,14 @@ final class MediaApi
     protected function getMaximumFileUploadSize(): int
     {
         try {
-            /** @var string $postMaxSize */
             $postMaxSize = ini_get('post_max_size');
-            /** @var string $uploadMaxSize */
-            $uploadMaxSize = ini_get('upload_max_filesize');
+            $uploadMaxFilesize = ini_get('upload_max_filesize');
+            if ($postMaxSize === false || $uploadMaxFilesize === false) {
+                return 0;
+            }
             return (int)min(
                 Files::sizeStringToBytes($postMaxSize),
-                Files::sizeStringToBytes($uploadMaxSize),
+                Files::sizeStringToBytes($uploadMaxFilesize),
             );
         } catch (FilesException) {
             return 0;

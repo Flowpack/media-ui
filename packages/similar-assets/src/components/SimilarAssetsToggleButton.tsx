@@ -1,44 +1,29 @@
 import * as React from 'react';
-import { useRecoilState } from 'recoil';
-
-import { Button, Icon } from '@neos-project/react-ui-components';
+import { useSetRecoilState } from 'recoil';
 
 import { useIntl } from '@media-ui/core';
+import { ActionButton } from '@media-ui/core/src/components';
 
 import similarAssetsModalState from '../state/similarAssetsModalState';
 
 interface SimilarAssetsToggleButtonProps {
-    variant?: 'button' | 'menuItem';
-    menuItemClassName?: string;
+    hideLabel?: boolean;
+    className?: string;
 }
 
-const SimilarAssetsToggleButton: React.FC<SimilarAssetsToggleButtonProps> = ({
-    variant = 'button',
-    menuItemClassName,
-}) => {
-    const [similarAssetsModalOpen, setSimilarAssetsModalOpen] = useRecoilState(similarAssetsModalState);
+const SimilarAssetsToggleButton: React.FC<SimilarAssetsToggleButtonProps> = ({ hideLabel, className }) => {
+    const setSimilarAssetsModalOpen = useSetRecoilState(similarAssetsModalState);
     const { translate } = useIntl();
     const label = translate('similarAssetsModal.show', 'Show similar assets');
 
-    if (variant === 'menuItem') {
-        return (
-            <li className={menuItemClassName} onClick={() => setSimilarAssetsModalOpen(true)}>
-                <Icon icon="equals" />
-                <span>{label}</span>
-            </li>
-        );
-    }
-
     return (
-        <Button
-            size="regular"
-            style={similarAssetsModalOpen ? 'brand' : 'lighter'}
-            hoverStyle="brand"
+        <ActionButton
+            icon="equals"
+            label={label}
+            hideLabel={hideLabel}
+            className={className}
             onClick={() => setSimilarAssetsModalOpen(true)}
-            title={label}
-        >
-            <Icon icon="equals" />
-        </Button>
+        />
     );
 };
 

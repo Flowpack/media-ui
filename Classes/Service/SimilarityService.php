@@ -41,7 +41,9 @@ class SimilarityService
         $similarityStrategies = [];
         $assetSimilarityStrategyImplementations = $this->reflectionService->getAllImplementationClassNamesForInterface(AssetSimilarityStrategyInterface::class);
         foreach ($assetSimilarityStrategyImplementations as $assetSimilarityStrategyImplementation) {
-            $similarityStrategies[] = $this->objectManager->get($assetSimilarityStrategyImplementation);
+            /** @var AssetSimilarityStrategyInterface $similarityStrategy */
+            $similarityStrategy = $this->objectManager->get($assetSimilarityStrategyImplementation);
+            $similarityStrategies[] = $similarityStrategy;
         }
         return $similarityStrategies;
     }

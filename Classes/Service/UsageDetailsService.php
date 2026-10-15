@@ -257,7 +257,7 @@ final class UsageDetailsService
     }
 
     /**
-     * @return array<string,array<int,string>>
+     * @return array<string, array<int, string>>
      */
     protected function resolveDimensionValuesForNode(Node $node): array
     {
@@ -391,7 +391,9 @@ final class UsageDetailsService
             AssetUsageStrategyInterface::class
         );
         foreach ($assetUsageStrategyImplementations as $assetUsageStrategyImplementationClassName) {
-            $usageStrategies[] = $this->objectManager->get($assetUsageStrategyImplementationClassName);
+            /** @var AssetUsageStrategyInterface $usageStrategy */
+            $usageStrategy = $this->objectManager->get($assetUsageStrategyImplementationClassName);
+            $usageStrategies[] = $usageStrategy;
         }
         return $usageStrategies;
     }

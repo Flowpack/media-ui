@@ -66,6 +66,7 @@ class AssetCollectionResolver
             $this->siteDefaultAssetCollections = [];
             /** @var Site $site */
             foreach ($this->siteRepository->findAll() as $site) {
+                /** @var AssetCollection|null $siteAssetCollection */
                 $siteAssetCollection = $site->getAssetCollection();
                 if (!$siteAssetCollection) {
                     continue;
@@ -83,6 +84,7 @@ class AssetCollectionResolver
 
     public function tags(Types\AssetCollection $assetCollection): Types\Tags
     {
+        /** @var AssetCollection|null $originalAssetCollection */
         $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
 
         return $originalAssetCollection instanceof AssetCollection
@@ -99,6 +101,7 @@ class AssetCollectionResolver
 
     public function parent(Types\AssetCollection $assetCollection): ?Types\AssetCollectionParent
     {
+        /** @var HierarchicalAssetCollectionInterface|null $originalAssetCollection */
         $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
         if (!$originalAssetCollection instanceof HierarchicalAssetCollectionInterface) {
             return null;
@@ -113,6 +116,7 @@ class AssetCollectionResolver
 
     public function assets(Types\AssetCollection $assetCollection): Types\Assets
     {
+        /** @var AssetCollection|null $originalAssetCollection */
         $originalAssetCollection = $this->assetCollectionRepository->findByIdentifier($assetCollection->id->value);
 
         return $originalAssetCollection instanceof AssetCollection

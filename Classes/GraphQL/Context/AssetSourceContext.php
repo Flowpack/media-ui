@@ -148,6 +148,7 @@ class AssetSourceContext
             // We currently only know about collections in the neos asset source
             return null;
         }
+        /** @var HierarchicalAssetCollectionInterface|null $assetCollection */
         $assetCollection = $this->assetCollectionRepository->findByIdentifier($id->value);
         return $assetCollection instanceof HierarchicalAssetCollectionInterface
             ? Types\AssetCollection::create(
@@ -183,7 +184,7 @@ class AssetSourceContext
             // We currently only support creating collections in the neos asset source
             return null;
         }
-        /** @var ?Tag $tag */
+        /** @var Tag|null $tag */
         $tag = $this->tagRepository->findByIdentifier($id->value);
         return $tag ? Types\Tag::create($id, $assetSourceId, TagLabel::fromString($tag->getLabel())) : null;
     }
