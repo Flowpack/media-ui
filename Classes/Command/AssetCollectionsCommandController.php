@@ -39,6 +39,8 @@ class AssetCollectionsCommandController extends CommandController
 
     public function hierarchyCommand(): void
     {
+        /** @var HierarchicalAssetCollectionInterface[] $assetCollections */
+        $assetCollections = $this->assetCollectionRepository->findAll()->toArray();
         $rows = array_map(function (HierarchicalAssetCollectionInterface $assetCollection) {
             $children = $this->assetCollectionRepository->findByParent($assetCollection)->toArray();
 
@@ -59,7 +61,7 @@ class AssetCollectionsCommandController extends CommandController
                 ),
                 $assetCollection->getPath(),
             ];
-        }, $this->assetCollectionRepository->findAll()->toArray());
+        }, $assetCollections);
 
         $this->output->outputTable($rows, ['Id', 'Title', 'ParentId', 'Parent title', 'Children', 'Tags', 'Path']);
     }

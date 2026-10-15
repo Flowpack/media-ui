@@ -80,7 +80,7 @@ class HierarchicalAssetCollectionAspect
         $parent = $assetCollection->getParent();
         while ($parent !== null) {
             $parent = $parent->getParent();
-            if ($parent === $assetCollection->getParent()) {
+            if ($parent && $parent === $assetCollection->getParent()) {
                 throw new \InvalidArgumentException(sprintf(
                     'Circular reference detected, parent AssetCollection "%s" appeared twice in the hierarchy',
                     $parent->getTitle()
