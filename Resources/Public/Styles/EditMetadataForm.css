@@ -3,6 +3,8 @@ html {
 }
 
 .neos.neos-module {
+    --changedFieldColor: #4caf50;
+
     background: transparent;
     margin: 0;
     display: grid;
@@ -13,6 +15,12 @@ html {
 
     .neos-control-group {
         position: relative;
+    }
+
+    .neos-control-group.metadata-field-changed {
+        .neos-controls textarea {
+            border-color: var(--changedFieldColor);
+        }
     }
 
     .neos-control-label {
@@ -74,53 +82,67 @@ html {
     }
 
     .metadata-editor-tabs {
-        display: flex;
-        flex-wrap: wrap;
-        align-content: flex-start;
+        display: grid;
+        grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr);
+        align-items: start;
         max-width: 100%;
 
-        > details {
-            display: contents;
+        /* The tablist is a plain vertical list of buttons; each one is a sibling of the
+           panels in the grid, so the panels stack in the second column and never affect
+           the height or position of the tabs. */
 
-            > div {
-                order: 1;
-                padding: 0.75rem;
-                border: 1px solid var(--grayLight);
-                background: var(--grayDark);
-                overflow: auto;
+        .metadata-editor-tablist {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            border-bottom: 1px solid var(--grayMedium);
+        }
+
+        .metadata-editor-tab {
+            display: block;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font: inherit;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--grayMedium);
+            border-right: none;
+            border-bottom: none;
+            border-radius: 0.25rem 0 0 0.25rem;
+            color: var(--textSubtleLight);
+            background-color: var(--grayDark);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            &:first-child {
+                border-radius: 0.25rem 0 0 0;
             }
 
-            &[open]::details-content {
-                order: 1;
-                width: 100%;
+            &:last-child {
+                border-bottom: 1px solid var(--grayMedium);
+            }
+
+            &[aria-selected='true'] {
+                border-color: var(--grayLight);
+                border-right: 1px solid var(--grayLight);
+                border-left: 3px solid #fff;
+                margin-left: -1px;
+                padding-left: calc(0.75rem - 2px);
+                color: #fff;
+                font-weight: bold;
             }
         }
 
-        summary {
-            order: 0;
-            position: sticky;
-            top: 0;
-            z-index: 2;
-            display: block;
-            cursor: pointer;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid var(--grayMedium);
-            border-bottom: none;
-            border-radius: 0.25rem 0.25rem 0 0;
-            color: var(--textSubtleLight);
-            background-color: var(--grayDark);
+        .metadata-editor-panel {
+            padding: 0.75rem;
+            border: 1px solid var(--grayLight);
+            background: var(--grayDark);
+            overflow: auto;
 
-            &::-webkit-details-marker,
-            &::marker {
+            /* Panels are rendered for every tab and toggled via the `hidden` attribute. */
+            &[hidden] {
                 display: none;
-            }
-
-            [open] > & {
-                pointer-events: none;
-                z-index: 3;
-                margin-bottom: -1px;
-                border-color: var(--grayLight);
-                color: #fff;
             }
         }
     }
