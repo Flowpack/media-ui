@@ -171,6 +171,26 @@ type IptcProperty {
 }
 
 """
+Name of a metadata property defined in the Neos.MetaData package (e.g. "copyright", "altText", "caption")
+"""
+scalar MetaDataPropertyName
+
+"""
+Label of a metadata property defined in the Neos.MetaData package (e.g. "Copyright", "Alt text", "Caption")
+"""
+scalar MetaDataPropertyLabel
+
+type MetaDataProperty {
+  """ Name of a metadata property defined in the Neos.MetaData package (e.g. "copyright", "altText", "caption") """
+  propertyName: MetaDataPropertyName!
+  """ Label of a metadata property defined in the Neos.MetaData package (e.g. "Copyright", "Alt text", "Caption") """
+  propertyLabel: MetaDataPropertyLabel!
+  value: String!
+  """ The inherited value from a fallback dimension space point, if any """
+  inheritedValue: String
+}
+
+"""
 The label of a Tag (e.g. "important")
 """
 scalar TagLabel
@@ -231,6 +251,7 @@ type Asset {
   caption: String
   copyrightNotice: String
   lastModified: String
+  metadata: [MetaDataProperty!]!
   tags: [Tag!]!
   collections: [AssetCollection!]!
   thumbnailUrl: Url
@@ -257,6 +278,8 @@ type Config {
   canManageTags: Boolean!
   canManageAssetCollections: Boolean!
   canManageAssets: Boolean!
+  """ Whether metadata editing is supported (e.g. by the Neos.MetaData package) """
+  supportsMetadataEditing: Boolean!
   """ Unique identifier of an Asset collection (e.g. "neos") """
   defaultAssetCollectionId: AssetCollectionId
 }

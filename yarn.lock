@@ -3681,6 +3681,7 @@ __metadata:
   dependencies:
     "@apollo/client": "catalog:"
     "@media-ui/core": "workspace:*"
+    "@media-ui/feature-asset-sources": "workspace:*"
     "@neos-project/react-ui-components": "catalog:"
     classnames: "catalog:"
     graphql: "catalog:"
@@ -3737,6 +3738,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@media-ui/feature-metadata-editing@workspace:*, @media-ui/feature-metadata-editing@workspace:packages/metadata-editing":
+  version: 0.0.0-use.local
+  resolution: "@media-ui/feature-metadata-editing@workspace:packages/metadata-editing"
+  dependencies:
+    "@media-ui/core": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@media-ui/feature-similar-assets@workspace:*, @media-ui/feature-similar-assets@workspace:packages/similar-assets":
   version: 0.0.0-use.local
   resolution: "@media-ui/feature-similar-assets@workspace:packages/similar-assets"
@@ -3789,6 +3798,7 @@ __metadata:
     "@media-ui/feature-asset-variants": "workspace:*"
     "@media-ui/feature-clipboard": "workspace:*"
     "@media-ui/feature-concurrent-editing": "workspace:*"
+    "@media-ui/feature-metadata-editing": "workspace:*"
     "@media-ui/feature-similar-assets": "workspace:*"
     "@neos-project/react-ui-components": "catalog:"
     "@types/apollo-upload-client": "npm:^14.1.0"
@@ -3821,6 +3831,7 @@ __metadata:
     "@media-ui/core": "workspace:*"
     "@media-ui/feature-asset-usage": "workspace:*"
     "@media-ui/feature-clipboard": "workspace:*"
+    "@media-ui/feature-metadata-editing": "workspace:*"
     "@media-ui/media-module": "workspace:*"
     apollo-upload-client: "catalog:"
     classnames: "catalog:"

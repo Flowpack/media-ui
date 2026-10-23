@@ -7,6 +7,7 @@ import { InteractionProvider, IntlProvider, NotifyProvider } from '../provider';
 import {
     applicationContextState,
     constraintsState,
+    endpointsState,
     featureFlagsState,
     searchTermState,
     selectedAssetIdState,
@@ -19,6 +20,7 @@ import { SearchTerm } from '../domain/SearchTerm';
 interface InitialStateProps {
     applicationContext: ApplicationContext;
     featureFlags: FeatureFlags;
+    endpoints: Endpoints;
     selectedAsset?: AssetIdentity;
     selectedInspectorView?: InspectorViewMode;
     constraints?: SelectionConstraints;
@@ -43,10 +45,12 @@ const MediaApplicationWrapper: React.FC<MediaApplicationWrapperProps> = ({
     initialState,
 }) => {
     const initializeState = ({ set }: MutableSnapshot) => {
-        const { applicationContext, featureFlags, constraints, selectedInspectorView, selectedAsset } = initialState;
+        const { applicationContext, featureFlags, constraints, selectedInspectorView, selectedAsset, endpoints } =
+            initialState;
 
         set(applicationContextState, applicationContext);
         set(featureFlagsState, featureFlags);
+        set(endpointsState, endpoints);
 
         if (selectedAsset) {
             set(selectedAssetIdState, selectedAsset);

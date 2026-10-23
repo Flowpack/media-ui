@@ -1,0 +1,245 @@
+html {
+    height: 100%;
+}
+
+.neos.neos-module {
+    --changedFieldColor: #4caf50;
+
+    background: transparent;
+    margin: 0;
+    display: grid;
+    grid-template-rows: min-content 1fr min-content;
+    max-height: 100%;
+    height: 100%;
+    gap: var(--defaultMargin);
+
+    .neos-control-group {
+        position: relative;
+    }
+
+    .neos-control-group.metadata-field-changed {
+        .neos-controls textarea {
+            border-color: var(--changedFieldColor);
+        }
+    }
+
+    /* "Apply to all" only makes sense once the property has been edited in this tab,
+       so it stays hidden until the change tracking flags the group as modified. */
+    .metadata-editor-apply-to-all {
+        display: none;
+        margin-top: 0.25rem;
+    }
+
+    .neos-control-group.metadata-field-changed .metadata-editor-apply-to-all {
+        display: block;
+    }
+
+    .neos-control-label {
+        display: inline-block;
+        margin-bottom: var(--relatedMargin);
+    }
+
+    .neos-control-label + .neos-controls {
+        margin-top: 0.5rem;
+    }
+
+    .neos-controls {
+        margin-bottom: 0.5rem;
+
+        input, textarea {
+            &[disabled] {
+                cursor: not-allowed;
+                color: rgb(from #fff r g b /.5);
+            }
+        }
+
+        .neos-checkbox:has([disabled]) {
+            cursor: not-allowed;
+
+            span, span::before {
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    .neos-controls input,
+    .neos-controls textarea {
+        width: 100%;
+    }
+
+    .neos-controls textarea {
+        padding-block: 0.5rem !important;
+        resize: vertical;
+    }
+
+    .neos-controls .neos-checkbox {
+        margin-top: .5rem;
+    }
+
+    .neos-button + .neos-button {
+        margin-left: 0.5rem;
+    }
+
+    main {
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+
+        .metadata-editor-single {
+            overflow-y: auto;
+            max-width: 100%;
+        }
+    }
+
+    .metadata-editor-tabs {
+        display: grid;
+        grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr);
+        align-items: start;
+        max-width: 100%;
+
+        /* The tablist is a plain vertical list of buttons; each one is a sibling of the
+           panels in the grid, so the panels stack in the second column and never affect
+           the height or position of the tabs. */
+
+        .metadata-editor-tablist {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            border-bottom: 1px solid var(--grayMedium);
+        }
+
+        .metadata-editor-tab {
+            display: block;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font: inherit;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--grayMedium);
+            border-right: none;
+            border-bottom: none;
+            color: var(--textSubtleLight);
+            background-color: var(--grayDark);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            &:last-child {
+                border-bottom: 1px solid var(--grayMedium);
+            }
+
+            &[aria-selected='true'] {
+                border-color: var(--grayLight);
+                border-right: 1px solid var(--grayLight);
+                border-left: 3px solid #fff;
+                margin-left: -1px;
+                padding-left: calc(0.75rem - 2px);
+                color: #fff;
+                font-weight: bold;
+            }
+
+            /* Asset with unsaved modifications: only the left border turns green, which
+               marks the changed asset without recolouring the whole tab. */
+            &.metadata-asset-changed {
+                border-left: 3px solid var(--changedFieldColor);
+                margin-left: -2px;
+                padding-left: calc(0.75rem - 2px);
+            }
+
+            /* Keep the selected tab flush with its panel while retaining the marker. */
+            &.metadata-asset-changed[aria-selected='true'] {
+                margin-left: -1px;
+            }
+        }
+
+        .metadata-editor-panel {
+            padding: 0.75rem;
+            border: 1px solid var(--grayLight);
+            background: var(--grayDark);
+            overflow: auto;
+
+            /* Panels are rendered for every tab and toggled via the `hidden` attribute. */
+            &[hidden] {
+                display: none;
+            }
+        }
+    }
+
+    footer {
+        flex-shrink: 0;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        padding-top: var(--defaultMargin);
+        border-top: 1px solid var(--grayLight);
+        background: var(--grayDark);
+    }
+
+    .global-scope-icon {
+        display: inline-block;
+        margin-left: var(--relatedMargin);
+
+        input {
+            opacity: 0;
+            position: absolute;
+            left: -9999px;
+        }
+
+        label {
+            margin-left: var(--relatedMargin);
+            cursor: help;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            left: 2px;
+            width: max-content;
+            max-width: calc(100% - 4px);
+
+            .tooltip-arrow {
+                width: 0;
+                height: 0;
+                z-index: 1;
+                margin-left: 2rem;
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-bottom: 8px solid #141414;
+                position: relative;
+            }
+
+            .tooltip-inner {
+                padding: 8px;
+                background: #141414;
+                color: #fff;
+                overflow-wrap: break-word;
+                position: relative;
+                box-shadow: 0 0 10px #7d7d7d33;
+            }
+        }
+
+        input:checked ~ .tooltip {
+            display: block;
+        }
+    }
+}
+
+
+:global(::-webkit-scrollbar) {
+    width: 4px;
+    height: 4px;
+}
+
+:global(::-webkit-scrollbar-track) {
+    background: transparent;
+}
+
+:global(::-webkit-scrollbar-thumb) {
+    background-color: #999;
+}
+
+:global(::-webkit-scrollbar-corner) {
+    background-color: var(--grayLight);
+}

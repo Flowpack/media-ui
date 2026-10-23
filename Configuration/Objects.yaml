@@ -55,6 +55,7 @@
           caption: *assetResolver
           copyrightNotice: *assetResolver
           lastModified: *assetResolver
+          metadata: *assetResolver
           tags: *assetResolver
           collections: *assetResolver
           thumbnailUrl: *assetResolver
