@@ -19,7 +19,7 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditor) < prototype(Neos.Fusion:Co
         </header>
         <main>
             <h1 @if.condition={!private.isMultiAssetEdit}>
-                {I18n.translate('metadataEditor.title', 'Editing asset "{0}"', [props.assetsWithMetadata[0].asset.label], 'Main', 'Flowpack.Media.Ui')}
+                {I18n.translate('metadataEditor.title', 'Editing asset "{0}"', [props.assetsWithMetadata[0].asset.label], 'MetadataEditor', 'Flowpack.Media.Ui')}
             </h1>
             <Neos.Fusion.Form:Form form.target.action="updateMetadata" attributes.id="editMetadataForm">
                 <Neos.Fusion.Form:Hidden
@@ -41,13 +41,13 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditor) < prototype(Neos.Fusion:Co
                 attributes.class="neos-button"
                 attributes.id="cancelButton"
             >
-                {I18n.translate('metadataEditor.cancel', 'Cancel', [], 'Main', 'Flowpack.Media.Ui')}
+                {I18n.translate('metadataEditor.cancel', 'Cancel', [], 'MetadataEditor', 'Flowpack.Media.Ui')}
             </Neos.Fusion.Form:Button>
             <Neos.Fusion.Form:Button
                 attributes.form="editMetadataForm"
                 attributes.class="neos-button neos-button-success"
             >
-                {I18n.translate('metadataEditor.save', 'Save', [], 'Main', 'Flowpack.Media.Ui')}
+                {I18n.translate('metadataEditor.save', 'Save', [], 'MetadataEditor', 'Flowpack.Media.Ui')}
             </Neos.Fusion.Form:Button>
         </footer>
     `

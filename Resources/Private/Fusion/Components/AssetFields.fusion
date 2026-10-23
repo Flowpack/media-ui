@@ -3,6 +3,8 @@ prototype(Flowpack.Media.Ui:EditMetadata.AssetFields) < prototype(Neos.Fusion:Co
     assetWithMetadata = null
     /// integer
     index = null
+    /// boolean: true when more than one asset is edited in this batch
+    isMultiAssetEdit = false
 
     renderer = afx`
         <Neos.Fusion:Fragment>
@@ -15,6 +17,7 @@ prototype(Flowpack.Media.Ui:EditMetadata.AssetFields) < prototype(Neos.Fusion:Co
                     fieldName={fieldName}
                     fieldConfig={fieldConfig}
                     fieldNamePrefix={"assets[" + props.index + "][postData]"}
+                    isMultiAssetEdit={props.isMultiAssetEdit}
                 />
             </Neos.Fusion:Loop>
         </Neos.Fusion:Fragment>
