@@ -1,4 +1,5 @@
 const CHANGED_FIELD_CLASS = 'metadata-field-changed';
+const CHANGED_ASSET_CLASS = 'metadata-asset-changed';
 
 /**
  * WAI-ARIA tab pattern for the batch edit metadata dialog: the tablist lives in the
@@ -87,6 +88,96 @@ const trackChangedFields = (form) => {
     });
 };
 
+/**
+ * Flags the tab of every asset whose metadata was modified, so the tab list gives an
+ * overview of which assets are actually changed before saving.
+ */
+const trackChangedAssets = (form) => {
+    form.querySelectorAll('.metadata-editor-panel').forEach((panel) => {
+        const tab = document.getElementById(panel.getAttribute('aria-labelledby') || '');
+
+        if (!tab) {
+            return;
+        }
+
+        const groups = panel.querySelectorAll('.neos-control-group');
+        const initialValues = new Map();
+
+        groups.forEach((group) => {
+            initialValues.set(group, readFieldGroupValue(group));
+        });
+
+        const update = () => {
+            const hasChanges = Array.from(initialValues).some(
+                ([group, initialValue]) => initialValue !== '' && readFieldGroupValue(group) !== initialValue
+            );
+
+            tab.classList.toggle(CHANGED_ASSET_CLASS, hasChanges);
+        };
+
+        groups.forEach((group) => {
+            group.addEventListener('input', update);
+            group.addEventListener('change', update);
+        });
+    });
+};
+
+/**
+ * "Apply to all": copies the value of the edited property to the same property of every
+ * other asset in the batch. The values are copied into the other assets' own form fields,
+ * so saving the form persists them like any other change.
+ */
+const setupApplyToAll = (form) => {
+    form.querySelectorAll('.metadata-editor-apply-to-all').forEach((button) => {
+        button.addEventListener('click', () => {
+            const group = button.closest('.neos-control-group');
+
+            if (!group) {
+                return;
+            }
+
+            // Restrict to the actual property control. The group also contains the
+            // global-scope tooltip, whose checkbox has no name and would otherwise be
+            // picked up first, and boolean fields render a hidden transfer input.
+            const source = group.querySelector(
+                '.neos-controls > input[name], .neos-controls > textarea[name], .neos-controls > select[name]'
+            );
+
+            if (!source) {
+                return;
+            }
+
+            const isBoolean = source.type === 'checkbox';
+
+            // Field names are "assets[<index>][postData][<propertyName>]"; only the
+            // asset index differs between the panels, so match on the trailing
+            // "[postData][<propertyName>]" part.
+            const propertySuffix = source.name.slice(source.name.indexOf('[postData]'));
+            const isCounterpart = (field) => field.name.endsWith(propertySuffix) && field.name !== source.name;
+            const fields = form.querySelectorAll('input[name], textarea[name], select[name]');
+            const counterparts = Array.from(fields).filter(isCounterpart);
+
+            counterparts.forEach((field) => {
+                // Skip the source field, hidden transfer inputs and read-only controls.
+                if (field === source || field.type === 'hidden' || field.disabled) {
+                    return;
+                }
+
+                if (isBoolean) {
+                    field.checked = source.checked;
+                } else {
+                    field.value = source.value;
+                }
+
+                // Programmatic updates fire neither input nor change, so notify the
+                // change tracking manually to keep the "changed" highlight in sync.
+                field.dispatchEvent(new Event('input', { bubbles: true }));
+                field.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+        });
+    });
+};
+
 // Send message to parent window to close the dialog. The parent opens us in a native
 // <dialog>, but while the focus is inside this iframe the Escape key is handled here and
 // never reaches the parent's own Escape-to-close behaviour, so we forward it explicitly.
@@ -123,6 +214,8 @@ window.addEventListener('load', () => {
 
     if (editMetadataForm) {
         trackChangedFields(editMetadataForm);
+        trackChangedAssets(editMetadataForm);
+        setupApplyToAll(editMetadataForm);
     }
 
     editMetadataForm?.addEventListener('submit', (e) => {

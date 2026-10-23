@@ -23,6 +23,17 @@ html {
         }
     }
 
+    /* "Apply to all" only makes sense once the property has been edited in this tab,
+       so it stays hidden until the change tracking flags the group as modified. */
+    .metadata-editor-apply-to-all {
+        display: none;
+        margin-top: 0.25rem;
+    }
+
+    .neos-control-group.metadata-field-changed .metadata-editor-apply-to-all {
+        display: block;
+    }
+
     .neos-control-label {
         display: inline-block;
         margin-bottom: var(--relatedMargin);
@@ -108,16 +119,11 @@ html {
             border: 1px solid var(--grayMedium);
             border-right: none;
             border-bottom: none;
-            border-radius: 0.25rem 0 0 0.25rem;
             color: var(--textSubtleLight);
             background-color: var(--grayDark);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-
-            &:first-child {
-                border-radius: 0.25rem 0 0 0;
-            }
 
             &:last-child {
                 border-bottom: 1px solid var(--grayMedium);
@@ -131,6 +137,19 @@ html {
                 padding-left: calc(0.75rem - 2px);
                 color: #fff;
                 font-weight: bold;
+            }
+
+            /* Asset with unsaved modifications: only the left border turns green, which
+               marks the changed asset without recolouring the whole tab. */
+            &.metadata-asset-changed {
+                border-left: 3px solid var(--changedFieldColor);
+                margin-left: -2px;
+                padding-left: calc(0.75rem - 2px);
+            }
+
+            /* Keep the selected tab flush with its panel while retaining the marker. */
+            &.metadata-asset-changed[aria-selected='true'] {
+                margin-left: -1px;
             }
         }
 

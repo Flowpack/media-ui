@@ -10,7 +10,7 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditorForm) < prototype(Neos.Fusio
                 <div
                     class="metadata-editor-tablist"
                     role="tablist"
-                    aria-label={I18n.translate('metadataEditor.assets', 'Assets', [], 'Main', 'Flowpack.Media.Ui')}
+                    aria-label={I18n.translate('metadataEditor.assets', 'Assets', [], 'MetadataEditor', 'Flowpack.Media.Ui')}
                 >
                     <Neos.Fusion:Loop
                         items={props.assetsWithMetadata}
@@ -44,6 +44,7 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditorForm) < prototype(Neos.Fusio
                         <Flowpack.Media.Ui:EditMetadata.AssetFields
                             assetWithMetadata={assetWithMetadata}
                             index={iterator.index}
+                            isMultiAssetEdit={private.isMultiAssetEdit}
                         />
                     </div>
                 </Neos.Fusion:Loop>
@@ -54,6 +55,7 @@ prototype(Flowpack.Media.Ui:Component.MetadataEditorForm) < prototype(Neos.Fusio
                 <Flowpack.Media.Ui:EditMetadata.AssetFields
                     assetWithMetadata={assetsWithMetadata[0]}
                     index={0}
+                    isMultiAssetEdit={false}
                 />
             </div>
         </Neos.Fusion:Fragment>
