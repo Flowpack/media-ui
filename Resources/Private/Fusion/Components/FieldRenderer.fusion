@@ -12,8 +12,9 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             condition = ${props.fieldConfig.type == 'boolean'}
             renderer = Neos.Fusion.Form:Checkbox {
                 attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                attributes.checked = ${props.fieldConfig.value.ownValue == true}
                 field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
-                field.value = ${props.fieldConfig.value.ownValue}
+                field.value = '1'
             }
         }
 

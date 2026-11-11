@@ -233,13 +233,26 @@ class MediaController extends AbstractModuleController
             }
 
             foreach ($assetData['postData'] ?? [] as $propertyName => $propertyValue) {
-                $metaDataManager->setMetaDataPropertyValue(
-                    MetaDataAssetReference::create($assetIdentity->assetSourceId->value,
-                        $assetIdentity->assetId->value),
-                    MetaDataPropertyName::fromString($propertyName),
-                    $propertyValue,
-                    $metaDataDimensionSpacePoint,
-                );
+                if ($propertyValue === null || $propertyValue === '') {
+                    $metaDataManager->unsetMetaDataPropertyValue(
+                        MetaDataAssetReference::create(
+                            $assetIdentity->assetSourceId->value,
+                            $assetIdentity->assetId->value
+                        ),
+                        MetaDataPropertyName::fromString($propertyName),
+                        $metaDataDimensionSpacePoint,
+                    );
+                } else {
+                    $metaDataManager->setMetaDataPropertyValue(
+                        MetaDataAssetReference::create(
+                            $assetIdentity->assetSourceId->value,
+                            $assetIdentity->assetId->value
+                        ),
+                        MetaDataPropertyName::fromString($propertyName),
+                        $propertyValue,
+                        $metaDataDimensionSpacePoint,
+                    );
+                }
             }
             $this->assetService->emitAssetUpdated($asset);
         }
