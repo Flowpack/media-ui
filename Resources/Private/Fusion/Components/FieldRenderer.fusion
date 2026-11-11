@@ -48,6 +48,32 @@ prototype(Flowpack.Media.Ui:EditMetadata.FieldRenderer) < prototype(Neos.Fusion:
             }
         }
 
+        select {
+            condition = ${props.fieldConfig.editor == 'Neos.Neos/Inspector/Editors/SelectBoxEditor' && props.fieldConfig.editorOptions.values}
+            renderer = Neos.Fusion.Form:Select {
+                attributes.id = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.name = ${props.fieldNamePrefix + '[' + props.fieldName + ']'}
+                field.value = ${props.fieldConfig.value.ownValue}
+
+                content = Neos.Fusion:Join {
+                    placeholder = Neos.Fusion.Form:Select.Option {
+                        @if.allowEmpty = ${props.fieldConfig.editorOptions.allowEmpty == true}
+                        option.value = ''
+                        content = ${props.fieldConfig.editorOptions.placeholder}
+                    }
+                    items = Neos.Fusion:Loop {
+                        items = ${props.fieldConfig.editorOptions.values}
+                        itemName = 'optionItem'
+                        itemRenderer = Neos.Fusion.Form:Select.Option {
+                            option.value = ${itemKey}
+                            renderer.selected = ${itemKey == props.fieldConfig.value.ownValue}
+                            content = ${optionItem.label != null ? optionItem.label : itemKey}
+                        }
+                    }
+                }
+            }
+        }
+
         default {
             condition = true
             renderer = Neos.Fusion.Form:Input {
