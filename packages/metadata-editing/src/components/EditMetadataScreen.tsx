@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import { endpointsState, selectedAssetIdsState } from '@media-ui/core/src/state';
+import { endpointsState, selectedAssetIdsState, selectedAssetIdState } from '@media-ui/core/src/state';
 
 import classes from './EditMetadataScreen.module.css';
 import { metadataEditorVisibleState } from '../index';
@@ -15,6 +15,7 @@ const EditMetadataScreen: React.FC = () => {
     const endpoints = useRecoilValue(endpointsState);
     const selectedAssetSourceId = useRecoilValue(selectedAssetSourceIdState);
     const selectedAssetIds = useRecoilValue(selectedAssetIdsState(selectedAssetSourceId));
+    const selectedAssetId = useRecoilValue(selectedAssetIdState);
     const setEditMetadataScreenVisible = useSetRecoilState(metadataEditorVisibleState);
     const [isLoading, setIsLoading] = useState(true);
     const Notify = useNotify();
@@ -78,14 +79,15 @@ const EditMetadataScreen: React.FC = () => {
         return () => iframe.removeEventListener('load', handleLoad);
     }, []);
 
-    if (selectedAssetIds.length === 0) {
+    if (selectedAssetIds.length === 0 && !selectedAssetId) {
         return null;
     }
 
+    const assetIdsToEdit = selectedAssetIds.length > 0 ? selectedAssetIds : [selectedAssetId as AssetIdentity];
     const endpointUriWithParameters = new URL(endpoints.editMetadata, window.location.origin);
     endpointUriWithParameters.searchParams.set(
         'assetIds',
-        JSON.stringify(selectedAssetIds.map((assetIdentity) => assetIdentity.assetId))
+        JSON.stringify(assetIdsToEdit.map((assetIdentity) => assetIdentity.assetId))
     );
     endpointUriWithParameters.searchParams.set('assetSourceId', selectedAssetSourceId);
 
