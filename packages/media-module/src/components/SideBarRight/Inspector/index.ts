@@ -2,9 +2,10 @@ export { default as AssetCollectionInspector } from './AssetCollectionInspector'
 export { default as AssetInspector } from './AssetInspector';
 export { default as CollectionSelectBox } from './CollectionSelectBox';
 export { default as IptcMetadataInspector } from './IptcMetadataInspector';
-export { default as MetadataView } from './MetadataView';
+export { default as MetaDataInspector } from './MetaDataInspector';
 export { default as ParentCollectionSelectBox } from './ParentCollectionSelectBox';
 export { default as PropertyInspector } from './PropertyInspector';
+export { default as ResourceInspector } from './ResourceInspector';
 export { default as TagInspector } from './TagInspector';
 export { default as TagSelectBox } from './TagSelectBox';
 export { default as TagSelectBoxAsset } from './TagSelectBoxAsset';

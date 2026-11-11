@@ -11,6 +11,7 @@ interface ConfigQueryResult {
         canManageAssetCollections: boolean;
         canManageTags: boolean;
         canManageAssets: boolean;
+        supportsMetadataEditing: boolean;
     };
 }
 
@@ -23,6 +24,7 @@ const DEFAULT_CONFIG: ConfigQueryResult = {
         canManageAssetCollections: false,
         canManageTags: false,
         canManageAssets: false,
+        supportsMetadataEditing: false,
     },
 };
 

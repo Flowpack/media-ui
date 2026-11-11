@@ -1,0 +1,63 @@
+prototype(Flowpack.Media.Ui:Component.MetadataEditorForm) < prototype(Neos.Fusion:Component) {
+    /// list<array{assetIdentity: AssetIdentity, asset: AssetInterface, formSchema: array<string, array{type: string, editor: string|null, label: string, value: string|null}>}>
+    assetsWithMetadata = null
+
+    @private.isMultiAssetEdit = ${Array.length(props.assetsWithMetadata) > 1}
+
+    renderer = afx`
+        <Neos.Fusion:Fragment @if.condition={private.isMultiAssetEdit}>
+            <div class="metadata-editor-tabs">
+                <div
+                    class="metadata-editor-tablist"
+                    role="tablist"
+                    aria-label={I18n.translate('metadataEditor.assets', 'Assets', [], 'MetadataEditor', 'Flowpack.Media.Ui')}
+                >
+                    <Neos.Fusion:Loop
+                        items={props.assetsWithMetadata}
+                        iterationName="iterator"
+                        itemName="assetWithMetadata"
+                    >
+                        <button type="button"
+                                class="metadata-editor-tab"
+                                role="tab"
+                                id={"metadata-editor-tab-" + iterator.index}
+                                aria-controls={"metadata-editor-panel-" + iterator.index}
+                                aria-selected={iterator.isFirst ? 'true' : 'false'}
+                                tabindex={iterator.isFirst ? 0 : -1}
+                        >
+                            {assetWithMetadata.asset.label}
+                        </button>
+                    </Neos.Fusion:Loop>
+                </div>
+                <Neos.Fusion:Loop
+                    items={props.assetsWithMetadata}
+                    iterationName="iterator"
+                    itemName="assetWithMetadata"
+                >
+                    <div
+                        class="metadata-editor-panel"
+                        role="tabpanel"
+                        id={"metadata-editor-panel-" + iterator.index}
+                        aria-labelledby={"metadata-editor-tab-" + iterator.index}
+                        hidden={iterator.isFirst ? false : 'hidden'}
+                    >
+                        <Flowpack.Media.Ui:EditMetadata.AssetFields
+                            assetWithMetadata={assetWithMetadata}
+                            index={iterator.index}
+                            isMultiAssetEdit={private.isMultiAssetEdit}
+                        />
+                    </div>
+                </Neos.Fusion:Loop>
+            </div>
+        </Neos.Fusion:Fragment>
+        <Neos.Fusion:Fragment @if.condition={!private.isMultiAssetEdit}>
+            <div class="metadata-editor-single">
+                <Flowpack.Media.Ui:EditMetadata.AssetFields
+                    assetWithMetadata={assetsWithMetadata[0]}
+                    index={0}
+                    isMultiAssetEdit={false}
+                />
+            </div>
+        </Neos.Fusion:Fragment>
+    `
+}

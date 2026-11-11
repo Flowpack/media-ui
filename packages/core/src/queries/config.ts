@@ -10,6 +10,7 @@ const CONFIG = gql`
             canManageAssetCollections
             canManageTags
             canManageAssets
+            supportsMetadataEditing
         }
     }
 `;
