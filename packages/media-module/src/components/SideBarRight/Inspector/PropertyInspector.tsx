@@ -167,7 +167,7 @@ const PropertyInspector = () => {
         <InspectorContainer>
             <Tasks />
 
-            {!selectedAssetSource.readOnly && (
+            {!selectedAssetSource.readOnly && (!isMultiSelection || !config.supportsMetadataEditing) && (
                 <ToggablePanel
                     closesToBottom={true}
                     className={classes.propertyPanel}
