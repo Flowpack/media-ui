@@ -32,8 +32,8 @@ const AssetInspector = () => {
         <Tabs theme={{ tabs__content: classes.tabContent }}>
             <Tabs.Panel icon="info-circle" key="editor" id="editor">
                 <PropertyInspector />
-                <ResourceInspector />
                 <MetaDataInspector />
+                <ResourceInspector />
                 <IptcMetadataInspector />
             </Tabs.Panel>
             <Tabs.Panel icon="images">
@@ -43,8 +43,8 @@ const AssetInspector = () => {
     ) : (
         <>
             <PropertyInspector />
-            <ResourceInspector />
             <MetaDataInspector />
+            <ResourceInspector />
             <IptcMetadataInspector />
         </>
     );
