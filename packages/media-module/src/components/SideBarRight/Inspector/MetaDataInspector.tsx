@@ -19,7 +19,7 @@ const MetaDataInspector: React.FC = () => {
     const isMultiSelection = useRecoilValue(multiSelectionState(selectedAssetSourceId));
     const { translate } = useIntl();
     const { config } = useConfigQuery();
-    const [collapsed, setCollapsed] = useState<boolean>(true);
+    const [collapsed, setCollapsed] = useState<boolean>(false);
     const [metadataEditorVisible, setMetadataEditorVisible] = useRecoilState(metadataEditorVisibleState);
 
     const toggleMetadataEditor = useCallback(() => {
